@@ -11,6 +11,7 @@ namespace WsSimuladorCalculoTabelas.DAO
     {
         public Conta ObterContaPorId(int id)
         {
+            //te
             if (Configuracoes.BancoEmUso() == "ORACLE")
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
