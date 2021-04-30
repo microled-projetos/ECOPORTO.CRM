@@ -1,0 +1,70 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesViewModel
+@using Ecoporto.CRM.Business.Helpers
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Helpers
+
+@{
+    bool enviadoParaAprovacao = Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade == StatusOportunidade.ENVIADO_PARA_APROVACAO;
+    DateTime? dataCancelamento = Model.OportunidadesInformacoesIniciaisViewModel.DataCancelamentoOportunidade;
+    bool cancelado = Model.OportunidadesInformacoesIniciaisViewModel.Cancelado;
+    bool permiteAlterarDataCancelamento = Model.OportunidadesInformacoesIniciaisViewModel.PermiteAlterarDataCancelamento;
+}
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="cancelar-oportunidade-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancelar Oportunidade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <p>Deseja cancelar a Oportunidade? Esta operação é irreversível</p>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-5">
+
+                        @Html.LabelFor(model => model.OportunidadesInformacoesIniciaisViewModel.DataCancelamentoOportunidade)
+
+                        @if (cancelado == false && dataCancelamento == null)
+                        {
+                            @Html.EditorFor(model => model.OportunidadesInformacoesIniciaisViewModel.DataCancelamentoOportunidade, new { htmlAttributes = new { @class = "form-control form-control-sm data", @Value = dataCancelamento?.ToString("dd/MM/yyyy") } })
+                        }
+                        else
+                        {
+                            if (permiteAlterarDataCancelamento)
+                            {
+                                @Html.EditorFor(model => model.OportunidadesInformacoesIniciaisViewModel.DataCancelamentoOportunidade, new { htmlAttributes = new { @class = "form-control form-control-sm data", @Value = dataCancelamento?.ToString("dd/MM/yyyy") } })
+                            }
+                            else
+                            {
+                                @Html.EditorFor(model => model.OportunidadesInformacoesIniciaisViewModel.DataCancelamentoOportunidade, new { htmlAttributes = new { @class = "form-control form-control-sm data", @readonly = "readonly", @Value = dataCancelamento?.ToString("dd/MM/yyyy") } })
+                            }
+                        }
+
+                        <small id="msgErroDataCancelamento" class="text-danger invisivel">Informe uma Data válida!</small>
+                    </div>
+                    @if (permiteAlterarDataCancelamento == true && dataCancelamento.HasValue)
+                    {
+                        <div class="col-md-2">
+                            <label>&nbsp;</label>
+                            <p>
+                                <a id="btnSalvarDataCancelamento" href="#" class="btn btn-sm btn-outline-info"><i class="fas fa-save"></i></a>
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="btnGerarPDFCancelamento" href="~/Oportunidades/PdfCancelamento/@Model.Id" target="_blank" class="btn btn-info invisivel">Gerar PDF de Cancelamento</a>
+                <button id="btnConfirmarCancelamentoOportunidade" type="button" class="btn btn-danger" onclick="confirmarCancelamentoOportunidade()">Estou ciente e confirmo o Cancelamento</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

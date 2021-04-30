@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.FaixaPeso>
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Peso Inicial</th>
+                <th scope="col">Peso Final</th>
+                <th scope="col">Preço</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@String.Format("{0:N2}", item.ValorInicial)</td>
+                    <td>@String.Format("{0:N2}", item.ValorFinal)</td>
+                    <td>@String.Format("{0:N2}", item.Preco)</td>
+                    <td><a href="#" onclick="excluirFaixaPeso(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+

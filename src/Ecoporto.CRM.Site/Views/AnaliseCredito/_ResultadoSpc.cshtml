@@ -1,0 +1,547 @@
+﻿@model Ecoporto.CRM.Site.Models.AnaliseCreditoViewModel
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Site.WsSPC
+
+@{
+    var dadosSpc = Model.ResultadoSPC;
+    var TotalDiv = dadosSpc.TotalDividaEcoporto + dadosSpc.TotalDividaSpc;
+}
+
+@if (dadosSpc.ContaId != 0)
+{
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="pt-1">
+                <strong>Status Aprovação:</strong>
+                @if (dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.APROVADO)
+                {
+                    <span>Aprovado</span>
+                }
+                @if (dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.EM_ANDAMENTO)
+                {
+                    <span>Em Andamento</span>
+                }
+                @if (dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.EM_APROVACAO)
+                {
+                    <span>Em Aprovação</span>
+                }
+                @if (dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.PENDENTE)
+                {
+                    <span id="statusAPR">Envio Pendente</span>
+                }
+                @if (dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.REJEITADO)
+                {
+                    <span>Recusado</span>
+                }
+            </div>
+        </div>
+        <div class="col-md-2 offset-md-4">
+            <a href="#" class="btn btn-outline-secondary btn-sm btn-block btn-as-block @(dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.PENDENTE || dadosSpc.StatusAnaliseDeCredito != StatusAnaliseDeCreditoResponse.EM_APROVACAO ? "disabled" : "") "onclick="recallAnaliseCredito(@dadosSpc.ContaId)" id="btnRecall"><i class="fas fa-undo"></i>&nbsp;&nbsp;Recall</a>
+        </div>
+        <div class="col-md-2">
+            <a href=@Url.Action("ConsultarClienteSpc", "AnaliseCredito" , new { id = Session["FontePagadoraId"] }) class="btn btn-outline-secondary btn-sm btn-block btn-as-block @(dadosSpc.StatusAnaliseDeCredito == StatusAnaliseDeCreditoResponse.EM_APROVACAO ? "disabled" : "")" onclick="enviarParaAprovacao(@dadosSpc.ContaId, 13, @dadosSpc.ContaId);"><i class="fas fa-upload"></i>&nbsp;&nbsp;Enviar para Aprovação</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="linha-colorida">
+            <i class="fa fa-search ml-1 mr-1"></i>
+            Consulta SPC
+        </div>
+    </div>
+
+    <div class="dadosSpc mt-3">
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label>Protocolo</label>
+                @Html.EditorFor(model => dadosSpc.Protocolo, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Data Consulta</label>
+                @Html.EditorFor(model => dadosSpc.DataConsulta, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Validade</label>
+                @Html.EditorFor(model => dadosSpc.Validade, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+
+            @if (dadosSpc.TipoPessoa == TipoPessoaResponse.PessoaJuridica)
+            {
+                <div class="form-group col-md-4">
+                    <label>Razão Social</label>
+                    @Html.EditorFor(model => dadosSpc.RazaoSocial, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label>Data Fundação</label>
+                    @Html.EditorFor(model => dadosSpc.Fundacao, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+            }
+            else
+            {
+                <div class="form-group col-md-4">
+                    <label>Nome</label>
+                    @Html.EditorFor(model => dadosSpc.Nome, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label>Data Nascimento</label>
+                    @Html.EditorFor(model => dadosSpc.DataNascimento, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+            }
+
+        </div>
+
+        <div class="row">
+
+            @if (dadosSpc.TipoPessoa == TipoPessoaResponse.PessoaJuridica)
+            {
+                <div class="form-group col-md-2">
+                    <label>CNPJ</label>
+                    @Html.EditorFor(model => dadosSpc.CNPJ, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label>Atividade</label>
+                    @Html.EditorFor(model => dadosSpc.Atividade, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+            }
+            else
+            {
+                <div class="form-group col-md-2">
+                    <label>CPF</label>
+                    @Html.EditorFor(model => dadosSpc.CPF, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label>Nacionalidade</label>
+                    @Html.EditorFor(model => dadosSpc.Nacionalidade, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+                </div>
+            }
+
+            <div class="form-group col-md-2">
+                <label>Situação</label>
+                @Html.EditorFor(model => dadosSpc.Situacao, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-4">
+                <label>Endereço</label>
+                @Html.EditorFor(model => dadosSpc.Logradouro, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Bairro</label>
+                @Html.EditorFor(model => dadosSpc.Bairro, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-2">
+                <label>Cidade</label>
+                @Html.EditorFor(model => dadosSpc.Cidade, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Estado</label>
+                @Html.EditorFor(model => dadosSpc.Estado, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>CEP</label>
+                @Html.EditorFor(model => dadosSpc.CEP, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+
+            <div class="form-group col-md-2">
+                <label>Dívida SPC</label>
+                @Html.EditorFor(model => dadosSpc.TotalDividaSpc, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Dívida Ecoporto</label>
+                @Html.EditorFor(model => dadosSpc.TotalDividaEcoporto, new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Dívida Total</label>
+                @Html.EditorFor(model => TotalDiv , new { htmlAttributes = new { @class = "form-control form-control-sm campo-leitura", @disabled = "disabled" } })
+            </div>
+            <div class="form-group col-md-2">
+                <label>Inadimplente</label>
+                @if (dadosSpc.InadimplenteEcoporto || dadosSpc.InadimplenteSpc)
+                {
+                    <input type="text" class="form-control form-control-sm text-center" value="SIM" style="background-color: salmon; color: white;" />
+                }
+                else
+                {
+                    <input type="text" class="form-control form-control-sm text-center" value="NÃO" style="background-color: lightblue;" />
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <table id="tbResultadoSpc" class="table table-sm mt-2" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Descrição</th>
+                <th scope="col">Qtde Total</th>
+                <th scope="col">Última Ocorrência</th>
+                <th scope="col">Valor Total</th>
+                <th scope="col">Detalhe</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Protesto</td>
+                <td>@dadosSpc.ProtestoQuantidade</td>
+                <td>@dadosSpc.ProtestoData.DataFormatada()</td>
+                <td>@dadosSpc.ProtestoValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Ação Judiciária</td>
+                <td>@dadosSpc.AcaoQuantidade</td>
+                <td>@dadosSpc.AcaoData.DataFormatada()</td>
+                <td>@dadosSpc.AcaoValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Pendência Financeira Serasa</td>
+                <td>@dadosSpc.PendenciaFinancQuantidade</td>
+                <td>@dadosSpc.PendenciaFinancData.DataFormatada()</td>
+                <td>@dadosSpc.PendenciaFinancValorTotal</td>
+
+                @if (dadosSpc.DetalhesPendenciasFinanceiras.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(3)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+
+            <tr id="detalhe-3" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Título</th>
+                            <th>Avalista</th>
+                            <th>Contrato</th>
+                            <th>Ocorrência</th>
+                            <th>Filial</th>
+                            <th>Origem</th>
+                            <th>Moeda</th>
+                            <th>Natureza</th>
+                            <th>Cidade</th>
+                            <th>UF</th>
+                            <th>Valor</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesPendenciasFinanceiras)
+                        {
+                            <tr>
+                                <td>@item.Titulo</td>
+                                <td>@item.Avalista.ToSimOuNao()</td>
+                                <td>@item.Contrato</td>
+                                <td>@item.Ocorrencia.DataFormatada()</td>
+                                <td>@item.Filial</td>
+                                <td>@item.Origem</td>
+                                <td>@item.Moeda</td>
+                                <td>@item.Natureza</td>
+                                <td>@item.Cidade</td>
+                                <td>@item.UF</td>
+                                <td>@item.Valor</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Participação Falência</td>
+                <td>@dadosSpc.ParticipFalenciaQuantidade</td>
+                <td>@dadosSpc.ParticipFalenciaData.DataFormatada()</td>
+                <td>@dadosSpc.ParticipFalenciaValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>SPC</td>
+                <td>@dadosSpc.SpcQuantidade</td>
+                <td>@dadosSpc.SpcData.DataFormatada()</td>
+                <td>@dadosSpc.SpcValorTotal</td>
+                @if (dadosSpc.DetalhesSpc.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(5)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+
+            </tr>
+
+            <tr id="detalhe-5" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Associado</th>
+                            <th>Inclusão</th>
+                            <th>Vencimento</th>
+                            <th>Entidade</th>
+                            <th>Contrato</th>
+                            <th>Valor</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesSpc)
+                        {
+                            <tr>
+                                <td>@item.Associado</td>
+                                <td>@item.Inclusao.DataFormatada()</td>
+                                <td>@item.Vencimento.DataFormatada()</td>
+                                <td>@item.Entidade</td>
+                                <td>@item.Contrato</td>
+                                <td>@item.Valor</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Cheque sem Fundo - varejo</td>
+                <td>@dadosSpc.ChequeSFQuantidade</td>
+                <td>@dadosSpc.ChequeSFData.DataFormatada()</td>
+                <td>@dadosSpc.ChequeSFValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Cheque sem Fundo - CCF</td>
+                <td>@dadosSpc.ChequeSFCCFQuantidade</td>
+                <td>@dadosSpc.ChequeSFCCFData.DataFormatada()</td>
+                <td>@dadosSpc.ChequeSFCCFValorTotal</td>
+
+                @if (dadosSpc.DetalhesCCF.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(7)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+
+            <tr id="detalhe-7" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Origem</th>
+                            <th>Último Cheque</th>
+                            <th>Quantidade</th>
+                            <th>Motivo</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesCCF)
+                        {
+                            <tr>
+                                <td>@item.Origem</td>
+                                <td>@item.DataUltimoCheque.DataFormatada()</td>
+                                <td>@item.Quantidade</td>
+                                <td>@item.Motivo</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Cheque Lojista</td>
+                <td>@dadosSpc.ChequeLojistaQuantidade</td>
+                <td>@dadosSpc.ChequeLojistaData.DataFormatada()</td>
+                <td>@dadosSpc.ChequeLojistaValorTotal</td>
+
+                @if (dadosSpc.DetalhesChequesLojistas.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(8)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+
+            <tr id="detalhe-8" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Associado</th>
+                            <th>Entidade</th>
+                            <th>Inclusão</th>
+                            <th>Descrição</th>
+                            <th>Emissão</th>
+                            <th>Valor</th>
+                            <th>Cidade</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesChequesLojistas)
+                        {
+                            <tr>
+                                <td>@item.Associado</td>
+                                <td>@item.Entidade</td>
+                                <td>@item.Inclusao.DataFormatada()</td>
+                                <td>@item.Descricao</td>
+                                <td>@item.ChequeEmissao.DataFormatada()</td>
+                                <td>@item.ChequeValor</td>
+                                <td>@item.CidadeAssociado</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Cheque - Contra ordem - Outras ocorrências</td>
+                <td>@dadosSpc.ChequeCOOutrasQuantidade</td>
+                <td>@dadosSpc.ChequeCOOutrasData.DataFormatada()</td>
+                <td>@dadosSpc.ChequeCOOutrasValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Consulta Realizada</td>
+                <td>@dadosSpc.ConsultaRealizadaQuantidade</td>
+                <td>@dadosSpc.ConsultaRealizadaData.DataFormatada()</td>
+                <td>@dadosSpc.ConsultaRealizadaValorTotal</td>
+
+                @if (dadosSpc.DetalhesConsultasRealizadas.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(10)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+            <tr id="detalhe-10" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Associado</th>
+                            <th>Data Consulta</th>
+                            <th>Entidade</th>
+                            <th>Cidade</th>
+                            <th>Estado</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesConsultasRealizadas)
+                        {
+                            <tr>
+                                <td>@item.Associado</td>
+                                <td>@item.DataConsulta.DataFormatada()</td>
+                                <td>@item.Entidade</td>
+                                <td>@item.Cidade</td>
+                                <td>@item.Estado</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Alerta de Documentos</td>
+                <td>@dadosSpc.AlertaDocQuantidade</td>
+                <td>@dadosSpc.AlertaDocData.DataFormatada()</td>
+                <td>@dadosSpc.AlertaDocValorTotal</td>
+
+                @if (dadosSpc.DetalhesAlertasDocumentos.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(11)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+            <tr id="detalhe-11" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Inclusão</th>
+                            <th>Ocorrência</th>
+                            <th>Entidade</th>
+                            <th>Motivo</th>
+                            <th>Tipos Documentos</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesAlertasDocumentos)
+                        {
+                            <tr>
+                                <td>@item.Inclusao.DataFormatada()</td>
+                                <td>@item.Ocorrencia.DataFormatada()</td>
+                                <td>@item.Entidade</td>
+                                <td>@item.Motivo</td>
+                                <td>@item.Tipos</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Crédito Concedido</td>
+                <td>@dadosSpc.CreditoConcQuantidade</td>
+                <td>@dadosSpc.CreditoConcData.DataFormatada()</td>
+                <td>@dadosSpc.CreditoConcValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Contra Ordem</td>
+                <td>@dadosSpc.ContraOrdemQuantidade</td>
+                <td>@dadosSpc.ContraOrdemData.DataFormatada()</td>
+                <td>@dadosSpc.ContraOrdemValorTotal</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Contra Ordem - Docs. diferentes do consultado</td>
+                <td>@dadosSpc.ContraOrdemDFQuantidade</td>
+                <td>@dadosSpc.ContraOrdemDFData.DataFormatada()</td>
+                <td>@dadosSpc.ContraOrdemDFValorTotal</td>
+
+                @if (dadosSpc.DetalhesContraOrdemDocumentoDiferente.Any())
+                {
+                    <td>
+                        <a href="#" onclick="expandirLinha(14)">detalhes</a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+            <tr id="detalhe-14" class="invisivel">
+                <td colspan="5">
+                    <table class="table bg-info text-light">
+                        <tr>
+                            <th>Documento</th>
+                            <th>Inclusão</th>
+                            <th>Ocorrência</th>
+                            <th>Origem</th>
+                            <th>Informante</th>
+                            <th>Descrição</th>
+                        </tr>
+                        @foreach (var item in dadosSpc.DetalhesContraOrdemDocumentoDiferente)
+                        {
+                            <tr>
+                                <td>@item.Documento</td>
+                                <td>@item.Inclusao.DataFormatada()</td>
+                                <td>@item.Ocorrencia.DataFormatada()</td>
+                                <td>@item.Origem</td>
+                                <td>@item.Informante</td>
+                                <td>@item.Descricao</td>
+                            </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

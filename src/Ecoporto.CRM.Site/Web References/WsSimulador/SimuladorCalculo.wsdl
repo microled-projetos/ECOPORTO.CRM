@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="ObterTabelas">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="clienteId" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="clienteCnpj" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="classeCliente" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="simuladorId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="crm" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="calculoAutomatico" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="tabelaId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObterTabelasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObterTabelasResult" type="tns:Response" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Response">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Sucesso" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mensagem" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Lista" type="tns:ArrayOfTabela" />
+          <s:element minOccurs="1" maxOccurs="1" name="TabelaId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="ArquivoId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Hash" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NomeArquivo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TamanhoArquivo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Base64" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="SimuladorId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfTabela">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Tabela" nillable="true" type="tns:Tabela" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Tabela">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="SimuladorId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="TabelaId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descricao" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Importador" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Despachante" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NVOCC" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Coloader" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CoColoader" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CoColoader2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Proposta" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataInicio" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataFinalValidade" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CalcularTabelas">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="simuladorId" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="tabelas" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="crm" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CalcularTabelasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CalcularTabelasResult" type="tns:Response" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObterClienteSimulador">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="simuladorId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObterClienteSimuladorResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ObterClienteSimuladorResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GerarRelatorioExcel">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="simuladorId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="comAnaliseDeDados" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="servicosComplementares" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="dadosDoCliente" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="somenteEstimativa" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataPgtoInicial" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataPgtoFinal" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="crm" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="vertical" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GerarRelatorioExcelResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GerarRelatorioExcelResult" type="tns:Response" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SimuladorOportunidade">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="oportunidadeId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="simuladorParametroId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="modeloSimuladorId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="usuarioId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SimuladorOportunidadeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SimuladorOportunidadeResult" type="tns:Response" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ObterTabelasSoapIn">
+    <wsdl:part name="parameters" element="tns:ObterTabelas" />
+  </wsdl:message>
+  <wsdl:message name="ObterTabelasSoapOut">
+    <wsdl:part name="parameters" element="tns:ObterTabelasResponse" />
+  </wsdl:message>
+  <wsdl:message name="CalcularTabelasSoapIn">
+    <wsdl:part name="parameters" element="tns:CalcularTabelas" />
+  </wsdl:message>
+  <wsdl:message name="CalcularTabelasSoapOut">
+    <wsdl:part name="parameters" element="tns:CalcularTabelasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObterClienteSimuladorSoapIn">
+    <wsdl:part name="parameters" element="tns:ObterClienteSimulador" />
+  </wsdl:message>
+  <wsdl:message name="ObterClienteSimuladorSoapOut">
+    <wsdl:part name="parameters" element="tns:ObterClienteSimuladorResponse" />
+  </wsdl:message>
+  <wsdl:message name="GerarRelatorioExcelSoapIn">
+    <wsdl:part name="parameters" element="tns:GerarRelatorioExcel" />
+  </wsdl:message>
+  <wsdl:message name="GerarRelatorioExcelSoapOut">
+    <wsdl:part name="parameters" element="tns:GerarRelatorioExcelResponse" />
+  </wsdl:message>
+  <wsdl:message name="SimuladorOportunidadeSoapIn">
+    <wsdl:part name="parameters" element="tns:SimuladorOportunidade" />
+  </wsdl:message>
+  <wsdl:message name="SimuladorOportunidadeSoapOut">
+    <wsdl:part name="parameters" element="tns:SimuladorOportunidadeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="SimuladorCalculoSoap">
+    <wsdl:operation name="ObterTabelas">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retorna uma lista de tabelas de cobrança a partir dos parâmetros especificados</wsdl:documentation>
+      <wsdl:input message="tns:ObterTabelasSoapIn" />
+      <wsdl:output message="tns:ObterTabelasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CalcularTabelas">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Calcula a estimativa dos valores das tabelas de cobranças especificadas</wsdl:documentation>
+      <wsdl:input message="tns:CalcularTabelasSoapIn" />
+      <wsdl:output message="tns:CalcularTabelasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObterClienteSimulador">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retorna o ID do Cliente quando o Simulador não possui Classe</wsdl:documentation>
+      <wsdl:input message="tns:ObterClienteSimuladorSoapIn" />
+      <wsdl:output message="tns:ObterClienteSimuladorSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GerarRelatorioExcel">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gera um relatório Excel com a estimativa de valores</wsdl:documentation>
+      <wsdl:input message="tns:GerarRelatorioExcelSoapIn" />
+      <wsdl:output message="tns:GerarRelatorioExcelSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SimuladorOportunidade">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Inicia uma simulação a partir de uma Oportunidade</wsdl:documentation>
+      <wsdl:input message="tns:SimuladorOportunidadeSoapIn" />
+      <wsdl:output message="tns:SimuladorOportunidadeSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SimuladorCalculoSoap" type="tns:SimuladorCalculoSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ObterTabelas">
+      <soap:operation soapAction="http://tempuri.org/ObterTabelas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcularTabelas">
+      <soap:operation soapAction="http://tempuri.org/CalcularTabelas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObterClienteSimulador">
+      <soap:operation soapAction="http://tempuri.org/ObterClienteSimulador" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GerarRelatorioExcel">
+      <soap:operation soapAction="http://tempuri.org/GerarRelatorioExcel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimuladorOportunidade">
+      <soap:operation soapAction="http://tempuri.org/SimuladorOportunidade" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="SimuladorCalculoSoap12" type="tns:SimuladorCalculoSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ObterTabelas">
+      <soap12:operation soapAction="http://tempuri.org/ObterTabelas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalcularTabelas">
+      <soap12:operation soapAction="http://tempuri.org/CalcularTabelas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObterClienteSimulador">
+      <soap12:operation soapAction="http://tempuri.org/ObterClienteSimulador" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GerarRelatorioExcel">
+      <soap12:operation soapAction="http://tempuri.org/GerarRelatorioExcel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SimuladorOportunidade">
+      <soap12:operation soapAction="http://tempuri.org/SimuladorOportunidade" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SimuladorCalculo">
+    <wsdl:port name="SimuladorCalculoSoap" binding="tns:SimuladorCalculoSoap">
+      <soap:address location="http://localhost:2897/SimuladorCalculo.asmx" />
+    </wsdl:port>
+    <wsdl:port name="SimuladorCalculoSoap12" binding="tns:SimuladorCalculoSoap12">
+      <soap12:address location="http://localhost:2897/SimuladorCalculo.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

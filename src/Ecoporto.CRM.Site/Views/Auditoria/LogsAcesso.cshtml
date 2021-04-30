@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Consultar Logs de Acesso";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Logs de Acesso
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Auditoria</a>
+        </li>
+        <li class="active">Consultar Logs de Acesso</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-user fa-lg"></i>
+        Acessos no Sistema
+    </div>
+    <div class="card-body">
+
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="txtProposta">De:</label>
+                <input type="text" id="txtDe" class="form-control form-control-sm data" />
+            </div>
+            <div class="form-group col-md-2">
+                <label for="txtDescricao">Até:</label>
+                <input type="text" id="txtAte" class="form-control form-control-sm data" />
+            </div>
+            <div class="form-group col-md-3">
+                <label for="txtAdendo">Login:</label>
+                <input type="text" id="txtLogin" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group col-md-2">
+                <label for="txtPremio">IP:</label>
+                <input type="text" id="txtIP" class="form-control form-control-sm IP" />
+            </div>
+            <div class="form-group col-md-1">
+                <label for="cbUsuarioExterno">Externo:</label>
+                <select id="cbUsuarioExterno" class="form-control form-control-sm">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                    <option value="2" selected>Ambos</option>
+                </select>
+            </div>
+            <div class="form-group col-md-1">
+                <label for="cbSucesso">Sucesso:</label>
+                <select id="cbSucesso" class="form-control form-control-sm">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                    <option value="2" selected>Ambos</option>
+                </select>
+            </div>
+            <div class="form-group col-md-1">
+                <label>&nbsp;</label>
+                <a id="btnFiltrarLogs" href="#" class="btn btn-info btn-sm btn-sm btn-block"><i class="fa fa-search"></i>&nbsp;Filtrar</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="datatables" class="table table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Data/Hora</th>
+                        <th scope="col">Login</th>
+                        <th scope="col">Externo</th>
+                        <th scope="col">IP</th>
+                        <th scope="col">Sucesso</th>
+                        <th scope="col">Mensagem</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $('#btnFiltrarLogs').click(function () {
+            $('#datatables').dataTable().fnDraw();;
+        });
+
+        $(document).ready(function () {
+
+            $('#datatables').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("ObterLogsAcesso", "Auditoria")",
+                "bProcessing": true,
+                "pagingType": "full_numbers",
+                "searchDelay": 1000,
+                "pageLength": 20,
+                "bLengthChange": false,
+                "order": [0, 'asc'],
+                "bFilter": false,
+                "fnServerParams": function (aoData) {
+                        aoData.push({ "name": "De", "value": $('#txtDe').val() }),
+                        aoData.push({ "name": "Ate", "value": $('#txtAte').val() }),
+                        aoData.push({ "name": "Login", "value": $('#txtLogin').val() }),
+                        aoData.push({ "name": "IP", "value": $('#txtIP').val() }),
+                        aoData.push({ "name": "Externo", "value": $('#cbUsuarioExterno').val() }),
+                        aoData.push({ "name": "Sucesso", "value": $('#cbSucesso').val() })
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+
+                    if (data.Sucesso === false) {
+                        $(row).addClass('linha-log-falha');
+                    } else {
+                        $(row).addClass('linha-log-sucesso');
+                    }
+                },
+                "aoColumns":
+                    [
+                        {
+                            "sName": "DataHora",
+                            "mData": "DataHora"
+                        },
+                        {
+                            "sName": "Login",
+                            "mData": "Login"
+                        },
+                        {
+                            "data": "Externo",
+                            "render": function (data, type, row) {
+                                return data
+                                    ? '<i class="far fa-check-square"></i>'
+                                    : '<i class="far fa-square"></i>';
+                            },
+                            "sClass": "center"
+                        },
+                        {
+                            "sName": "IP",
+                            "mData": "IP"
+                        },
+                        {
+                            "data": "Sucesso",
+                            "render": function (data, type, row) {
+                                return data
+                                    ? '<i class="far fa-check-square"></i>'
+                                    : '<i class="far fa-square"></i>';
+                            },
+                            "sClass": "center"
+                        },
+                        {
+                            "sName": "Mensagem",
+                            "mData": "Mensagem"
+                        }
+                    ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

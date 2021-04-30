@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.OportunidadeAdendosDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<br />
+
+<div class="table-responsive">
+    <table id="tbAdendos" class="table table-sm table-striped" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tipo Adendo</th>
+                <th scope="col">Status</th>
+                <th scope="col">Data Cadastro</th>
+                <th scope="col">Anexo</th>
+                <th scope="col">Usuário</th>
+                <th class="campo-acao">&nbsp;</th>
+                <th class="campo-acao">&nbsp;</th>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAdendos:btnRecallAdendos"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                 @if (ViewBag.HabilitaBotaoIntegracaoAdendo)
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                <th class="campo-acao">&nbsp;</th>
+                <th class="campo-acao">&nbsp;</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-adendo-@item.Id">
+                    <td>A-@item.Id</td>
+                    <td>@item.TipoAdendo.ToName()</td>
+                    <td id="item-status-adendo-@item.Id">@item.StatusAdendo.ToName()</td>
+                    <td>@item.DataCadastro</td>
+                    @if (!string.IsNullOrEmpty(item.IdFile))
+                    {
+                        <td>@Html.ActionLink("(Visualizar anexo)", "Download", "Anexos", new { id = item.IdFile }, null)</td>
+                    }
+                    else
+                    {
+                        <td>&nbsp;</td>
+                    }
+                    <td>@item.CriadoPor</td>
+                    <td class="campo-acao"><a href="#" onclick="obterHistoricoWorkflow(@item.Id, 4)" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-list"></i>&nbsp;Histórico Workflow</a></td>
+
+                     @if (ViewBag.HabilitaBotaoIntegracaoAdendo)
+                    {
+                        <td class="campo-acao"><a href="#" id="btnIntegraAdendoChronos" onclick="integrarAdendoChronos(@item.Id, 4)" class="btn btn-primary btn-sm btn-acao @((item.StatusAdendo == StatusAdendo.APROVADO) ? "disabled" : "")"><i class="fa fa-cogs"></i>&nbsp;Integra Chronos</a></td>
+                    }
+
+                    <td class="campo-acao"><a href="#" id="btn-enviar-adendo-@item.Id" onclick="enviarAdendoParaAprovacao(@item.Id)" class="btn btn-warning btn-sm btn-acao @((item.StatusAdendo == StatusAdendo.APROVADO || item.StatusAdendo == StatusAdendo.ENVIADO) ? "disabled" : "")"><i class="fa fa-check"></i>&nbsp;Enviar para Aprovação</a></td>
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAdendos:btnRecallAdendos"))
+                    {
+                        <td class="campo-acao"><a href="#" id="btn-recall-adendo-@item.Id" onclick="recallPremioAdendo(@item.Id)" class="btn btn-warning btn-sm btn-acao @((item.StatusAdendo != StatusAdendo.ENVIADO) ? "disabled" : "")"><i class="fa fa-undo-alt"></i>&nbsp;Recall</a></td>
+                    }
+
+                    <td class="campo-acao"><a href="@Url.Action("AtualizarAdendo", new { @item.Id })" target="_blank" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a></td>
+                    <td class="campo-acao"><a href="@Url.Action("DetalhesAdendo", new { @item.Id })" target="_blank" class="btn btn-info btn-sm btn-acao"><i class="fa fa-list"></i>&nbsp;Detalhes</a></td>
+                    <td class="campo-acao"><a href="#" onclick="excluirAdendo(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

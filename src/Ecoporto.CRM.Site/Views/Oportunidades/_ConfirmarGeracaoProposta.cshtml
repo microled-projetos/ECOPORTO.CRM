@@ -1,0 +1,26 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesViewModel
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="confirmar-proposta-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Geração de Proposta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="pnlGeracaoProposta">
+                    <p>Confirma a geração da Proposta?</p>
+                </div>
+                <div id="pnlDownloadProposta" class="invisivel">
+
+                </div>
+            </div>            
+            <div class="modal-footer" id="pnlGeracaoPropostaFooter">
+                <button type="button" id="btnConfirmaGerarProposta" onclick="gerarProposta()" class="btn btn-danger">Confirmo a Geração da Proposta</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

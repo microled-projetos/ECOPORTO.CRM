@@ -1,0 +1,301 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesViewModel
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    ViewBag.Title = "Atualizar Oportunidade";
+    var statusOportunidade = Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade;
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Oportunidades
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Oportunidades</a>
+        </li>
+        <li class="active">Cadastro de Oportunidades</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <ul class="nav nav-tabs" id="abas" role="tablist">
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active" id="informacoesIniciais-tab" data-toggle="tab" href="#informacoesIniciais" role="tab" aria-controls="home" aria-selected="true">Informações Iniciais</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link disabled" id="proposta-tab" data-toggle="tab" href="#proposta" role="tab" aria-controls="profile" aria-selected="false">Proposta</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesSimulador:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" id="simulador-tab" data-toggle="tab" href="#simulador" role="tab" aria-controls="profile" aria-selected="false">Simulador</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link disabled" id="fichaDeFaturamento-tab" data-toggle="tab" href="#fichaDeFaturamento" role="tab" aria-controls="messages" aria-selected="false">Ficha de Faturamento</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAnexos:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link disabled" id="anexos-tab" data-toggle="tab" href="#anexos" role="tab" aria-controls="messages" aria-selected="false">Notas e Anexos</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link disabled" id="premioDeParceria-tab" data-toggle="tab" href="#premioDeParceria" role="tab" aria-controls="messages" aria-selected="false">Prêmio de Parceria</a>
+                        </li>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAdendos:Acessar"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link disabled" id="adendos-tab" data-toggle="tab" href="#adendos" role="tab" aria-controls="messages" aria-selected="false">Adendos</a>
+                        </li>
+                    }
+
+                    <li class="nav-item ml-auto">
+                        <small class="float-right text-danger mt-1">Criado por: <strong>@ViewBag.UsuarioCriacao</strong>, em: <strong>@ViewBag.DataCriacao</strong></small>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Acessar"))
+                    {
+                        <div class="tab-pane active" id="informacoesIniciais" role="tabpanel" aria-labelledby="home-tab">
+                            @if (statusOportunidade == StatusOportunidade.ATIVA || statusOportunidade == StatusOportunidade.REVISADA || statusOportunidade == StatusOportunidade.CANCELADA || statusOportunidade == StatusOportunidade.VENCIDO)
+                            {
+                                <br />
+                                @Html.Partial("_AbaInformacoesIniciaisAtualizarAcessoTotal", Model.OportunidadesInformacoesIniciaisViewModel)
+                            }
+                            else
+                            {
+                                if (Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade == StatusOportunidade.ENVIADO_PARA_APROVACAO && Model.OportunidadesInformacoesIniciaisViewModel.ContaId != 0)
+                                {
+                                    <br />
+                                    @Html.Partial("_AbaInformacoesIniciaisAtualizarReadOnly", Model.OportunidadesInformacoesIniciaisViewModel)
+                                }
+                                else
+                                {
+                                    @Html.Partial("_AbaInformacoesIniciaisAtualizar", Model.OportunidadesInformacoesIniciaisViewModel)
+                                }
+                            }
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:Acessar"))
+                    {
+                        <div class="tab-pane" id="proposta" role="tabpanel" aria-labelledby="profile-tab">
+
+                            @if (!Enum.IsDefined(typeof(StatusOportunidade), Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade) || Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade == StatusOportunidade.RECUSADO)
+                            {
+                                <br />
+                                @Html.Partial("_AbaProposta", Model.OportunidadesViewModelProposta)
+                            }
+                            else
+                            {
+                                <br />
+                                @Html.Partial("_AbaPropostaReadOnly", Model.OportunidadesViewModelProposta)
+                            }
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesSimulador:Acessar"))
+                    {
+                        <div class="tab-pane" id="simulador" role="tabpanel" aria-labelledby="profile-tab">
+                            <br />
+                            @Html.Partial("~/Views/SimuladorProposta/_CadastrarParametros.cshtml", Model.OportunidadesSimuladorViewModel)
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:Acessar"))
+                    {
+                        <div class="tab-pane" id="fichaDeFaturamento" role="tabpanel" aria-labelledby="messages-tab">
+                            @*@if (Model.OportunidadesViewModelProposta.FormaPagamento == FormaPagamento.FATURADO || Model.OportunidadesViewModelProposta.HabilitaAbaFichas)
+                                {*@
+                            @*@Html.Partial("_AbaFichaFaturamento", Model.OportunidadesFichaFaturamentoViewModel)*@
+                            @*}
+                                else
+                                {
+                                    <br />
+                                    <div class="alert alert-warning" role="alert">
+                                        Opção disponível apenas para Formas de Pagamento igual a <strong>Faturado</strong>
+                                    </div>
+                                }*@
+
+                            @Html.Partial("_AbaFichaFaturamento", Model.OportunidadesFichaFaturamentoViewModel)
+                            @*@if (statusOportunidade == StatusOportunidade.ATIVA || statusOportunidade == StatusOportunidade.REVISADA || statusOportunidade == StatusOportunidade.CANCELADA || statusOportunidade == StatusOportunidade.VENCIDO)
+                                {
+                                    <br />
+                                    @Html.Partial("_AbaFichaFaturamentoAcessoTotal", Model.OportunidadesFichaFaturamentoViewModel)
+                                }
+                                else
+                                {
+                                    @Html.Partial("_AbaFichaFaturamento", Model.OportunidadesFichaFaturamentoViewModel)
+                                }*@
+
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAnexos:Acessar"))
+                    {
+                        <div class="tab-pane" id="anexos" role="tabpanel" aria-labelledby="messages-tab">
+                            @Html.Partial("_AbaAnexosNotas", Model.OportunidadesAnexosNotasViewModel)
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Acessar"))
+                    {
+                        <div class="tab-pane" id="premioDeParceria" role="tabpanel" aria-labelledby="messages-tab">
+                            @if (Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade != StatusOportunidade.RECUSADO && Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade != StatusOportunidade.RASCUNHO)
+                            {
+                                @Html.Partial("_AbaPremioParceria", Model.OportunidadesPremioParceriaViewModel)
+                            }
+                            else
+                            {
+                                <br />
+                                <div class="alert alert-warning" role="alert">
+                                    Disponível apenas para oportunidades <strong>Ativas</strong>
+                                </div>
+
+                                @Html.Partial("_AbaPremioParceriaReadOnly", Model.OportunidadesPremioParceriaViewModel)
+                            }
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAdendos:Acessar"))
+                    {
+                        <div class="tab-pane" id="adendos" role="tabpanel" aria-labelledby="messages-tab">
+                            @if (Model.OportunidadesInformacoesIniciaisViewModel.StatusOportunidade == StatusOportunidade.ATIVA)
+                            {
+                                @Html.Partial("_AbaAdendos", Model.OportunidadesAdendosViewModel)
+                            }
+                            else
+                            {
+                                <br />
+                                <div class="alert alert-warning" role="alert">
+                                    Disponível apenas para oportunidades <strong>Ativas</strong>
+                                </div>
+                                @Html.Partial("_AbaAdendosReadOnly", Model.OportunidadesAdendosViewModel)
+                            }
+                        </div>
+                    }
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<br />
+
+@Html.Partial("_PesquisarContas")
+@Html.Partial("_PesquisarContatos")
+@Html.Partial("_PesquisarPremios")
+@Html.Partial("_AbaInformacoesIniciaisPesquisaOportunidades")
+@Html.Partial("_AbaFichaFaturamentoSelecionaDiasSemana")
+@Html.Partial("_AbaFichaFaturamentoSelecionaDias")
+@Html.Partial("_AbaFichaFaturamentoSelecionaDiasSemanaCondicaoPgto")
+@Html.Partial("_AbaFichaFaturamentoSelecionaDiasCondicaoPgto")
+@Html.Partial("_CancelarOportunidade")
+@Html.Partial("_ConfirmarGeracaoProposta", Model)
+@Html.Partial("_ConfirmarRevisaoPremio")
+@Html.Partial("_ConfirmarRevisaoFicha")
+@Html.Partial("_ConfirmarCancelamentoPremio")
+@Html.Partial("_ConfirmarExportacaoTabela")
+@Html.Partial("_RecallOportunidade")
+@Html.Partial("_ClonarProposta", Model.OportunidadesClonarPropostaViewModel)
+@Html.Partial("_RecallFichas")
+@Html.Partial("_RecallPremios")
+@Html.Partial("_RecallAdendos")
+@Html.Partial("_ModalAuditoria")
+@Html.Partial("_ModalConfirmacao")
+@Html.Partial("_ModalTabelaCobrancaExportada", Model.OportunidadesInformacoesIniciaisViewModel)
+@Html.Partial("_ModalIntegracaoChronos", Model.OportunidadesIntegracaoChronosViewModel)
+@Html.Partial("_ModalPropostasConcomitantes")
+@Html.Partial("_AbaPropostaSelecionaLotes")
+@Html.Partial("_ConfirmarExportacaoTabelaCancelada", Model.OportunidadesInformacoesIniciaisViewModel)
+@Html.Partial("_ModalTabelaCobrancaCancelada", Model.OportunidadesInformacoesIniciaisViewModel)
+
+@section Css{
+    @Styles.Render("~/bundles/tagsCSS")
+    @Styles.Render("~/bundles/datatablesCSS")
+    @Styles.Render("~/bundles/select2CSS")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/tags")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/auditoria")
+    @Scripts.Render("~/bundles/oportunidadesAtualizar")
+    @Scripts.Render("~/bundles/select2")
+
+    <script>
+        window.addEventListener("DOMContentLoaded", function (event) {
+
+            var id = $("#Id").val();
+
+            if (id !== '0') {
+                $("#proposta-tab, #fichaDeFaturamento-tab, #anexos-tab, #premioDeParceria-tab, #adendos-tab").removeClass("disabled");
+                obterHistoricoWorkflow(id, 1);
+            }
+
+            ColocaDatatables = function () {
+                $('#tbContatos').DataTable({
+                    destroy: true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "language": {
+                        "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                    }
+                });
+            }
+        });
+
+        var podeExcluirSubClientes = "@(User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:ExcluirSubCliente"))";
+        var podeExcluirClientesGrupoCnpj = "@(User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:ExcluirClienteGrupoCNPJ"))";
+
+    </script>
+}

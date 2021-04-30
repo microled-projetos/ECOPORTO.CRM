@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.SimuladorCargaConteiner>
+
+<div class="simulador-cargas-barra">
+    <table id="tbCargaConteiner" class="table table-sm table-striped mb-0" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Tamanho</th>
+                <th scope="col">Peso Total</th>
+                <th scope="col">Quantidade</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-cargaConteiner-@item.Id">
+                    <td>@item.Tamanho</td>
+                    <td>@item.Peso</td>
+                    <td>@item.Quantidade</td>
+                    <td class="campo-acao"><a href="#" onclick="excluirCargaConteiner(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

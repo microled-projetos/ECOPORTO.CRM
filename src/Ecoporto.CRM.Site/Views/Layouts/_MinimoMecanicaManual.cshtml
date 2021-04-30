@@ -1,0 +1,26 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.ValorMinimo20MecManual)
+        @Html.PrivilegedEditorFor(model => model.ValorMinimo20MecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorMinimo40MecManual)
+        @Html.PrivilegedEditorFor(model => model.ValorMinimo40MecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.LinhaReferenciaMinimoMecanicaManual)
+        @Html.PrivilegedEditorFor(model => model.LinhaReferenciaMinimoMecanicaManual, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-sm-9">
+        @Html.LabelFor(model => model.DescricaoValorMinimoMecManual)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorMinimoMecManual, "form-control form-control-sm")
+    </div>
+
+</div>

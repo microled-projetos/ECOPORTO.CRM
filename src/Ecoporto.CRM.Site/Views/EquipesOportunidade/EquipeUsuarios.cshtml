@@ -1,0 +1,254 @@
+﻿@model Ecoporto.CRM.Site.Models.EquipeOportunidadeViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Vínculo de Usuários na Conta";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Equipes
+        <small>Oportunidade</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Equipes</a>
+        </li>
+        <li>
+            <a href="#">Equipes Oportunidade</a>
+        </li>
+        <li class="active">Vínculo de Usuários</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, true)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Vendedor
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    @Html.HiddenFor(model => model.OportunidadeId)
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Proposta)
+                            @Html.EditorFor(model => model.Proposta, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Descricao)
+                            @Html.EditorFor(model => model.Descricao, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Vendedor)
+                            @Html.EditorFor(model => model.Vendedor, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.Partial("_ConsultarUsuariosVinculo", Model.Vinculos)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "EquipesOportunidade")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modal-atualizacao">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalhes do Vínculo de Oportunidade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <input type="hidden" id="txtVinculoId" name="txtVinculoId" value="" />
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Usuário</label>
+                        <input type="text" id="txtUsuarioEdit" name="txtUsuarioEdit" class="form-control form-control-sm" value="" disabled />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Acesso Conta</label>
+                        <select id="cbAcessoContaEdit" class="form-control form-control-sm">
+                            <option value="0">Somente Leitura</option>
+                            <option value="1">Leitura e Escrita</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Acesso Oportunidade</label>
+                        <select id="cbAcessoOportunidadeEdit" class="form-control form-control-sm">
+                            <option value="0">Somente Leitura</option>
+                            <option value="1">Leitura e Escrita</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Papel</label>
+                        <select id="cbPapelEdit" class="form-control form-control-sm">
+                            <option value="0">Nenhum</option>
+                            <option value="1">Assistente</option>
+                            <option value="2">Corporativo</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="float-left">
+                    <p>
+                        <a id="btnAtualizarVinculo" href="#" class="btn btn-primary btn-sm">Salvar</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_PesquisarUsuarios")
+@Html.Partial("_ModalExclusao")
+
+@section Scripts{
+    <script>
+
+        function excluirVinculo(id) {
+            $('#modal-mensagem').text('Confirma a exclusão do Vínculo?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data, statusText, xhr) {
+                    toastr.success('Vínculo excluído com sucesso!', 'CRM');
+                    $('#item-vinculo-' + _id).remove();
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'CRM');
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        function atualizarVinculo(id) {
+
+            $.get(urlBase + 'EquipesOportunidade/ObterDetalhesVinculo?id=' + id, function (resultado) {
+
+                if (resultado) {
+
+                    $('#txtVinculoId').val(resultado.Id);
+                    $('#txtUsuarioEdit').val(resultado.UsuarioDescricao);
+                    $('#cbAcessoContaEdit').val(resultado.AcessoConta);
+                    $('#cbAcessoOportunidadeEdit').val(resultado.AcessoOportunidade);
+                    $('#cbPapelEdit').val(resultado.PapelEquipe);
+
+                    $('#modal-atualizacao').data('id', id).modal('show');
+                }
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Erro inesperado', 'CRM');
+                }
+            });
+        }
+
+        $('#btnAtualizarVinculo').click(function () {
+
+            var vinculoId = $('#txtVinculoId').val();
+            var acessoConta = $('#cbAcessoContaEdit').val();
+            var acessoOportunidade = $('#cbAcessoOportunidadeEdit').val();
+            var papel = $('#cbPapelEdit').val();
+
+            $.post(urlBase + 'EquipesOportunidade/AtualizarVinculo/', { vinculoId: vinculoId, acessoConta: acessoConta, acessoOportunidade: acessoOportunidade, papel: papel }).done(function (data) {
+                toastr.success('Vínculo atualizado com sucesso!', 'CRM');
+                $('#tbUsuariosVinculados').html(data);
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('O registro não pode ser excluído', 'CRM');
+                }
+            });
+        });
+
+        $(document).on('click', '#btnPesquisarUsuarios', function () {
+
+            event.preventDefault();
+
+            $('#pesquisa-modal-usuarios')
+                .data('toggle', 'Login')
+                .modal('show');
+        });
+
+        function selecionarUsuario(id) {
+
+            if (id) {
+
+                var acessoConta = $('#acesso-conta-' + id).val();
+                var acessoOportunidade = $('#acesso-oportunidade-' + id).val();
+                var papel = $('#acesso-papel').val();
+
+                var oportunidadeId = parseInt($('#OportunidadeId').val());
+                var usuarioId = parseInt(id);
+
+                $.post(urlBase + 'EquipesOportunidade/VincularUsuario/', { oportunidadeId: oportunidadeId, usuarioId: usuarioId, acessoConta: acessoConta, acessoOportunidade: acessoOportunidade, papel: papel }, function (data) {
+                    toastr.success('Usuário vinculado com sucesso', 'CRM');
+                    $('#tbUsuariosVinculados').html(data);
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('Falha ao vincular o usuário', 'CRM');
+                    }
+                });
+            }
+        }
+    </script>
+}

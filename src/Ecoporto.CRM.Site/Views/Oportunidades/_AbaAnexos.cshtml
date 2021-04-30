@@ -1,0 +1,65 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAnexosViewModel
+
+<br />
+
+@using (Ajax.BeginForm("CadastrarAnexos", "Oportunidades", new AjaxOptions
+{
+    UpdateTargetId = "ListaAnexos",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmOportunidadesAnexos", enctype = "multipart/form-data" }))
+{
+    
+
+    @Html.HiddenFor(model => model.AnexoOportunidadeId)
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Anexo)
+            @Html.EditorFor(model => model.Anexo, new { htmlAttributes = new { @class = "form-control form-control-sm", type = "file" } })
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-8">
+            <div id="AnexosLoader" class="progresso">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                    <span class="show progress-bar-text">Carregando... Dependendo do tamanho do arquivo, esse processo poderá levar alguns segundos...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesAnexos:Cadastrar") || User.IsInRole("OportunidadesAnexos:Atualizar")))
+            {
+                <a href="#" onclick="abrirAuditoriaAnexos(@Model.AnexoOportunidadeId)" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-cogs"></i>&nbsp;&nbsp;Logs</a>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesAnexos:Cadastrar") || User.IsInRole("OportunidadesAnexos:Atualizar")))
+            {
+                <button id="btnAnexarArquivo" type="submit" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-save"></i>&nbsp;&nbsp;Salvar</button>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            <button id="btnAnexosAnterior" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Anterior</button>
+        </div>
+
+        <div class="form-group col-md-1">
+            <button id="btnAnexosProximo" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Próximo</button>
+        </div>
+
+    </div>
+
+    <div class="form-row">
+        <div class="col-md-12">
+            <div id="ListaAnexos">
+                @Html.Partial("_AbaAnexosConsulta", Model.Anexos)
+            </div>
+        </div>
+    </div>
+
+}

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.LayoutDTO>
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Linhas Cadastradas&nbsp;<small>(Modo Resumido)</small>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm tbPreview" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Linha</th>
+                        <th scope="col">Tipo Registro</th>
+                        <th scope="col">Serviço</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Valor '20</th>
+                        <th scope="col">Valor '40</th>
+                        <th scope="col">Mínimo</th>
+                        <th scope="col">Mín. '20</th>
+                        <th scope="col">Mín. '40</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="item-@item.Id">
+                            <td><span draggable="true" class="cursor-mao">@item.Linha</span></td>
+                            <td>@item.TipoRegistro.ToName()</td>
+                            <td>@item.Servico.Descricao</td>
+                            <td>@item.Descricao</td>
+                            <td><span draggable="true" class="cursor-mao" data-linha="@item.Linha" data-campo="Valor">@item.Valor.ToString().ToNumero()</span></td>
+                            <td><span draggable="true" class="cursor-mao" data-linha="@item.Linha" data-campo="Valor20">@item.Valor20.ToString().ToNumero()</span></td>
+                            <td><span draggable="true" class="cursor-mao" data-linha="@item.Linha" data-campo="Valor40">@item.Valor40.ToString().ToNumero()</span></td>
+                            <td><span draggable="true" class="cursor-mao" data-linha="@item.Linha" data-campo="ValorMinimo">@item.ValorMinimo.ToString().ToNumero()</span></td>
+                            <td><span draggable="true" class="cursor-mao" data-linha="@item.Linha" data-campo="ValorMinimo20">@item.ValorMinimo20.ToString().ToNumero()</span></td>
+                            <td><span draggable="true" class="cursor-mao" data-linha="@item.Linha" data-campo="ValorMinimo40">@item.ValorMinimo40.ToString().ToNumero()</span></td>
+                            <td><a href="@Url.Action("Atualizar", "Layouts", new { @item.Id })" target="_blank" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a></td>
+                            <td><a href="#" onclick="excluirLinha(@item.Linha)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

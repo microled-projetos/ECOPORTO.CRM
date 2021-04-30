@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.SimuladorDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<table id="tbSimuladores" class="table table-sm table-striped" cellspacing="0">
+    <thead>
+        <tr>
+            <th scope="col">Data</th>
+            <th scope="col">Usuário</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Regime</th>
+            <th scope="col">Tipo Doc</th>
+            <th scope="col">Local Atrac.</th>
+            <th scope="col">CIF Cntr</th>
+            <th scope="col">CIF CS</th>
+            <th scope="col">Períodos</th>
+            <th class="campo-acao">&nbsp;</th>
+            <th class="campo-acao">&nbsp;</th>
+            <th class="campo-acao">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="item-simulador-@item.Id">
+                <td>@item.DataHora.DataFormatada()</td>
+                <td>@item.Usuario</td>
+                <td>@item.Descricao</td>
+                <td>@item.Regime</td>
+                <td>@item.TipoDocumento</td>
+                <td>@item.LocalAtracacao</td>
+                <td>@item.CifConteiner.ToMoeda(Moeda.REAL)</td>
+                <td>@item.CifCargaSolta.ToMoeda(Moeda.REAL)</td>
+                <td>@item.Periodos</td>
+                <td class="campo-acao"><a href="@Url.Action("Index","Simulador", new { id = item.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a></td>
+                <td class="campo-acao"><a href="#" onclick="excluir(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                <td class="campo-acao"><a href="#" onclick="exibirTabelas(@item.Id)" class="btn btn-success btn-sm btn-acao"><i class="fa fa-check"></i></a></td>
+            </tr>
+        }
+    </tbody>
+</table>

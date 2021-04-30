@@ -1,0 +1,36 @@
+﻿@model Ecoporto.CRM.Site.Models.ErroViewModel
+
+@{
+    ViewBag.Title = "Ecoporto :: CRM - Erro";
+}
+
+<div class="container">
+    <div class="jumbotron mt-3">
+
+        <h1>Ocorreu um erro!</h1>
+
+        <p class="lead">Tente novamente ou caso o problema persista, contate o administrador do sistema.</p>
+
+        <br />
+
+        <div class="row">
+            <div class="col-md-2 text-right"><strong>Ocorrência:</strong></div>
+            <div class="col-md-10"><span class="text-danger">@Model.Data.ToString("dd/MM/yyyy HH:mm")</span></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 text-right"><strong>Detalhes:</strong></div>
+            <div class="col-md-10"><span class="text-danger"><strong>@Model.Exception</strong></span></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 text-right"><strong>Ticket:</strong></div>
+            <div class="col-md-10"><span class="text-danger">@Model.Ticket</span></div>
+        </div>
+
+        <br />
+
+        <p>Use o número do <strong>Ticket</strong> na hora de informar o erro para a equipe de suporte</p>
+
+    </div>
+</div>

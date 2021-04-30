@@ -1,0 +1,36 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.TipoCargaMinimoGerais)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaMinimoGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlMinGeraisCntr20">
+        @Html.LabelFor(model => model.ValorMinimo20Geral)
+        @Html.PrivilegedEditorFor(model => model.ValorMinimo20Geral, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlMinGeraisCntr40">
+        @Html.LabelFor(model => model.ValorMinimo40Geral)
+        @Html.PrivilegedEditorFor(model => model.ValorMinimo40Geral, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2 invisivel" id="pnlMinGeraisCarga">
+        @Html.LabelFor(model => model.ValorMinimoGeral)
+        @Html.PrivilegedEditorFor(model => model.ValorMinimoGeral, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.LinhaReferenciaMinimoGeral)
+        @Html.PrivilegedEditorFor(model => model.LinhaReferenciaMinimoGeral, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-6">
+        @Html.LabelFor(model => model.DescricaoValorMinGerais)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorMinGerais, "form-control form-control-sm")
+    </div>
+
+</div>

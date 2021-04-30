@@ -1,0 +1,33 @@
+﻿<div class="modal" tabindex="-1" role="dialog" id="modal-motivo-recall">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Recall de Solicitação Comercial</h5>
+            </div>
+            @using (Ajax.BeginForm("RecallSolicitacaoComercial", "Recall", null, new AjaxOptions
+            {
+                OnSuccess = "recallSucesso",
+                OnFailure = "recallErro",
+                HttpMethod = "Post"
+            }, new { id = "frmRecall" }))
+            {
+                <div class="modal-body">
+                    <p>Informe o motivo do Recall:</p>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <input type="hidden" id="RecallSolicitacaoId" name="RecallSolicitacaoId" />
+                            <textarea class="form-control" rows="5" id="MotivoRecall" name="MotivoRecall"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="btnFecharRecall" type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button id="btnConfirmaRecall" type="submit" class="btn btn-danger" disabled>Estou ciente e confirmo o Recall</button>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

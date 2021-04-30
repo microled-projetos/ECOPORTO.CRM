@@ -1,0 +1,50 @@
+﻿@model Ecoporto.CRM.Site.Models.AuditoriaViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="timeline-centered">
+
+            @foreach (var item in Model.Historico)
+            {
+                <article class="timeline-entry">
+                    <div class="timeline-entry-inner">
+
+                        @if (item.Acao == TipoLogAuditoria.UPDATE)
+                        {
+                            if (!item.Mensagem.Contains("Proposta Gerada"))
+                            {
+                                <div class="timeline-icon bg-warning">
+                                    <i class="entypo-feather"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="timeline-icon bg-success">
+                                    <i class="entypo-feather"></i>
+                                </div>
+                            }
+
+                            <div class="timeline-label">
+                                <h2>@item.Mensagem&nbsp;<span>@item.Data.DataHoraFormatada()</span></h2>
+                                <p>Usuário: @item.Usuario</p>
+
+                                @if (!item.Mensagem.Contains("Proposta Gerada") && !item.Mensagem.Contains("Condições"))
+                                            {
+                                    <p class="wrapper-logs-proposta wrapper-logs-proposta-update">@item.Objeto</p>
+                                }
+
+                            </div>
+                        }
+
+                    </div>
+                </article>
+            }
+
+        </div>
+    </div>
+
+</div>
+

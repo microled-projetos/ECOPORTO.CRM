@@ -1,0 +1,62 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesNotasViewModel
+@using Ecoporto.CRM.Site.Helpers
+<br />
+
+@using (Ajax.BeginForm("CadastrarNotas", "Oportunidades", new AjaxOptions
+{
+    UpdateTargetId = "ListaNotas",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmOportunidadesNotas" }))
+{
+    
+
+    @Html.HiddenFor(model => model.NotaId)
+    @Html.HiddenFor(model => model.NotaOportunidadeId)
+
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.Nota)
+            @Html.PrivilegedEditorFor(model => model.Nota, "form-control form-control-sm", 50)
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.NotaDescricao)
+            @Html.PrivilegedTextAreaFor(model => model.NotaDescricao, "form-control form-control-sm", 12)
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-1 mt-1 text-right">
+            <label>Filtro:&nbsp;</label>
+        </div>
+        <div class="form-group col-md-6">
+            <input type="text" name="txtPesquisarNota" id="txtPesquisarNota" class="form-control form-control-sm" />
+        </div>
+        <div class="form-group col-md-2 text-left">
+            <a id="btnPesquisarNotas" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;Pesquisar</a>
+        </div>
+
+        <div class="form-group col-md-1 offset-md-1">
+            <button id="btnLimparDadosNota" type="button" class="btn btn-secondary btn-sm btn-block"><i class="fa fa-file"></i>&nbsp;&nbsp;Limpar</button>
+        </div>
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesAnexos:Cadastrar") || User.IsInRole("OportunidadesAnexos:Atualizar")))
+            {
+                <button id="btnCadastrarNota" type="submit" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-save"></i>&nbsp;&nbsp;Salvar</button>
+            }
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col-md-12">
+            <div id="ListaNotas">
+                @Html.Partial("_AbaNotasConsulta", Model.Notas)
+            </div>
+        </div>
+    </div>
+
+}

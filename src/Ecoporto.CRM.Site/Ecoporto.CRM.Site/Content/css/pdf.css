@@ -1,0 +1,33 @@
+﻿html {
+    font-family: Verdana !important;
+}
+
+p {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+table {
+    width: 690px;
+}
+
+    table td {
+        width: 690px;
+        height: 18px;
+        vertical-align: center !important;
+        padding: 4px;
+    }
+
+        table td > p {
+            padding-bottom: 0px;
+        }
+
+.tbPreview td {
+    font-size: 9pt !important;
+    height: 18px;
+    padding-left: 4px;
+}
+
+#proposta-condicoes-iniciais {
+    padding-top: 14px;
+}

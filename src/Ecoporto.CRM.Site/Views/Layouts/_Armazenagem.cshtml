@@ -1,0 +1,144 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.TipoCargaArmazenagem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.BaseCalculoArmazenagem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PeriodoArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.PeriodoArmazenagem, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.QtdeDiasArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.QtdeDiasArmazenagem, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlArmCntr20">
+        @Html.LabelFor(model => model.Valor20Armazenagem)
+        @Html.PrivilegedEditorFor(model => model.Valor20Armazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlArmCntr40">
+        @Html.LabelFor(model => model.Valor40Armazenagem)
+        @Html.PrivilegedEditorFor(model => model.Valor40Armazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2 invisivel" id="pnlArmCarga">
+        @Html.LabelFor(model => model.ValorArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.ValorArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.AdicionalArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalGRC)
+        @Html.PrivilegedEditorFor(model => model.AdicionalGRC, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MinimoGRC)
+        @Html.PrivilegedEditorFor(model => model.MinimoGRC, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOGRC)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOGRC, "form-control form-control-sm")
+    </div>
+
+</div>
+
+<div class="form-row">
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.TipoDocumentoArmazenagem)
+        @Html.PrivilegedDropDownListFor(model => model.TipoDocumentoArmazenagem, new MultiSelectList(Model.TiposDocumentos, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorANVISA)
+        @Html.PrivilegedEditorFor(model => model.ValorANVISA, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AnvisaGRC)
+        @Html.PrivilegedEditorFor(model => model.AnvisaGRC, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ExercitoArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.ExercitoArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MargemArmazenagem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.MargemArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.BaseExcessoArmazenagem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseExcessoArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorExcessoArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.ValorExcessoArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AcrescimoPesoArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.AcrescimoPesoArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PesoLimiteArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.PesoLimiteArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MoedaArmazenagem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.MoedaArmazenagem, "form-control form-control-sm")
+    </div>
+
+</div>
+
+<div class="form-row">
+
+    <div class="form-group col-sm-4">
+        @Html.LabelFor(model => model.GrupoAtracacaoArmazenagem)
+        @Html.PrivilegedDropDownListFor(model => model.GrupoAtracacaoArmazenagem, new MultiSelectList(Model.GruposAtracacao, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-7">
+        @Html.LabelFor(model => model.DescricaoValorArmazenagem)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorArmazenagem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        <label>&nbsp;</label>
+        <div>
+            <div class="form-check form-check-inline">
+                @Html.PrivilegedCheckBoxFor(model => model.ProRataArmazenagem, "form-check-input")
+                @Html.LabelFor(model => model.ProRataArmazenagem, new { @class = "form-check-label" })
+            </div>
+        </div>
+    </div>
+</div>
+

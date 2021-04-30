@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.PremioParceriaDTO>
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="table-responsive">
+    <table id="tbPremiosParcerias" class="table table-sm table-striped" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Status</th>
+                <th scope="col">Anexo</th>
+                <th scope="col">Prêmio Ref.</th>
+                <th scope="col">Data Cadastro</th>
+                <th scope="col">Usuário</th>
+
+                @if (!User.IsInRole("UsuarioExterno"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:EnviarParaAprovacao"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:RecallPremioParceria"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Atualizar"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Excluir"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-premio-@item.Id">
+                    <td>P-@item.Id</td>
+                    <td id="item-status-premio-@item.Id">@item.DescricaoStatusPremioParceria</td>
+
+                    @if (!string.IsNullOrEmpty(item.IdFile))
+                    {
+                        <td>@Html.ActionLink("(Visualizar anexo)", "Download", "Anexos", new { id = item.IdFile }, null)</td>
+                    }
+                    else
+                    {
+                        <td>&nbsp;</td>
+                    }
+
+                    @if (item.PremioReferenciaId.ToInt() > 0)
+                    {
+                        <td> <a href="/Oportunidades/Atualizar/@item.OportunidadePremioReferencia#premioDeParceria" target="_blank">P-@item.PremioReferenciaId</a></td>
+                    }
+                    else
+                    {
+                        <td>&nbsp;</td>
+                    }
+
+                    <td>@item.DataCadastro</td>
+                    <td>@item.CriadoPor</td>
+
+                    @if (!User.IsInRole("UsuarioExterno"))
+                    {
+                        <td class="campo-acao"><a href="#" onclick="obterHistoricoWorkflow(@item.Id, 3)" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-list"></i>&nbsp;Histórico Workflow</a></td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:EnviarParaAprovacao"))
+                    {
+                        @Html.LinkEnviarPremioParaAprovacao(item.Id, item.StatusOportunidade, item.StatusPremioParceria)
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:RecallPremioParceria"))
+                    {
+                        <td class="campo-acao"><a href="#" id="btn-recall-premio-@item.Id" onclick="recallPremioParceria(@item.Id)" class="btn btn-warning btn-sm btn-acao @((item.StatusPremioParceria != StatusPremioParceria.EM_APROVACAO) ? "disabled" : "")"><i class="fa fa-undo-alt"></i>&nbsp;Recall</a></td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Atualizar"))
+                    {
+                        <td class="campo-acao"><a href="#" onclick="atualizarPremioParceria(@item.Id)" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a></td>
+                    }
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Excluir"))
+                    {
+                        <td class="campo-acao"><a href="#" onclick="excluirPremioParceria(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

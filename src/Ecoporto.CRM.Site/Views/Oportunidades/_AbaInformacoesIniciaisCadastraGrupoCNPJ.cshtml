@@ -1,0 +1,61 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesInformacoesIniciaisViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    bool? somenteLeitura = ViewBag.OportunidadeSomenteLeitura;
+
+     bool pesquisaGrupoCnpj = (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:PesquisarClienteGrupoCNPJ"));
+    bool adicionarGrupoCnpj = (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:AdicionarClienteGrupoCNPJ"));
+
+    int colunaGrupoCnpj = 8;
+}
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+
+        <div class="form-row mt-2">
+
+            @if ((pesquisaGrupoCnpj && !adicionarGrupoCnpj) || (!pesquisaGrupoCnpj && adicionarGrupoCnpj))
+            {
+                colunaGrupoCnpj = 10;
+            }
+            else if (pesquisaGrupoCnpj && adicionarGrupoCnpj)
+            {
+                colunaGrupoCnpj = 8;
+            }
+            else
+            {
+                colunaGrupoCnpj = 12;
+            }
+
+            <div class="form-group col-sm-@colunaGrupoCnpj">
+                @Html.LabelFor(model => model.GrupoCNPJContaId)
+                @Html.PrivilegedDropDownListFor(model => model.GrupoCNPJContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:PesquisarClienteGrupoCNPJ"))
+            {
+                <div class="form-group col-md-2">
+                    <label for="btnPesquisarClienteGrupoCNPJ">&nbsp;</label>
+                    <a id="btnPesquisarClienteGrupoCNPJ" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                </div>
+            }
+
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:AdicionarClienteGrupoCNPJ"))
+            {
+                <div class="form-group col-sm-2">
+                    <label>&nbsp;</label>
+                    <a id="btnAdicionarClienteGrupoCNPJ" href="#" class="btn btn-secondary btn-sm btn-block btn-as-block btn-acao"><i class="fa fa-edit"></i>&nbsp;Adicionar</a>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+        @Html.Partial("_AbaInformacoesIniciaisConsultaGrupoCNPJ", Model.ClientesGrupoCNPJ)
+    </div>
+</div>

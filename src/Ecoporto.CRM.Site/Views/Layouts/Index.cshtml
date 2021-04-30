@@ -1,0 +1,173 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+
+@{
+    ViewBag.Title = "Layout";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Layouts
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Layout</a>
+        </li>
+        <li class="active">Detalhes do Layout</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Ajax.BeginForm("CadastrarLayout", "Layouts",
+          new AjaxOptions
+          {
+              UpdateTargetId = "RelacaoLayouts",
+              OnSuccess = "LayoutCadastrado",
+              OnFailure = "LayoutComErros",
+              InsertionMode = InsertionMode.Replace,
+              HttpMethod = "POST"
+          }, new { id = "frmLayout" }))
+        {
+            <div class="card">
+
+                <div class="card-body">
+
+                    <ul class="nav nav-tabs" id="abas" role="tablist">
+                        <li class="tab-header"><i class="fa fa-th"></i>Cadastro de Layout&nbsp;<small id="label-registro"></small></li>
+                        <li class="nav-item ml-auto"><a class="nav-link active" data-toggle="tab" href="#tab1" role="tab">Detalhes do Layout</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab2" role="tab">Pré Visualização</a></li>
+                    </ul>
+
+                    <div class="tab-content py-4">
+
+                        <div class="tab-pane active" id="tab1" role="tabpanel">
+
+                            <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+                            <div id="msgSucesso" class="invisivel alert alert-success" role="alert">Layout inserido com sucesso!</div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    @Html.LabelFor(model => model.ModeloId)
+                                    @Html.DropDownListFor(c => c.ModeloId, new MultiSelectList(Model.Modelos, "Id", "Descricao"), "Selecione", new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div id="pnlCabecalho" class="invisivel">
+                                @Html.Partial("_Cabecalho", Model)
+                            </div>
+
+                            <div id="pnlCondicaoInicial" class="invisivel">
+                                @Html.Partial("_CondicoesIniciais", Model)
+                            </div>
+
+                            <div id="pnlArm" class="invisivel">
+                                @Html.Partial("_Armazenagem", Model)
+                            </div>
+
+                            <div id="pnlArmMinimo" class="invisivel">
+                                @Html.Partial("_ArmazenagemMinimo", Model)
+                            </div>
+
+                            <div id="pnlArmCIF" class="invisivel">
+                                @Html.Partial("_ArmazenagemCIF", Model)
+                            </div>
+
+                            <div id="pnlArmMinimoCIF" class="invisivel">
+                                @Html.Partial("_ArmazenagemMinimoCIF", Model)
+                            </div>
+
+                            <div id="pnlArmAllIn" class="invisivel">
+                                @Html.Partial("_ArmazenagemAllIn", Model)
+                            </div>
+
+                            <div id="pnlServicoParaMargem" class="invisivel">
+                                @Html.Partial("_ServicoPorMargem", Model)
+                            </div>
+
+                            <div id="pnlMinimoPorMargem" class="invisivel">
+                                @Html.Partial("_MinimoPorMargem", Model)
+                            </div>
+
+                            <div id="pnlServMecanicoManual" class="invisivel">
+                                @Html.Partial("_ServicoMecanicaManual", Model)
+                            </div>
+
+                            <div id="pnlMinMecanicoManual" class="invisivel">
+                                @Html.Partial("_MinimoMecanicaManual", Model)
+                            </div>
+
+                            <div id="pnlServicoLiberacao" class="invisivel">
+                                @Html.Partial("_ServicoLiberacao", Model)
+                            </div>
+
+                            <div id="pnlServicoHubPort" class="invisivel">
+                                @Html.Partial("_ServicoHubPort", Model)
+                            </div>
+
+                            <div id="pnlGerais" class="invisivel">
+                                @Html.Partial("_ServicosGerais", Model)
+                            </div>
+
+                            <div id="pnlMinimoGerais" class="invisivel">
+                                @Html.Partial("_MinimoGerais", Model)
+                            </div>
+
+                            <div id="pnlCondicaoGeral" class="invisivel">
+                                @Html.Partial("_CondicoesGerais", Model)
+                            </div>
+
+                            <div id="pnlPeriodoPadrao" class="invisivel">
+                                @Html.Partial("_PeriodoPadrao", Model)
+                            </div>
+
+                        </div>
+
+                        <div class="tab-pane" id="tab2" role="tabpanel">
+                            <div id="preview">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Layouts")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <button id="btnSalvar" type="submit" class="btn btn-primary btn-sm" disabled>Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <br />
+
+            <div id="RelacaoLayouts">
+
+            </div>
+
+            <br />
+        }
+    </div>
+
+</div>
+
+@Html.Partial("_ModalExclusao")
+
+@section Scripts{
+
+    <script src="~/Content/plugins/ckeditor/ckeditor.js"></script>
+    @Scripts.Render("~/bundles/layouts")
+}

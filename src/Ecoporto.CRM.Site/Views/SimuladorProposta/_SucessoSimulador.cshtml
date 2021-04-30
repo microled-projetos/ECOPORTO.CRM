@@ -1,0 +1,14 @@
+﻿@model Ecoporto.CRM.Site.Models.SimuladorDownloadRelatorioViewModel
+
+<table>
+    <tr>
+        <td style="width: 150px;" valign="top"><img src="~/Content/img/excel-sucesso.png" /></td>
+        <td>
+            <h4 class="mt-0 mb-0">Seu relatório já está pronto para Download!</h4>
+            <br />
+            <p class="mb-2"><strong>Arquivo:</strong>&nbsp;@Model.NomeArquivo</p>
+            <p class="mb-3"><strong>Tamanho:</strong>&nbsp;@Model.TamanhoArquivo</p>
+            <p><a href="@Url.Action("Download", "Anexos")/@Model.ArquivoId">Clique aqui para fazer o Download</a></p>
+        </td>
+    </tr>
+</table>

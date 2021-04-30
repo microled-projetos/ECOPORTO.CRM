@@ -1,0 +1,66 @@
+﻿@model Ecoporto.CRM.Site.Models.AuditoriaViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="timeline-centered">
+
+            @foreach (var item in Model.Historico)
+            {
+                <article class="timeline-entry">
+                    <div class="timeline-entry-inner">
+
+                        @if (item.Acao == TipoLogAuditoria.INSERT)
+                        {
+                            <div class="timeline-icon bg-success">
+                                <i class="entypo-feather"></i>
+                            </div>
+
+                            <div class="timeline-label">
+                                <h2>Ficha incluída&nbsp;<span>@item.Data.DataHoraFormatada()</span></h2>
+                                <p>Usuário: @item.Usuario</p>
+                                <p class="wrapper-logs-fichas wrapper-logs-fichas-insert">@item.Objeto</p>
+
+                                @foreach (var atualizacoes in Model.Historico
+                                    .Where(c => c.Acao == TipoLogAuditoria.UPDATE && c.ChavePai == item.ChavePai && c.Chave == item.Chave).OrderBy(c => c.Id))
+                                {
+                                    <div class="timeline-label" style="margin-left: 0px;">
+
+                                        <div class="timeline-icon bg-warning" style="margin-right:20px;">
+                                            <i class="entypo-feather"></i>
+                                        </div>
+                                        <h2>Ficha Alterada&nbsp;<span>@atualizacoes.Data.DataHoraFormatada()</span></h2>
+                                        <p>Usuário: @atualizacoes.Usuario</p>
+                                        <p class="wrapper-logs-fichas wrapper-logs-fichas-update">@atualizacoes.Objeto</p>
+                                    </div>
+                                }
+
+                                @foreach (var exclusao in Model.Historico
+                                   .Where(c => c.Acao == TipoLogAuditoria.DELETE && c.ChavePai == item.ChavePai && c.Chave == item.Chave))
+                                {
+                                    <div class="timeline-label" style="margin-left: 0px;">
+
+                                        <div class="timeline-icon bg-danger" style="margin-right:20px;">
+                                            <i class="entypo-feather"></i>
+                                        </div>
+                                        <h2>Ficha Excluída&nbsp;<span>@exclusao.Data.DataHoraFormatada()</span></h2>
+                                        <p>Usuário: @exclusao.Usuario</p>
+                                        <p class="wrapper-logs-fichas">@exclusao.Objeto</p>
+                                    </div>
+                                }
+
+                            </div>
+
+                        }
+                      
+                    </div>
+                </article>
+            }
+
+        </div>
+    </div>
+
+</div>
+

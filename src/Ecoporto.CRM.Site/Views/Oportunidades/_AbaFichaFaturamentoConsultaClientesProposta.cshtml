@@ -1,0 +1,15 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesFichaFaturamentoViewModel
+
+<div class="form-row">
+    <div class="form-group col-md-12">
+        @Html.LabelFor(model => model.ClientePropostaSelecionadoId)
+        @if (User.IsInRole("OportunidadesFichas:ClientePropostaSelecionadoId"))
+        {
+            @Html.DropDownListFor(model => model.ClientePropostaSelecionadoId, new MultiSelectList(Model.ClientesProposta, "Id", "Display"), string.Empty, new { @class = "form-control form-control-sm", @multiple = "multiple" })
+        }
+        else
+        {
+            @Html.DropDownListFor(model => model.ClienteSelecionadoId, new MultiSelectList(Model.ClientesProposta, "Id", "Display"), string.Empty, new { @class = "form-control form-control-sm select-readonly" })
+        }
+    </div>
+</div>

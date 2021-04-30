@@ -1,0 +1,20 @@
+﻿namespace Ecoporto.CRM.Workflow.Enums
+{
+    public enum Processo
+    {
+        OPORTUNIDADE = 1,
+        FICHA_FATURAMENTO,
+        PREMIO_PARCERIA,
+        ADENDO,
+        SOLICITACAO_CANCELAMENTO,
+        SOLICITACAO_DESCONTO,
+        SOLICITACAO_RESTITUICAO,
+        SOLICITACAO_PRORROGACAO,
+        CANCELAMENTO_OPORTUNIDADE,
+        SOLICITACAO_OUTROS,
+        CANCELAMENTO_FICHA,
+        CANCELAMENTO_PREMIO,
+        ANALISE_DE_CREDITO,
+        ANALISE_DE_CREDITO_COND_PGTO,
+    }
+}

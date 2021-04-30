@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Consultar Equipes Vendedor";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Equipes
+        <small>Conta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Equipes</a>
+        </li>
+        <li class="active">Equipes Contas</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Contas Ativas
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col">Nome Fantasia</th>
+                        <th scope="col">Documento</th>
+                        <th scope="col">Vendedor da Conta</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Consultar", "Contas")",
+                "bProcessing": true,
+                "pagingType": "full_numbers",
+                "searchDelay": 1000,
+                "pageLength": 50,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "aoColumns":
+                    [
+                        {
+                            "sName": "Id",
+                            "mData": "Id"
+                        },
+                        {
+                            "sName": "Descricao",
+                            "render": function (data, type, row) {
+                                if (row.Descricao) {
+                                    return row.Descricao.length > 40 ?
+                                        row.Descricao.substr(0, 40) + '…' :
+                                        row.Descricao;
+                                }
+
+                            }
+                        },
+                        {
+                            "sName": "NomeFantasia",
+                            "render": function (data, type, row) {
+                                if (row.NomeFantasia) {
+                                    return row.NomeFantasia.length > 20 ?
+                                        row.NomeFantasia.substr(0, 20) + '…' :
+                                        row.NomeFantasia;
+                                }
+                            },
+                            "defaultContent": ""
+                        },
+                        {
+                            "sName": "Documento",
+                            "mData": "Documento"
+                        },
+                        {
+                            "sName": "Vendedor",
+                            "mData": "Vendedor"
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="@Url.Action("EquipeUsuarios", "EquipesConta")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-user-plus"></i></a>';
+                            }
+                        }
+                    ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

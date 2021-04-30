@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ecoporto Santos :: CRM</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="icon" href="@Url.Content("~/Content/img/favicon.ico")" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+
+    @Styles.Render("~/bundles/css")
+    @RenderSection("Css", required: false)
+</head>
+
+<body>
+
+    @Html.Partial("_Menu")
+
+    <main role="main" class="container-fluid">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="float-right">
+                <b>CRM Versão</b> 1.0.0
+            </div>
+            <span class="text-muted">
+                <strong>
+                    Copyright &copy; 2018
+                    <a href="http://www.ecoportosantos.com.br">Ecoporto Santos</a>
+                </strong>
+            </span>
+        </div>
+
+    </footer>
+
+    <script>
+        var urlBase = '@Url.Content("~")';
+    </script>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-mask")
+    @Scripts.Render("~/bundles/toastr")
+    @Scripts.Render("~/bundles/site")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+
+</html>

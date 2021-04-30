@@ -1,0 +1,221 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesInformacoesIniciaisViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+    <div class="form-group col-md-1">
+        @Html.HiddenFor(model => model.Id)
+        @Html.LabelFor(model => model.Identificacao)
+        @Html.EditorFor(model => model.Identificacao, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-4">
+        @Html.LabelFor(model => model.ContaId)
+        @Html.DropDownListFor(c => c.ContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), string.Empty, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-2">
+        <label for="btnPesquisarContas">&nbsp;</label>
+        <a id="btnPesquisarContas" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block disable-href"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+    </div>
+    <div class="form-group col-md-3">
+        @Html.LabelFor(model => model.EmpresaId)
+        @Html.DropDownListFor(c => c.EmpresaId, new MultiSelectList(Model.Empresas, "Id", "Descricao"), string.Empty, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TabelaId)
+        @Html.EditorFor(model => model.TabelaId, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-1 text-center">
+        <label>&nbsp;</label>
+        <div>
+            <div class="form-check form-check-inline">
+                @Html.CheckBoxFor(model => model.Aprovada, new { @class = "form-check-input", @disabled = "disabled" })
+                @Html.LabelFor(model => model.Aprovada, new { @class = "form-check-label" })
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="form-row">
+    <div class="form-group col-md-7">
+        @Html.LabelFor(model => model.Descricao)
+        @Html.EditorFor(model => model.Descricao, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-3">
+        @Html.LabelFor(model => model.SucessoNegociacao)
+        @Html.EnumDropDownListFor(c => c.SucessoNegociacao, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.DataFechamento)
+        @Html.EditorFor(model => model.DataFechamento, new { htmlAttributes = new { @class = "form-control form-control-sm data", @disabled = "disabled" } })
+    </div>
+
+</div>
+<div class="form-row">
+    <div class="form-group col-md-7">
+        @Html.LabelFor(model => model.ContatoId)
+        @Html.DropDownListFor(c => c.ContatoId, new MultiSelectList(Model.Contatos, "Id", "Nome"), string.Empty, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.EstagioNegociacao)
+        @Html.EnumDropDownListFor(c => c.EstagioNegociacao, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.ClassificacaoCliente)
+        @Html.EnumDropDownListFor(c => c.ClassificacaoCliente, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.Segmento)
+        @Html.EnumDropDownListFor(c => c.Segmento, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-3">
+        @Html.LabelFor(model => model.RevisaoId) &nbsp; <small id="lnkRevisaoProposta" class="text-danger label">@Model.RevisaoProposta</small>
+        @Html.DropDownListFor(c => c.RevisaoId, new MultiSelectList(Model.Revisoes, "Id", "Descricao"), string.Empty, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-2">
+        <label for="btnPesquisarOportunidades">&nbsp;</label>
+        <a id="btnPesquisarOportunidades" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block disable-href"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.Probabilidade)
+        @Html.EditorFor(model => model.Probabilidade, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TipoOperacaoOportunidade)
+        @Html.EnumDropDownListFor(c => c.TipoOperacaoOportunidade, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TipoServico)
+        @Html.EnumDropDownListFor(c => c.TipoServico, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TipoDeProposta)
+        @Html.EnumDropDownListFor(c => c.TipoDeProposta, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TipoNegocio)
+        @Html.EnumDropDownListFor(c => c.TipoNegocio, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.MotivoPerda)
+        @Html.EnumDropDownListFor(c => c.MotivoPerda, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.StatusOportunidade)
+        @Html.EnumDropDownListFor(c => c.StatusOportunidade, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.PremioParceria)
+        @Html.EnumDropDownListFor(c => c.PremioParceria, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.FaturamentoMensalLCL)
+        @Html.EditorFor(model => model.FaturamentoMensalLCL, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.FaturamentoMensalFCL)
+        @Html.EditorFor(model => model.FaturamentoMensalFCL, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.VolumeMensal)
+        @Html.EditorFor(model => model.VolumeMensal, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.CIFMedio)
+        @Html.EditorFor(model => model.CIFMedio, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+    </div>
+    <div class="form-group col-md-5">
+        @Html.LabelFor(model => model.MercadoriaId)
+        @Html.DropDownListFor(c => c.MercadoriaId, new MultiSelectList(Model.Mercadorias, "Id", "Descricao"), string.Empty, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+</div>
+
+@if (!User.IsInRole("UsuarioExterno"))
+{
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Observacao)
+            @Html.EditorFor(model => model.Observacao, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+        </div>
+    </div>
+}
+
+<div class="form-row">
+
+    <div class="form-group col-md-1">
+        <a href="@Url.Action("Index", "Oportunidades")" class="btn btn-secondary btn-sm btn-block btn-as-block">Retornar</a>
+    </div>
+
+    <div class="form-group col-md-2">
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:CancelarOportunidade"))
+        {
+            <a href="#" onclick="cancelarOportunidade(@Model.Id)" class="btn btn-danger btn-sm btn-block btn-as-block"><i class="fa fa-stop-circle"></i>&nbsp;&nbsp;Cancelar Oportunidade</a>
+        }
+    </div>
+
+    <div class="form-group col-md-1">
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:btnRecallOportunidade"))
+        {
+            <button id="btnRecallOportunidade" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block" @((Model.StatusOportunidade != StatusOportunidade.ENVIADO_PARA_APROVACAO && Model.Cancelado == false) ? "disabled" : "")><i class="fa fa-undo"></i>&nbsp;&nbsp;Recall</button>
+        }
+    </div>
+
+    <div class="form-group col-md-2 offset-md-4">
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:EnviarOportunidadeParaAprovacao"))
+        {
+            <button id="btnEnviarOportunidadeParaAprovacao" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block" @((Model.StatusOportunidade == StatusOportunidade.ENVIADO_PARA_APROVACAO || Model.StatusOportunidade == StatusOportunidade.ATIVA) ? "disabled" : "")><i class="fa fa-upload"></i>&nbsp;&nbsp;Enviar para Aprovação</button>
+        }
+    </div>
+
+    <div class="form-group col-md-1">
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Atualizar"))
+        {
+            <button type="submit" class="btn btn-primary btn-sm btn-block btn-as-block" disabled><i class="fa fa-save"></i>&nbsp;&nbsp;Salvar</button>
+        }
+    </div>
+
+    <div class="form-group col-md-1">
+        <button id="btnInfoProximo" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Próximo</button>
+    </div>
+
+</div>
+
+@if (Model.Id > 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+
+            <ul class="nav nav-tabs" id="abas" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="subclientes-tab" data-toggle="tab" href="#subclientes" role="tab" aria-controls="home" aria-selected="true">Sub Clientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="grupoCnpj-tab" data-toggle="tab" href="#grupoCNPJ" role="tab" aria-controls="profile" aria-selected="false">Grupo CNPJ</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="subclientes" role="tabpanel" aria-labelledby="home-tab">
+                    @Html.Partial("_AbaInformacoesIniciaisConsultaSubClientes", Model.SubClientes)
+                </div>
+                <div class="tab-pane" id="grupoCNPJ" role="tabpanel" aria-labelledby="profile-tab">
+                    @Html.Partial("_AbaInformacoesIniciaisConsultaGrupoCNPJ", Model.ClientesGrupoCNPJ)
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!User.IsInRole("UsuarioExterno"))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div id="pnlInfoHistoricoWorkflow"></div>
+        </div>
+    </div>
+}

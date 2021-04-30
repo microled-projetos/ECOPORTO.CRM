@@ -1,0 +1,168 @@
+﻿@model Ecoporto.CRM.Site.Models.ServicoViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Atualizar Serviço";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Serviços
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Serviços</a>
+        </li>
+        <li class="active">Atualizar Serviço</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, true)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Serviço
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    @Html.HiddenFor(model => model.Id)
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.Descricao)
+                            @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm", 150)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            @Html.LabelFor(model => model.Status)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.Status, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="cbStatus">&nbsp;</label>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label>Tipo Operação</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.RecintoAlfandegado, "form-check-input")
+                                    @Html.LabelFor(model => model.RecintoAlfandegado, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Operador, "form-check-input")
+                                    @Html.LabelFor(model => model.Operador, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Redex, "form-check-input")
+                                    @Html.LabelFor(model => model.Redex, new { @class = "form-check-label" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center">
+                        <div class="col-md-5">
+                            @Html.LabelFor(model => model.ServicosFaturamento)
+                            <small class="text-muted">(pressione ctrl/shift para selecionar multiplos)</small>
+                            @Html.ListBoxFor(c => c.ServicosFaturamento, new MultiSelectList(Model.ServicosFaturamento, "Id", "Descricao", Model.ServicosSelecionados), new { @class = "form-control form-control-sm", size = 12 })
+                        </div>
+                        <div class="col-md-2">
+                            <label for="lstServicos">&nbsp;</label>
+                            <p>
+                                @if (User.IsInRole("Administrador") || User.IsInRole("Servicos:btnAdicionarServico"))
+                                {
+                                    <input type="button" id="btnAdicionarServico" value=">>" class="btn btn-default btn-sm btn-block" />
+                                }
+                            </p>
+                            <p>
+                                @if (User.IsInRole("Administrador") || User.IsInRole("Servicos:btnRemoverServico"))
+                                {
+                                    <input type="button" id="btnRemoverServico" value="<<" class="btn btn-default btn-sm btn-block" />
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-5">
+                            @Html.LabelFor(model => model.ServicosVinculados)
+                            @Html.ListBoxFor(c => c.ServicosSelecionados, new MultiSelectList(Model.ServicosVinculados, "Id", "Descricao", Model.ServicosSelecionados), new { @class = "form-control", size = 12 })
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Servicos")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jquery")
+
+    <script>
+        $(document).ready(function () {
+
+            $('#btnAdicionarServico').click(function (e) {
+
+                e.preventDefault();
+                var servico = $('#ServicosFaturamento option:selected');
+
+                if (servico.length > 0)
+                    $('#ServicosSelecionados').append($(servico).clone());
+            });
+
+            $('#btnRemoverServico').click(function (e) {
+
+                e.preventDefault();
+                var servico = $('#ServicosSelecionados option:selected');
+
+                if (servico.length > 0)
+                    $(servico).remove();
+            });
+
+            $('form').submit(function (e) {
+                $('#ServicosSelecionados option').prop('selected', 'selected');
+            });
+        });
+    </script>
+}
+

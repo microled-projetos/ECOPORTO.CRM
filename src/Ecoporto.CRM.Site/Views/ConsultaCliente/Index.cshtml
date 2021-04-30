@@ -1,0 +1,311 @@
+﻿@model Ecoporto.CRM.Site.Models.ConsultaClienteViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Consulta Clientes";
+}
+
+<section class="content-header">
+    <h1>
+        Consulta de Clientes
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Consulta Clientes</a>
+        </li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm("Index", "ConsultaCliente", FormMethod.Post, new { id = "frmConsultaCliente" }))
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                    </div>
+                </div>
+            </div>
+
+            @Html.HiddenFor(model => model.Acao)
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Dados do Cliente
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-10">
+                            @Html.LabelFor(model => model.Solicitante)
+                            @Html.EditorFor(model => model.Solicitante, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.HiddenFor(model => model.SolicitanteCNPJ)
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="btnPesquisarSolicitante">&nbsp;</label>
+                            <a id="btnPesquisarSolicitante" href="#" onclick="AbrirPesquisaCliente()" class="btn btn-outline-info btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-10">
+                            @Html.LabelFor(model => model.Importador)
+                            @Html.EditorFor(model => model.Importador, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.HiddenFor(model => model.ImportadorCNPJ)
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="btnPesquisarImportador">&nbsp;</label>
+                            <a id="btnPesquisarImportador" href="#" onclick="AbrirPesquisaImportador()" class="btn btn-outline-info btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2 offset-md-10">
+                            <label for="btnConsultar">&nbsp;</label>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("ConsultaClientes:btnConsultar"))
+                            {
+                                <button id="btnConsultar" type="button" onclick="Enviar('1')" class="btn btn-primary btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Consultar</button>
+                            }
+                            else
+                            {
+                                <a href="#" class="btn btn-primary btn-block btn-as-block disabled"><i class="fas fa-search"></i>&nbsp;&nbsp;Consultar</a>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.Mensagem)
+                            <div id="Mensagem" style="height:250px; overflow:auto;"></div>
+                        </div>
+                    </div>
+
+                    <div id="pnlAnexosTitulo" class="row invisivel">
+                        <div class="form-group col-md-12">
+                            <label>Anexos:</label>
+                        </div>
+                    </div>
+
+                    <div id="pnlAnexos" class="row">
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <div id="pnlBaixarTodos" class="invisivel">
+                                <label for="btnBaixarTodosAnexos">&nbsp;</label>
+                                <button id="btnBaixarTodosAnexos" type="button" onclick="BaixarTodos()" class="btn btn-primary btn-block btn-as-block"><i class="fas fa-download"></i>&nbsp;&nbsp;Baixar Todos</button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2 offset-md-8">
+                            <label for="btnIncluirSubCliente">&nbsp;</label>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("ConsultaClientes:btnIncluirSubCliente"))
+                            {
+                                <button id="btnIncluirSubCliente" type="button" onclick="Enviar('0')" class="btn btn-primary btn-block btn-as-block"><i class="fas fa-plus"></i>&nbsp;&nbsp;Incluir Sub Cliente</button>
+                            }
+                            else
+                            {
+                                <a href="#" class="btn btn-primary btn-block btn-as-block disabled"><i class="fas fa-search"></i>&nbsp;&nbsp;Incluir Sub Cliente</a>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+@Html.Partial("_PesquisarContas")
+@Html.Partial("_PesquisarImportadores")
+
+@section Css{
+    <style>
+        #Mensagem {
+            font-size: 14px;
+            word-wrap: break-all;
+            width: 100%;
+            height: 250px;
+            border: 1px solid silver;
+            overflow: hidden;
+        }
+    </style>
+}
+
+@section Scripts{
+
+    <script>
+
+        function AbrirPesquisaCliente() {
+
+            $('#pesquisa-modal-contas')
+                .modal('show');
+        }
+
+        function SelecionarCliente(cliente, documento) {
+
+            $('#Solicitante').val(cliente);
+            $('#SolicitanteCNPJ').val(documento);
+
+            $('#pesquisa-modal-contas')
+                .modal('hide');
+        }
+
+        function AbrirPesquisaImportador() {
+
+            $('#pesquisa-modal-importadores')
+                .modal('show');
+        }
+
+        function SelecionarImportador(cliente, documento) {
+
+            $('#Importador').val(cliente);
+            $('#ImportadorCNPJ').val(documento);
+
+            $('#pesquisa-modal-importadores')
+                .modal('hide');
+        }
+
+        function Enviar(acao) {
+
+            var solicitanteCNPJ = $('#SolicitanteCNPJ').val();
+            var importadorCNPJ = $('#ImportadorCNPJ').val();
+
+            if (parseInt(acao) === 1) {
+                $("#btnConsultar")
+                    .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                    .prop('disabled', true);
+            } else {
+                $("#btnIncluirSubCliente")
+                    .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                    .prop('disabled', true);
+            }
+
+            document.getElementById('pnlAnexos').innerHTML = '';
+            $('#pnlAnexosTitulo').addClass('invisivel');
+
+            $.post(urlBase + 'ConsultaCliente/ConsultaClientesArquivos/', {
+                SolicitanteCNPJ: solicitanteCNPJ,
+                ImportadorCNPJ: importadorCNPJ,
+                Acao: acao
+            }, function (resultado) {
+
+                if (resultado) {
+
+                    if (resultado.Sucesso) {
+
+                        $('#Mensagem')
+                            .html(resultado.Mensagem);
+
+                        var arquivos = resultado.Arquivos;
+
+                        arquivos.forEach(function (arquivo) {
+
+                            var painel = document.getElementById('pnlAnexos');
+
+                            var link = document.createElement('a');
+
+                            link.innerText = arquivo.Arquivo;
+                            link.setAttribute('href', 'data:application/octet-stream;base64,' + arquivo.Base64);
+                            link.setAttribute('download', arquivo.Arquivo);
+
+                            var div = document.createElement('div');
+                            div.className = 'form-group col-md-3';
+
+                            var img = document.createElement('img');
+
+                            if (arquivo.Extensao === '.xls' || arquivo.Extensao === '.xlsx') {
+                                img.src = urlBase + 'Content/img/icone-excel.png';
+                            } else if (arquivo.Extensao === '.doc' || arquivo.Extensao === '.docx') {
+                                img.src = urlBase + 'Content/img/icone-word.png';
+                            } else if (arquivo.Extensao === '.pdf') {
+                                img.src = urlBase + 'Content/img/icone-pdf.png';
+                            } else {
+                                img.src = urlBase + 'Content/img/icone-outros.png';
+                            }
+
+                            div.appendChild(img);
+
+                            div.appendChild(link);
+
+                            painel.appendChild(div);
+                        });
+
+                        if (arquivos.length > 0) {
+
+                            $('#pnlAnexosTitulo, #pnlBaixarTodos')
+                                .removeClass('invisivel');
+                        }
+                    }
+
+                }
+            }).always(function () {
+                $("#btnConsultar")
+                    .html('<i class="fas fa-search"></i> Consultar')
+                    .prop('disabled', false);
+
+                $("#btnIncluirSubCliente")
+                    .html('<i class="fas fa-plus"></i> Incluir Sub Cliente')
+                    .prop('disabled', false);
+            });
+        }
+
+        function BaixarTodos() {
+
+            var solicitanteCNPJ = $('#SolicitanteCNPJ').val();
+            var importadorCNPJ = $('#ImportadorCNPJ').val();
+
+            $("#btnBaixarTodosAnexos")
+                .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                .addClass('disabled');
+
+            $.post(urlBase + 'ConsultaCliente/ConsultaClientesArquivos/', {
+                SolicitanteCNPJ: solicitanteCNPJ,
+                ImportadorCNPJ: importadorCNPJ,
+                Acao: 1
+            }, function (resultado) {
+
+                if (resultado) {
+
+                    if (resultado.Sucesso) {
+
+                        var arquivos = resultado.Arquivos;
+
+                        arquivos.forEach(function (arquivo) {
+
+                            var link = document.createElement('a');
+
+                            link.innerText = arquivo.Arquivo;
+                            link.setAttribute('href', 'data:application/octet-stream;base64,' + arquivo.Base64);
+                            link.setAttribute('download', arquivo.Arquivo);
+
+                            link.click();
+                        });
+                    }
+
+                }
+            }).always(function () {
+                $("#btnBaixarTodosAnexos")
+                    .html('<i class="fas fa-download"></i> Baixar Todos')
+                    .removeClass('disabled');
+            });
+        }
+
+    </script>
+}

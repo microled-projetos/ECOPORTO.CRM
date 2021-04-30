@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.SimuladorTabelasDTO>
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="consultar-tabelas-modal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title simulador">Selecione uma Tabela de Cobrança na lista abaixo:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="ListaTabelasLoader" class="text-center progresso invisivel">
+                    <img src="@Url.Content("~/Content/img/loading.gif")" />
+                </div>
+
+                <div id="ResultadoSimulador" class="invisivel">
+
+                </div>
+
+                <table id="tbSimuladorTabelas" class="table table-sm table-striped mb-0 texto-fino" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tabela</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Importador</th>
+                            <th scope="col">Despachante</th>
+                            <th scope="col">NVOCC</th>
+                            <th scope="col">Proposta</th>
+                            <th class="campo-acao">Selecione</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr id="item-cargaConteiner-@item.Id">
+                                <td>@item.Id</td>
+                                <td>@item.Descricao</td>
+                                <td>@item.Importador</td>
+                                <td>@item.Despachante</td>
+                                <td>@item.NVOCC</td>
+                                <td>@item.Proposta</td>
+                                <td class="campo-acao"><a href="#" onclick="simular(@item.SimuladorId, @item.Id, false)" class="btn btn-success btn-sm btn-acao"><i class="far fa-check-circle"></i>&nbsp;Simular</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>

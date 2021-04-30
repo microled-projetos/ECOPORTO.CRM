@@ -1,0 +1,396 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesFichaFaturamentoViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    bool? somenteLeitura = ViewBag.OportunidadeSomenteLeitura;
+    bool permiteAlteracao = (Model.StatusOportunidade == StatusOportunidade.ENVIADO_PARA_APROVACAO || Model.StatusOportunidade == StatusOportunidade.CANCELADA || Model.StatusOportunidade == StatusOportunidade.VENCIDO);
+}
+
+@using (Ajax.BeginForm("CadastrarFichaFaturamento", "Oportunidades", new AjaxOptions
+{
+    UpdateTargetId = "_AbaFichaFaturamentoConsultaFichas",
+    OnSuccess = "oportunidadeMensagemSucesso",
+    OnFailure = "oportunidadeMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmOportunidadesFichaFaturamento", enctype = "multipart/form-data" }))
+{
+
+    @Html.HiddenFor(model => model.FichaFaturamentoId)
+    @Html.HiddenFor(model => model.OportunidadeId)
+    @Html.HiddenFor(model => model.StatusFichaFaturamento)
+    @Html.HiddenFor(model => model.FichaRevisaoId)
+
+    @Html.Partial("_AbaFichaFaturamentoConsultaClientesProposta", Model)
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <div class="textoComLinhaContainer">
+                <div class="textoComLinhaTitulo">
+                    <small class="text-danger mt-1"><strong>Faturado Contra</strong></small>
+                </div>
+                <div class="textoComLinhaDivisor"></div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="textoComLinhaContainer">
+                <div class="textoComLinhaTitulo">
+                    <small class="text-danger mt-1"><strong>Dados para Faturar</strong></small>
+                </div>
+                <div class="textoComLinhaDivisor"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:FaturadoContraId"))
+        {
+            <div class="form-group col-md-4">
+                <label for="btnPesquisarClienteFaturadoContra">Selecione:</label>
+                @Html.PrivilegedDropDownListFor(model => model.FaturadoContraId, new MultiSelectList(Model.ClientesProposta, "Id", "Display"), "form-control form-control-sm")
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                <label for="btnPesquisarClienteFaturadoContra">Selecione:</label>
+                @Html.PrivilegedDropDownListFor(model => model.FaturadoContraId, new MultiSelectList(Model.ClientesProposta, "Id", "Display"), "form-control form-control-sm")
+            </div>
+        }
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:FaturadoContraId"))
+        {
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarClienteFaturadoContra">&nbsp;</label>
+                <a id="btnPesquisarClienteFaturadoContra" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DiasSemana)&nbsp;
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:AdicionarDiasSemanaFaturamento"))
+            {
+                <small><a href="#" id="btnAdicionarDiasSemanaFaturamento" onclick="abrirModalDiasSemana()">(incluir)</a></small>
+            }
+            else
+            {
+                <small><a href="#" id="btnAdicionarDiasSemanaFaturamento" class="link-desabilitado">(incluir)</a></small>
+            }
+            @Html.EditorFor(model => model.DiasSemana, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DiasFaturamento) &nbsp;
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:AdicionarDiasFaturamento"))
+            {
+                <small><a id="btnAdicionarDiasFaturamento" href="#" onclick="abrirModalDias()">(incluir)</a></small>
+            }
+            else
+            {
+                <small><a href="#" id="btnAdicionarDiasSemanaFaturamento" class="link-desabilitado">(incluir)</a></small>
+            }
+            @Html.EditorFor(model => model.DiasFaturamento, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DataCorte)
+            @Html.PrivilegedEditorFor(model => model.DataCorte, "form-control form-control-sm")
+        </div>
+
+    </div>
+    <div class="form-row">
+        <!--<div class="form-group col-sm-3">
+
+            <label>&nbsp;</label>
+            <div>
+                <div class="form-check form-check-inline mr-2">
+
+                    <a id="btnAnaliseCredito__" href="@Url.Action("ConsultarClienteSpc", "AnaliseCredito" , new { id = Session["FontePagadoraId"] })" target="_blank" class="btn btn-primary btn-sm btn-block btn-as-block">Consultar Cliente (Faturado contra no SPC)</a>
+                </div>
+            </div>            
+
+        </div>-->
+
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <div class="textoComLinhaContainer">
+                <div class="textoComLinhaTitulo">
+                    <small class="text-danger mt-1"><strong>Cliente Fonte Pagadora</strong></small>
+                </div>
+                <div class="textoComLinhaDivisor"></div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="textoComLinhaContainer">
+                <div class="textoComLinhaTitulo">
+                    <small class="text-danger mt-1"><strong>Dados Vencimento</strong></small>
+                </div>
+                <div class="textoComLinhaDivisor"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:FontePagadoraId"))
+        {
+            <div class="form-group col-md-4">
+                <label for="btnPesquisarClienteFontePagadora">Selecione:</label>
+                @Html.PrivilegedDropDownListFor(model => model.FontePagadoraId, new MultiSelectList(Model.ClientesProposta, "Id", "Display"), "form-control form-control-sm")
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarClienteFontePagadora">&nbsp;</label>
+                <a id="btnPesquisarClienteFontePagadora" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                <label for="btnPesquisarClienteFontePagadora">Selecione:</label>
+                @Html.PrivilegedDropDownListFor(model => model.FontePagadoraId, new MultiSelectList(Model.ClientesProposta, "Id", "Display"), "form-control form-control-sm")
+            </div>
+        }
+
+
+
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.CondicaoPagamentoFaturamentoId)
+            @Html.PrivilegedDropDownListFor(model => model.CondicaoPagamentoFaturamentoId, new MultiSelectList(Model.CondicoesPagamentoFaturamento, "Id", "Descricao"), "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.CondicaoPagamentoPorDia)&nbsp;
+            <div class="float-right">
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:DiaUtil"))
+                {
+                    @Html.CheckBoxFor(model => model.DiaUtil, new { @class = "form-check-input" })
+                }
+                else
+                {
+                    @Html.CheckBoxFor(model => model.DiaUtil, new { @class = "form-check-input checkbox-readonly" })
+                }
+                <label class="form-check-label">Dia útil?</label>
+            </div>
+
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:CondicaoPagamentoPorDia"))
+            {
+                <small><a href="#" id="btnAdicionarDiaCondicaoPgto" onclick="abrirModalDiasCondicaoPgto()">(incluir)</a></small>
+            }
+            else
+            {
+                <small><a href="#" id="btnAdicionarDiaCondicaoPgto" class="link-desabilitado">(incluir)</a></small>
+            }
+
+
+            @Html.EditorFor(model => model.CondicaoPagamentoPorDia, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+        </div>
+
+    </div>
+
+    <div class="form-row">
+            <div class="form-group col-sm-3">
+
+                <label>&nbsp;</label>
+                <div>
+                    <div class="form-check form-check-inline mr-2">
+                        <a id="btnAnaliseCredito"  href="@Url.Action("ConsultarClienteSpc", "AnaliseCredito" , new { id = Session["FontePagadoraId"] })" target="_blank" class="btn btn-primary btn-sm btn-block btn-as-block">Consultar Cliente (Fonte Pagadora no SPC)</a>
+                    </div>
+                </div>
+
+            </div> 
+            <div class="form-group col-sm-2">
+
+                <label>&nbsp;</label>
+                <div>
+                    <div class="form-check form-check-inline mr-2">
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:EntregaEletronica"))
+                        {
+                            @Html.CheckBoxFor(model => model.EntregaEletronica, new { @class = "form-check-input" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(model => model.EntregaEletronica, new { @class = "form-check-input checkbox-readonly" })
+                        }
+
+
+                        <strong>  @Html.LabelFor(model => model.EntregaEletronica, new { @class = "form-check-label" })</strong>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group col-sm-4">
+                <label>&nbsp;</label>
+                <div>
+                    <div class="form-check form-check-inline mr-2">
+                        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:EntregaManual"))
+                        {
+                            @Html.CheckBoxFor(model => model.EntregaManual, new { @class = "form-check-input" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(model => model.EntregaManual, new { @class = "form-check-input checkbox-readonly" })
+                        }
+
+                        <strong>  @Html.LabelFor(model => model.EntregaManual, new { @class = "form-check-label" })</strong>
+                    </div>
+                    <div class="form-check form-check-inline mr-0">
+                        @{string CorreiosComum = ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldId("CorreiosComum");}
+                        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:CorreiosComum"))
+                        {
+                            @Html.RadioButtonFor(model => model.EntregaManualSedex, "False", new { @class = "form-check-input", Checked = "checked", id = CorreiosComum })
+                        }
+                        else
+                        {
+                            @Html.RadioButtonFor(model => model.EntregaManualSedex, "False", new { @class = "form-check-input checkbox-readonly", Checked = "checked", id = CorreiosComum })
+                        }
+
+                        <label class="form-check-label">Correio</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        @{string CorreiosSedex = ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldId("CorreiosSedex");}
+
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:CorreiosComum"))
+                        {
+                            @Html.RadioButtonFor(model => model.EntregaManualSedex, "True", new { @class = "form-check-input", id = CorreiosSedex })
+                        }
+                        else
+                        {
+                            @Html.RadioButtonFor(model => model.EntregaManualSedex, "True", new { @class = "form-check-input checkbox-readonly", id = CorreiosSedex })
+                        }
+
+                        <label class="form-check-label">Sedex</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                @Html.LabelFor(model => model.CondicaoPagamentoPorDiaSemana)
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:DiaUtil"))
+                {
+                    <small><a href="#" id="btnAdicionarDiaSemanaCondicaoPgto" onclick="abrirModalDiasSemanaCondicaoPgto()">(incluir)</a></small>
+                }
+                else
+                {
+                    <small><a href="#" id="btnAdicionarDiaSemanaCondicaoPgto" class="link-desabilitado">(incluir)</a></small>
+                }
+                @Html.EditorFor(model => model.CondicaoPagamentoPorDiaSemana, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>&nbsp;</label>
+                <div>
+                    <div class="form-check form-check-inline float-right">
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:UltimoDiaDoMes"))
+                        {
+                            @Html.CheckBoxFor(model => model.UltimoDiaDoMes, new { @class = "form-check-input" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(model => model.UltimoDiaDoMes, new { @class = "form-check-input checkbox-readonly" })
+                        }
+
+
+                        <strong>  @Html.LabelFor(model => model.UltimoDiaDoMes, new { @class = "form-check-label" })</strong>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.EmailFaturamento) <small class="text-danger">(Separação dos emails com ; )</small>
+                @Html.PrivilegedEditorFor(model => model.EmailFaturamento, "form-control form-control-sm")
+            </div>
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.AnexoFaturamento) <small>@Html.ActionLink("(Visualizar anexo)", "Download", null, new { id = "lnkFichaAnexo", @class = "invisivel" })</small>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:AnexoFaturamento"))
+                {
+                    @Html.EditorFor(model => model.AnexoFaturamento, new { htmlAttributes = new { @class = "form-control form-control-sm", type = "file" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.AnexoFaturamento, new { htmlAttributes = new { @class = "form-control form-control-sm", type = "file", @readonly = "readonly" } })
+                }
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.ObservacoesFaturamento)
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:ObservacoesFaturamento"))
+                {
+                    @Html.TextAreaFor(model => model.ObservacoesFaturamento, new { @class = "form-control", @rows = "2" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.ObservacoesFaturamento, new { @class = "form-control", @rows = "2", @readonly = "readonly" })
+                }
+            </div>
+        </div>
+
+
+
+        <div class="form-row">
+
+            <div class="form-group col-md-1">
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:NovaFichaFaturamento"))
+                {
+                    <button id="btnNovaFichaFaturamento" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-file"></i>&nbsp;&nbsp;Novo</button>
+                }
+            </div>
+
+            <div class="form-group col-md-1">
+                @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesFichas:Logs")))
+                {
+                    <button onclick="abrirAuditoriaFichaFaturamento(@Model.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-cogs"></i>&nbsp;&nbsp;Logs</button>
+                }
+            </div>
+
+            <div class="form-group col-md-1">
+                @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesFichas:RevisarFichaFaturamento")))
+                {
+                    <button id="RevisarFichaFaturamento" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-copy"></i>&nbsp;&nbsp;Revisar</button>
+                }
+            </div>
+
+            <div class="form-group col-md-1 offset-md-6">
+                @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesFichas:Cadastrar")))
+                {
+                    <button id="btnCadastrarFichaFaturamento" type="submit" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-save"></i>&nbsp;&nbsp;Salvar</button>
+                }
+            </div>
+
+            <div class="form-group col-md-1">
+                <button id="btnFichaAnterior" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Anterior</button>
+            </div>
+
+            <div class="form-group col-md-1">
+                <button id="btnFichaProximo" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Próximo</button>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <div id="_AbaFichaFaturamentoConsultaFichas">
+                    @Html.Partial("_AbaFichaFaturamentoConsultaFichas", Model.FichasFaturamento)
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id="pnlFichasHistoricoWorkflow"></div>
+            </div>
+        </div>
+
+    }

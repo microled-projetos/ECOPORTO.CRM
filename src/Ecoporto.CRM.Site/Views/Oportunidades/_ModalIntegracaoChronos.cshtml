@@ -1,0 +1,33 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesIntegracaoChronosViewModel
+
+<div id="pnlIntegracaoChronos">
+    <div data-id="0" class="modal" tabindex="-1" role="dialog" id="integracao-chronos-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Integração CRM x Chronos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <table>
+                        <tr>
+                            <td style="width: 150px;" valign="top"><img src="~/Content/img/icone-integracao.png" /></td>
+                            <td>
+                                <h5 class="mt-0 mb-0">@Model.Descricao</h5>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

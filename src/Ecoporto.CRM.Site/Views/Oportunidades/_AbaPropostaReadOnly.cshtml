@@ -1,0 +1,214 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesPropostaViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Site.Helpers
+
+@using (Ajax.BeginForm("AtualizarInformacoesProposta", "Oportunidades", new AjaxOptions
+{
+    OnSuccess = "oportunidadeMensagemSucesso",
+    OnFailure = "oportunidadeMensagemErro",
+    HttpMethod = "POST"
+}, new { id = "frmOportunidadesInformacoesProposta" }))
+{
+
+    @Html.HiddenFor(model => model.OportunidadeId)
+
+    if (!string.IsNullOrEmpty(Model.OrigemClone))
+    {
+        <div class="form-row no-gutters">
+            <div class="form-group col-md-12">
+                <div class="textoComLinhaContainer">
+                    <div class="textoComLinhaTitulo">
+                        <small class="text-danger mt-1"><strong>@Model.OrigemClone</strong></small>
+                    </div>
+                    <div class="textoComLinhaDivisor"></div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.TipoOperacao)
+            @Html.FullControlEnumDropDownListFor(c => c.TipoOperacao, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.ModeloId)
+            @Html.FullControlDropDownListFor(c => c.ModeloId, new MultiSelectList(Model.Modelos, "Id", "Descricao"), "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DataInicio)
+            @Html.FullControlEditorFor(model => model.DataInicio, "form-control form-control-sm data")
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DataTermino)
+            @Html.FullControlEditorFor(model => model.DataTermino, "form-control form-control-sm data")
+        </div>
+    </div>
+    <hr />
+
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.FormaPagamento)
+            @Html.FullControlEnumDropDownListFor(c => c.FormaPagamento, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.QtdeDias)
+            @Html.FullControlEditorFor(model => model.QtdeDias, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.DiasFreeTime)
+            @Html.FullControlEditorFor(model => model.DiasFreeTime, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.Validade)
+            @Html.FullControlEditorFor(model => model.Validade, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.TipoValidade)
+            @Html.FullControlEnumDropDownListFor(c => c.TipoValidade, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.ImpostoId)  <small><a id="lnkImpostosExcecao" href="@Url.Action("Index", "ImpostosExcessao", new { Model.ModeloId, Model.OportunidadeId })" class="invisivel" target="_blank">(incluir)</a></small>
+            @Html.DropDownListFor(model => model.ImpostoId, new MultiSelectList(Model.Impostos, "Id", "Descricao"), new { @class = "form-control form-control-sm select-readonly" })
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-5">
+            @Html.LabelFor(model => model.VendedorId)
+            @Html.FullControlDropDownListFor(model => model.VendedorId, new MultiSelectList(Model.Vendedores, "Id", "Nome"), "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.DesovaParcial)
+            @Html.FullControlEditorFor(model => model.DesovaParcial, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.FatorCP)
+            @Html.FullControlEditorFor(model => model.FatorCP, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.PosicIsento)
+            @Html.FullControlEditorFor(model => model.PosicIsento, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-4 text-center">
+            <label>&nbsp;</label>
+            <div>
+                <div class="form-check form-check-inline">
+                    @Html.PrivilegedCheckBoxFor(model => model.Acordo, "form-check-input")&nbsp;
+                    <strong>  @Html.LabelFor(model => model.Acordo, new { @class = "form-check-label" })</strong>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    @Html.PrivilegedCheckBoxFor(model => model.HubPort, "form-check-input")&nbsp;
+                    <strong> @Html.LabelFor(model => model.HubPort, new { @class = "form-check-label" })</strong>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    @Html.PrivilegedCheckBoxFor(model => model.CobrancaEspecial, "form-check-input")&nbsp;
+                    <strong> @Html.LabelFor(model => model.CobrancaEspecial, new { @class = "form-check-label" })</strong>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-row">
+
+        @if (Model.ParametroLote)
+        {
+            <div id="loteProposta" class="form-group col-md-12">
+                @Html.LabelFor(model => model.Lote)&nbsp;<small> <a href="#">(incluir)</a> </small>
+                @Html.FullControlEditorFor(model => model.Lote, "form-control form-control-sm")
+            </div>
+        }
+
+        @if (Model.ParametroBL)
+        {
+            <div id="blProposta" class="form-group col-md-12">
+                @Html.LabelFor(model => model.BL)&nbsp;<small class="text-danger">(Informe um ou mais BL's separados por ,)</small>
+                @Html.FullControlEditorFor(model => model.BL, "form-control form-control-sm")
+            </div>
+        }
+
+        @if (Model.ParametroConteiner)
+        {
+            <div id="conteinerProposta" class="form-group col-md-12">
+                @Html.LabelFor(model => model.Conteiner)&nbsp;<small class="text-danger">(Informe um ou mais Contêineres separados por ,)</small>
+                @Html.FullControlEditorFor(model => model.Conteiner, "form-control form-control-sm")
+            </div>
+        }
+
+        @if (Model.ParametroIdTabela)
+        {
+            <div id="tabelaReferenciaProposta" class="form-group col-md-12">
+                @Html.LabelFor(model => model.TabelaReferencia)&nbsp;<small class="text-danger">(Informe o ID da Tabela de Vínculo)</small>
+                @Html.FullControlEditorFor(model => model.TabelaReferencia, "form-control form-control-sm")
+            </div>
+        }
+
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-2">
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:GerarProposta"))
+            {
+                <a id="btnGerarProposta" href="#" target="_blank" class="btn btn-warning btn-sm btn-block btn-as-block"><i class="fa fa-download"></i>&nbsp;&nbsp;Gerar Proposta</a>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:Logs"))
+            {
+                <button onclick="abrirAuditoriaProposta(@Model.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-cogs"></i>&nbsp;&nbsp;Logs</button>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            <a id="btnEditarProposta" href="@Url.Action("EdicaoValores", "Oportunidades", new { id = Model.OportunidadeId })" target="_blank" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;&nbsp;Editar</a>
+        </div>
+
+        <div class="form-group col-md-3">
+            @if (ViewBag.HabilitaBotaoIntegracaoProposta)
+            {
+                <a id="btnExportarTabelas" href="#" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-list"></i>&nbsp;&nbsp;Exportar Tabela Cobrança</a>
+            }
+
+            @if (Model.StatusOportunidade == Ecoporto.CRM.Business.Enums.StatusOportunidade.CANCELADA && Model.OportunidadeCancelada)
+            {
+                <a id="btnExportarTabelaCancelada" href="#" onclick="exportarTabelaCancelada()" class="btn btn-primary btn-sm btn-block btn-as-block @(Model.TabelaCanceladaChronos ? "disabled" : "")">
+                    <i class="fa fa-list"></i>&nbsp;&nbsp;Exportar Tabela (Cancelamento)
+                </a>
+            }
+        </div>
+
+        <div class="form-group col-md-1 offset-md-2">
+            <button id="btnPropostaAnterior" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Anterior</button>
+        </div>
+
+        <div class="form-group col-md-1">
+            <button id="btnPropostaProximo" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Próximo</button>
+        </div>
+
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:Cadastrar") || User.IsInRole("OportunidadesProposta:Atualizar"))
+            {
+                <button type="submit" class="btn btn-primary btn-sm btn-block btn-as-block" @(!User.IsInRole("OportunidadeFullControll") ? "disabled" : string.Empty) disabled><i class="fa fa-save"></i>&nbsp;&nbsp;Salvar</button>
+            }
+        </div>
+
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <div id="preview"></div>
+        </div>
+    </div>
+
+}

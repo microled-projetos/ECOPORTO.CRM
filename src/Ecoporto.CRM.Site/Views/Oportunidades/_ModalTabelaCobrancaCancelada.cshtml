@@ -1,0 +1,33 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesInformacoesIniciaisViewModel
+
+<div id="pnlTabelaCancelada">
+    <div data-id="0" class="modal" tabindex="-1" role="dialog" id="tabela-cancelada-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancelar Tabela de Cobrança</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <table>
+                        <tr>
+                            <td style="width: 150px;" valign="top"><img src="~/Content/img/cancela-tabela-sucesso.png" /></td>
+                            <td>
+                                <h4 class="mt-0 mb-0">@Model.Mensagem</h4>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

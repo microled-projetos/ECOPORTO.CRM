@@ -1,0 +1,41 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.BaseCalculoHubPort)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoHubPort, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorHubPort)
+        @Html.PrivilegedEditorFor(model => model.ValorHubPort, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.Origem)
+        @Html.PrivilegedDropDownListFor(model => model.Origem, new MultiSelectList(Model.ClientesHubPort, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.Destino)
+        @Html.PrivilegedDropDownListFor(model => model.Destino, new MultiSelectList(Model.ClientesHubPort, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MoedaHubPort)
+        @Html.PrivilegedEnumDropDownListFor(c => c.MoedaHubPort, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.FormaPagamentoNVOCCHubPort)
+        @Html.PrivilegedEnumDropDownListFor(c => c.FormaPagamentoNVOCCHubPort, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-3">
+        @Html.LabelFor(model => model.DescricaoValorHubPort)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorHubPort, "form-control form-control-sm")
+    </div>
+
+</div>

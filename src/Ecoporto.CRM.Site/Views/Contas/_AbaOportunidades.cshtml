@@ -1,0 +1,46 @@
+﻿@model Ecoporto.CRM.Site.Models.ContaViewModel
+@using Ecoporto.CRM.Business.Extensions
+
+<div id="abaOportunidades" style="height:350px;" class="pre-scrollable">
+
+    <div class="table-responsive">
+        <table id="tbOportunidades" class="table table-hover table-sm" cellspacing="0">
+            <thead>
+                <tr>
+                    <th scope="col">Proposta</th>
+                    <th scope="col">Criado Por</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Estágio Negociação</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Tipo Proposta</th>
+                    <th scope="col">Início</th>
+                    <th scope="col">Término</th>
+                    <th colspan="2">
+                        <a id="btnCadastrarOportunidade" href="#" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;Cadastrar Oportunidade</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Oportunidades)
+                {
+                    <tr id="item-oportunidade-@item.Id">
+                        <td>@item.Identificacao</td>
+                        <td>@item.CriadoPor</td>
+                        <td>@item.Descricao</td>
+                        <td>@item.EstagioNegociacao.ToName()</td>
+                        <td>@item.StatusOportunidade.ToName()</td>
+                        <td>@item.TipoDeProposta.ToName()</td>
+                        <td>@item.DataInicio.DataFormatada()</td>
+                        <td>@item.DataTermino.DataFormatada()</td>
+                        <td class="campo-acao">
+                            <a href="@Url.Action("Atualizar", "Oportunidades", new { id = item.Id })" target="_blank" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>
+                        </td>
+                        <td class="campo-acao">
+                            <a href="#" onclick="excluirOportunidade(@item.Id, @item.ContaId)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿<div class="modal" tabindex="-1" role="dialog" id="pesquisa-lotes-proposta">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lotes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Informe um ou mais lotes separados com vírgula:</p>
+
+                <div class="form-group row">
+                    <div class="col-md-12" id="campoLotesProposta">
+                        <input type="text" class="form-control" name="txtLotesInformados" id="txtLotesInformados" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnSelecionarLoteProposta" type="button" onclick="selecionarLoteProposta()" class="btn btn-primary" disabled>Selecionar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAdendosViewModel
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="form-row">
+    <div class="form-group col-md-12">
+
+        <div class="table-responsive">
+            <table id="tbAdendosInclusaoClientesGrupo" class="table table-sm table-striped" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">&nbsp;</th>
+                        <th scope="col">Nome Fantasia</th>
+                        <th scope="col">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ClientesGrupoCNPJ)
+                    {
+                        <tr id="adendo-subcliente-@item.GrupoCNPJId">
+                            <td><input type="checkbox" name="AdendosClientesGrupoInclusao" id="AdendosClientesGrupoInclusao_@item.Id" value="@item.GrupoCNPJId" checked /></td>
+                            <td>@item.Descricao</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

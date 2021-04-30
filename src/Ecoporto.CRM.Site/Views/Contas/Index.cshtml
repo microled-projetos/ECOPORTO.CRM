@@ -1,0 +1,176 @@
+﻿@{
+    ViewBag.Title = "Consultar Contas";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Contas
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contas</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Contas Cadastradas
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("Contas:Cadastrar"))
+        {
+            <div class="float-right">
+                <a href="@Url.Action("Cadastrar", "Contas")" class="btn btn-primary btn-sm btn-novo"><i class="fa fa-edit"></i>&nbsp;Cadastrar Conta</a>
+            </div>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Vendedor</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col">Nome Fantasia</th>
+                        <th scope="col">Documento</th>
+                        <th scope="col">Situação</th>
+                        <th scope="col">Segmento</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@Html.Partial("_ModalExclusao")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        function excluir(id) {
+            $('#modal-mensagem').text('Confirma a exclusão da Conta?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data) {
+                    toastr.success('Conta excluída com sucesso!', 'CRM');
+                    $('#item-' + _id).remove();
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'CRM');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Consultar", "Contas")",
+                "bProcessing": true,
+                "pagingType": "full_numbers",
+                "searchDelay": 1000,
+                "pageLength": 50,
+                "order": [],
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "aoColumns":
+                    [
+                        {
+                            "sName": "Vendedor",
+                            "mData": "Vendedor"
+                        },
+                        {
+                            "sName": "Descricao",
+                            "render": function (data, type, row) {
+                                if (row.Descricao) {
+                                    return row.Descricao.length > 40 ?
+                                        row.Descricao.substr(0, 40) + '…' :
+                                        row.Descricao;
+                                }
+
+                            }
+                        },
+                        {
+                            "sName": "NomeFantasia",
+                            "render": function (data, type, row) {
+                                if (row.NomeFantasia) {
+                                    return row.NomeFantasia.length > 20 ?
+                                        row.NomeFantasia.substr(0, 20) + '…' :
+                                        row.NomeFantasia;
+                                }
+                            },
+                            "defaultContent": ""
+                        },
+                        {
+                            "sName": "Documento",
+                            "mData": "Documento"
+                        },
+                        {
+                            "sName": "SituacaoCadastral",
+                            "mData": "SituacaoCadastral"
+                        },
+                        {
+                            "sName": "Segmento",
+                            "mData": "Segmento"
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="@Url.Action("Atualizar", "Contas")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                            },
+                            "visible": @(User.IsInRole("Administrador") || User.IsInRole("Contas:Atualizar") ? "true" : "false")
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                            },
+                            "visible": @(User.IsInRole("Administrador") || User.IsInRole("Contas:Excluir") ? "true" : "false")
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="@Url.Action("Timeline", "Auditoria")?objeto=Contas&chave=' + row.Id +'" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-clock"></i></a>';
+                            },
+                            "visible": @(User.IsInRole("Administrador") || User.IsInRole("Contas:Logs") ? "true" : "false")
+                        }
+                    ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

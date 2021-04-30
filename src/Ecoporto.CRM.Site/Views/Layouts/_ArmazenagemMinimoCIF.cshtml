@@ -1,0 +1,46 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Site.Helpers
+
+    <div class="form-row">
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.TipoCargaArmazenagemMinimoCIF)
+            @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaArmazenagemMinimoCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-sm-1 invisivel" id="pnlArmCifMinCarga">
+            @Html.LabelFor(model => model.ValorMinimoArmazenagemMinCIF)
+            @Html.PrivilegedEditorFor(model => model.ValorMinimoArmazenagemMinCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-sm-1">
+            @Html.LabelFor(model => model.ValorMinimo20ArmazenagemMinCIF)
+            @Html.PrivilegedEditorFor(model => model.ValorMinimo20ArmazenagemMinCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-sm-1">
+            @Html.LabelFor(model => model.ValorMinimo40ArmazenagemMinCIF)
+            @Html.PrivilegedEditorFor(model => model.ValorMinimo40ArmazenagemMinCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-sm-1">
+            @Html.LabelFor(model => model.CIFArmazenagemMinimoCIF)
+            @Html.PrivilegedEditorFor(model => model.CIFArmazenagemMinimoCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-1" id="pnlArmCifMinLinRef">
+            @Html.LabelFor(model => model.LinhaReferenciaArmazenagemMinCIF)
+            @Html.PrivilegedEditorFor(model => model.LinhaReferenciaArmazenagemMinCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-sm-1" id="pnlArmCifMinLimiteBls">
+            @Html.LabelFor(model => model.LimiteBlsCIF)
+            @Html.PrivilegedEditorFor(model => model.LimiteBlsCIF, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-sm-5" id="pnlArmCifMinDescrValor">
+            @Html.LabelFor(model => model.DescricaoValorArmazenagemMinCIF)
+            @Html.PrivilegedEditorFor(model => model.DescricaoValorArmazenagemMinCIF, "form-control form-control-sm")
+        </div>
+    </div>

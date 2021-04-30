@@ -1,0 +1,75 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.TipoCargaServGerais)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaServGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.BaseCalculoServGerais)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoServGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlGeraisCntr20">
+        @Html.LabelFor(model => model.Valor20ServGerais)
+        @Html.PrivilegedEditorFor(model => model.Valor20ServGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlGeraisCntr40">
+        @Html.LabelFor(model => model.Valor40ServGerais)
+        @Html.PrivilegedEditorFor(model => model.Valor40ServGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2 invisivel" id="pnlGeraisCarga">
+        @Html.LabelFor(model => model.ValorServGerais)
+        @Html.PrivilegedEditorFor(model => model.ValorServGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.MoedaServGerais)
+        @Html.PrivilegedEnumDropDownListFor(c => c.MoedaServGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-5">
+        @Html.LabelFor(model => model.TipoDocumentoGerais)
+        @Html.PrivilegedDropDownListFor(model => model.TipoDocumentoGerais, new MultiSelectList(Model.TiposDocumentos, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+</div>
+
+<div class="form-row">
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.BaseExcessoGerais)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseExcessoGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorExcessoGerais)
+        @Html.PrivilegedEditorFor(model => model.ValorExcessoGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOServicosGerais)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOServicosGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ExercitoServicosGerais)
+        @Html.PrivilegedEditorFor(model => model.ExercitoServicosGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.FormaPagamentoNVOCCGerais)
+        @Html.PrivilegedEnumDropDownListFor(c => c.FormaPagamentoNVOCCGerais, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-5">
+        @Html.LabelFor(model => model.DescricaoValorServicosGerais)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorServicosGerais, "form-control form-control-sm")
+    </div>
+
+</div>

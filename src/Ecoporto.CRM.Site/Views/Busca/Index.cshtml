@@ -1,0 +1,524 @@
+﻿@model Ecoporto.CRM.Site.Models.BuscaViewModel
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = "Resultados da Busca";
+}
+
+<section class="content-header">
+    <h1>
+        Resultados da Busca
+        <small>Pesquisando por: <i>@Model.Termo</i></small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contas</a>
+        </li>
+        <li class="active">Resultados da Busca</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-2">
+        <ul class="list-group">
+
+            @if (Model.TotalContas > 0)
+            {
+                <li class="list-group-item">Contas&nbsp;<span class="badge badge-primary">@Model.TotalContas</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Contas</li>
+            }
+
+            @if (Model.TotalContatos > 0)
+            {
+                <li class="list-group-item">Contatos&nbsp;<span class="badge badge-primary">@Model.TotalContatos</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Contatos</li>
+            }
+
+            @if (Model.TotalServicos > 0)
+            {
+                <li class="list-group-item">Serviços&nbsp;<span class="badge badge-primary">@Model.TotalServicos</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Serviços</li>
+            }
+
+            @if (Model.TotalModelos > 0)
+            {
+                <li class="list-group-item">Modelos&nbsp;<span class="badge badge-primary">@Model.TotalModelos</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Modelos</li>
+            }
+
+            @if (Model.TotalOportunidades > 0)
+            {
+                <li class="list-group-item">Oportunidades&nbsp;<span class="badge badge-primary">@Model.TotalOportunidades</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Oportunidades</li>
+            }
+
+            @if (Model.TotalSubClientes > 0)
+            {
+                <li class="list-group-item">Sub Clientes&nbsp;<span class="badge badge-primary">@Model.TotalSubClientes</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Sub Clientes</li>
+            }
+
+            @if (Model.TotalClientesGrupoCNPJ > 0)
+            {
+                <li class="list-group-item">Clientes Grupo CNPJ&nbsp;<span class="badge badge-primary">@Model.TotalClientesGrupoCNPJ</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Clientes Grupo CNPJ</li>
+            }
+
+            @if (Model.TotalAdendosSubClientes > 0)
+            {
+                <li class="list-group-item">Adendos Sub Clientes&nbsp;<span class="badge badge-primary">@Model.TotalAdendosSubClientes</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Adendos Sub Clientes</li>
+            }
+
+            @if (Model.TotalMercadorias > 0)
+            {
+                <li class="list-group-item">Mercadorias&nbsp;<span class="badge badge-primary">@Model.TotalMercadorias</span></li>
+            }
+            else
+            {
+                <li class="list-group-item">Mercadorias</li>
+            }
+
+        </ul>
+    </div>
+
+    <div class="col-md-10">
+
+        @if (Model.TotalContas > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Contas Cadastradas
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbContas" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Conta</th>
+                                    <th scope="col">Nome Fantasia</th>
+                                    <th scope="col">Documento</th>
+                                    <th scope="col">Situação</th>
+                                    <th scope="col">Segmento</th>
+                                    <th scope="col">Vendedor</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var conta in Model.Contas)
+                                {
+                                <tr>
+                                    @if (conta.Descricao.Length > 25)
+                                    {
+                                        <td title="@conta.Descricao">@conta.Descricao.Substring(0, 25) ...</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@conta.Descricao</td>
+                                    }
+
+                                    @if (conta.NomeFantasia?.Length > 25)
+                                    {
+                                        <td title="@conta.NomeFantasia">@conta.NomeFantasia.Substring(0, 25) ...</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@conta.NomeFantasia</td>
+                                    }
+
+                                    <td>@conta.Documento</td>
+                                    <td>@conta.SituacaoCadastral.ToName()</td>
+                                    <td>@conta.Segmento.ToName()</td>
+                                    <td>@conta.Vendedor</td>
+                                    <td class="campo-acao"><a href="@Url.Action("Atualizar", "Contas", new { @conta.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalContatos > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Contatos Cadastrados
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbContatos" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Sobrenome</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Departamento</th>
+                                    <th scope="col">Status</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var contato in Model.Contatos)
+                                {
+                                    <tr>
+                                        <td>@contato.Nome</td>
+                                        <td>@contato.Sobrenome</td>
+                                        <td>@contato.Email</td>
+                                        <td>@contato.Departamento</td>
+                                        <td>@contato.Status.ToName()</td>
+                                        <td class="campo-acao"><a href="@Url.Action("Atualizar", "Contatos", new { @contato.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalServicos > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Serviços Cadastrados
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbServicos" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Descrição</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var servico in Model.Servicos)
+                                {
+                                    <tr>
+                                        <td>@servico.Descricao</td>
+                                        <td class="campo-acao"><a href="@Url.Action("Atualizar","Servicos", new { @servico.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalModelos > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Modelos Cadastrados
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbModelos" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Tipo de Operação</th>
+                                    <th scope="col">Forma Pagamento</th>
+                                    <th scope="col">Status</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var modelo in Model.Modelos)
+                                {
+                                    <tr>
+                                        <td>@modelo.Descricao</td>
+                                        <td>@modelo.TipoOperacao.ToName()</td>
+                                        <td>@modelo.FormaPagamento.ToName()</td>
+                                        <td>@modelo.Status.ToName()</td>
+                                        <td class="campo-acao"><a href="@Url.Action("Atualizar","Modelos", new { @modelo.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalOportunidades > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Oportunidades Cadastradas
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbOportunidades" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Proposta</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Conta</th>
+                                    <th scope="col">Sucesso Negociação</th>
+                                    <th scope="col">Status</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var oportunidade in Model.Oportunidades)
+                                {
+                                    <tr>
+                                        <td>@oportunidade.Identificacao</td>
+                                        <td>@oportunidade.Descricao</td>
+                                        <td>@oportunidade.ContaDescricao</td>
+                                        <td>@oportunidade.SucessoNegociacao.ToName()</td>
+                                        <td>@oportunidade.StatusOportunidade.ToName()</td>
+                                        <td class="campo-acao"><a href="@Url.Action("Atualizar","Oportunidades", new { @oportunidade.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalSubClientes > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Sub Clientes Cadastrados
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbSubClientes" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Proposta</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Segmento</th>
+                                    <th scope="col">Oportunidade</th>
+                                    <th scope="col">Status Oportunidade</th>
+                                    <th scope="col">Data Criação</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var subCliente in Model.SubClientes)
+                                {
+                                <tr>
+                                    <td>@subCliente.OportunidadeIdentificacao</td>
+                                    <td>@subCliente.Descricao - @subCliente.Documento</td>
+                                    <td>@subCliente.Segmento.ToName()</td>
+                                    <td>@subCliente.OportunidadeDescricao</td>
+                                    <td>@subCliente.StatusOportunidade.ToName()</td>
+                                    <td>@subCliente.DataCriacao.DataHoraFormatada()</td>
+                                    <td class="campo-acao"><a href="@Url.Action("Atualizar", "Oportunidades", new { id = @subCliente.OportunidadeId })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalClientesGrupoCNPJ > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Clientes Grupo CNPJ Cadastrados
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbGruposCnpj" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Proposta</th>
+                                    <th scope="col">Descrição</th>
+                                    <th class="td-w-15" scope="col">Data Criação</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var clienteGrupo in Model.ClientesGrupoCNPJ)
+                                {
+                                <tr>
+                                    <td>@clienteGrupo.OportunidadeIdentificacao</td>
+                                    <td>@clienteGrupo.Descricao - @clienteGrupo.Documento</td>
+                                    <td>@clienteGrupo.DataCriacao.DataHoraFormatada()</td>
+                                    <td class="campo-acao"><a href="@Url.Action("Atualizar", "Oportunidades", new { id = @clienteGrupo.OportunidadeId })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalAdendosSubClientes > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Adendos Sub Clientes
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbAdendosSubClientes" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Proposta</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Documento</th>
+                                    <th scope="col">Tipo Adendo</th>
+                                    <th scope="col">Oportunidade</th>
+                                    <th scope="col">Status Op.</th>
+                                    <th scope="col">Data Criação</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var adendoSubCliente in Model.AdendosSubClientes)
+                                {
+                                <tr>
+                                    <td>@adendoSubCliente.OportunidadeIdentificacao</td>
+                                    @if (adendoSubCliente.DescricaoCliente.Length > 25)
+                                    {
+                                        <td title="@adendoSubCliente.DescricaoCliente">@adendoSubCliente.DescricaoCliente.Substring(0, 25) ...</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@adendoSubCliente.DescricaoCliente</td>
+                                    }
+                                    <td>@adendoSubCliente.Documento</td>
+                                    <td>@adendoSubCliente.TipoAdendo.ToName()</td>
+
+                                    @if (adendoSubCliente.OportunidadeDescricao.Length > 25)
+                                    {
+                                        <td title="@adendoSubCliente.OportunidadeDescricao">@adendoSubCliente.OportunidadeDescricao.Substring(0, 25) ...</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@adendoSubCliente.OportunidadeDescricao</td>
+                                    }
+
+                                    <td>@adendoSubCliente.StatusOportunidade.ToName()</td>
+                                    <td>@adendoSubCliente.DataCadastro.DataHoraFormatada()</td>
+                                    <td class="campo-acao"><a href="@Url.Action("Atualizar", "Oportunidades", new { id = @adendoSubCliente.OportunidadeId })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        @if (Model.TotalMercadorias > 0)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-table fa-lg"></i>
+                    Mercadorias Cadastradas
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tbMercadorias" class="table table-sm tbBusca" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Status</th>
+                                    <th class="campo-acao">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var mercadoria in Model.Mercadorias)
+                                {
+                                    <tr>
+                                        <td>@mercadoria.Descricao</td>
+                                        <td>@mercadoria.Status</td>
+                                        <td class="campo-acao"><a href="@Url.Action("Atualizar","Mercadorias", new { @mercadoria.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-search"></i>&nbsp;Visualizar</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+
+    </div>
+
+</div>
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+        $(document).ready(function () {
+
+            var langUrl = "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")";
+
+            $.fn.dataTable.moment('DD/MM/YYYY HH:mm');
+
+            $('#tbContas, #tbContatos, #tbServicos, #tbModelos, #tbOportunidades, #tbSubClientes, #tbGruposCnpj, #tbAdendosSubClientes, #tbMercadorias').DataTable({
+                "language": {
+                    "url": langUrl
+                }
+            });
+        });
+    </script>
+}

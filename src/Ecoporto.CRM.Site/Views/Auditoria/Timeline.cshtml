@@ -1,0 +1,269 @@
+﻿@model Ecoporto.CRM.Site.Models.AuditoriaViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = "Timeline";
+}
+
+<section class="content-header">
+    <h1>
+        @Model.Controller / @Model.Chave
+        <small>Auditoria</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Auditoria</a>
+        </li>
+        <li class="active">Linha do tempo</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-edit fa-lg"></i>
+                Linha do Tempo
+                <div class="float-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="timeline-centered">
+
+                    @foreach (var item in Model.Historico)
+                    {
+                        <article class="timeline-entry">
+                            <div class="timeline-entry-inner">
+
+                                @if (item.Acao == TipoLogAuditoria.INSERT)
+                                {
+                                    <div class="timeline-icon bg-success">
+                                        <i class="entypo-feather"></i>
+                                    </div>
+                                }
+                                else if (item.Acao == TipoLogAuditoria.UPDATE)
+                                {
+                                    <div class="timeline-icon bg-warning">
+                                        <i class="entypo-feather"></i>
+                                    </div>
+                                }
+                                else if (item.Acao == TipoLogAuditoria.DELETE)
+                                {
+                                    <div class="timeline-icon bg-danger">
+                                        <i class="entypo-feather"></i>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="timeline-icon bg-info">
+                                        <i class="entypo-feather"></i>
+                                    </div>
+                                }
+
+                                <div class="timeline-label">
+                                    <h2>@item.Mensagem&nbsp;<span>@item.Data.DataHoraFormatada()</span></h2>
+                                    <p>Usuário: @item.Usuario</p>
+                                    <p class="wrapper">@item.Objeto</p>
+                                </div>
+                            </div>
+                        </article>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/auditoria")
+
+    <script>
+
+        var wrapper = document.querySelectorAll(".wrapper");
+
+        var jsonAnterior;
+
+        wrapper.forEach(function (item) {
+
+            var arr = [];
+            var jsonStr = item.innerHTML;
+
+            jsonStr = replaceAll(jsonStr, 'null', '""');
+            jsonStr = replaceAll(jsonStr, 'False', 'Não');
+            jsonStr = replaceAll(jsonStr, 'True', 'Sim');
+            jsonStr = replaceAll(jsonStr, '_', ' ');
+            jsonStr = replaceAll(jsonStr, '01/01/0001 00:00:00', ' ');
+            jsonStr = replaceAll(jsonStr, ' 00:00:00', ' ');
+
+            var json = JSON.parse(jsonStr);
+
+            delete json.DataCriacao;
+            delete json.UltimaAlteracao;
+            delete json.SallesId;
+            delete json.Valido;
+            delete json.Invalido;
+            delete json.CriadoPor;
+            delete json.AlteradoPor;
+            delete json.DataCadastro;
+            delete json.IdFile;
+            
+            delete json.AdendoId;
+            delete json.AnexoFaturamentoId;
+            delete json.AnexoId;
+            delete json.ContaId;
+            delete json.ContatoId;
+            delete json.CondicaoPagamentoFaturamentoId;
+            delete json.CidadeId;
+            delete json.VendedorId;
+            delete json.UsuarioId;
+            delete json.SubClienteId;
+            delete json.SalesId;
+            delete json.SallesId;
+            delete json.RevisaoId;
+            delete json.PremioRevisaoId;
+            delete json.OportunidadeId;
+            delete json.ModeloId;
+            delete json.MercadoriaId;
+            delete json.ImpostoId;
+            delete json.GrupoCnpjId;
+            delete json.EmpresaId;
+            delete json.PaisId;
+            delete json.PremioReferenciaId;
+            delete json.FaturadocontraId;
+
+            delete json.ContaDocumento;
+            delete json.ContaEndereco;
+            delete json.ContaTelefone;
+            delete json.ContaCidade;
+            delete json.ContaCEP;
+
+            var jsonTemp = jsonCopy(json);
+
+            if (jsonAnterior != null) {
+
+                for (var key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        if (json[key] !== jsonAnterior[key]) {
+                            if (jsonTemp[key].trim() != '') {
+                                jsonTemp[key] = '<span class="campo-log-verde">' + jsonTemp[key] + '</span>';
+                            } else {
+                                jsonTemp[key] = '<span class="campo-log-vermelho">' + jsonTemp[key] + '</span>';
+                            }
+                        }
+                    }
+                }
+            }
+
+            jsonStr = JSON.stringify(jsonTemp);            
+
+            jsonStr = replaceAll(jsonStr, 'null', '""');
+            jsonStr = replaceAll(jsonStr, 'False', 'Não');
+            jsonStr = replaceAll(jsonStr, 'True', 'Sim');
+            jsonStr = replaceAll(jsonStr, '_', ' ');
+            jsonStr = replaceAll(jsonStr, '01/01/0001 00:00:00', ' ');
+            jsonStr = replaceAll(jsonStr, ' 00:00:00', ' ');
+            jsonStr = replaceAll(jsonStr, 'NÃO', 'Não');
+            jsonStr = replaceAll(jsonStr, 'SIM', 'Sim');
+            jsonStr = replaceAll(jsonStr, 'ATIVO', 'Ativo');
+
+            jsonStr = replaceAll(jsonStr, 'Acao', 'Ação');
+            jsonStr = replaceAll(jsonStr, 'AlteradoPor', 'Alterado Por');
+            jsonStr = replaceAll(jsonStr, 'CifMedio', 'CIF Médio');
+            jsonStr = replaceAll(jsonStr, 'ClassificacaoCliente', 'Classificação Cliente');
+            jsonStr = replaceAll(jsonStr, 'ClassificacaoFiscal', 'Classificação Fiscal');
+            jsonStr = replaceAll(jsonStr, 'Consulta_tabela', 'Consulta Tabela');
+            jsonStr = replaceAll(jsonStr, 'CriadoPor', 'Criado Por');
+            jsonStr = replaceAll(jsonStr, 'DataCadastro', 'Data Cadastro');
+            jsonStr = replaceAll(jsonStr, 'DataCorte', 'Data Corte');
+            jsonStr = replaceAll(jsonStr, 'DataCriacao', 'Data Criação');
+            jsonStr = replaceAll(jsonStr, 'DataFechamento', 'Data Fechamento');
+            jsonStr = replaceAll(jsonStr, 'DataInatividade', 'Data Inatividade');
+            jsonStr = replaceAll(jsonStr, 'DataInicio', 'Data Início');
+            jsonStr = replaceAll(jsonStr, 'DataNascimento', 'Data Nascimento');
+            jsonStr = replaceAll(jsonStr, 'DataTermino', 'Data Término');
+            jsonStr = replaceAll(jsonStr, 'DataUrlPremio', 'Data Url Prêmio');
+            jsonStr = replaceAll(jsonStr, 'Departamento', 'Departamento');
+            jsonStr = replaceAll(jsonStr, 'Descricao', 'Descrição');
+            jsonStr = replaceAll(jsonStr, 'DiasFaturamento', 'Dias Faturamento');
+            jsonStr = replaceAll(jsonStr, 'DiasFreetime', 'Dias Freetime');
+            jsonStr = replaceAll(jsonStr, 'DiasSemana', 'Dias Semana');
+            jsonStr = replaceAll(jsonStr, 'EmailFaturamento', 'Email Faturamento');
+            jsonStr = replaceAll(jsonStr, 'EmailFavorecido1', 'Email Favorecido 1');
+            jsonStr = replaceAll(jsonStr, 'EmailFavorecido2', 'Email Favorecido 2');
+            jsonStr = replaceAll(jsonStr, 'EmailFavorecido3', 'Email Favorecido 3');
+            jsonStr = replaceAll(jsonStr, 'EstagioNegociacao', 'Estagio Negociação');
+            jsonStr = replaceAll(jsonStr, 'FaturamentoMensalFCL', 'Faturamento Mensal FCL');
+            jsonStr = replaceAll(jsonStr, 'FaturamentoMensalLCL', 'Faturamento Mensal LCL');
+            jsonStr = replaceAll(jsonStr, 'Favorecido1', 'Favorecido 1');
+            jsonStr = replaceAll(jsonStr, 'Favorecido2', 'Favorecido 2');
+            jsonStr = replaceAll(jsonStr, 'Favorecido3', 'Favorecido 3');
+            jsonStr = replaceAll(jsonStr, 'FormaPagamento', 'Forma Pagamento');
+            jsonStr = replaceAll(jsonStr, 'Identificacao', 'Identificação');
+            jsonStr = replaceAll(jsonStr, 'InscricaoEstadual', 'Inscrição Estadual');
+            jsonStr = replaceAll(jsonStr, 'Instrucao', 'Instrução');
+            jsonStr = replaceAll(jsonStr, 'MotivoPerda', 'Motivo Perda');
+            jsonStr = replaceAll(jsonStr, 'NomeFantasia', 'Nome Fantasia');
+            jsonStr = replaceAll(jsonStr, 'Observacao', 'Observação');
+            jsonStr = replaceAll(jsonStr, 'Observacoes', 'Observações');
+            jsonStr = replaceAll(jsonStr, 'ObservacoesFaturamento', 'Observações Faturamento');
+            jsonStr = replaceAll(jsonStr, 'PremioParceria', 'Prêmio Parceria');
+            jsonStr = replaceAll(jsonStr, 'QtdeDias', 'Qtde Dias');
+            jsonStr = replaceAll(jsonStr, 'RecintoAlfandegado', 'Recinto Alfandegado');
+            jsonStr = replaceAll(jsonStr, 'SituacaoCadastral', 'Situação Cadastral');
+            jsonStr = replaceAll(jsonStr, 'StatusAdendo', 'Status Adendo');
+            jsonStr = replaceAll(jsonStr, 'StatusFichaFaturamento', 'Status Ficha Faturamento');
+            jsonStr = replaceAll(jsonStr, 'StatusOportunidade', 'Status Oportunidade');
+            jsonStr = replaceAll(jsonStr, 'StatusPremioParceria', 'Status Prêmio Parceria');
+            jsonStr = replaceAll(jsonStr, 'SucessoNegociacao', 'Sucesso Negociação');
+            jsonStr = replaceAll(jsonStr, 'TabelaId', 'Tabela Id');
+            jsonStr = replaceAll(jsonStr, 'TipoAdendo', 'Adendo');
+            jsonStr = replaceAll(jsonStr, 'TipoDeProposta', 'Proposta');
+            jsonStr = replaceAll(jsonStr, 'TipoNegocio', 'Negócio');
+            jsonStr = replaceAll(jsonStr, 'TipoOperacao', 'Operação');
+            jsonStr = replaceAll(jsonStr, 'TipoOperacaoOportunidade', 'Tipo Operação');
+            jsonStr = replaceAll(jsonStr, 'TipoServico', 'Serviço');
+            jsonStr = replaceAll(jsonStr, 'TipoServicoPremioParceria', 'Prêmio Parceria');
+            jsonStr = replaceAll(jsonStr, 'TipoValidade', 'Validade');
+            jsonStr = replaceAll(jsonStr, 'UltimaAlteracao', 'Ultima Alteração');
+            jsonStr = replaceAll(jsonStr, 'UrlPremio', 'Url Prêmio');
+            jsonStr = replaceAll(jsonStr, 'VolumeMensal', 'Volume Mensal');
+
+            arr.push(JSON.parse(jsonStr));
+            jsonAnterior = json;
+
+            arr.forEach(function (v) {
+                delete v.Id;
+            });
+
+            item.innerHTML = '';
+            item.innerHTML = ConvertJsonToTable(arr, 'jsonTable', 'table table-bordered table-sm tabela-auditoria', 'Download');
+        });
+
+        $('#jsonTable tr td')
+            .has("span.campo-log-verde")
+            .addClass('campo-log-verde');
+
+        $('#jsonTable tr td')
+            .has("span.campo-log-vermelho")
+            .addClass('campo-log-vermelho');
+
+    </script>
+
+}

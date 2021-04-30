@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.OportunidadeDTO>
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Descrição</th>
+                <th scope="col">Tabela ID</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var semTabela = item.TabelaId == 0;
+                var classeLinha = semTabela ? "class=linha-invalida" : "";
+                var tooltip = semTabela ? Html.Raw("data-toggle=\"tooltip\" data-placement=\"top\" title=\"Oportunidade não possui ID Tabela. Verificar com setor responsável.\"") : @Html.Raw("");
+
+                <tr id="item-@item.Id" @classeLinha @tooltip>
+                    <td>@item.Identificacao - @item.Descricao</td>
+                    <td>@item.TabelaId</td>
+                    <td>
+                        <a href="#" class="btn btn-sm" onclick="selecionarOportunidade(@item.Id, '@item.Descricao.Replace("'","")', '@item.Identificacao')"><i class="far fa-check-circle"></i></a>
+                        @*@if (semTabela)
+        {
+            <a href="#" class="btn btn-sm disabled">
+                <i class="far fa-check-circle"></i>
+            </a>
+        }
+        else
+        {
+            <a href="#" class="btn btn-sm" onclick="selecionarOportunidade(@item.Id, '@item.Descricao.Replace("'","")', '@item.Identificacao')"><i class="far fa-check-circle"></i></a>
+        }*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

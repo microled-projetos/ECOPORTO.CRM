@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.Menu>
+
+@if (User.Identity.IsAuthenticated)
+{
+    if (User.IsInRole("Administrador") || User.IsInRole("Relatorios:Acessar"))
+    {
+        foreach (var menu in Model)
+        {
+            if (User.IsInRole("Administrador") || User.IsInRole($"{menu.Descricao}:Acessar"))
+            {
+                if (menu.SubMenus.Count > 0)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bolt"></i> @menu.Descricao
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                            @foreach (var subMenu in menu.SubMenus)
+                            {
+                                if (User.IsInRole("Administrador") || User.IsInRole($"Relatorios:{subMenu.ObjetoId}"))
+                                {
+                                    <a class="dropdown-item" href="@(string.Concat(Url.Content("~"), subMenu.Url, "&validaUsuario=", subMenu.ValidaUser))">@subMenu.Descricao</a>
+                                }
+                            }
+
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@menu.Url"><i class="fa fa-table"></i>@menu.Descricao</a>
+                    </li>
+                }
+            }
+        }
+    }
+}

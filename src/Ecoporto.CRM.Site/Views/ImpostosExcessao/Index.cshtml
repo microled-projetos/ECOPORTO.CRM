@@ -1,0 +1,231 @@
+﻿@model Ecoporto.CRM.Site.Models.ImpostosExcecaoViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Consultar Modelos";
+
+    bool apenasLeitura = !(!Enum.IsDefined(typeof(StatusOportunidade), Model.StatusOportunidade) || Model.StatusOportunidade == StatusOportunidade.RECUSADO);
+
+    if (!User.IsInRole("OportunidadesProposta:btnEditarProposta"))
+    {
+        apenasLeitura = true;
+    }
+}
+
+<section class="content-header">
+    <h1>
+        Exceção de Impostos
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Exceção de Impostos</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Serviços da Proposta
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                </div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            @Html.HiddenFor(c => c.ModeloId)
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="pnlServicos">
+                        @if (apenasLeitura)
+                        {
+                            @Html.Partial("_ConsultaServicosReadOnly", Model.Servicos)
+                        }
+                        else
+                        {
+                            @Html.Partial("_ConsultaServicos", Model.Servicos)
+                        }
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            @Html.EnumDropDownListFor(c => c.Tipo, new { @class = "form-control form-control-sm mt-2" })
+                        </div>
+                    </div>
+                    <div class="row @(ViewData.ModelState.IsValid == false && Model.Tipo != Ecoporto.CRM.Business.Enums.TiposExcecoesImpostos.ImpostoAIsentar ? "invisivel" : "")" id="pnlImpostos">
+                        <div class="col-md-12">
+                            <div class="form-check form-check mb-2">
+                                @Html.CheckBoxFor(model => model.ISS, new { @class = "form-check-input" })&nbsp;
+                                <strong>@Html.LabelFor(model => model.ISS, new { @class = "form-check-label" })</strong>
+                            </div>
+                            <div class="form-check form-check mb-2">
+                                @Html.CheckBoxFor(model => model.PIS, new { @class = "form-check-input" })&nbsp;
+                                <strong>@Html.LabelFor(model => model.PIS, new { @class = "form-check-label" })</strong>
+                            </div>
+                            <div class="form-check form-check">
+                                @Html.CheckBoxFor(model => model.COFINS, new { @class = "form-check-input" })&nbsp;
+                                <strong>@Html.LabelFor(model => model.COFINS, new { @class = "form-check-label" })</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row @(ViewData.ModelState.IsValid == false && Model.Tipo == Ecoporto.CRM.Business.Enums.TiposExcecoesImpostos.ImpostoDiferenciado ? "" : "invisivel")" id="pnlImpostosValores">
+                        <div class="col-md-12 mb-2">
+                            @Html.LabelFor(model => model.ValorISS, new { @class = "form-check-label" })
+                            @Html.EditorFor(model => model.ValorISS, new { htmlAttributes = new { @class = "form-control form-control-sm campo-decimal" } })
+                        </div>
+                        <div class="col-md-12 mb-2">
+                            @Html.LabelFor(model => model.ValorPIS, new { @class = "form-check-label" })
+                            @Html.EditorFor(model => model.ValorPIS, new { htmlAttributes = new { @class = "form-control form-control-sm campo-decimal" } })
+                        </div>
+                        <div class="col-md-12 mb-2">
+                            @Html.LabelFor(model => model.ValorCOFINS, new { @class = "form-check-label" })
+                            @Html.EditorFor(model => model.ValorCOFINS, new { htmlAttributes = new { @class = "form-control form-control-sm campo-decimal" } })
+                        </div>
+                    </div>
+                    @if (!apenasLeitura)
+                    {
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+
+                                <div class="float-right">
+                                    <p>
+                                        <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<br />
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "pageLength": 10,
+                "bFilter": true,
+                "bLengthChange": false,
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+        $('#Tipo').change(function () {
+
+            var tipo = parseInt($(this).val());
+
+            $('#pnlImpostos').addClass('invisivel');
+            $('#pnlImpostosValores').addClass('invisivel');
+
+            if (tipo === 1) {
+
+                $('#ValorISS').val('');
+                $('#ValorPIS').val('');
+                $('#ValorCOFINS').val('');
+
+                $('#pnlImpostos').removeClass('invisivel');
+            }
+
+            if (tipo === 2) {
+                $('#pnlImpostosValores').removeClass('invisivel');
+            }
+        });
+
+        function selecionarServico(id) {
+
+            $.get('@Url.Action("ObterDetalhes")/' + id, function (resultado) {
+
+                if (resultado) {
+
+                    var tipo = resultado.Tipo;
+
+                    $('input:checkbox').prop('checked', false);
+
+                    $('#Tipo').val(tipo);
+
+                    $('#ISS').prop('checked', (resultado.ISS > 0));
+                    $('#PIS').prop('checked', (resultado.PIS > 0));
+                    $('#COFINS').prop('checked', (resultado.COFINS > 0));
+
+                    $('#ValorISS').val('').val(resultado.ValorISS);
+                    $('#ValorPIS').val('').val(resultado.ValorPIS);
+                    $('#ValorCOFINS').val('').val(resultado.ValorCOFINS);
+
+                    $('#pnlImpostos').addClass('invisivel');
+                    $('#pnlImpostosValores').addClass('invisivel');
+
+                    if (tipo === 1) {
+                        $('#pnlImpostos').removeClass('invisivel');
+                    }
+
+                    if (tipo === 2) {
+                        $('#pnlImpostosValores').removeClass('invisivel');
+                    }
+
+                    $('#ServicosSelecionados_' + resultado.ServicoId).prop('checked', true);
+                    $('#btnExcluirValores').removeClass('invisivel');
+                }
+            }).fail(function (data) {
+                toastr.error(data.statusText, 'Agendamento');
+            });
+        }
+
+        function excluirVinculo(id) {
+
+            event.preventDefault();
+
+            $.post('@Url.Action("Excluir")', { id: id }, function (resultado) {
+
+                $('#pnlServicos').html(resultado);
+
+                 $('#datatables').DataTable({
+                "pageLength": 10,
+                "bFilter": false,
+                "bLengthChange": false,
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+
+            }).fail(function (data) {
+                toastr.error(data.statusText, 'Agendamento');
+            });
+
+        }
+
+    </script>
+}

@@ -1,0 +1,383 @@
+﻿@{
+    ViewBag.Title = "Consultar Oportunidades";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Oportunidades
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Oportunidades</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Oportunidades Cadastradas
+
+        <div class="float-right">
+            <a id="btnFiltro" href="#" class="btn btn-info btn-sm"><i class="fa fa-search"></i>&nbsp;Filtro</a>
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Cadastrar"))
+            {
+                <a href="@Url.Action("Cadastrar", "Oportunidades")" class="btn btn-primary btn-sm btn-novo"><i class="fa fa-edit"></i>&nbsp;Nova Oportunidade</a>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div id="pnlFiltro" class="card mb-4" style="display:none;">
+            <div class="card-header">
+                <i class="fa fa-search fa-lg"></i>
+                Filtro
+            </div>
+            <div class="card-body">
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="txtProposta">Proposta:</label>
+                        <input type="text" id="txtProposta" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="txtDescricao">Descrição:</label>
+                        <input type="text" id="txtDescricao" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="txtAdendo">Adendo:</label>
+                        <input type="text" id="txtAdendo" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="txtPremio">Prêmio:</label>
+                        <input type="text" id="txtPremio" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="txtFicha">Ficha:</label>
+                        <input type="text" id="txtFicha" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="txtTabela">Tabela:</label>
+                        <input type="text" id="txtTabela" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="cbStatusOportunidade">Status:</label>
+                        <select id="cbStatusOportunidade" class="form-control form-control-sm">
+                            <option value=""></option>
+                            <option value="1">Ativa</option>
+                            <option value="2">Cancelada</option>
+                            <option value="3">Revisada</option>
+                            <option value="4">Recusada</option>
+                            <option value="5">Vencida</option>
+                            <option value="6">Enviada para Aprovação</option>
+                            <option value="7">Rascunho</option>
+                        </select>
+                    </div>
+                   
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="cbTipoServicoOportunidade">Regime:</label>
+                        <select id="cbTipoServicoOportunidade" class="form-control form-control-sm">
+                            <option value=""></option>
+                            <option value="1">FCL</option>
+                            <option value="2">LCL</option>
+                            <option value="3">FCL/LCL</option>
+                            <option value="4">Break Bulk</option>
+                            <option value="5">Transporte</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="cbConta">Conta:</label>
+                        <select id="cbConta" class="form-control form-control-sm"></select>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="btnPesquisarContas">&nbsp;</label>
+                        <a id="btnPesquisarContas" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label for="cbSucessoNegociacao">Sucesso Negociação:</label>
+                        <select id="cbSucessoNegociacao" class="form-control form-control-sm">
+                            <option value=""></option>
+                            <option value="2">Em Negociação</option>
+                            <option value="3">Aceito pelo Cliente</option>
+                            <option value="4">Ganho</option>
+                            <option value="5">Perdido</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="cbUsuarioSolicitacao">Usuário:</label>
+                        <select id="cbUsuarioSolicitacao" class="form-control form-control-sm"></select>
+                    </div>                   
+
+                </div>
+
+                <div class="form-row">
+                     <div class="form-group col-md-1">
+                        <label for="txtTabela">De:</label>
+                        <input type="text" id="txtDe" class="form-control form-control-sm data" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="txtTabela">Até:</label>
+                        <input type="text" id="txtAte" class="form-control form-control-sm data" />
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="cbModeloProposta">Modelo Proposta:</label>
+                        <select id="cbModeloProposta" class="form-control form-control-sm">
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>&nbsp;</label>
+                        <a id="btnFiltrarSolicitacao" href="#" class="btn btn-info btn-sm btn-sm btn-block"><i class="fa fa-search"></i>&nbsp;Filtrar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Proposta</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Sucesso Negociação</th>
+                        <th scope="col">Tipo Serviço</th>
+                        <th scope="col">ID Tabela</th>
+                        <th scope="col">Início</th>
+                        <th scope="col">Término</th>
+                        <th scope="col">Data Criação</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@Html.Partial("_ModalExclusao")
+@Html.Partial("_PesquisarContas")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        function excluir(id) {
+            $('#modal-mensagem').text('Confirma a exclusão da Oportunidade?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data) {
+                    toastr.success('Oportunidade excluída com sucesso!', 'CRM');
+                    $('#item-' + _id).remove();
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'CRM');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        function obterUsuarios() {
+
+            var select = $('#cbUsuarioSolicitacao');
+
+            select.empty();
+
+            $.get(urlBase + 'Oportunidades/ObterUsuariosOportunidade', function (resultado) {
+
+                select.append('<option value=""></option>');
+
+                $.each(resultado, function (key, value) {
+                    select.append('<option value=' + value.Id + '>' + value.Login + '</option>');
+                });
+            });
+        }
+
+         function obterModelos() {
+
+            var select = $('#cbModeloProposta');
+
+            select.empty();
+
+            $.get(urlBase + 'Modelos/Consultar', function (resultado) {
+                
+                select.append('<option value=""></option>');
+
+                $.each(resultado.dados, function (key, value) {
+                    select.append('<option value=' + value.Id + '>' + value.Descricao + '</option>');
+                });
+            });
+        }
+
+        $("#btnPesquisarContas").click(function () {
+
+            event.preventDefault();
+
+            $('#pesquisa-modal-contas')
+                .data('toggle', 'cbConta')
+                .modal('show');
+        });
+
+        function selecionarConta(id, descricao) {
+
+            var toggle = $('#pesquisa-modal-contas').data('toggle');
+
+            $('#pesquisa-modal-contas').modal('hide');
+
+            $("#" + toggle)
+                .empty()
+                .append($('<option>', {
+                    value: id,
+                    text: descricao
+                })).focus();
+
+            $("#ListaContas").empty();
+        }
+
+        $('#btnFiltro').click(function () {
+            $('#pnlFiltro').toggle("slow");
+        });
+
+        $('#btnFiltrarSolicitacao').click(function () {
+            $('#datatables').dataTable().fnDraw();;
+        });
+
+        $(document).ready(function () {
+
+            obterUsuarios();
+            obterModelos();
+
+            $('#datatables').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Consultar", "Oportunidades")",
+                "bProcessing": true,
+                "pagingType": "full_numbers",
+                "searchDelay": 1000,
+                "pageLength": 50,
+                "order": [8, 'desc'],
+                "bFilter": false,
+                "fnServerParams": function (aoData) {
+                    aoData.push({ "name": "Descricao", "value": $('#txtDescricao').val() }),
+                    aoData.push({ "name": "AdendoId", "value": $('#txtAdendo').val() }),
+                    aoData.push({ "name": "PremioId", "value": $('#txtPremio').val() }),
+                    aoData.push({ "name": "FichaId", "value": $('#txtFicha').val() }),
+                    aoData.push({ "name": "Identificacao", "value": $('#txtProposta').val() }),
+                    aoData.push({ "name": "ContaId", "value": $('#cbConta').val() }),
+                    aoData.push({ "name": "TabelaId", "value": $('#txtTabela').val() }),
+                    aoData.push({ "name": "StatusOportunidade", "value": $('#cbStatusOportunidade').val() }),
+                    aoData.push({ "name": "SucessoNegociacao", "value": $('#cbSucessoNegociacao').val() }),
+                    aoData.push({ "name": "TipoServico", "value": $('#cbTipoServicoOportunidade').val() }),
+                    aoData.push({ "name": "CriadoPor", "value": $('#cbUsuarioSolicitacao').val() }),
+                    aoData.push({ "name": "ModeloId", "value": $('#cbModeloProposta').val() }),
+                    aoData.push({ "name": "DataInicio", "value": $('#txtDe').val() }),
+                    aoData.push({ "name": "DataTermino", "value": $('#txtAte').val() })
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "aoColumns":
+                    [
+                        {
+                            "sName": "Identificacao",
+                            "mData": "Identificacao"
+                        },
+                        {
+                            "sName": "Descricao",
+                            "render": function (data, type, row) {
+                                if (row.Descricao) {
+                                    return row.Descricao.length > 40 ?
+                                        row.Descricao.substr(0, 40) + '…' :
+                                        row.Descricao;
+                                }
+
+                            },
+                            "defaultContent": ""
+                        },
+                        {
+                            "sName": "StatusOportunidade",
+                            "mData": "StatusOportunidade"
+                        },
+                        {
+                            "sName": "SucessoNegociacao",
+                            "mData": "SucessoNegociacao"
+                        },
+                        {
+                            "sName": "TipoServico",
+                            "mData": "TipoServico"
+                        },
+                        {
+                            "sName": "TabelaId",
+                            "mData": "TabelaId"
+                        },
+                        {
+                            "sName": "DataInicio",
+                            "mData": "DataInicio"
+                        },
+                        {
+                            "sName": "DataTermino",
+                            "mData": "DataTermino"
+                        },
+                        {
+                            "sName": "DataCriacao",
+                            "mData": "DataCriacao",
+                            "visible": false
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="@Url.Action("Atualizar", "Oportunidades")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                            },
+                            "visible": @(User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Atualizar") ? "true" : "false")
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                            },
+                            "visible": @(User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Excluir") ? "true" : "false")
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="@Url.Action("Timeline", "Auditoria")?objeto=Oportunidades&chave=' + row.Id +'" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-clock"></i></a>';
+                            },
+                            "visible": @(User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:Logs") ? "true" : "false")
+                        }
+                    ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

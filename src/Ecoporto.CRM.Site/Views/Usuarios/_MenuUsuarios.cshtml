@@ -1,0 +1,12 @@
+﻿<ul class="list-group">
+
+    @if (User.IsInRole("Administrador") || User.IsInRole("Usuarios:Acessar"))
+    {
+        <li class="list-group-item"><a href="@Url.Action("Index", "Usuarios")">Usuários</a></li>
+    }
+
+    @if (User.IsInRole("Administrador") || User.IsInRole("Cargos:Acessar"))
+    {
+        <li class="list-group-item"><a href="@Url.Action("Index", "Cargos")">Cargos</a></li>
+    }
+</ul>

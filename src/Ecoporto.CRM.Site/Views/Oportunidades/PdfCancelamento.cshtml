@@ -1,0 +1,60 @@
+﻿@model Ecoporto.CRM.Business.DTO.CancelamentoOportunidadeDTO
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PdfLayout.cshtml";
+    var imagePath = Server.MapPath("~/Content/img");
+}
+
+<img src="@imagePath\header-pdf.png" />
+
+<div style="font-size: 14px; font-weight: bold;">
+    @Model.ContaDescricao<br />
+    @Model.ContaDocumento<br />
+    @Model.ContaLogradouro @Model.ContaNumero<br />
+    @Model.ContaBairro<br />
+    @Model.ContaCidade<br />
+    @Model.ContaEstado<br />
+    @Model.ContaCEP<br />
+</div>
+
+<p style="margin-top:50px;">At. Sr. /</p>
+
+<div style="padding-top:50px; padding-left:250px;text-align: justify;">
+
+    Ref.: Cancelamento da Tabela preferencial de preços
+    <strong>@Model.IdentificacaoOportunidade</strong>, de serviços de manuseio, movimentação e
+    armazenagem de carga de importação no Recinto
+    Alfandegado.
+
+</div>
+
+<p style="margin-top:30px;">&nbsp;</p>
+
+@foreach (var item in Model.ClientesGrupo)
+{
+    <strong>@item.NomeFantasia @item.Documento</strong><br />
+}
+
+<p style="margin-top:80px;">Prezado Senhor,</p>
+
+<p style="margin-top:50px;text-align: justify;">
+
+    A Tabela Preferencial de preços <strong>@Model.IdentificacaoOportunidade</strong>,
+    não apresentou movimentação de acordo com Tabela negociada, portanto
+    a partir de @Model.DataCancelamento.Value.Day de @Model.DataCancelamento.Value.ToString("MMMM") de @Model.DataCancelamento.Value.Year,
+    a mesma será cancelada.
+
+</p>
+
+<p style="margin-top:50px;text-align: justify;">
+
+    <span style="padding-left:50px;"></span>Colocando-nos à disposição de V.Sas. para quaisquer esclarecimentos adicionais que se
+    façam necessários, no sentido de mantermos um relacionamento de parceira, agradecemos,
+
+</p>
+
+<p style="margin-top:100px;">
+    Atenciosamente, <br />
+    <strong>Administração de Vendas</strong>
+</p>

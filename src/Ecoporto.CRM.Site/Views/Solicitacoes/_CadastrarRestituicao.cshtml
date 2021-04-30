@@ -1,0 +1,320 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialRestituicaoViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    var ecopatioTransportes = (Model.RestituicaoUnidadeSolicitacao == 3 || Model.RestituicaoTipoOperacaoSolicitacao == 4);
+    var habilitaCampos = (Model.RestituicaoStatusSolicitacao == StatusSolicitacao.NOVO || Model.RestituicaoStatusSolicitacao == StatusSolicitacao.REJEITADO);
+}
+
+@using (Ajax.BeginForm("CadastrarRestituicao", "Solicitacoes", new AjaxOptions
+{
+    UpdateTargetId = "_ConsultaRestituicao",
+    OnSuccess = "solicitacoesMensagemSucesso",
+    OnFailure = "solicitacoesMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmSolicitacoesRestituicao" }))
+{
+
+    @Html.HiddenFor(model => model.RestituicaoSolicitacaoId)
+    @Html.HiddenFor(model => model.RestituicaoId)
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoTipoPesquisa)
+            @if (ecopatioTransportes)
+            {
+                if (Model.RestituicaoTipoOperacaoSolicitacao == 4)
+                {
+                    <select class="form-control form-control-sm select-readonly" id="RestituicaoTipoPesquisa" name="RestituicaoTipoPesquisa">
+                        <option value="5" selected>Fatura</option>
+                    </select>
+                }
+                else
+                {
+                    <select class="form-control form-control-sm select-readonly" id="RestituicaoTipoPesquisa" name="RestituicaoTipoPesquisa">
+                        <option value="1">NF</option>
+                        <option value="2">Lote</option>
+                        <option value="3">GR</option>
+                        <option value="4">Minuta</option>
+                    </select>
+                }
+            }
+            else
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedDropDownListFor(model => model.RestituicaoTipoPesquisa, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlDropDownListFor(model => model.RestituicaoTipoPesquisa, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+                }
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoTipoPesquisaNumero)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.RestituicaoTipoPesquisaNumero, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.RestituicaoTipoPesquisaNumero, "form-control form-control-sm")
+            }
+
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoNotaFiscalId)
+            @if (ecopatioTransportes)
+            {
+                @Html.EditorFor(model => model.RestituicaoNotaFiscalId, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            }
+            else
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedDropDownListFor(model => model.RestituicaoNotaFiscalId, new MultiSelectList(Model.RestituicaoNotasFiscais, "Id", "Descricao"), "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlDropDownListFor(model => model.RestituicaoNotaFiscalId, new MultiSelectList(Model.RestituicaoNotasFiscais, "Id", "Descricao"), "form-control form-control-sm")
+                }
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoValorNF)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.RestituicaoValorNF, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.RestituicaoValorNF, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.RestituicaoValorNF, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            }
+
+        </div>
+
+        @Html.HiddenFor(model => model.RestituicaoReserva)
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoValorAPagar)
+            @Html.EditorFor(model => model.RestituicaoValorAPagar, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoRPS)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.RestituicaoRPS, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.RestituicaoRPS, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.RestituicaoRPS, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            }
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoLote)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.RestituicaoLote, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.RestituicaoLote, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.RestituicaoLote, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            }
+
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoDocumento)
+
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.RestituicaoDocumento, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.RestituicaoDocumento, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.RestituicaoDocumento, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            }
+        </div>
+
+        @if (Model.RestituicaoTipoOperacaoSolicitacao == 6)
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.RestituicaoRazaoSocial)
+                @if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.RestituicaoRazaoSocial, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.RestituicaoRazaoSocial, "form-control form-control-sm")
+                }
+            </div>
+        }
+        else
+        {
+            if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:PesquisarContaRestituicao") || User.IsInRole("SolicitacoesRestituicao:PesquisarContaRestituicao_Full"))
+            {
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(model => model.RestituicaoFavorecidoId)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedDropDownListFor(model => model.RestituicaoFavorecidoId, new MultiSelectList(Model.Favorecidos, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlDropDownListFor(model => model.RestituicaoFavorecidoId, new MultiSelectList(Model.Favorecidos, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="btnPesquisarContaRestituicao">&nbsp;</label>
+                    <a id="btnPesquisarContaRestituicao" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+                </div>
+            }
+            else
+            {
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RestituicaoFavorecidoId)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedDropDownListFor(model => model.RestituicaoFavorecidoId, new MultiSelectList(Model.Favorecidos, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlDropDownListFor(model => model.RestituicaoFavorecidoId, new MultiSelectList(Model.Favorecidos, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                </div>
+            }
+        }
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoBancoId)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedDropDownListFor(model => model.RestituicaoBancoId, new MultiSelectList(Model.Bancos, "Id", "Descricao"), "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlDropDownListFor(model => model.RestituicaoBancoId, new MultiSelectList(Model.Bancos, "Id", "Descricao"), "form-control form-control-sm")
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoAgencia)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.RestituicaoAgencia, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.RestituicaoAgencia, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.RestituicaoContaCorrente)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.RestituicaoContaCorrente, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.RestituicaoContaCorrente, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.RestituicaoDataVencimento)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.RestituicaoDataVencimento, "form-control form-control-sm data")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.RestituicaoDataVencimento, "form-control form-control-sm data")
+            }
+        </div>
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.RestituicaoFornecedorSAP)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.RestituicaoFornecedorSAP, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.RestituicaoFornecedorSAP, "form-control form-control-sm")
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-10">
+            @Html.LabelFor(model => model.RestituicaoObservacoes)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedTextAreaFor(model => model.RestituicaoObservacoes, "form-control form-control-sm", 4)
+            }
+            else
+            {
+                @Html.FullControlTextAreaFor(model => model.RestituicaoObservacoes, "form-control form-control-sm", 4)
+            }
+        </div>
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            <button id="btnLimparRestituicao" type="button" class="btn btn-secondary btn-sm btn-block">Limpar</button>
+        </div>
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Cadastrar") || User.IsInRole("SolicitacoesRestituicao:Atualizar"))
+            {
+                <button type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="_ConsultaRestituicao">
+                @Html.Partial("_ConsultarRestituicoes", Model.Restituicoes)
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.VinculoModeloSimuladoDTO>
+
+<table id="tbModelosSimulador" class="table table-sm table-striped" cellspacing="0">
+    <thead>
+        <tr>
+            <th scope="col">Modelo Simulador</th>
+            <th class="campo-acao">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var modeloSimulador in Model)
+        {
+            <tr id="modelo-simulador-@modeloSimulador.Id">
+                <td>@modeloSimulador.Descricao</td>
+                <td class="campo-acao">
+                    <a href="#" onclick="excluirModeloSimulador(@modeloSimulador.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;&nbsp;Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

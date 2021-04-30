@@ -1,0 +1,32 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+    <div class="form-group col-md-2">
+        <div>
+            <div class="form-check form-check-inline">
+                @Html.LabelFor(model => model.Linha, new { @class = "text-bold mr-3" })
+                @Html.CheckBoxFor(model => model.Ocultar, new { @class = "form-check-input mb-1" })
+                @Html.LabelFor(model => model.Ocultar)
+            </div>
+        </div>
+
+        @Html.PrivilegedEditorFor(model => model.Linha, "form-control form-control-sm inteiro")
+
+    </div>
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.TipoRegistro)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoRegistro, "form-control form-control-sm")
+    </div>
+
+    <div id="pnlServico" class="form-group col-md-3">
+        @Html.LabelFor(model => model.ServicoId)
+        @Html.PrivilegedDropDownListFor(model => model.ServicoId, new MultiSelectList(Model.Servicos, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+    <div id="pnlDescricao" class="form-group col-md-5">
+        @Html.LabelFor(model => model.Descricao)
+        @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm")
+    </div>
+</div>

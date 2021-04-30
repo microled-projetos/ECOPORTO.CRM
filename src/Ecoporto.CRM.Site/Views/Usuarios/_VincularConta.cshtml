@@ -1,0 +1,35 @@
+﻿@model Ecoporto.CRM.Site.Models.UsuarioViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+
+        <div class="form-row mt-2">
+
+            <div class="form-group col-sm-8">
+                @Html.LabelFor(model => model.ContaId)
+                <select name="ContaId" id="ContaId" class="form-control form-control-sm">
+                    
+                </select>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarSubCliente">&nbsp;</label>
+                <a id="btnPesquisarContas" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+
+            <div class="form-group col-sm-2">
+                <label>&nbsp;</label>
+                <a id="btnVincularConta" href="#" class="btn btn-secondary btn-sm btn-block btn-as-block btn-acao"><i class="fa fa-edit"></i>&nbsp;Adicionar</a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+        @Html.Partial("_ConsultaVinculoContas", Model.Contas)
+    </div>
+</div>

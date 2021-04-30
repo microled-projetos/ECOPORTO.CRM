@@ -1,0 +1,386 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    ViewBag.Title = "Atualizar Solicitação";
+    var habilitaCampo = (Model.StatusSolicitacao == StatusSolicitacao.NOVO || Model.StatusSolicitacao == StatusSolicitacao.REJEITADO);
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Solicitações
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contatos</a>
+        </li>
+        <li class="active">Cadastrar Solicitação</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <ul class="nav nav-tabs" id="abas" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="dadosGerais-tab" data-toggle="tab" href="#dadosGerais" role="tab" aria-controls="home" aria-selected="true">Dados Gerais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="anexos-tab" data-toggle="tab" href="#anexos" role="tab" aria-controls="profile" aria-selected="false">Anexos</a>
+                    </li>
+                    <li class="nav-item ml-auto">
+                        <small class="float-right text-danger mt-1">Criado por: <strong>@ViewBag.UsuarioCriacao</strong>, em: <strong>@ViewBag.DataCriacao</strong></small>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="dadosGerais" role="tabpanel" aria-labelledby="home-tab">
+                        <br />
+                        @using (Html.BeginForm("Atualizar", "Solicitacoes", FormMethod.Post, new { id = "frmSolicitacoes" }))
+                        {
+                            @Html.HiddenFor(model => model.Id)
+
+                            <div class="row">
+                                <div class="form-group col-md-1">
+                                    @Html.LabelFor(model => model.Id)
+                                    @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+                                </div>
+                                <div class="form-group col-md-3">
+                                    @Html.LabelFor(model => model.TipoSolicitacao)
+                                    @Html.EnumDropDownListFor(c => c.TipoSolicitacao, new { @class = "form-control form-control-sm select-readonly", @tabindex = "-1" })
+                                </div>
+                                <div class="form-group col-md-4">
+                                    @Html.LabelFor(model => model.StatusSolicitacao)
+                                    @Html.EnumDropDownListFor(c => c.StatusSolicitacao, new { @class = "form-control form-control-sm select-readonly", @tabindex = "-1" })
+                                </div>
+                                <div class="form-group col-md-4">
+                                    @Html.LabelFor(model => model.UnidadeSolicitacaoId)
+                                    @if (habilitaCampo)
+                                    {
+                                        @Html.PrivilegedDropDownListFor(model => model.UnidadeSolicitacaoId, new MultiSelectList(Model.UnidadesSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                    else
+                                    {
+                                        @Html.FullControlDropDownListFor(model => model.UnidadeSolicitacaoId, new MultiSelectList(Model.UnidadesSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    @Html.LabelFor(model => model.OcorrenciaId)
+                                    @if (habilitaCampo)
+                                    {
+                                        @Html.PrivilegedDropDownListFor(model => model.OcorrenciaId, new MultiSelectList(Model.SolicitacaoComercialOcorrenciasViewModel.Ocorrencias, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                    else
+                                    {
+                                        @Html.FullControlDropDownListFor(model => model.OcorrenciaId, new MultiSelectList(Model.SolicitacaoComercialOcorrenciasViewModel.Ocorrencias, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                </div>
+                                <div class="form-group col-md-2">
+                                    @Html.LabelFor(model => model.AreaOcorrenciaSolicitacao)
+                                    @if (habilitaCampo)
+                                    {
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.AreaOcorrenciaSolicitacao, "form-control form-control-sm")
+                                    }
+                                    else
+                                    {
+                                        @Html.FullControlEnumDropDownListFor(c => c.AreaOcorrenciaSolicitacao, "form-control form-control-sm")
+                                    }
+                                </div>
+                                <div class="form-group col-md-2">
+                                    @Html.LabelFor(model => model.TipoOperacaoId)
+                                    @if (habilitaCampo)
+                                    {
+                                        @Html.PrivilegedDropDownListFor(model => model.TipoOperacaoId, new MultiSelectList(Model.TiposOperacaoSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                    else
+                                    {
+                                        @Html.FullControlDropDownListFor(model => model.TipoOperacaoId, new MultiSelectList(Model.TiposOperacaoSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                </div>
+                                <div class="form-group col-md-4">
+                                    @Html.LabelFor(model => model.MotivoId)
+                                    @if (habilitaCampo)
+                                    {
+                                        @Html.PrivilegedDropDownListFor(model => model.MotivoId, new MultiSelectList(Model.SolicitacaoComercialMotivosViewModel.Motivos, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                    else
+                                    {
+                                        @Html.FullControlDropDownListFor(model => model.MotivoId, new MultiSelectList(Model.SolicitacaoComercialMotivosViewModel.Motivos, "Id", "Descricao"), "form-control form-control-sm")
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    @Html.LabelFor(model => model.Justificativa)
+                                    @if (habilitaCampo)
+                                    {
+                                        @Html.PrivilegedTextAreaFor(model => model.Justificativa, "form-control form-control-sm", 4)
+                                    }
+                                    else
+                                    {
+                                        @Html.FullControlTextAreaFor(model => model.Justificativa, "form-control form-control-sm", 4)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-2">
+                                    <a href="@Url.Action("Index", "Solicitacoes")" class="btn btn-secondary btn-sm">Retornar</a>
+                                </div>
+                                <div class="form-group col-md-1 offset-md-6">
+                                    <p>
+                                        @if (User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:RecallSolicitacao"))
+                                        {
+                                            <button id="btnRecallSolicitacao" type="button" class="btn btn-secondary btn-sm btn-block" @((Model.StatusSolicitacao != StatusSolicitacao.EM_APROVAVAO ? "disabled" : ""))>Recall</button>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <p>
+                                        @if (User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:EnviarParaAprovacao") || User.IsInRole("Solicitacoes:EnviarParaAprovacao_Full"))
+                                        {
+                                            <button id="btnEnviarParaAprovacao" type="button" class="btn btn-info btn-sm btn-block" @(habilitaCampo ? "" : "disabled")>Enviar para Aprovação</button>
+                                        }
+                                    </p>
+                                </div>
+                                <div class="form-group col-md-1">
+                                    <p>
+                                        @if (User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:Atualizar"))
+                                        {
+                                            <button type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesCancelamento:Acessar"))
+                        {
+                            <div id="pnlCancelamentoNF" class="row invisivel">
+                                <div class="form-group col-md-12">
+                                    @Html.Partial("_CadastrarCancelamentoNF", Model.SolicitacaoComercialCancelamentoNFViewModel)
+                                </div>
+
+                                @if (!User.IsInRole("UsuarioExterno"))
+                                {
+                                    <div class="col-md-12">
+                                        <div id="pnlInfoHistoricoWorkflowCancelamento"></div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            if (Model.TipoSolicitacao == TipoSolicitacao.CANCELAMENTO_NF)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    Você não possui permissão para acessar esta Solicitações Comerciais de Cancelamento. Caso seja necessário, solicite o acesso para o Administrador do sistema
+                                </div>
+                            }
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesProrrogacao:Acessar"))
+                        {
+                            <div id="pnlProrrogacao" class="row invisivel">
+                                <div class="form-group col-md-12">
+                                    @Html.Partial("_CadastrarProrrogacao", Model.SolicitacaoComercialProrrogacaoViewModel)
+                                </div>
+
+                                @if (!User.IsInRole("UsuarioExterno"))
+                                {
+                                    <div class="col-md-12">
+                                        <div id="pnlInfoHistoricoWorkflowProrrogacao"></div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            if (Model.TipoSolicitacao == TipoSolicitacao.PRORROGACAO_BOLETO)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    Você não possui permissão para acessar esta Solicitações Comerciais de Prorrogação. Caso seja necessário, solicite o acesso para o Administrador do sistema
+                                </div>
+                            }
+                        }
+
+                        @if (Model.TipoSolicitacao == TipoSolicitacao.RESTITUICAO)
+                        {
+                            if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Acessar"))
+                            {
+                                <div id="pnlRestituicao" class="row invisivel">
+                                    <div class="form-group col-md-12">
+                                        @Html.Partial("_CadastrarRestituicao", Model.SolicitacaoComercialRestituicaoViewModel)
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <i class="fa fa-calculator fa-lg"></i>
+                                                Detalhes da Restituição
+                                            </div>
+                                            <div class="card-body">
+
+                                                <div class="row mt-2 mb-2">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="float-right mt-1">Valor Devido: </label>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        @Html.EditorFor(model => model.ValorDevido, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly", @Value = Model.ValorDevido } })
+                                                    </div>
+                                                    <div class="form-group col-md-2 mt-2 text-left">
+                                                        @Html.CheckBoxFor(model => model.HabilitaValorDevido, new { id = "chkHabilitaCampoValorDevido" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mb-2">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="float-right mt-1">Valor Cobrado:</label>
+                                                    </div>
+                                                    <div class="form-group col-md-8">
+                                                        @Html.EditorFor(model => model.ValorCobrado, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label class="float-right mt-1">Crédito:</label>
+                                                    </div>
+                                                    <div class="form-group col-md-8">
+                                                        @Html.EditorFor(model => model.ValorCredito, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br />
+
+                                    @if (!User.IsInRole("UsuarioExterno"))
+                                    {
+                                        <div class="col-md-12">
+                                            <div id="pnlInfoHistoricoWorkflowRestituicao"></div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    Você não possui permissão para acessar esta Solicitações Comerciais de Restituição. Caso seja necessário, solicite o acesso para o Administrador do sistema
+                                </div>
+                            }
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Acessar"))
+                        {
+                            <div id="pnlDesconto" class="row invisivel">
+                                <div class="form-group col-md-12">
+                                    @Html.Partial("_CadastrarDescontos", Model.SolicitacaoComercialDescontoViewModel)
+                                </div>
+                            </div>
+
+                            if (!User.IsInRole("UsuarioExterno"))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="pnlInfoHistoricoWorkflowDesconto"></div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (Model.TipoSolicitacao == TipoSolicitacao.DESCONTO)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    Você não possui permissão para acessar esta Solicitações Comerciais de Desconto. Caso seja necessário, solicite o acesso para o Administrador do sistema
+                                </div>
+                            }
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesOutros:Acessar"))
+                        {
+                            <div id="pnlAlteracaoFormaPgto" class="row invisivel">
+                                <div class="form-group col-md-12">
+                                    @Html.Partial("_CadastrarAlteracaoFormaPagamento", Model.SolicitacaoComercialAlteracaoFormaPagamentoViewModel)
+                                </div>
+                            </div>
+                            if (!User.IsInRole("UsuarioExterno"))
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="pnlInfoHistoricoWorkflowAlteracaoFormaPgto"></div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (Model.TipoSolicitacao == TipoSolicitacao.OUTROS)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    Você não possui permissão para acessar esta Solicitações Comerciais de Desconto. Caso seja necessário, solicite o acesso para o Administrador do sistema
+                                </div>
+                            }
+                        }
+
+                    </div>
+                    <div class="tab-pane" id="anexos" role="tabpanel" aria-labelledby="profile-tab">
+                        @Html.Partial("_AbaAnexos", Model.SolicitacaoComercialAnexosViewModel)
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<br />
+
+@Html.Partial("_PesquisarContas")
+@Html.Partial("_Recall")
+@Html.Partial("_ModalExclusaoDesconto")
+@Html.Partial("_ModalExclusaoCancelamento")
+@Html.Partial("_ModalExclusaoRestituicao")
+@Html.Partial("_ModalExclusaoProrrogacao")
+@Html.Partial("_ModalExclusaoAlteracaoFormaPgto")
+
+@section Scripts{
+    @Scripts.Render("~/bundles/solicitacoes")
+}

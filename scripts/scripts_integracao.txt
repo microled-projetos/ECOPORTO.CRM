@@ -1,0 +1,20 @@
+select * from TB_CRM_FILA_INTEGRACAO
+
+CREATE SEQUENCE CRM.SEQ_CRM_FILA_INTEGRACAO  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 1 NOCACHE  NOORDER  NOCYCLE ;
+DROP TABLE TB_CRM_FILA_INTEGRACAO;
+CREATE TABLE TB_CRM_FILA_INTEGRACAO
+(
+    Id int not null primary key,
+    Id_Processo int not null,
+    Tipo_Processo int not null,
+    Id_Workflow int not null,
+    Id_Etapa int not null,
+    Acao int not null,
+    Status int not null,
+    Motivo varchar2(200),
+    Data_Criacao date default sysdate,
+    Data_Execucao date
+)
+http://10.1.50.4:5632/Oportunidades/Atualizar/43343
+select * from tb_crm_usuarios
+

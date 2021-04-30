@@ -1,0 +1,263 @@
+﻿@model Ecoporto.CRM.Site.Models.UsuarioViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Atualizar Usuário";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Usuários
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Usuários</a>
+        </li>
+        <li class="active">Atualizar Usuário</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, true)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Usuário
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    @Html.HiddenFor(model => model.Id)
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.Login)
+                            @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "@readonly" } })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Nome)
+                            @Html.PrivilegedEditorFor(model => model.Nome, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.LoginExterno)
+
+                            @if (Model.Externo)
+                            {
+                                @Html.TextBoxFor(x => x.LoginExterno, new { @class = "form-control form-control-sm" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(x => x.LoginExterno, new { @class = "form-control form-control-sm", @readonly = "@readonly" })
+                            }
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Senha)
+
+                            @if (Model.Administrador)
+                            {
+                                @Html.PasswordFor(x => x.Senha, new { @class = "form-control form-control-sm" })
+                            }
+                            else
+                            {
+                                @Html.PasswordFor(x => x.Senha, new { @class = "form-control form-control-sm", @readonly = "@readonly" })
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Email)
+                            @Html.PrivilegedEditorFor(model => model.Email, "form-control form-control-sm")
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.CargoId)
+                            @Html.PrivilegedDropDownListFor(model => model.CargoId, new MultiSelectList(Model.Cargos, "Id", "Descricao"), "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.CPF)
+                            @Html.PrivilegedEditorFor(model => model.CPF, "form-control form-control-sm cpf")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.LoginWorkflow)
+                            @Html.PrivilegedEditorFor(model => model.LoginWorkflow, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-4">
+                            
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Ativo, "form-check-input")
+                                    @Html.LabelFor(model => model.Ativo, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Administrador, "form-check-input ml-4")
+                                    @Html.LabelFor(model => model.Administrador, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Externo, "form-check-input")
+                                    @Html.LabelFor(model => model.Externo, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.ValidarIP, "form-check-input")
+                                    @Html.LabelFor(model => model.ValidarIP, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Remoto, "form-check-input ml-05")
+                                    @Html.LabelFor(model => model.Remoto, new { @class = "form-check-label" })
+                                    <img src="~/Content/img/ajuda.png"  data-toggle="tooltip" title="Use esta opção para usuários internos que poderão acessar o sistema de fora" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Externo && ViewContext.ViewData.ModelState.IsValid)
+                    {
+                        @Html.Partial("_VincularConta", Model)
+                    }
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Usuarios")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+@Html.Partial("_PesquisarContas")
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('#Senha').prop('readonly', !$('#Externo').is(':checked'));
+        });
+
+        $('#Externo').change(function () {
+
+            if (this.checked) {
+                $('#LoginExterno').prop('readonly', false);
+                $('#Senha').prop('readonly', false);
+            } else {
+
+                $('#LoginExterno')
+                    .val('').prop('readonly', true);
+
+                $('#Senha')
+                    .val('').prop('readonly', true);
+            }                       
+        });
+
+        $("#btnPesquisarContas").click(function () {
+
+            event.preventDefault();
+
+            $('#pesquisa-modal-contas')
+                .data('toggle', 'ContaId')
+                .modal('show');
+        });
+
+        function selecionarConta(id, descricao) {
+
+            var toggle = $('#pesquisa-modal-contas').data('toggle');
+
+            $('#pesquisa-modal-contas').modal('hide');
+
+            $("#" + toggle)
+                .empty()
+                .append($('<option>', {
+                    value: id,
+                    text: descricao
+                })).focus();
+
+            $("#ListaContas").empty();
+        }
+
+        $('#btnVincularConta').click(function () {
+
+            var contaId = parseInt($('#ContaId').val());
+            var usuarioId = parseInt($('#Id').val());
+
+            if (!isNumero(contaId)) {
+                toastr.error('Selecione uma Conta para continuar', 'CRM');
+                return;
+            }
+
+            if (!isNumero(usuarioId)) {
+                toastr.error('Nenhum usuário selecionado', 'CRM');
+                return;
+            }
+           
+            $.post(urlBase + 'Usuarios/VincularConta/', { contaId: contaId, usuarioId: usuarioId }, function (data) {
+                toastr.success('Conta vinculada com sucesso', 'CRM');
+                $('#tbVinculoContas').html(data);
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao vincular a conta', 'CRM');
+                }
+            });
+        });
+
+        function excluirVinculoConta(id) {
+
+            $.post(urlBase + 'Usuarios/ExcluirVinculoConta/', { id: id }, function (data) {
+                toastr.success('Conta excluída com sucesso', 'CRM');
+                $('#tbVinculoContas').html(data);
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao excluir a conta', 'CRM');
+                }
+            });
+        }
+
+        $('#btnPesquisarUsuariosDominio').click(function () {
+            $('#ListaUsuarios').hide();
+        });
+
+        listaUsuariosSucesso = function () {
+            $('#ListaUsuarios').show();
+        };
+
+    </script>
+}

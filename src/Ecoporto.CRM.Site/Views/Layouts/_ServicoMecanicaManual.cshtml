@@ -1,0 +1,66 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.BaseCalculoServMecManual)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TipoCargaServMecManual)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlMecManualCntr20">
+        @Html.LabelFor(model => model.Valor20ServMecManual)
+        @Html.PrivilegedEditorFor(model => model.Valor20ServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlMecManualCntr40">
+        @Html.LabelFor(model => model.Valor40ServMecManual)
+        @Html.PrivilegedEditorFor(model => model.Valor40ServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2 invisivel" id="pnlMecManualCarga">
+        @Html.LabelFor(model => model.ValorServMecManual)
+        @Html.PrivilegedEditorFor(model => model.ValorServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOServMecManual)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ExercitoServMecManual)
+        @Html.PrivilegedEditorFor(model => model.ExercitoServMecManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PesoMaximoServicoMecanicaManual)
+        @Html.PrivilegedEditorFor(model => model.PesoMaximoServicoMecanicaManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalPesoServicoMecanicaManual)
+        @Html.PrivilegedEditorFor(model => model.AdicionalPesoServicoMecanicaManual, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MoedaServMecMan)
+        @Html.PrivilegedEnumDropDownListFor(c => c.MoedaServMecMan, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.TipoTrabalho)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoTrabalho, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.DescricaoValorServMecManual)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorServMecManual, "form-control form-control-sm")
+    </div>
+
+</div>
