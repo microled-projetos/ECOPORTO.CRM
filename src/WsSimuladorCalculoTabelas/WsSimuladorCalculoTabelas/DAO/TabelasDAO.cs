@@ -672,6 +672,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 parametros.Add(name: "PrecoMinimo", value: servicoFixoVariavel.PrecoMinimo, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorAnvisa", value: servicoFixoVariavel.ValorAnvisa, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorAcrescimo", value: servicoFixoVariavel.ValorAcrescimo, direction: ParameterDirection.Input);
+                parametros.Add(name: "Exercito", value: servicoFixoVariavel.Exercito, direction: ParameterDirection.Input);
                 parametros.Add(name: "BaseCalculo", value: servicoFixoVariavel.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "Periodo", value: servicoFixoVariavel.Periodo, direction: ParameterDirection.Input);
                 parametros.Add(name: "OportunidadeId", value: servicoFixoVariavel.OportunidadeId, direction: ParameterDirection.Input);
@@ -685,7 +686,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         AUTONUM FROM 
                     {_schema}.TB_LISTA_P_S_PERIODO WHERE LINHA = :Linha AND SERVICO = :ServicoId 
                         AND QTDE_DIAS=:Dias AND PRECO_UNITARIO = :PrecoUnitario AND PRECO_MINIMO = :PrecoMinimo 
-                        AND VALOR_ANVISA = :ValorAnvisa AND VALOR_ACRESCIMO = :ValorAcrescimo AND TIPO_CARGA=:Tipocarga AND VARIANTE_LOCAL = :VarianteLocal
+                        AND VALOR_ANVISA = :ValorAnvisa AND VALOR_ACRESCIMO = :ValorAcrescimo AND EXERCITO = :Exercito  AND TIPO_CARGA=:Tipocarga AND VARIANTE_LOCAL = :VarianteLocal
                         AND NVL(grupo_atracacao,0)=:GrupoAtracacao AND BASE_CALCULO = :BaseCalculo AND N_PERIODO = :Periodo AND OPORTUNIDADEID = :OportunidadeId", parametros).Any();
             }
         }
@@ -748,7 +749,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         {
                             TemProrata = con.Query<int>($@" SELECT nvl(max(QTDE_DIAS),0) FROM { _schema}.TB_LISTA_P_S_PERIODO WHERE LISTA = :LISTA AND SERVICO = 52
                             AND TIPO_CARGA = :TIPO_CARGA AND VARIANTE_LOCAL = :VARIANTE_LOCAL AND N_PERIODO = 1 ", parametros).Single();
-                            if (TemProrata != 1)
+                            if (TemProrata >1)
                             {
                                 parametros.Add(name: "FLAG_PRORATA", value: 1, direction: ParameterDirection.Input);
                                 parametros.Add(name: "QTDE_DIAS", value: TemProrata, direction: ParameterDirection.Input);
@@ -792,7 +793,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                                 MOEDA,
                                 PRECO_UNITARIO,
                                 PRECO_MINIMO,
-                                VALOR_ACRESCIMO,
+                                VALOR_ACRESCIMO,                             
                                 N_PERIODO,
                                 QTDE_DIAS,
                                 GRUPO_ATRACACAO,
@@ -2236,132 +2237,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 		                            ", parametros);
                             }
                         }
-                        /*  var servicosSincronismo = con.Query<ServicoFixoVariavel>($@"                            
-                              SELECT 
-                                  DISTINCT
-                                      A.LISTA As TabelaSincronismoId,
-                                      A.SERVICO As ServicoId,
-                                      A.TIPO_CARGA As TipoCarga,
-                                      A.BASE_CALCULO As BaseCalculo,
-                                      A.VARIANTE_LOCAL As VarianteLocal,
-                                      A.PRECO_UNITARIO As PrecoUnitario,
-                                      A.MOEDA,
-                                      A.PRECO_MINIMO As PrecoMinimo,
-                                      A.VALOR_ACRESCIMO As ValorAcrescimo,
-                                      A.LOCAL_ATRACACAO As LocalAtracacaoId,
-                                      A.GRUPO_ATRACACAO As GrupoAtracacaoId,
-                                      A.VALOR_ACRESC_PESO As ValorAcrescimoPeso,
-                                      A.PESO_LIMITE As PesoLimite,
-                                      A.TIPO_OPER As TipoOperacao,
-                                      A.TIPO_DOC As TipoDocumentoId,
-                                      A.BASE_EXCESSO As BaseExcesso,
-                                      A.VALOR_EXCESSO As ValorExcesso,
-                                      A.PRECO_MAXIMO As PrecoMaximo,
-                                      A.VALOR_ANVISA As ValorAnvisa,
-                                      A.FLAG_COBRAR_NVOCC As CobrarNVOCC,
-                                      A.FORMA_PAGAMENTO_NVOCC As FormaPagamentoNVOCC
-                                      FROM SGIPA.TB_LISTA_PRECO_SERVICOS_FIXOS A INNER JOIN SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM 
-                              WHERE A.TIPO_CARGA<>'CRGST' AND B.FLAG_TAXA_LIBERACAO >0 AND A.LISTA = 1");
-
-                          foreach (var servicoSincronismo in servicosSincronismo)
-                          {
-                              var parametros = new DynamicParameters();
-
-                              parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
-                              parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
-                              parametros.Add(name: "ServicoId", value: servicoSincronismo.ServicoId, direction: ParameterDirection.Input);
-                              parametros.Add(name: "TipoCarga", value: servicoSincronismo.TipoCarga, direction: ParameterDirection.Input);
-                              parametros.Add(name: "BaseCalculo", value: servicoSincronismo.BaseCalculo, direction: ParameterDirection.Input);
-                              parametros.Add(name: "VarianteLocal", value: servicoSincronismo.VarianteLocal, direction: ParameterDirection.Input);
-                              parametros.Add(name: "GrupoAtracacaoId", value: servicoSincronismo.GrupoAtracacaoId, direction: ParameterDirection.Input);
-
-                              var existe = con.Query(@"SELECT AUTONUM FROM SGIPA.TB_LISTA_PRECO_SERVICOS_FIXOS WHERE Lista = :TabelaId 
-                                       AND Servico = :ServicoId AND TIPO_CARGA = :TipoCarga  
-                                          AND VARIANTE_LOCAL = :VarianteLocal AND NVL(GRUPO_ATRACACAO, 0) = :GrupoAtracacaoId", parametros).Any();
-
-                              if (existe == false)
-                              {
-                                  parametros = new DynamicParameters();
-
-                                  parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "ServicoId", value: servicoSincronismo.ServicoId, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "TipoCarga", value: servicoSincronismo.TipoCarga, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "BaseCalculo", value: servicoSincronismo.BaseCalculo, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "VarianteLocal", value: servicoSincronismo.VarianteLocal, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "PrecoUnitario", value: servicoSincronismo.PrecoUnitario, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "Moeda", value: servicoSincronismo.Moeda, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "PrecoMinimo", value: servicoSincronismo.PrecoMinimo, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "ValorAcrescimo", value: servicoSincronismo.ValorAcrescimo, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "LocalAtracacaoId", value: servicoSincronismo.LocalAtracacaoId, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "GrupoAtracacaoId", value: servicoSincronismo.GrupoAtracacaoId, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "ValorAcrescimoPeso", value: servicoSincronismo.ValorAcrescimoPeso, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "PesoLimite", value: servicoSincronismo.PesoLimite, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "TipoOperacao", value: servicoSincronismo.TipoOperacao, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "TipoDocumentoId", value: servicoSincronismo.TipoDocumentoId, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "BaseExcesso", value: servicoSincronismo.BaseExcesso, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "ValorExcesso", value: servicoSincronismo.ValorExcesso, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "PrecoMaximo", value: servicoSincronismo.PrecoMaximo, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "ValorAnvisa", value: servicoSincronismo.ValorAnvisa, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "CobrarNVOCC", value: servicoSincronismo.CobrarNVOCC.ToInt(), direction: ParameterDirection.Input);
-                                  parametros.Add(name: "FormaPagamentoNVOCC", value: servicoSincronismo.FormaPagamentoNVOCC, direction: ParameterDirection.Input);
-                                  parametros.Add(name: "TabelaSincronismoId", value: servicoSincronismo.TabelaSincronismoId, direction: ParameterDirection.Input);
-
-                                  con.Execute($@"
-                                      INSERT INTO
-                                          {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS (
-                                              AUTONUM,
-                                              LISTA,
-                                              OPORTUNIDADEID,
-                                              SERVICO,
-                                              TIPO_CARGA,
-                                              BASE_CALCULO,
-                                              VARIANTE_LOCAL,
-                                              PRECO_UNITARIO,
-                                              MOEDA,
-                                              PRECO_MINIMO,
-                                              VALOR_ACRESCIMO,
-                                              LOCAL_ATRACACAO,
-                                              GRUPO_ATRACACAO,
-                                              VALOR_ACRESC_PESO,
-                                              PESO_LIMITE,
-                                              TIPO_OPER,
-                                              TIPO_DOC,
-                                              BASE_EXCESSO,
-                                              VALOR_EXCESSO,
-                                              PRECO_MAXIMO,
-                                              VALOR_ANVISA,
-                                              FLAG_COBRAR_NVOCC,
-                                              FORMA_PAGAMENTO_NVOCC,
-                                              AUTONUM_VINCULADO
-                                          ) VALUES (
-                                              {_schema}.SEQ_LISTA_PRECO_SERVICOS_FIXOS.NEXTVAL,
-                                              :TabelaId,
-                                              :OportunidadeId,
-                                              :ServicoId,
-                                              :TipoCarga,
-                                              :BaseCalculo,
-                                              :VarianteLocal,
-                                              :PrecoUnitario,
-                                              :Moeda,
-                                              :PrecoMinimo,
-                                              :ValorAcrescimo,
-                                              :LocalAtracacaoId,
-                                              :GrupoAtracacaoId,
-                                              :ValorAcrescimoPeso,
-                                              :PesoLimite,
-                                              :TipoOperacao,
-                                              :TipoDocumentoId,
-                                              :BaseExcesso,
-                                              :ValorExcesso,
-                                              :PrecoMaximo,
-                                              :ValorAnvisa,
-                                              :CobrarNVOCC,
-                                              :FormaPagamentoNVOCC,
-                                              :TabelaSincronismoId
-                                          )", parametros);
-                              }
-                          }*/
+                       
                     }
                     if (TemCs == true)
                     {
@@ -5209,6 +5085,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5230,6 +5107,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5254,6 +5132,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5275,6 +5154,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5298,6 +5178,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5319,6 +5200,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5351,6 +5233,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
@@ -5373,6 +5256,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
@@ -5396,6 +5280,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var parametros = new DynamicParameters();
 
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
+
+                     con.Execute(@"Update sgipa.tb_lista_p_s_periodo set
+                                  preco_unitario = round(preco_unitario / qtde_dias, 5) , 
+                                  preco_minimo = round(preco_minimo / qtde_dias, 5) ,
+                                  flag_prorata = 0 , qtde_dias = 1
+                                  where lista = :tabelaId and servico = 45 and flag_prorata = 1 and qtde_dias> 1 and n_periodo> 1", parametros);
+
 
                     var semminimos = con.Query<TabelaSemminimo>(@"SELECT A.AUTONUM,SERVICO, N_PERIODO, 
                                         TIPO_CARGA, BASE_CALCULO, 
@@ -5467,6 +5358,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5519,6 +5411,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              NVL(C.PRECO_MAXIMO,0) AS PRECO_MAXIMO,
                                              NVL(C.VALOR_ANVISA,0) AS VALOR_ANVISA,
                                              NVL(C.VALOR_ACRESCIMO,0) AS VALOR_ACRESCIMO,
+                                             NVL(C.EXERCITO,0) AS EXERCITO,
                                              NVL(C.LOCAL_ATRACACAO,0) AS LOCAL_ATRACACAO,
                                              NVL(C.FLAG_PRORATA,0) AS FLAG_PRORATA,
                                              NVL(C.AUTONUM_VINCULADO,0) AS AUTONUM_VINCULADO,
@@ -5541,6 +5434,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              NVL(C.PRECO_MAXIMO,0) ,
                                              NVL(C.VALOR_ANVISA,0) ,
                                              NVL(C.VALOR_ACRESCIMO,0),
+                                             NVL(C.EXERCITO,0),
                                              NVL(C.LOCAL_ATRACACAO,0) ,
                                              NVL(C.FLAG_PRORATA,0) ,
                                              NVL(C.AUTONUM_VINCULADO,0),
@@ -5562,6 +5456,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              AND NVL(A.PRECO_MINIMO,0)=M.PRECO_MINIMO
                                              AND NVL(A.VALOR_ANVISA,0)=M.VALOR_ANVISA
                                              AND NVL(A.VALOR_ACRESCIMO,0)=M.VALOR_ACRESCIMO
+                                             AND NVL(A.EXERCITO,0)=M.EXERCITO
                                              AND NVL(A.FLAG_PRORATA,0)=M.FLAG_PRORATA
                                              AND NVL(A.AUTONUM_VINCULADO,0)=M.AUTONUM_VINCULADO
                                              AND NVL(A.GRUPO_ATRACACAO,0)=M.GRUPO_ATRACACAO
@@ -5586,6 +5481,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              AND NVL(A.PRECO_MAXIMO,0)=NVL(B.PRECO_MAXIMO,0)
                                              AND NVL(A.VALOR_ANVISA,0)=NVL(B.VALOR_ANVISA,0)
                                              AND NVL(A.VALOR_ACRESCIMO,0)=NVL(B.VALOR_ACRESCIMO,0)
+                                             AND NVL(A.EXERCITO,0)=NVL(B.EXERCITO,0)
                                              AND NVL(A.LOCAL_ATRACACAO,0)=NVL(B.LOCAL_ATRACACAO,0)
                                              AND NVL(A.FLAG_PRORATA,0)=NVL(B.FLAG_PRORATA,0)
                                              AND NVL(A.AUTONUM_VINCULADO,0)=NVL(B.AUTONUM_VINCULADO,0)
@@ -5642,6 +5538,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5699,6 +5596,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                 PRECO_MAXIMO,
                                 VALOR_ANVISA,
                                 VALOR_ACRESCIMO,
+                                EXERCITO,
                                 LOCAL_ATRACACAO,
                                 FLAG_PRORATA,
                                 AUTONUM_VINCULADO,
@@ -5783,6 +5681,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        FLAG_PRORATA,
 	                        AUTONUM_VINCULADO,
@@ -5837,7 +5736,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                     con.Execute($@"INSERT INTO {_schema}.Tb_lista_preco_servicos_fixos(AUTONUM, LISTA, SERVICO,
                                        TIPO_CARGA, BASE_CALCULO, VARIANTE_LOCAL,
                                        PRECO_UNITARIO, MOEDA, PRECO_MINIMO,
-                                       VALOR_ACRESCIMO, USUARIO_SIS, USUARIO_REDE,
+                                       VALOR_ACRESCIMO, EXERCITO,USUARIO_SIS, USUARIO_REDE,
                                        MAQUINA_REDE, LOCAL_ATRACACAO, AUTONUM_VINCULADO,
                                        FLAG_HP, GRUPO_ATRACACAO, VALOR_ACRESC_PESO,
                                        PESO_LIMITE, PRECO_MINIMO_DESOVA,  
@@ -6143,6 +6042,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
@@ -6204,6 +6104,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
@@ -6260,7 +6161,8 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
-	                        LOCAL_ATRACACAO,
+	                        EXERCITO,
+                            LOCAL_ATRACACAO,
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
 	                        VALOR_ACRESC_PESO,
@@ -6311,6 +6213,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        PRECO_MAXIMO,
 	                        VALOR_ANVISA,
 	                        VALOR_ACRESCIMO,
+                            EXERCITO,
 	                        LOCAL_ATRACACAO,
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
