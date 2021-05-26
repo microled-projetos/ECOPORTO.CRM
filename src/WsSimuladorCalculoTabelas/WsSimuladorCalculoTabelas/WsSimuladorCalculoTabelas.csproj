@@ -43,23 +43,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.60.6\lib\net451\Dapper.dll</HintPath>
+    <Reference Include="Dapper">
+      <HintPath>..\..\..\..\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas\bin\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Ecoporto.CRM.Business, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ECOPORTO_CRM\src\Ecoporto.CRM.Business\bin\Debug\Ecoporto.CRM.Business.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Users\fabiodelpapa\Dropbox\ecoporto\Ecoporto .NET\ECOPORTO_CRM\src\Ecoporto.CRM.Business\bin\Debug\Ecoporto.CRM.Business.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=4.5.3.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.4.5.3.1\lib\net40\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\..\..\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas\bin\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
-      <HintPath>..\packages\Oracle.ManagedDataAccess.18.6.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+      <HintPath>..\..\..\..\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas\bin\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
+      <HintPath>..\..\..\..\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas\bin\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Security" />
