@@ -5397,6 +5397,14 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
+                    con.Execute(@"UPDATE TB_LISTA_P_S_PERIODO SET 
+                                    PRECO_UNITARIO = ROUND(PRECO_UNITARIO / QTDE_DIAS, 6),
+                                    QTDE_DIAS = 1, 
+                                    FLAG_PRORATA = 0  
+                                    WHERE FLAG_PRORATA = 1 
+                                            AND QTDE_DIAS> 1 
+                                            AND SERVICO = 45 AND LISTA = :TabelaId",parametros);
+
                     var semminimos = con.Query<TabelaSemminimo>(@"SELECT A.AUTONUM,SERVICO, N_PERIODO, 
                                         TIPO_CARGA, BASE_CALCULO, 
                                         VARIANTE_LOCAL, LISTA
@@ -5451,7 +5459,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        TIPO_CARGA IN ('SVAR20', 'SVAR40') 
                         AND 
 	                        LISTA = :TabelaId
-AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)   
+                        AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)   
                         GROUP BY
 	                        SERVICO,
 	                        N_PERIODO,
@@ -5472,7 +5480,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
 	                        VALOR_ACRESC_PESO,
-	                        PESO_LIMITE 
+	                        PESO_LIMITE ,EXERCITO
                         HAVING COUNT(1) > 1 ", parametros);
 
                     foreach (var duplicidade in duplicidades)
@@ -5524,7 +5532,8 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              NVL(C.AUTONUM_VINCULADO,0) AS AUTONUM_VINCULADO,
                                              NVL(C.GRUPO_ATRACACAO,0) AS GRUPO_ATRACACAO,
                                              NVL(C.VALOR_ACRESC_PESO,0) AS VALOR_ACRESC_PESO,
-                                             NVL(C.PESO_LIMITE,0) AS PESO_LIMITE
+                                             NVL(C.PESO_LIMITE,0) AS PESO_LIMITE,
+                                             NVL(C.EXERCITO,0) AS EXERCITO
                                              FROM SGIPA.TB_LISTA_P_S_PERIODO C 
                                             GROUP BY
                                              C.LISTA,
@@ -5547,6 +5556,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              NVL(C.GRUPO_ATRACACAO,0) ,
                                              NVL(C.VALOR_ACRESC_PESO,0) ,
                                              NVL(C.PESO_LIMITE,0)
+                                             NVL(C.EXERCITO,0)
                                              ) M
                                              ON  A.N_PERIODO=M.N_PERIODO
                                              AND A.LISTA=M.LISTA
@@ -5567,6 +5577,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              AND NVL(A.GRUPO_ATRACACAO,0)=M.GRUPO_ATRACACAO
                                              AND NVL(A.VALOR_ACRESC_PESO,0)=M.VALOR_ACRESC_PESO
                                              AND NVL(A.PESO_LIMITE,0)=M.PESO_LIMITE
+                                             AND NVL(A.EXERCITO,0)=M.EXERCITO
                                              AND
                                              EXISTS (
                                              SELECT B.AUTONUM 
@@ -5592,6 +5603,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                              AND NVL(A.GRUPO_ATRACACAO,0)=NVL(B.GRUPO_ATRACACAO,0)
                                              AND NVL(A.VALOR_ACRESC_PESO,0)= NVL(B.VALOR_ACRESC_PESO,0)
                                              AND NVL(A.PESO_LIMITE,0) =NVL(B.PESO_LIMITE,0)
+                                             AND NVL(A.EXERCITO,0) =NVL(B.EXERCITO,0)
                                              AND A.N_PERIODO=B.N_PERIODO+1
                                              )
   
@@ -5647,7 +5659,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
 	                        VALOR_ACRESC_PESO,
-	                        PESO_LIMITE 
+	                        PESO_LIMITE ,EXERCITO
                         HAVING COUNT(1) > 1", parametros);
 
                     foreach (var duplicidade in duplicidades)
@@ -5704,7 +5716,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                 AUTONUM_VINCULADO,
                                 GRUPO_ATRACACAO,
                                 VALOR_ACRESC_PESO,
-                                PESO_LIMITE 
+                                PESO_LIMITE ,EXERCITO
                             HAVING COUNT(1) > 1", parametros);
 
                         if (!duplicidades.Any())
