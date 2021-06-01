@@ -1,0 +1,422 @@
+
+  CREATE OR REPLACE FORCE VIEW "SGIPA"."VW_DADOS_LISTAS_PRECOS" ("AUTONUM", "IMPORTADOR", "DESPACHANTE", "CAPTADOR", "COLOADER", "COCOLOADER", "COCOLOADER2", "FLAG_ESPECIAL", "FLAG_LIBERADA", "FINAL_VALIDADE", "FLAG_HUBPORT", "FLAG_ACORDO", "COD_EMPRESA", "DATA_INICIO") AS 
+  SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,       
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN  NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN  NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN  NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN  NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN  NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,
+          A.FLAG_ACORDO,
+          a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0   )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+
+
+   UNION
+   SELECT a.autonum,
+          b.autonum_parceiro AS Importador,
+          Despachante,
+          captador,
+          Coloader,
+          Cocoloader,
+          Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          a.cod_empresa,
+          DATA_INICIO
+     FROM    (SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,    FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN   NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN   NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN   NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN   NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN   NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN  NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,    A.FLAG_ACORDO,
+      
+          a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0   )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+
+
+)a
+          INNER JOIN
+             TB_TP_GRUPOS b
+          ON a.autonum = b.AUTONUMLISTA
+    WHERE  b.TIPO = 'I'
+   UNION
+   SELECT a.autonum,
+          Importador,
+          b.autonum_parceiro AS Despachante,
+          captador,
+          Coloader,
+          Cocoloader,
+          Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+         a.cod_empresa,
+          DATA_INICIO
+     FROM    (SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,    
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN  NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN   NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN  NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN   NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN   NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN   NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,
+          A.FLAG_ACORDO,
+          a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0   )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+
+
+) a
+          INNER JOIN
+             TB_TP_GRUPOS b
+          ON a.autonum = b.AUTONUMLISTA
+    WHERE  b.TIPO = 'D'
+   UNION
+   SELECT a.autonum,
+          Importador,
+          Despachante,
+          b.autonum_parceiro AS captador,
+          Coloader,
+          Cocoloader,
+          Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+      a.cod_empresa,
+          DATA_INICIO
+     FROM    (SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+         cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN   NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN   NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN  NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN  NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN   NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN   NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,
+          A.FLAG_ACORDO,
+        a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0 )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+
+
+) a
+          INNER JOIN
+             TB_TP_GRUPOS b
+          ON a.autonum = b.AUTONUMLISTA
+    WHERE b.TIPO = 'C'
+   UNION
+   SELECT a.autonum,
+          Importador,
+          Despachante,
+          captador,
+          b.autonum_parceiro AS Coloader,
+          Cocoloader,
+          Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+        a.cod_empresa,
+          DATA_INICIO
+     FROM    (SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN   NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN   NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN  NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN   NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN  NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN   NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,
+          A.FLAG_ACORDO,
+          a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0   )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+
+
+) a
+          INNER JOIN
+             TB_TP_GRUPOS b
+          ON a.autonum = b.AUTONUMLISTA
+    WHERE  b.TIPO = 'S'
+   UNION
+   SELECT a.autonum,
+          Importador,
+          Despachante,
+          captador,
+          Coloader,
+          b.autonum_parceiro AS Cocoloader,
+          Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          a.cod_empresa,
+          DATA_INICIO
+     FROM    (SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN   NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN    NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN   NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN   NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN   NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN   NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,
+          A.FLAG_ACORDO,
+          a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0   )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+         FLAG_ACORDO,
+         cod_empresa,
+          DATA_INICIO
+
+
+)a
+          INNER JOIN
+             TB_TP_GRUPOS b
+          ON a.autonum = b.AUTONUMLISTA
+    WHERE  b.TIPO = 'U'
+   UNION
+   SELECT a.autonum,
+          Importador,
+          Despachante,
+          captador,
+          Coloader,
+          Cocoloader,
+          b.autonum_parceiro AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+      FLAG_ACORDO,
+       a.cod_empresa,
+          DATA_INICIO
+     FROM    (SELECT      autonum,
+          MAX(IMPORTADOR) AS Importador,          
+          MAX(DESPACHANTE) AS  Despachante,
+          MAX(CAPTADOR) AS captador,
+          MAX(COLOADER) AS Coloader,
+          MAX(COCOLOADER) AS Cocoloader,
+          MAX(COCOLOADER2) AS Cocoloader2,
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+FROM (
+   SELECT  a.autonum,
+          case WHEN   NVL(b.tipo,'Z')='I' THEN b.AUTONUM_PARCEIRO ELSE A.Importador END  IMPORTADOR,
+          case WHEN    NVL(b.tipo,'Z')='D' THEN b.AUTONUM_PARCEIRO ELSE A.DESPACHANTE END Despachante,
+          case WHEN   NVL(b.tipo,'Z')='C' THEN b.AUTONUM_PARCEIRO ELSE A.CAPTADOR END captador,
+          case WHEN   NVL(b.tipo,'Z')='S' THEN b.AUTONUM_PARCEIRO ELSE A.COLOADER END Coloader,
+          case WHEN   NVL(b.tipo,'Z')='U' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER END Cocoloader,
+          case WHEN   NVL(b.tipo,'Z')='B' THEN b.AUTONUM_PARCEIRO ELSE A.COCOLOADER2 END Cocoloader2,
+          a.flag_especial,
+          a.flag_liberada,
+          a.FINAL_VALIDADE,
+          a.FLAG_HUBPORT,
+          A.FLAG_ACORDO,
+          a.cod_empresa,
+          a.DATA_INICIO
+     FROM    tb_listas_precos a LEFT JOIN       
+             TB_TP_GRUPOS b ON A.AUTONUM= b.AUTONUMLISTA           
+    WHERE flag_acordo = 0   )
+
+GROUP BY       autonum, 
+          flag_especial,
+          flag_liberada,
+          FINAL_VALIDADE,
+          FLAG_HUBPORT,
+          FLAG_ACORDO,
+          cod_empresa,
+          DATA_INICIO
+
+
+) a
+          INNER JOIN
+             TB_TP_GRUPOS b
+          ON a.autonum = b.AUTONUMLISTA
+    WHERE b.TIPO = 'B';

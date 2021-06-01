@@ -1,0 +1,163 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <header>
+
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <a class="navbar-brand mr-0" href="@Url.Action("Index", "Home")">
+                        <img src="@Url.Content("~/Content/img/logo-header.png")" class="d-inline-block align-top" alt="">
+                    </a>
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+                        @if (User.IsInRole("Administrador") || (User.IsInRole("Layouts:Acessar") || User.IsInRole("Layouts:Acessar") || User.IsInRole("Mercadorias:Acessar") || User.IsInRole("Modelos:Acessar") || User.IsInRole("Motivos:Acessar") || User.IsInRole("Ocorrencias:Acessar") || User.IsInRole("Servicos:Acessar") || User.IsInRole("Usuarios:Acessar")))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-edit"></i> Cadastros
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Layouts:Acessar"))
+                                    {
+                                        <li><a class="dropdown-item" href="@Url.Action("Index", "Layouts")">Layouts</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Mercadorias:Acessar"))
+                                    {
+                                        <li> <a class="dropdown-item" href="@Url.Action("Index", "Mercadorias")">Mercadorias</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Modelos:Acessar"))
+                                    {
+                                        <li> <a class="dropdown-item" href="@Url.Action("Index", "Modelos")">Modelos</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Motivos:Acessar"))
+                                    {
+                                        <li> <a class="dropdown-item" href="@Url.Action("Cadastrar", "Motivos")">Motivos</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Ocorrencias:Acessar"))
+                                    {
+                                        <li> <a class="dropdown-item" href="@Url.Action("Cadastrar", "Ocorrencias")">Ocorrências</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Servicos:Acessar"))
+                                    {
+                                        <li><a class="dropdown-item" href="@Url.Action("Index", "Servicos")">Serviços</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Servicos:Acessar"))
+                                    {
+                                        <li><a class="dropdown-item" href="@Url.Action("Index","ModeloSimulador")">Simulador</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("Usuarios:Acessar"))
+                                    {
+                                        <li><a class="dropdown-item" href="@Url.Action("Index", "Usuarios")">Usuários</a></li>
+                                    }
+
+                                    @if (User.IsInRole("Administrador") || (User.IsInRole("EquipesVendedor:Acessar") || User.IsInRole("EquipesConta:Acessar") || User.IsInRole("EquipesOportunidade:Acessar")))
+                                    {
+                                        <li class="dropdown-submenu">
+                                            <a class="dropdown-item dropdown-toggle" href="#">Equipes</a>
+                                            <ul class="dropdown-menu">
+
+                                                @if (User.IsInRole("Administrador") || User.IsInRole("EquipesVendedor:Acessar"))
+                                                {
+                                                    <li><a class="dropdown-item" href="@Url.Action("Index", "EquipesVendedor")">Vendedor</a></li>
+                                                }
+                                                @if (User.IsInRole("Administrador") || User.IsInRole("EquipesConta:Acessar"))
+                                                {
+                                                    <li><a class="dropdown-item" href="@Url.Action("Index", "EquipesConta")">Conta</a></li>
+                                                }
+                                                @if (User.IsInRole("Administrador") || User.IsInRole("EquipesOportunidade:Acessar"))
+                                                {
+                                                    <li><a class="dropdown-item" href="@Url.Action("Index", "EquipesOportunidade")">Oportunidade</a></li>
+                                                }
+
+                                            </ul>
+                                        </li>
+                                    }
+
+                                </ul>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Contas:Acessar"))
+                        {
+                            <li><a class="nav-link" href="@Url.Action("Index", "Contas")"><i class="fas fa-user-plus"></i>Contas</a></li>
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("AnaliseCredito:Acessar"))
+                        {
+                            <li><a class="nav-link" href="@Url.Action("Index", "AnaliseCredito")"><i class="fas fa-user-plus"></i>Analise de Credito</a></li>
+                        }
+
+                        @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesIniciais:Acessar") || User.IsInRole("OportunidadesProposta:Acessar") || User.IsInRole("OportunidadesFichas:Acessar") || User.IsInRole("OportunidadesAnexos:Acessar") || User.IsInRole("OportunidadesPremios:Acessar") || User.IsInRole("OportunidadesAdendos:Acessar")))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Oportunidades")"><i class="fas fa-cogs"></i>Oportunidades</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:Acessar") || User.IsInRole("SolicitacoesCancelamento:Acessar") || User.IsInRole("SolicitacoesDesconto:Acessar") || User.IsInRole("SolicitacoesProrrogacao:Acessar") || User.IsInRole("SolicitacoesRestituicao:Acessar"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Solicitacoes")"><i class="fas fa-calculator"></i>Solicitações</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Workflow:Acessar"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Workflow")"><i class="fas fa-laptop"></i>Workflow</a>
+                            </li>
+                        }
+
+                        @{Html.RenderAction("ObterMenusDinamicos", "Home");}
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Simulador:Acessar"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Simulador")"><i class="fa fa-chart-pie"></i>Simulador</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("ConsultaClientes:Acessar"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "ConsultaCliente")"><i class="fa fa-user"></i>Consulta Clientes</a>
+                            </li>
+                        }
+
+                    </ul>
+
+                    <form id="frmBusca" class="form-inline my-2 my-lg-0 mr-2">
+                        <input id="btnPesquisaSite" class="form-control form-control-sm mr-4" type="text" placeholder="Pesquisar..." aria-label="Search">
+                    </form>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Olá, <strong>@User.Identity.Name</strong>
+                        </button>
+                        <div class="dropdown-menu">
+
+                            @if (User.IsInRole("UsuarioExterno"))
+                            {
+                                <a class="dropdown-item" href="@Url.Action("TrocarSenha", "Home")">Alterar Senha</a>
+                            }
+
+                            <a class="dropdown-item" href="@Url.Action("Logout", "Home")">Sair</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+    </header>
+}

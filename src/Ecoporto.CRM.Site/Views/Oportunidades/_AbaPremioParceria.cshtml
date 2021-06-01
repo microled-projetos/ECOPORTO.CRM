@@ -1,0 +1,269 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesPremioParceriaViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    bool? somenteLeitura = ViewBag.OportunidadeSomenteLeitura;
+}
+
+@using (Ajax.BeginForm("CadastrarPremiosParceria", "Oportunidades", new AjaxOptions
+{
+    UpdateTargetId = "_AbaPremioParceriaConsulta",
+    OnSuccess = "oportunidadeMensagemSucesso",
+    OnFailure = "oportunidadeMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmOportunidadesPremiosParceria", enctype = "multipart/form-data" }))
+{
+
+
+    @Html.HiddenFor(model => model.PremioParceriaId)
+    @Html.HiddenFor(model => model.PremioParceriaOportunidadeId)
+    @Html.HiddenFor(model => model.PremioParceriaContaId)
+    @Html.HiddenFor(model => model.AnexoPremioId)
+    @Html.HiddenFor(model => model.PremioRevisaoId)
+
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.StatusPremioParceria)
+            @Html.EnumDropDownListFor(c => c.StatusPremioParceria, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.Instrucao)
+            @Html.PrivilegedEnumDropDownListFor(c => c.Instrucao, "form-control form-control-sm", readOnly: somenteLeitura)
+        </div>
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:PesquisarContato"))
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.PremioParceriaContatoId)
+                @Html.PrivilegedDropDownListFor(model => model.PremioParceriaContatoId, new MultiSelectList(Model.Contatos, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarContatos">&nbsp;</label>
+                <a id="btnPesquisarContatos" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.PremioParceriaContatoId)
+                @Html.PrivilegedDropDownListFor(model => model.PremioParceriaContatoId, new MultiSelectList(Model.Contatos, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+        }
+    </div>
+
+    <div class="form-row">
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:PesquisarFavorecido1"))
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.Favorecido1)
+                @Html.PrivilegedDropDownListFor(model => model.Favorecido1, new MultiSelectList(Model.Contas, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarFavorecido1">&nbsp;</label>
+                <a id="btnPesquisarFavorecido1" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.Favorecido1)
+                @Html.PrivilegedDropDownListFor(model => model.Favorecido1, new MultiSelectList(Model.Contas, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+        }
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:PesquisarFavorecido2"))
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.Favorecido2)
+                @Html.PrivilegedDropDownListFor(model => model.Favorecido2, new MultiSelectList(Model.Contas, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarFavorecido2">&nbsp;</label>
+                <a id="btnPesquisarFavorecido2" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.Favorecido2)
+                @Html.PrivilegedDropDownListFor(model => model.Favorecido2, new MultiSelectList(Model.Contas, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+        }
+
+    </div>
+
+    <div class="form-row">
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:PesquisarFavorecido3"))
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.Favorecido3)
+                @Html.PrivilegedDropDownListFor(model => model.Favorecido3, new MultiSelectList(Model.Contas, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarFavorecido3">&nbsp;</label>
+                <a id="btnPesquisarFavorecido3" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.Favorecido3)
+                @Html.PrivilegedDropDownListFor(model => model.Favorecido3, new MultiSelectList(Model.Contas, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+        }
+
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:PesquisarPremioReferencia"))
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.PremioReferenciaId)
+                @Html.PrivilegedDropDownListFor(model => model.PremioReferenciaId, new MultiSelectList(Model.Premios, "Id", "Id"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarPremioReferencia">&nbsp;</label>
+                <a id="btnPesquisarPremioReferencia" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.PremioReferenciaId)
+                @Html.PrivilegedDropDownListFor(model => model.PremioReferenciaId, new MultiSelectList(Model.Premios, "Id", "Id"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+        }
+
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-10">
+            @Html.LabelFor(model => model.AnexoPremio) <small>@Html.ActionLink("(Visualizar anexo)", "Download", null, new { id = "lnkPremioAnexo", @class = "invisivel" })</small>
+            @Html.EditorFor(model => model.AnexoPremio, new { htmlAttributes = new { @class = "form-control form-control-sm", type = "file" } })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.TipoServicoPremioParceria)
+            @Html.PrivilegedEnumDropDownListFor(c => c.TipoServicoPremioParceria, "form-control form-control-sm", readOnly: somenteLeitura)
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            @Html.LabelFor(model => model.Observacoes)
+            @Html.PrivilegedTextAreaFor(model => model.Observacoes, "form-control form-control-sm", 4, readOnly: somenteLeitura)
+        </div>
+    </div>
+
+    <div id="pnlModalidades" class="row">
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.Modalidades)
+            <small class="text-muted">(pressione ctrl/shift para selecionar multiplos)</small>
+            <select id="Modalidades" class="form-control form-control-sm" size="4" multiple></select>
+        </div>
+        <div class="col-md-2 align-self-end">
+            <label for="lstModalidades">&nbsp;</label>
+            <p>
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:AdicionarModalidade"))
+                {
+                    <input type="button" id="btnAdicionarModalidade" value=">>" class="btn btn-default btn-sm btn-block" />
+                }
+            </p>
+            <p>
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:RemoverModalidade"))
+                {
+                    <input type="button" id="btnRemoverModalidade" value="<<" class="btn btn-default btn-sm btn-block" />
+                }
+            </p>
+        </div>
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.ModalidadesSelecionadas)
+            <select id="ModalidadesSelecionadas" name="ModalidadesSelecionadas" class="form-control form-control-sm" size="4" multiple></select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.UrlPremio) &nbsp;<a id="lnkUrlPremio" class="invisivel" href="#" target="_blank"><i class="fas fa-link"></i>&nbsp;<small>(acessar)</small></a>
+            @Html.PrivilegedEditorFor(model => model.UrlPremio, "form-control form-control-sm", readOnly: somenteLeitura)
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DataUrlPremio)
+            @Html.PrivilegedEditorFor(model => model.DataUrlPremio, "form-control form-control-sm data", readOnly: somenteLeitura)
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.EmailFavorecido1)
+            @Html.PrivilegedEditorFor(model => model.EmailFavorecido1, "form-control form-control-sm", readOnly: somenteLeitura)
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.EmailFavorecido2)
+            @Html.PrivilegedEditorFor(model => model.EmailFavorecido2, "form-control form-control-sm", readOnly: somenteLeitura)
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.EmailFavorecido3)
+            @Html.PrivilegedEditorFor(model => model.EmailFavorecido3, "form-control form-control-sm", readOnly: somenteLeitura)
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-row">
+
+        <div class="form-group col-md-2">
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:RevisarPremioParceria"))
+            {
+                <button id="RevisarPremioParceria" type="button" class="btn btn-warning btn-sm btn-block btn-as-block"><i class="fa fa-download"></i>&nbsp;&nbsp;Revisar Prêmio</button>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:Logs"))
+            {
+                <button onclick="abrirAuditoriaPremiosParceria(@Model.PremioParceriaOportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-cogs"></i>&nbsp;&nbsp;Logs</button>
+            }
+        </div>
+
+        <div class="form-group col-md-2 offset-md-4">
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesPremios:CancelarPremioParceria"))
+            {
+                <button id="btnCancelarPremioParceria" type="button" class="btn btn-danger btn-sm btn-block btn-as-block" disabled><i class="fa fa-stop-circle"></i>&nbsp;&nbsp;Cancelar Prêmio</button>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesPremios:Cadastrar") || (User.IsInRole("OportunidadesPremios:Atualizar"))))
+            {
+                <button id="btnSalvarPremioParceria" type="submit" class="btn btn-primary btn-sm btn-block btn-as-block" data-animation-name="spinner"><i class="fa fa-save"></i>&nbsp;&nbsp;Salvar</button>
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            <button id="btnPremioParceriaAnterior" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Anterior</button>
+        </div>
+
+        <div class="form-group col-md-1">
+            <button id="btnPremioParceriaProximo" type="button" class="btn btn-info btn-sm btn-block btn-as-block">Próximo</button>
+        </div>
+
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <div id="_AbaPremioParceriaConsulta">
+                @Html.Partial("_AbaPremioParceriaConsulta", Model.Premios)
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="pnlPremiosHistoricoWorkflow" class="invisivel">
+
+            </div>
+        </div>
+    </div>
+
+}

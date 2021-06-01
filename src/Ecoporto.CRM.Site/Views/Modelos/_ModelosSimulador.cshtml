@@ -1,0 +1,47 @@
+﻿@model Ecoporto.CRM.Site.Models.ModeloViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="row mt-2">
+            <div class="form-group col-md-3">
+                @Html.LabelFor(model => model.ModeloSimuladorId)
+                @Html.DropDownListFor(c => c.ModeloSimuladorId, new MultiSelectList(Model.ModelosSimulador, "Id", "Descricao"), new { @class = "form-control form-control-sm" })
+            </div>
+
+            <div class="form-group col-md-1">
+                <label>&nbsp;</label>
+                <button id="btnIncluirModeloSimulador" type="button" class="btn btn-primary btn-sm btn-block btn-as-block btn-acao"><i class="fa fa-save"></i></button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="pnlModelosSimulador">
+            <table id="tbModelosSimulador" class="table table-sm table-striped" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Modelo Simulador</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var modeloSimulador in Model.ModelosSimuladorVinculados)
+                    {
+                        <tr id="modelo-simulador-@modeloSimulador.Id">
+                            <td>@modeloSimulador.Descricao</td>
+                            <td class="campo-acao">
+                                <a href="#" onclick="excluirModeloSimulador(@modeloSimulador.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;&nbsp;Excluir</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

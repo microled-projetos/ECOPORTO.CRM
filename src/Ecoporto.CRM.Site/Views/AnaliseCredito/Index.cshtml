@@ -1,0 +1,645 @@
+﻿@model Ecoporto.CRM.Site.Models.AnaliseCreditoViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = "Análise de Crédito";
+
+    if (Session["RazaoSocial"] != null)
+    {
+        ViewBag.RazaoSocial = Session["RazaoSocial"].ToString();
+        ViewBag.FontePagadoraId = Session["FontePagadoraId"].ToString();
+        if (Session["Cnpj"] == null)
+        {
+            Session["Cnpj"] = "00.000.000/0000-00";
+        }
+        ViewBag.Cnpj = Session["Cnpj"].ToString();
+        ViewBag.Valor = "true";
+    }
+    else
+    {
+        ViewBag.RazaoSocial = "";
+        ViewBag.FontePagadoraId = "0";
+        ViewBag.Valor = "false";
+
+    }
+}
+<br />
+<br />
+<br />
+<section class="content-header">
+    <h1>
+        @ViewBag.Title
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">@ViewBag.Title</a>
+        </li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm("Index", " ", FormMethod.Post, new { id = "frmConsultaCliente" }))
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-chart-line fa-lg"></i>
+                    @ViewBag.Title
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="form-group col-md-8">
+                            <label for="btnPesquisarClienteFaturadoContra">Cliente:</label>
+                            @Html.DropDownListFor(model => model.ContaPesquisaId, new MultiSelectList(Model.ContasPesquisa, "Id", "Display"), new { @class = "form-control form-control-sm" })
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="btnPesquisarContas">&nbsp;</label>
+                            <a id="btnPesquisarContas" href="#" class="btn btn-outline-secondary btn-sm btn-block btn-as-block" onclick="pesquisarContas()">
+                                <i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar Cliente
+                            </a>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label>&nbsp;</label>
+                            <a id="btnConsultarSpc" href="#" class="btn btn-outline-secondary btn-sm btn-block btn-as-block disabled" onclick="pesquisarSpc()">
+                                <i class="fas fa-search"></i>&nbsp;&nbsp;Consultar SPC
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-check form-check-inline">
+                                @Html.CheckBoxFor(model => model.Reprocessar, new { @class = "form-check-input" })&nbsp;
+                                <strong> @Html.LabelFor(model => model.Reprocessar, new { @class = "form-check-label" })</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2 invisivel" id="pnlConsulta">
+                        <div class="col-md-12">
+
+                            <ul class="nav nav-tabs" id="abas" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="contatos-tab" data-toggle="tab" href="#pendenciaFinanceira" role="tab" aria-controls="pendencia" aria-selected="true">Pendência Financeira</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="oportunidades-tab" data-toggle="tab" href="#DadosFaturamento" role="tab" aria-controls="dados" aria-selected="false">Dados Faturamento</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="pendenciaFinanceira" role="tabpanel" aria-labelledby="pendencia-tab">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <div id="pnlResultadoSpc" class="invisivel">
+                                                @Html.Partial("_ResultadoSPC", Model)
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <div id="pnlPendenciasFinanceiras" class="invisivel">
+                                                @Html.Partial("_PendenciasFinanceiras", Model.PendenciasFinanceiras)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="DadosFaturamento" role="tabpanel" aria-labelledby="dados-tab">
+
+                                    <div class="row">
+                                        <div class="linha-colorida">
+                                            <i class="fa fa-minus-circle ml-1 mr-1"></i>
+                                            Dados Faturamento
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+
+                                        <div class="form-group col-md-6">
+                                            @Html.LabelFor(model => model.CondicaoPagamentoId)
+                                            @Html.DropDownListFor(model => model.CondicaoPagamentoId, new MultiSelectList(Model.CondicoesPagamento, "Id", "Descricao"), new { @class = "form-control form-control-sm" })
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            @Html.LabelFor(model => model.LimiteCredito)
+                                            @Html.EditorFor(model => model.LimiteCredito, new { htmlAttributes = new { @class = "form-control form-control-sm moeda" } })
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row align-items-end">
+                                        <div class="form-group col-md-6">
+                                            @Html.LabelFor(model => model.Observacao)
+                                            @Html.TextAreaFor(model => model.Observacao, new { @class = "form-control form-control-sm", @rows = 4 })
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <a href="#" class="btn btn-outline-secondary btn-sm btn-block btn-as-block" onclick="cadastrarLimiteCredito();"><i class="fas fa-save"></i>&nbsp;&nbsp;Salvar</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-end">
+                                        <div class="form-group col-md-8">
+                                            <div id="pnlSolicitacoesLimiteCredito">
+                                                @Html.Partial("_SolicitacoesLimiteCredito", Model.SolicitacoesLimiteCredito)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="pnlHistoricoWorkflow" class="invisivel">
+                        <div class="row">
+                            <div class="linha-colorida">
+                                <i class="fa fa-minus-cogs ml-1 mr-1"></i>
+                                Fluxo de Aprovação
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="pnlInfoHistoricoWorkflow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+<br />
+@Html.Partial("_RecallLimite")
+@Html.Partial("_RecallAnaliseCredito")
+@*@Html.Partial("_RecallAnaliseCredito")*@
+@Html.Partial("_PesquisarContas")
+
+@section Css{
+
+    @Styles.Render("~/bundles/datatablesCSS")
+
+    <style>
+        .linha-colorida {
+            margin-top: 10px;
+            background-color: #c8f4d5;
+            font-size: 12px;
+            width: 100%;
+            margin-left: 15px;
+            margin-right: 15px;
+            font-weight: 600;
+            padding: 4px;
+        }
+
+        label {
+            margin-bottom: 0px !important;
+            font-weight: 600 !important;
+        }
+
+        .form-group {
+            margin-bottom: 4px !important;
+        }
+
+        .campo-leitura {
+            background-color: white !important;
+        }
+    </style>
+
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(document).ready(function () {
+            $('main')
+                .addClass('container')
+                .removeClass('container-fluid');
+        });
+
+        function pesquisarContas() {
+
+            event.preventDefault();
+
+            $('#pesquisa-modal-contas')
+                .modal('show');
+        }
+
+        function selecionarConta(id, descricao, documento) {
+            $('#pesquisa-modal-contas').modal('hide');
+
+            $('#btnPesquisarContas').html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                .addClass('disabled');
+            $('#ContaPesquisaId')
+                .empty()
+                .append($('<option>', {
+                    value: id,
+                    text: descricao
+                })).focus();
+
+            $('#ListaContas').empty();
+
+            $('#pnlConsulta')
+                .addClass('invisivel');
+
+            $('#pnlResultadoSpc')
+                .html('')
+                .addClass('invisivel');
+
+            $('#pnlPendenciasFinanceiras')
+                .html('')
+                .addClass('invisivel');
+
+            $('#btnConsultarSpc').removeClass('disabled');
+
+            $.get(urlBase + 'AnaliseCredito/ConsultarPendenciasFinanceiras?documento=' + documento, function (response) {
+
+                $('#pnlPendenciasFinanceiras')
+                    .html(response)
+                    .removeClass('invisivel');
+
+                $('#pnlHistoricoWorkflow')
+                    .removeClass('invisivel');
+
+                $('#pnlConsulta')
+                    .removeClass('invisivel');
+
+                $('#tbPendenciasEcoporto').DataTable({
+                    "language": {
+                        "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                    }
+                });
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante a consulta', 'CRM');
+                }
+            }).always(function () {
+
+                resultadoSpc(id, false);
+                obterSolicitacoesLimiteCredito(id);
+                obterHistoricoWorkflow(id)
+            });
+        }
+
+
+        function pesquisarSpc() {
+
+            event.preventDefault();
+
+            $('#pnlResultadoSpc')
+                .html('')
+                .addClass('invisivel');
+
+            var contaId = $('#ContaPesquisaId').val();
+            var reprocessar = $('#Reprocessar').is(':checked');
+
+
+
+            if (!isNumero(contaId)) {
+                toastr.error('Escolha um Cliente', 'CRM');
+                return;
+            }
+
+            $('#btnConsultarSpc').html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                .addClass('disabled');
+
+            resultadoSpc(contaId, reprocessar);
+        }
+
+    $(window).on("load", function () {
+
+        var oportunidade = "@ViewBag.Valor";
+
+        if (oportunidade === "true") {
+            selecionarConta(@int.Parse(ViewBag.FontePagadoraId) , "@ViewBag.RazaoSocial", "@ViewBag.Cnpj");
+        }
+
+        });
+
+        function resultadoSpc(contaId, reprocessar) {
+
+            $.get(urlBase + 'AnaliseCredito/ConsultarSpc?ContaPesquisaId=' + contaId + '&Reprocessar=' + reprocessar, function (response) {
+
+                $('#pnlResultadoSpc')
+                    .html(response)
+                    .removeClass('invisivel');
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante a consulta', 'CRM');
+                }
+            }).always(function () {
+                $('#btnConsultarSpc').html('<i class="fa fa-search"></i> Consultar SPC')
+                    .removeClass('disabled');
+
+                $('#btnPesquisarContas').html('<i class="fa fa-search"></i> Pesquisar Cliente')
+                    .removeClass('disabled');
+            });
+        }
+
+        function obterSolicitacoesLimiteCredito(contaId) {
+
+            $.get(urlBase + 'AnaliseCredito/ObterSolicitacoesLimiteCredito?ContaId=' + contaId, function (response) {
+
+                $('#pnlSolicitacoesLimiteCredito')
+                    .html(response);
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante a consulta', 'CRM');
+                }
+            });
+        }
+
+        $('#LimiteCredito').click(function () {
+            $('#LimiteCredito').select();
+        });
+
+    function cadastrarLimiteCredito() {
+       // alert("Teste");
+            var contaId = $('#ContaPesquisaId').val();
+
+            if (!isNumero(contaId)) {
+                toastr.error('Escolha um Cliente', 'CRM');
+                return;
+            }
+
+            var obj = {
+                contaPesquisaId: $('#ContaPesquisaId').val(),
+                reprocessar: $('#Reprocessar').is(':checked'),
+                condicaoPagamentoId: $('#CondicaoPagamentoId').val(),
+                limiteCredito: $('#LimiteCredito').val(),
+                observacao: $('#Observacao').val()
+            };
+
+            $.post(urlBase + 'AnaliseCredito/CadastrarLimiteCredito', obj, function (response) {
+
+                $('#pnlSolicitacoesLimiteCredito')
+                    .html(response);
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante o Cadastro', 'CRM');
+                }
+            });
+
+            $("#CondicaoPagamentoId").val("B002");
+            $("#LimiteCredito").val("");
+            $("#Observacao").val("");
+        }
+    function enviarParaAprovacao(processoId, processo, contaPesquisaId) {
+        var contaId = $('#ContaPesquisaId').val();
+        var status = $('#statusAPR').html("Em Aprovação");
+            console.log(status);
+
+            if (!isNumero(contaId)) {
+                toastr.error('Escolha um Cliente', 'CRM');
+                return;
+            }
+
+            $.post(urlBase + 'AnaliseCredito/EnviarParaAprovacao', { processoId: processoId, processo: processo, contaPesquisaId: contaPesquisaId }, function (response) {
+                toastr.success('Enviado para aprovação!', 'CRM');
+
+                $('#pnlSolicitacoesLimiteCredito')
+                    .html(response);
+
+                $("#CondicaoPagamentoId").val("B002");
+                $("#LimiteCredito").val("");
+                $("#Observacao").val("");
+
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante o envio', 'CRM');
+                }
+            });
+
+        }
+    function selecionarLimiteCredito(id) {
+
+            $.get(urlBase + 'AnaliseCredito/ObterDetalhesLimiteCredito/' + id, function (response) {
+
+                if (response) {
+                    $('#CondicaoPagamentoId').val(response.CondicaoPagamentoId);
+                    $('#LimiteCredito').val(response.LimiteCredito);
+                    $('#Observacao').val(response.Observacoes);
+                }
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante a consulta', 'CRM');
+                }
+            });
+        }
+
+    function excluirLimiteCredito(id) {
+
+            $.post(urlBase + 'AnaliseCredito/ExcluirLimiteCredito', { id: id }, function (response) {
+
+                toastr.success('Limite de crédito excluído com sucesso!', 'CRM');
+                $("#CondicaoPagamentoId").val("B002");
+                $("#LimiteCredito").val("");
+                $("#Observacao").val("");
+
+                $('#linha-limite-' + id).remove();
+
+            }).fail(function (data) {
+
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha durante a exclusão', 'CRM');
+                }
+            });
+    }
+
+    function expandirLinha(id) {
+
+            event.preventDefault();
+
+            var $linha = $('#detalhe-' + id);
+
+            if ($linha.hasClass('invisivel')) {
+                $linha.removeClass('invisivel');
+            } else {
+                $linha.addClass('invisivel');
+            }
+
+        }
+
+    function obterHistoricoWorkflow(id) {
+
+            $.get(urlBase + 'AnaliseCredito/ObterHistoricoWorkflow/?contaId=' + id, function (data) {
+
+                if (data) {
+                    $('#pnlInfoHistoricoWorkflow').html(data);
+                }
+
+            }).fail(function (data) {
+                toastr.error(data.statusText, 'CRM');
+            });
+        }
+
+    function recallAnaliseCredito(id) {
+        event.preventDefault();
+        $('#RecallAnaliseId').val(id);
+
+        $('#modal-motivo-recall-analise').modal('show');
+    };
+
+        $('#MotivoRecallAnalise').keyup(function () {
+
+        if ($('#MotivoRecallAnalise').val().length > 0) {
+            $('#btnConfirmaRecallAnalise').prop('disabled', false);
+        } else {
+            $('#btnConfirmaRecallAnalise').prop('disabled', true);
+        }
+    });
+
+    $('#btnAnexar').click(function () {
+
+        $(this).html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+            .addClass('disabled');
+    });
+
+    //recallSucesso = function (data) {
+
+    //    if (data) {
+
+    //        toastr.success('Recall aprovado', 'CRM');
+
+    //        if (data.Processo === 1) {
+    //            $('#modal-motivo-recall-analise').modal('hide');
+    //        } else if (data.Processo === 2) {
+    //            $('#modal-motivo-recall-analise').modal('hide');
+    //            window.location.hash = "#fichaDeFaturamento";
+    //        } else if (data.Processo === 3) {
+    //            $('#modal-motivo-recall-premios').modal('hide');
+    //            window.location.hash = "#premioDeParceria";
+    //        } else if (data.Processo === 4) {
+    //            $('#modal-motivo-recall-adendos').modal('hide');
+    //            window.location.hash = "#adendos";
+    //        }
+
+    //        setTimeout(function () {
+    //            location.reload();
+    //        }, 2000);
+    //    }
+    //};
+
+    recallErro = function (xhr, status) {
+
+        if (xhr.statusText)
+            toastr.error(xhr.statusText, 'CRM');
+        };
+        //recall analise
+        function recallLimiteCredito(id) {
+            event.preventDefault();
+            $('#RecallLimiteId').val(id);
+
+            $('#modal-motivo-recall-limite').modal('show');
+        };
+
+        $('#MotivoRecallLimite').keyup(function () {
+
+            if ($('#MotivoRecallLimite').val().length > 0) {
+                $('#btnConfirmaRecallLimite').prop('disabled', false);
+            } else {
+                $('#btnConfirmaRecallLimite').prop('disabled', true);
+            }
+        });
+
+        $('#btnAnexar').click(function () {
+
+            $(this).html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                .addClass('disabled');
+        });
+
+        recallSucesso = function (data) {
+
+            if (data) {
+
+                toastr.success('Recall aprovado', 'CRM');
+
+                if (data.Processo === 1) {
+                    $('#modal-motivo-recall').modal('hide');
+                } else if (data.Processo === 2) {
+                    $('#modal-motivo-recall-fichas').modal('hide');
+                    window.location.hash = "#fichaDeFaturamento";
+                } else if (data.Processo === 3) {
+                    $('#modal-motivo-recall-premios').modal('hide');
+                    window.location.hash = "#premioDeParceria";
+                } else if (data.Processo === 4) {
+                    $('#modal-motivo-recall-adendos').modal('hide');
+                    window.location.hash = "#adendos";
+                }
+
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
+            }
+        };
+
+        recallErro = function (xhr, status) {
+
+            if (xhr.statusText)
+                toastr.error(xhr.statusText, 'CRM');
+        };
+
+
+    </script>
+}

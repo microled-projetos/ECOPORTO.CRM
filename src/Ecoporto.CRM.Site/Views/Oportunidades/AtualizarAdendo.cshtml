@@ -1,0 +1,266 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAdendosViewModel
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums;
+
+@{
+    ViewBag.Title = "Detalhes do Adendo";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Oportunidades
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Oportunidades</a>
+        </li>
+        <li class="active">Cadastro de Oportunidades</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-edit fa-lg"></i>
+        Detalhes do Adendo
+        <div class="float-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                @if (Model.StatusAdendo == StatusAdendo.ENVIADO || Model.StatusAdendo == StatusAdendo.APROVADO)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Não é possível atualizar adendos com Status <strong>@Model.StatusAdendo.ToName()</strong>
+                    </div>
+                }
+                else
+                {
+                    using (Ajax.BeginForm("AtualizarAdendo", "Oportunidades", new AjaxOptions
+                    {
+                        OnSuccess = "adendosMensagemSucesso",
+                        OnFailure = "adendosMensagemErro",
+                        InsertionMode = InsertionMode.Replace,
+                        HttpMethod = "POST"
+                    }, new { id = "frmAtualizacaoOportunidadesAdendos", enctype = "multipart/form-data" }))
+                    {
+                        
+
+                        @Html.HiddenFor(model => model.AdendoOportunidadeId)
+                        @Html.HiddenFor(model => model.TipoAdendo)
+                        @Html.HiddenFor(model => model.StatusAdendo)
+
+                        if (Model.TipoAdendo == TipoAdendo.ALTERACAO_VENDEDOR)
+                        {
+                            @Html.Partial("_AbaAdendosVendedor", Model)
+                        }
+
+                        if (Model.TipoAdendo == TipoAdendo.FORMA_PAGAMENTO)
+                        {
+                            @Html.Partial("_AbaAdendosFormaPagamento", Model)
+                        }
+
+                        if (Model.TipoAdendo == TipoAdendo.EXCLUSAO_GRUPO_CNPJ)
+                        {
+                            <div id="RetornoAtualizacao">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+
+                                        <label>Selecione o(s) sub cliente(s) para exclusão:</label>
+
+                                        <div class="table-responsive">
+                                            <table id="tbAdendosInclusaoClientesGrupo" class="table table-sm table-striped" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">&nbsp;</th>
+                                                        <th scope="col">Nome Fantasia</th>
+                                                        <th scope="col">CNPJ/CPF</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.ClientesGrupoCNPJ)
+                                                    {
+                                                        <tr id="adendo-clientegrupo-@item.ContaId">
+                                                            <td><input type="checkbox" name="AdendosClientesGrupoExclusao" id="AdendosClientesGrupoExclusao" value="@item.ContaId" checked /></td>
+                                                            <td>@item.Descricao</td>
+                                                            <td>@item.Documento</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            @Html.Partial("_AbaAdendosExclusaoGrupoCNPJ", Model)
+                        }
+
+                        if (Model.TipoAdendo == TipoAdendo.EXCLUSAO_SUB_CLIENTE)
+                        {
+                            <div id="RetornoAtualizacao">
+                                <div class="form-row">
+                                    <div class="form-group col-md-8">
+
+                                        <div class="table-responsive">
+                                            <table id="tbAdendosExclusaoSubCliente" class="table table-sm table-striped" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th scope="col">Segmento</th>
+                                                        <th scope="col">Nome Fantasia</th>
+                                                        <th scope="col">Documento</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.SubClientes)
+                                                    {
+                                                        <tr id="adendo-subcliente-@item.Id">
+                                                            <td><input type="checkbox" name="AdendosSubClientesExclusao" id="AdendosSubClientesExclusao" value="@item.ContaId:@item.Segmento.ToValue()"  @(item.Checado ? "checked" : "") /></td>
+                                                            <td>@item.Segmento.ToName()</td>
+                                                            <td>@item.Descricao</td>
+                                                            <td>@item.Documento</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            @Html.Partial("_AbaAdendosExclusaoSubClientes", Model)
+                        }
+
+                        if (Model.TipoAdendo == TipoAdendo.INCLUSAO_GRUPO_CNPJ)
+                        {
+                            @Html.Partial("_AbaAdendosInclusaoGrupoCNPJ", Model)
+
+                            <div id="RetornoAtualizacao">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+
+                                        <div class="table-responsive">
+                                            <table id="tbAdendosInclusaoClientesGrupo" class="table table-sm table-striped" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th scope="col">Nome Fantasia</th>
+                                                        <th class="campo-acao">&nbsp;</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.ClientesGrupoCNPJ)
+                                                    {
+                                                        <tr id="adendo-clientegrupo-@item.GrupoCNPJId">
+                                                            <td><input type="checkbox" name="AdendosClientesGrupoInclusao" id="AdendosClientesGrupoInclusao" value="@item.GrupoCNPJId" checked /></td>
+                                                            <td>@item.Descricao</td>
+                                                            <td><img src="/Content/img/excluir.png" onclick="excluirLinhaAdendoClienteGrupo(@item.GrupoCNPJId)"></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        }
+
+                        if (Model.TipoAdendo == TipoAdendo.INCLUSAO_SUB_CLIENTE)
+                        {
+                            @Html.Partial("_AbaAdendosInclusaoSubClientes", Model)
+
+                            <div id="RetornoAtualizacao">
+                                <div class="form-row">
+                                    <div class="form-group col-md-8">
+
+                                        <div class="table-responsive">
+                                            <table id="tbAdendosInclusaoSubCliente" class="table table-sm table-striped" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th scope="col">Segmento</th>
+                                                        <th scope="col">Nome Fantasia</th>
+                                                        <th class="campo-acao">&nbsp;</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model.SubClientes)
+                                                    {
+                                                        <tr id="adendo-subcliente-@item.SubClienteId">
+                                                            <td><input type="checkbox" name="AdendosSubClientesInclusao" id="AdendosSubClientesInclusao" value="@item.SubClienteId:@item.Segmento.ToValue()" checked /></td>
+                                                            <td>@item.Segmento.ToName()</td>
+                                                            <td>@item.Descricao</td>
+                                                            <td><img src="/Content/img/excluir.png" onclick="excluirLinhaAdendoSubCliente(@item.SubClienteId)"></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-footer">
+        <div class="float-left">
+            <p>
+                <a href="#" id="close-window" class="btn btn-secondary btn-sm">Fechar</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+@Html.Partial("_PesquisarContas")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/oportunidadesAtualizar")
+
+    <script>
+        document.getElementById("close-window").addEventListener("click", function () {
+            window.close();
+        });
+    </script>
+}

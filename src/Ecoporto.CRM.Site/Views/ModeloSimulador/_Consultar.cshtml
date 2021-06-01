@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.ModeloSimulador>
+
+<div class="table-responsive">
+    <table id="tbModelos" class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descrição</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-@item.Id">
+                    <td class="campo-acao">@item.Id</td>
+                    <td>@item.Descricao</td>                   
+                    <td><a href="@Url.Action("Atualizar", "ModeloSimulador", new { id= item.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i>&nbsp;Atualizar</a></td>
+                    <td><a href="#" onclick="excluirModeloSimulador(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

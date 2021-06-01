@@ -1,0 +1,48 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+
+<div class="form-row">
+
+    <div class="form-group col-sm-1">
+        <label>Linha</label>
+        <input type="text" class="form-control form-control-sm" id="txtLinhaParametros" placeholder="Linha">
+    </div>
+
+    <div class="form-group col-sm-2">
+        <label>Campos da Proposta</label>
+        <select class="form-control form-control-sm" id="cbCamposParametros"></select>
+    </div>
+
+    <div class="form-group col-sm-1">
+        <label for="btnAdicionarParametro">&nbsp;</label>
+        <button id="btnAdicionarParametro" type="button" class="btn btn-primary btn-sm btn-block btn-as-block">Adicionar</button>
+    </div>
+
+    <div class="form-group col-sm-5">
+        <label>Parâmetros</label> <small>(Selecionar e arrastar e soltar na área de texto)</small>
+        <div>
+            <span draggable="true" data-linha="0" data-campo="i:DiasFreeTime" class="badge badge-warning badge-parametros cursor-mao">Free Time</span>
+            <span draggable="true" data-linha="0" data-campo="i:QtdeDias" class="badge badge-warning badge-parametros cursor-mao">Qtde Dias</span>
+            <span draggable="true" data-linha="0" data-campo="i:Validade" class="badge badge-warning badge-parametros cursor-mao">Validade</span>
+            <span draggable="true" data-linha="0" data-campo="s:TipoValidade" class="badge badge-warning badge-parametros cursor-mao">Tipo de Validade</span>
+            <span draggable="true" data-linha="0" data-campo="s:FormaPagamento" class="badge badge-warning badge-parametros cursor-mao">Forma de Pagamento</span>
+            <span draggable="true" data-linha="0" data-campo="s:Imposto" class="badge badge-warning badge-parametros cursor-mao">Imposto</span>
+        </div>
+    </div>
+
+    <div class="form-group col-sm-2">
+        <label for="btnPropostaValorExtenso">Opções</label>
+        <div>
+            <span id="btnPropostaValorExtenso" draggable="true" data-campo="[extenso]" class="badge badge-success cursor-mao">Valor por extenso</span>
+        </div>
+    </div>
+
+</div>
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+        @Html.TextAreaFor(model => model.CondicoesGerais, new { @class = "form-control form-control-sm" })
+    </div>
+</div>
+
+
+

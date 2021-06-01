@@ -1,0 +1,94 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Cadastrar Oportunidade";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Oportunidades
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Oportunidades</a>
+        </li>
+        <li class="active">Cadastro de Oportunidades</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <ul class="nav nav-tabs" id="abas" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="informacoesIniciais-tab" data-toggle="tab" href="#informacoesIniciais" role="tab" aria-controls="home" aria-selected="true">Informações Iniciais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" id="proposta-tab" data-toggle="tab" href="#proposta" role="tab" aria-controls="profile" aria-selected="false">Proposta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" id="fichaDeFaturamento-tab" data-toggle="tab" href="#fichaDeFaturamento" role="tab" aria-controls="messages" aria-selected="false">Ficha de Faturamento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" id="anexos-tab" data-toggle="tab" href="#anexos" role="tab" aria-controls="messages" aria-selected="false">Notas e Anexos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" id="premioDeParceria-tab" data-toggle="tab" href="#premioDeParceria" role="tab" aria-controls="messages" aria-selected="false">Prêmio de Parceria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" id="adendos-tab" data-toggle="tab" href="#adendos" role="tab" aria-controls="messages" aria-selected="false">Adendos</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="informacoesIniciais" role="tabpanel" aria-labelledby="home-tab">
+                        @Html.Partial("_AbaInformacoesIniciaisCadastrar", Model.OportunidadesInformacoesIniciaisViewModel)
+                    </div>
+                    <div class="tab-pane" id="proposta" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                    <div class="tab-pane" id="fichaDeFaturamento" role="tabpanel" aria-labelledby="messages-tab">...</div>
+                    <div class="tab-pane" id="anexos" role="tabpanel" aria-labelledby="messages-tab">...</div>
+                    <div class="tab-pane" id="premioDeParceria" role="tabpanel" aria-labelledby="messages-tab">...</div>
+                    <div class="tab-pane" id="adendos" role="tabpanel" aria-labelledby="messages-tab">...</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@Html.Partial("_PesquisarContas")
+@Html.Partial("_AbaInformacoesIniciaisPesquisaOportunidades")
+@Html.Partial("_ClonarOportunidade", Model.OportunidadesClonarPropostaViewModel)
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+    @Styles.Render("~/bundles/select2CSS")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/oportunidades")
+    @Scripts.Render("~/bundles/select2")
+}

@@ -1,0 +1,9 @@
+
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'ClientePropostaSelecionadoId', 'Selecione um Cliente', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'FontePagadoraId', 'Fonte Pagadora', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'CondicaoPagamentoPorDia', 'Condição Pgto p/ dia', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'DiaUtil', 'Dia útil?', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'EntregaEletronica', 'Entrega Eletrônica?', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'EntregaManual', 'Entrega Manual?', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'CorreiosComum', 'Correio', 0);
+INSERT INTO tb_crm_menus_campos (Id, MenuId, ObjetoId, ObjetoDescricao, Requerido) values (crm.seq_crm_menus_campos.nextval, 8, 'UltimoDiaDoMes', 'Último dia do mês', 0);

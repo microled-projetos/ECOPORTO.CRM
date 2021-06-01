@@ -1,0 +1,29 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+
+<div class="form-row">
+
+    <div class="form-group col-sm-4">
+        <label>Parâmetros da Oportunidade</label>
+        <select class="form-control form-control-sm" id="cbCamposOportunidade"></select>
+    </div>
+
+    <div class="form-group col-sm-1">
+        <label for="btnAdicionarParametroOportunidade">&nbsp;</label>
+        <button id="btnAdicionarParametroOportunidade" type="button" class="btn btn-primary btn-sm btn-block btn-as-block">Adicionar</button>
+    </div>
+
+    <div class="form-group col-sm-2">
+        <label for="btnOportunidadeValorExtenso">Opções</label>
+        <div>
+            <span id="btnOportunidadeValorExtenso" draggable="true" data-campo="[extenso]" class="badge badge-success cursor-mao">Valor por extenso</span>
+        </div>
+    </div>
+    
+</div>
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+        @Html.TextAreaFor(model => model.CondicoesIniciais, new { @class = "form-control form-control-sm" })
+    </div>
+</div>
+

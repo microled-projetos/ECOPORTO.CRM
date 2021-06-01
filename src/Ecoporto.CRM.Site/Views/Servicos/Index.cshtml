@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "Consultar Serviços";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Serviços
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Serviços</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Serviços Cadastrados
+        @if (User.IsInRole("Administrador") || User.IsInRole("Servicos:Cadastrar"))
+        {
+            <div class="float-right">
+                <a href="@Url.Action("Cadastrar", "Servicos")" class="btn btn-primary btn-sm btn-novo"><i class="fa fa-edit"></i>&nbsp;Cadastrar Serviço</a>
+            </div>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">RA</th>
+                        <th scope="col">OP</th>
+                        <th scope="col">RE</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@Html.Partial("_ModalExclusao")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        function excluir(id) {
+            $('#modal-mensagem').text('Confirma a exclusão do Contato?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data) {
+                    toastr.success('Contato excluído com sucesso!', 'CRM');
+                    $('#item-' + _id).remove();
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'CRM');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "pageLength": 50,
+                "ajax": {
+                    "url": "@Url.Action("Consultar", "Servicos")",
+                    "dataSrc": "dados",
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Descricao" },
+                    {
+                        "data": "Status",
+                        "render": function (data, type, row) {
+                            return data === 1
+                                ? '<span class="badge badge-success">Ativo</span>'
+                                : '<span class="badge badge-danger">Inativo</span>';
+                        }
+                    },
+                    {
+                        "data": "RecintoAlfandegado",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        }
+                    },
+                    {
+                        "data": "Operador",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        }
+                    },
+                    {
+                        "data": "Redex",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        }
+                    },
+                    {
+                        "data": "editar",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Atualizar", "Servicos")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Servicos:Atualizar") ? "true" : "false")
+                    },
+                    {
+                        "data": "excluir",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Servicos:Excluir") ? "true" : "false")
+                    },
+                    {
+                        "data": "historico",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Timeline", "Auditoria")?objeto=Servicos&chave=' + row.Id +'" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-clock"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Servicos:Logs") ? "true" : "false")
+                    }
+                ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

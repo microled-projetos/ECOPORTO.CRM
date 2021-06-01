@@ -1,0 +1,547 @@
+﻿@model Ecoporto.CRM.Site.Models.SimuladorViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = "Simulador de Cálculo";
+}
+
+<section class="content-header">
+    <h1>
+        Simulador de Cálculo
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contas</a>
+        </li>
+        <li class="active">Simulador de Cálculo</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @if (TempData["Sucesso"] != null)
+                        {
+                            @Html.ValidarFormulario(ViewContext.ViewData.ModelState, (bool)TempData["Atualizacao"])
+                        }
+                        else
+                        {
+                            @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="row mb-0">
+
+                        <div class="col-md-8">
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <i class="fa fa-edit fa-lg mr-2"></i>
+                                        <strong>Detalhes do Cálculo</strong>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                                @Html.HiddenFor(model => model.Id)
+                                @Html.HiddenFor(model => model.SimuladorSelecionado)
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        @Html.LabelFor(model => model.Descricao)
+                                        @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm", 50)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.TipoDocumentoId)
+                                        @Html.PrivilegedDropDownListFor(model => model.TipoDocumentoId, new MultiSelectList(Model.TiposDocumentos, "Id", "Descricao"), "form-control form-control-sm")
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.Regime)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.Regime, "form-control form-control-sm")
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.NumeroLotes)
+                                        @Html.PrivilegedEditorFor(model => model.NumeroLotes, "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.CifConteiner)
+                                        @Html.PrivilegedEditorFor(model => model.CifConteiner, "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.CifCargaSolta)
+                                        @Html.PrivilegedEditorFor(model => model.CifCargaSolta, "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.Periodos)
+                                        @Html.PrivilegedEditorFor(model => model.Periodos, "form-control form-control-sm")
+                                    </div>
+
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-10">
+                                        @Html.LabelFor(model => model.ArmadorId)
+                                        @Html.PrivilegedDropDownListFor(model => model.ArmadorId, new MultiSelectList(Model.Armadores, "Id", "NomeFantasia"), "form-control form-control-sm")
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="btnPesquisarArmadores">&nbsp;</label>
+                                        <a id="btnPesquisarArmadores" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.LocalAtracacaoId)
+                                        @Html.PrivilegedDropDownListFor(model => model.LocalAtracacaoId, new MultiSelectList(Model.LocaisAtracacao, "Id", "Descricao"), "form-control form-control-sm")
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.Margem)
+                                        @Html.PrivilegedDropDownListFor(model => model.Margem, new SelectList(Model.Margens), "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-2">
+                                        @Html.LabelFor(model => model.VolumeM3)
+                                        @Html.PrivilegedEditorFor(model => model.VolumeM3, "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.GrupoAtracacaoId)
+                                        @Html.PrivilegedDropDownListFor(model => model.GrupoAtracacaoId, new MultiSelectList(Model.GruposAtracacao, "Id", "Descricao"), "form-control form-control-sm")
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="form-group mb-0">
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <i class="fa fa-truck fa-lg mr-2"></i>
+                                        <strong>Carga</strong>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-12 mb-0 disabled">
+
+                                        <ul class="nav nav-tabs" id="abasCarga" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="conteiner-tab" data-toggle="tab" href="#sub-conteiner" role="tab" aria-controls="home" aria-selected="true">Contêiner</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="cs-tab" data-toggle="tab" href="#sub-cs" role="tab" aria-controls="profile" aria-selected="false">Carga Solta</a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="sub-conteiner" role="tabpanel" aria-labelledby="conteiner-tab">
+
+                                                <div class="row mt-2">
+                                                    <div class="form-group col-md-3">
+                                                        @Html.LabelFor(model => model.ConteinerTamanho)
+                                                        <select id="ConteinerTamanho" name="ConteinerTamanho" class="form-control form-control-sm">
+                                                            <option value="20">20</option>
+                                                            <option value="40">40</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group col-md-3">
+                                                        @Html.LabelFor(model => model.ConteinerPesoTotal)
+                                                        @Html.TextBoxFor(model => model.ConteinerPesoTotal, new { @class = "form-control form-control-sm" })
+                                                    </div>
+
+                                                    <div class="form-group col-md-3">
+                                                        @Html.LabelFor(model => model.ConteinerQuantidade)
+                                                        @Html.TextBoxFor(model => model.ConteinerQuantidade, new { @class = "form-control form-control-sm" })
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label>&nbsp;</label>
+                                                        <button id="btnCargaConteiner" onclick="adicionarCargaConteiner()" type="submit" class="btn btn-info btn-sm btn-block btn-as-block" @(Model.Id == 0 ? "disabled" : "")><i class="fa fa-save"></i>&nbsp;&nbsp;Incluir</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div id="pnlCargaConteiner" class="form-group col-md-12 mb-0">
+                                                        @Html.Partial("_ConsultarCargaConteiner", Model.CargasConteiner)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane" id="sub-cs" role="tabpanel" aria-labelledby="cs-tab">
+
+                                                <div class="row mt-2">
+                                                    <div class="form-group col-md-3">
+                                                        @Html.LabelFor(model => model.CargaSoltaQuantidade)
+                                                        @Html.TextBoxFor(model => model.CargaSoltaQuantidade, new { @class = "form-control form-control-sm" })
+                                                    </div>
+
+                                                    <div class="form-group col-md-3">
+                                                        @Html.LabelFor(model => model.CargaSoltaPesoM3)
+                                                        @Html.TextBoxFor(model => model.CargaSoltaPesoM3, new { @class = "form-control form-control-sm" })
+                                                    </div>
+
+                                                    <div class="form-group col-md-3 offset-md-3">
+                                                        <label>&nbsp;</label>
+                                                        <button id="btnCargaSolta" onclick="adicionarCargaSolta()" type="submit" class="btn btn-info btn-sm btn-block btn-as-block" @(Model.Id == 0 ? "disabled" : "")><i class="fa fa-save"></i>&nbsp;&nbsp;Incluir</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div id="pnlCargaSolta" class="form-group col-md-12 mb-0">
+                                                        @Html.Partial("_ConsultarCargaSolta", Model.CargasSolta)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.Partial("_ConsultarSimuladores", Model.Simuladores)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Simulador")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+
+                    <div class="float-right">
+                        <p>
+                            <a href="/Simulador" class="btn btn-secondary btn-sm">Limpar / Cadastrar Nova Simulação</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+        }
+    </div>
+</div>
+
+<br />
+
+@Html.Partial("_ModalExclusao")
+@Html.Partial("_PesquisarArmadores")
+@Html.Partial("_ConsultarTabelas", Model.Tabelas)
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        function exibirTabelas(id) {
+
+            $('#ResultadoSimulador').html('')
+                .hide();
+
+            $('.modal-title.simulador').text('Selecione uma Tabela de Cobrança na lista abaixo:');
+
+             $('#consultar-tabelas-modal')
+                .modal('show');
+
+             $('#tbSimuladorTabelas').hide();
+            $('#ListaTabelasLoader').show();
+
+            $('#SimuladorSelecionado').val(id);
+
+             $.get(urlBase + 'Simulador/ConsultarTabelas/' + id, function (resultado) {
+
+                $("#tbSimuladorTabelas").html(resultado);
+
+            }).done(function () {
+
+                $('#tbSimuladorTabelas').DataTable({
+                        destroy: true,
+                        "bLengthChange": false,
+                        "dom": '<"pnlParametrosExcel">frtip',
+                        "initComplete": function(settings, json) {
+                            $(".pnlParametrosExcel").load('@Url.Action("BarraParametros")');
+                        },
+                        "language": {
+                            "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                        }
+                });
+
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao obter as Tabelas', 'CRM');
+                }
+            }).always(function () {
+
+                $('#ListaTabelasLoader').hide();
+                $('#tbSimuladorTabelas').show();
+            });
+        }
+
+        function simularTodas() {
+
+            simular($('#SimuladorSelecionado').val(), '', true);
+        }
+
+        function simular(simuladorId, tabelas, completo) {
+
+            var vertical = false; //$("input[name='RelatorioVertical']:checked").val();
+
+            var obj = {
+                simuladorId: simuladorId,
+                tabelas: tabelas,
+                completo: completo,
+                vertical: vertical
+            };
+
+            $('#tbSimuladorTabelas_wrapper').hide();
+            $('#ListaTabelasLoader').show();
+
+            $('.modal-title.simulador').text('Por favor, aguarde...');
+
+            $.post('@Url.Action("SimularTabelas", "Simulador")', obj)
+                .done(function (resultado) {
+
+                    toastr.success('Simulação concluída com sucesso!', 'CRM');
+
+                    $('.modal-title.simulador').text('Baixar relatório');
+
+                    $('#ResultadoSimulador')
+                        .html(resultado)
+                        .show();
+
+                    return;
+
+                }).fail(function () {
+
+                    toastr.error('Falha ao gerar a simulação', 'CRM');
+
+                    $('#tbSimuladorTabelas_wrapper').show();
+                }).always(function () {
+                    $('#ListaTabelasLoader').hide();
+                });
+        }
+
+         $("#btnPesquisarArmadores").click(function () {
+
+            event.preventDefault();
+
+            $('#pesquisa-modal-armadores')
+                .data('toggle', 'ArmadorId')
+                .modal('show');
+        });
+
+        function selecionarArmador(id, descricao) {
+
+            var toggle = $('#pesquisa-modal-armadores').data('toggle');
+
+            $('#pesquisa-modal-armadores').modal('hide');
+
+            $("#" + toggle)
+                .empty()
+                .append($('<option>', {
+                    value: id,
+                    text: descricao
+                })).focus();
+
+            $("#ListaArmadores").empty();
+        }
+
+        function excluir(id) {
+            $('#modal-mensagem').text('Confirma a exclusão da Simulação?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data, statusText, xhr) {
+
+                    $('#item-simulador-' + _id).remove();
+
+                    toastr.success('Simulação excluída com sucesso!', 'CRM');
+
+                    setTimeout(function () {
+                        document.location.href = urlBase + 'Simulador';
+                    }, 1500);
+
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'CRM');
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        function adicionarCargaConteiner() {
+
+            event.preventDefault();
+
+            var id = $('#Id').val();
+            var tamanho = $('#ConteinerTamanho').val();
+            var peso = $('#ConteinerPesoTotal').val();
+            var quantidade = $('#ConteinerQuantidade').val();
+
+            $("#btnCargaConteiner")
+                .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                .addClass('disabled');
+
+            $.post(urlBase + 'Simulador/VincularCargaConteiner/', { id: id, tamanho: tamanho, peso: peso, quantidade: quantidade}, function (resultado) {
+
+                $('#pnlCargaConteiner').html(resultado);
+
+            }).done(function () {
+
+                toastr.success('Carga incluída com sucesso', 'CRM');
+
+                $('#ConteinerTamanho').val('20');
+                $('#ConteinerPesoTotal').val('0,00');
+                $('#ConteinerQuantidade').val('0');
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao incluir a Carga', 'CRM');
+                }
+            }).always(function () {
+                $("#btnCargaConteiner")
+                    .html('<i class="fa fa-save"></i> Incluir')
+                    .removeClass('disabled');
+            });
+        }
+
+        function excluirCargaConteiner(id) {
+
+            var _url = '@Url.Action("ExcluirCargaConteiner")';
+
+            $.post(_url, { id: id })
+                .done(function (data, statusText, xhr) {
+
+                    $('#item-cargaConteiner-' + id).remove();
+
+                    toastr.success('Carga excluída com sucesso!', 'CRM');
+
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'CRM');
+                });
+        }
+
+        function adicionarCargaSolta() {
+
+            event.preventDefault();
+
+            var id = $('#Id').val();
+            var quantidade = $('#CargaSoltaQuantidade').val();
+            var peso = $('#CargaSoltaPesoM3').val();
+
+            $("#btnCargaSolta")
+                .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
+                .addClass('disabled');
+
+            $.post(urlBase + 'Simulador/VincularCargaSolta/', { id: id, quantidade: quantidade, peso: peso }, function (resultado) {
+
+                $('#pnlCargaSolta').html(resultado);
+
+            }).done(function () {
+
+                toastr.success('Carga incluída com sucesso', 'CRM');
+
+                $('#CargaSoltaQuantidade').val('0');
+                $('#CargaSoltaPesoM3').val('0,00');
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao incluir a Carga', 'CRM');
+                }
+            }).always(function () {
+                $("#btnCargaSolta")
+                    .html('<i class="fa fa-save"></i> Incluir')
+                    .removeClass('disabled');
+            });
+        }
+
+        function excluirCargaSolta(id) {
+
+            var _url = '@Url.Action("ExcluirCargaSolta")';
+
+            $.post(_url, { id: id })
+                .done(function (data, statusText, xhr) {
+
+                    $('#item-cargaSolta-' + id).remove();
+
+                    toastr.success('Carga excluída com sucesso!', 'CRM');
+
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'CRM');
+                });
+        }
+
+        $(document).ready(function () {
+
+            $('#tbSimuladores').DataTable({
+                "bLengthChange": false,
+                "bFilter": false,
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿@model Ecoporto.CRM.Site.Models.FaixasVolumeViewModel
+
+<div class="modal" tabindex="-1" role="dialog" id="faixas-volume-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Faixas Volume</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @using (Ajax.BeginForm("Cadastrar", "FaixasVolume", null, new AjaxOptions
+            {
+                UpdateTargetId = "ListaFaixasVolume",
+                OnSuccess = "faixaVolumeCadastrada",
+                OnFailure = "faixaVolumeComErros",
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "POST"
+            }, new { id = "frmCadastrarFaixasVolume" }))
+            {
+                <div class="modal-body">
+                    <div class="form-row">
+
+                        @Html.HiddenFor(model => model.FaixaVolumeLayoutId)
+
+                        <div class="form-group col-sm-4">
+                            @Html.LabelFor(model => model.FaixasVolumeValorInicial)
+                            @Html.EditorFor(model => model.FaixasVolumeValorInicial, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            @Html.LabelFor(model => model.FaixasVolumeValorFinal)
+                            @Html.EditorFor(model => model.FaixasVolumeValorFinal, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            @Html.LabelFor(model => model.FaixasVolumePreco)
+                            @Html.EditorFor(model => model.FaixasVolumePreco, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <div id="ListaFaixasVolume" style="height:200px;" class="pre-scrollable"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-outline-primary">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    </div>
+</div>

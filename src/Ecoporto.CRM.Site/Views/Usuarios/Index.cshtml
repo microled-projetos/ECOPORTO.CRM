@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Consultar Usuários";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Usuários
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Usuários</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="row">
+
+    <div class="col-md-2">
+        @Html.Partial("_MenuUsuarios")
+    </div>
+
+    <div class="col-md-10">
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-table fa-lg"></i>
+                Usuários Cadastrados
+                @if (User.IsInRole("Administrador") || User.IsInRole("Usuarios:Cadastrar"))
+                {
+                    <div class="float-right">
+                        <a href="@Url.Action("Cadastrar", "Usuarios")" class="btn btn-primary btn-sm btn-novo"><i class="fa fa-edit"></i>&nbsp;Cadastrar Usuário</a>
+                    </div>
+                }
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Login</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Cargo</th>
+                                <th class="text-center" scope="col">Ativo?</th>
+                                <th class="text-center" scope="col">Admin?</th>
+                                <th class="text-center" scope="col">Externo?</th>
+                                <th class="campo-acao">&nbsp;</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@Html.Partial("_ModalExclusao")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "pageLength": 50,
+                "ajax": {
+                    "url": "@Url.Action("Consultar", "Usuarios")",
+                    "dataSrc": "dados",
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "columns": [
+                    { "data": "Login" },
+                    { "data": "Nome" },
+                    {
+                        "data": "Email",
+                        "defaultContent": "",
+                        "render": function (data, type, row) {
+                            if (row.Email) {
+                                return row.Email.length > 25 ?
+                                    row.Email.substr(0, 25) + '…' :
+                                    row.Email;
+                            }
+                        }
+                    },
+                    { "data": "DescricaoCargo" },
+                    {
+                        "data": "Ativo",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "data": "Administrador",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "data": "Externo",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        },
+                        "className": "text-center"
+                    },
+                    {
+                        "data": "editar",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Atualizar", "Usuarios")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Usuarios:Atualizar") ? "true" : "false")
+                    },
+                ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

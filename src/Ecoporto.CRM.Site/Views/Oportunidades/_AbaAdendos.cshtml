@@ -1,0 +1,126 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAdendosViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    bool? somenteLeitura = ViewBag.OportunidadeSomenteLeitura;
+}
+
+<br />
+
+@using (Ajax.BeginForm("CadastrarAdendos", "Oportunidades", new AjaxOptions
+{
+    OnSuccess = "adendosMensagemSucesso",
+    OnFailure = "adendosMensagemErro",
+    HttpMethod = "POST"
+}, new { id = "frmOportunidadesAdendos", enctype = "multipart/form-data" }))
+{    
+    @Html.HiddenFor(model => model.AdendoOportunidadeId)
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        @Html.LabelFor(model => model.TipoAdendo)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoAdendo, "form-control form-control-sm", readOnly: somenteLeitura)
+    </div>
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.StatusAdendo)
+        @Html.EnumDropDownListFor(c => c.StatusAdendo, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+    </div>
+
+    <div class="form-group col-md-1 offset-md-4">
+        <label>&nbsp;</label>
+        @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesAdendos:Logs"))
+        {
+            <button onclick="abrirAuditoriaAdendos(@Model.AdendoOportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-cogs"></i>&nbsp;&nbsp;Logs</button>
+        }
+        </div>
+
+    <div class="form-group col-md-1">
+        <label>&nbsp;</label>
+        <a id="btnFiltroAdendos" href="#" class="btn btn-info btn-sm btn-block btn-as-block"><i class="fa fa-search"></i>&nbsp;Filtro</a>
+    </div>
+
+</div>
+
+    <div class="form-row">
+        <div class="form-group col-md-12">
+
+            <div id="pnlFiltroAdendos" class="card mb-4" style="display:none;">
+                <div class="card-header">
+                    <i class="fa fa-search fa-lg"></i>
+                    Filtro
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="filtroAdendoId">ID:</label> &nbsp; <small>(somente números)</small>
+                            <input type="text" id="filtroAdendoId" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label for="filtroAdendoCliente">Descrição:</label>
+                            <input type="text" id="filtroAdendoCliente" class="form-control form-control-sm" />
+                        </div>                       
+                        <div class="form-group col-md-2">
+                            <label for="btnPesquisarAdendos">&nbsp;</label>
+                            <a id="btnPesquisarAdendos" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="pnlAdendosVendedor" class="form-row invisivel">
+        <div class="form-group col-md-6">
+            @Html.Partial("_AbaAdendosVendedor", Model)
+        </div>
+    </div>
+
+    <div id="pnlAdendosFormaPagamento" class="form-row invisivel">
+        <div class="form-group col-md-6">
+            @Html.Partial("_AbaAdendosFormaPagamento", Model)
+        </div>
+    </div>
+
+    <div id="pnlAdendosExclusaoSubClientes" class="form-row invisivel">
+        <div class="form-group col-md-12">
+            @Html.Partial("_AbaAdendosConsultaSubClientesExclusao", Model)
+            @Html.Partial("_AbaAdendosExclusaoSubClientes", Model)
+        </div>
+    </div>
+
+    <div id="pnlAdendosExclusaoGrupoCNPJ" class="form-row invisivel">
+        <div class="form-group col-md-12">
+            @Html.Partial("_AbaAdendosConsultaClientesGrupoExclusao", Model)
+            @Html.Partial("_AbaAdendosExclusaoGrupoCNPJ", Model)
+        </div>
+    </div>
+
+    <div id="pnlAdendosInclusaoSubClientes" class="form-row invisivel">
+        <div class="form-group col-md-6">
+            @Html.Partial("_AbaAdendosInclusaoSubClientes", Model)
+            @Html.Partial("_AbaAdendosConsultaSubClientesInclusao", Model)
+        </div>
+    </div>
+
+    <div id="pnlAdendosInclusaoGrupoCNPJ" class="form-row invisivel">
+        <div class="form-group col-md-6">
+            @Html.Partial("_AbaAdendosInclusaoGrupoCNPJ", Model)
+            @Html.Partial("_AbaAdendosConsultaClientesGrupoInclusao", Model)
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col-md-12">
+            <div id="ListaAdendos">
+                @Html.Partial("_AbaAdendosConsulta", Model.Adendos)
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="pnlAdendosHistoricoWorkflow"></div>
+        </div>
+    </div>
+}

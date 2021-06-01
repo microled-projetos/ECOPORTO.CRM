@@ -1,0 +1,33 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAdendosViewModel
+
+<br />
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+
+        <div class="form-row">
+            <div class="form-group col-sm-8">
+                @Html.LabelFor(model => model.AdendoClienteGrupoCNPJId)
+                @Html.DropDownListFor(c => c.AdendoClienteGrupoCNPJId, new MultiSelectList(Model.AdendoContas, "Id", "Descricao"), string.Empty, new { @class = "form-control form-control-sm" })
+            </div>
+            <div class="form-group col-md-2">
+                <label for="btnAdendoPesquisarGrupoCNPJ">&nbsp;</label>
+                <a id="btnAdendoPesquisarGrupoCNPJ" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;Pesquisar</a>
+            </div>
+            <div class="form-group col-sm-2">
+                <label>&nbsp;</label>
+                <button id="btnAdicionarClienteGrupoAdendo" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block btn-acao">Adicionar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-sm-2 offset-md-10">
+        @if (User.IsInRole("Administrador") || (User.IsInRole("OportunidadesAdendos:Cadastrar") || User.IsInRole("OportunidadesAdendos:Atualizar")))
+        {
+            <button type="submit" class="btn btn-primary btn-sm btn-block btn-as-block btn-acao" data-animation-name="spinner">Salvar</button>
+        }
+        </div>
+</div>

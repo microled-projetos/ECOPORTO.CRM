@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.SolicitacaoFormaPagamentoDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Lote</th>
+                <th scope="col">GR</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Faturado Contra</th>
+                <th scope="col">Data Cadastro</th>
+                <th scope="col">Usuário</th>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Atualizar"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Excluir"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr id="item-formapgto-@item.Id">
+                <td>@item.Lote</td>
+                <td>@item.GR</td>
+                <td>@item.Valor.ToMoeda(Moeda.REAL)</td>
+                <td>@item.FaturadoContra (@item.FaturadoContraDocumento)</td>
+                <td>@item.DataCadastro.DataHoraFormatada()</td>
+                <td>@item.CriadoPor</td>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Atualizar"))
+                {
+                    <td><a href="#" onclick="atualizarSolicitacaoFormaPgto(@item.Id)" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i>&nbsp;Atualizar</a></td>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Excluir"))
+                {
+                    <td><a href="#" onclick="excluirSolicitacaoFormaPgto(@item.Id)" class="btn btn-danger btn-sm btn-acao @((item.StatusSolicitacao != StatusSolicitacao.NOVO && item.StatusSolicitacao != StatusSolicitacao.REJEITADO) ? "disabled" : "")"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

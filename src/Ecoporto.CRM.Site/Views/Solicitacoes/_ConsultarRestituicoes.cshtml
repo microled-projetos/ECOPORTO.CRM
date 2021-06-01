@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.SolicitacaoRestituicaoDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                @if (Model.Select(c => c.TipoOperacao).FirstOrDefault() == 4)
+                {
+                    <th scope="col">Fatura</th>
+                }
+                <th scope="col">NF</th>
+                <th scope="col">Valor NF</th>
+                <th scope="col">Data Vencimento</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Favorecido</th>
+                <th scope="col">Dt. Cadastro</th>
+                <th scope="col">Usuário</th>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Atualizar"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Excluir"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-restituicao-@item.Id">
+                    @if (Model.Select(c => c.TipoOperacao).FirstOrDefault() == 4)
+                    {
+                        <td>@item.TipoPesquisaNumero</td>
+                    }
+                    <td>@item.NFE</td>
+                    <td>@item.ValorNF.ToMoeda(Moeda.REAL)</td>
+                    <td>@item.DataVencimento.DataFormatada()</td>
+                    <td>@item.Documento</td>
+                    <td>@item.FavorecidoDescricao @item.FavorecidoDocumento</td>
+                    <td>@item.DataCadastro.DataHoraFormatada()</td>
+                    <td>@item.CriadoPor</td>
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Atualizar"))
+                    {
+                        <td><a href="#" onclick="atualizarRestituicao(@item.Id)" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i>&nbsp;Atualizar</a></td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Excluir"))
+                    {
+                        <td><a href="#" onclick="excluirRestituicao(@item.Id)" class="btn btn-danger btn-sm btn-acao @((item.StatusSolicitacao != StatusSolicitacao.NOVO && item.StatusSolicitacao != StatusSolicitacao.REJEITADO) ? "disabled" : "")"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,241 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialProrrogacaoViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    var ecopatioTransportes = (Model.ProrrogacaoUnidadeSolicitacao == 3 || Model.ProrrogacaoTipoOperacaoSolicitacao == 4);
+    var habilitaCampos = (Model.ProrrogacaoStatusSolicitacao == StatusSolicitacao.NOVO || Model.ProrrogacaoStatusSolicitacao == StatusSolicitacao.REJEITADO);
+}
+
+@using (Ajax.BeginForm("CadastrarProrrogacao", "Solicitacoes", new AjaxOptions
+{
+    UpdateTargetId = "_ConsultaProrrogacoes",
+    OnSuccess = "solicitacoesMensagemSucesso",
+    OnFailure = "solicitacoesMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmSolicitacoesProrrogacao" }))
+{
+
+    @Html.HiddenFor(model => model.ProrrogacaoSolicitacaoId)
+    @Html.HiddenFor(model => model.ProrrogacaoId)
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoNotaFiscal)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.ProrrogacaoNotaFiscal, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.ProrrogacaoNotaFiscal, "form-control form-control-sm")
+            }
+        </div>
+
+        @if (ecopatioTransportes)
+        {
+            <div class="form-group col-md-2">
+                @Html.LabelFor(model => model.ProrrogacaoNotaFiscalId)
+                @Html.HiddenFor(model => model.ProrrogacaoNotaFiscalId)
+                @Html.EditorFor(model => model.ProrrogacaoNotaFiscalId, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled", @value = "" } })
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-2">
+                @Html.LabelFor(model => model.ProrrogacaoNotaFiscalId)
+                @if (habilitaCampos)
+                {
+                    @Html.PrivilegedDropDownListFor(model => model.ProrrogacaoNotaFiscalId, new MultiSelectList(Model.ProrrogacaoNotasFiscais, "Id", "Descricao"), "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlDropDownListFor(model => model.ProrrogacaoNotaFiscalId, new MultiSelectList(Model.ProrrogacaoNotasFiscais, "Id", "Descricao"), "form-control form-control-sm")
+                }
+            </div>
+        }
+
+        @if (ecopatioTransportes)
+        {
+            if (Model.ProrrogacaoTipoOperacaoSolicitacao == 6)
+            {
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(model => model.ProrrogacaoRazaoSocial)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedEditorFor(model => model.ProrrogacaoRazaoSocial, "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlEditorFor(model => model.ProrrogacaoRazaoSocial, "form-control form-control-sm")
+                    }
+                </div>
+            }
+            else
+            {
+                if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesProrrogacao:PesquisarContaProrrogacao"))
+                {
+                    <div class="form-group col-md-5">
+                        @Html.LabelFor(model => model.ProrrogacaoContaId)
+                        @if (habilitaCampos)
+                        {
+                            @Html.PrivilegedDropDownListFor(model => model.ProrrogacaoContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                        else
+                        {
+                            @Html.FullControlDropDownListFor(model => model.ProrrogacaoContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="btnPesquisarContaProrrogacao">&nbsp;</label>
+                        <a id="btnPesquisarContaProrrogacao" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.ProrrogacaoContaId)
+                        @if (habilitaCampos)
+                        {
+                            @Html.PrivilegedDropDownListFor(model => model.ProrrogacaoContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                        else
+                        {
+                            @Html.FullControlDropDownListFor(model => model.ProrrogacaoContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <div class="form-group col-md-6">
+                @Html.LabelFor(model => model.ProrrogacaoRazaoSocial)
+                @Html.EditorFor(model => model.ProrrogacaoRazaoSocial, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly" } })
+            </div>
+        }
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.ProrrogacaoValorNF)
+        @if (ecopatioTransportes)
+        {
+            if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.ProrrogacaoValorNF, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.ProrrogacaoValorNF, "form-control form-control-sm")
+            }
+        }
+        else
+        {
+            @Html.EditorFor(model => model.ProrrogacaoValorNF, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        }
+    </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoVencimentoOriginal)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.ProrrogacaoVencimentoOriginal, "form-control form-control-sm data")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.ProrrogacaoVencimentoOriginal, "form-control form-control-sm data")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.ProrrogacaoVencimentoOriginal, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoDataProrrogacao)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(c => c.ProrrogacaoDataProrrogacao, "form-control form-control-sm data")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(c => c.ProrrogacaoDataProrrogacao, "form-control form-control-sm data")
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoNumeroProrrogacao)
+
+            <select id="ProrrogacaoNumeroProrrogacao" name="ProrrogacaoNumeroProrrogacao" class="form-control form-control-sm">
+                <option value="0"></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoIsentarJuros)
+            <select id="ProrrogacaoIsentarJuros" name="ProrrogacaoIsentarJuros" class="form-control form-control-sm">
+                <option value=""></option>
+                <option value="0">Não</option>
+                <option value="1">Sim</option>
+            </select>
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoValorJuros)
+            @Html.EditorFor(model => model.ProrrogacaoValorJuros, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.ProrrogacaoValorTotalComJuros)
+            @Html.EditorFor(model => model.ProrrogacaoValorTotalComJuros, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-10">
+            @Html.LabelFor(model => model.ProrrogacaoObservacoes)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedTextAreaFor(model => model.ProrrogacaoObservacoes, "form-control form-control-sm", 4)
+            }
+            else
+            {
+                @Html.FullControlTextAreaFor(model => model.ProrrogacaoObservacoes, "form-control form-control-sm", 4)
+            }
+        </div>
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            <button id="btnLimparDadosProrrogacao" type="button" class="btn btn-secondary btn-sm btn-block">Limpar</button>
+        </div>
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesProrrogacao:Cadastrar") || User.IsInRole("SolicitacoesProrrogacao:Atualizar"))
+            {
+                <button type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="_ConsultaProrrogacoes">
+                @Html.Partial("_ConsultarProrrogacoes", Model.Prorrogacoes)
+            </div>
+        </div>
+    </div>
+}

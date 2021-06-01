@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.EquipeOportunidadeUsuarioDTO>
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="table-responsive">
+    <table id="tbUsuariosVinculados" class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col" class="td-w-10">Login</th>
+                <th scope="col">Nome</th>
+                <th class="td-w-10" scope="col">Papel</th>
+                <th class="td-w-10" scope="col">Acesso a Conta</th>
+                <th class="td-w-10" scope="col">Acesso a Oportunidade</th>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("EquipesOportunidade:Cadastrar"))
+                {
+                    <th class="td-w-10" colspan="2"><a id="btnPesquisarUsuarios" href="#" class="btn btn-primary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;Vincular Usuário</a></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr id="item-vinculo-@item.Id">
+                <td>@item.Login</td>
+                <td>@item.Nome</td>
+                <td>@item.PapelEquipe.ToName()</td>
+                <td>@(item.AcessoConta == 0 ? "Somente Leitura" : "Leitura e Escrita")</td>
+                <td>@(item.AcessoOportunidade == 0 ? "Somente Leitura" : "Leitura e Escrita")</td>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("EquipesOportunidade:Atualizar"))
+                {
+                    <td class="campo-acao"><a href="#" onclick="atualizarVinculo(@item.Id)" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a></td>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("EquipesOportunidade:Excluir"))
+                {
+                    <td class="campo-acao"><a href="#" onclick="excluirVinculo(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

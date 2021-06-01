@@ -1,0 +1,115 @@
+﻿@model Ecoporto.CRM.Site.Models.AlterarSenhaViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = "Alterar Senha";
+}
+
+<br />
+<br />
+<br />
+
+<div class="row mt-5">
+    <div class="col-md-4 offset-md-4">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+
+                        @if (ViewContext.TempData["Sucesso"] != null)
+                        {
+                            if (ViewContext.TempData["Sucesso"].ToString().ToBoolean())
+                            {
+                                <div class="alert alert-success" role="alert">
+                                    Senha <strong>alterada</strong> com sucesso!
+                                    <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (!ViewContext.ViewData.ModelState.IsValid)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    <ul>
+                                        @foreach (var erro in ViewContext.ViewData.ModelState.Values.SelectMany(x => x.Errors).ToList())
+                                        {
+                                            <li>@erro.ErrorMessage</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Alterar Senha
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.Login)
+                            @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.SenhaAtual)
+                            @Html.EditorFor(model => model.SenhaAtual, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.NovaSenha)
+                            @Html.EditorFor(model => model.NovaSenha, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.ConfirmacaoNovaSenha)
+                            @Html.EditorFor(model => model.ConfirmacaoNovaSenha, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-sm">Alterar Senha</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+

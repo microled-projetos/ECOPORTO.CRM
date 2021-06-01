@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "Consultar Equipes Vendedor";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Equipes
+        <small>Vendedor</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Equipes</a>
+        </li>
+        <li class="active">Equipes Vendedor</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Vendedores Ativos
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Login</th>
+                        <th scope="col">Nome Completo</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "pageLength": 50,
+                "ajax": {
+                    "url": "@Url.Action("Consultar", "EquipesVendedor")",
+                    "dataSrc": "dados",
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "columns": [
+                    {
+                        "data": "Id",
+                        "width": "30px"
+                    },
+                    {
+                        "data": "Login",
+                        "width": "150px"
+                    },
+                    { "data": "Nome" },
+                    {
+                        "data": "editar",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("EquipeUsuarios", "EquipesVendedor")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-user-plus"></i></a>';
+                        }
+                    }
+                ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

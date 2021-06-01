@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.ContatoDTO>
+
+<div class="table-responsive">
+    <table id="tbContatos" class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Conta</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-@item.Id">
+                    <td>@item.Nome @item.Sobrenome</td>
+                    <td>@item.ContaDescricao (@item.ContaDocumento)</td>
+                    <td><a href="#" onclick="selecionarContato(@item.Id, '@item.Nome @item.Sobrenome')"><i class="far fa-check-circle"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

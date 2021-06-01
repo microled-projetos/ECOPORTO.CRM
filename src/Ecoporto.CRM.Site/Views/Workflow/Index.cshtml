@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Workflow";
+}
+
+<iframe src="http://workflowaprovacao.ecoportosantos.com.br:5551/PendenciaAprovacao/Index?idAcesso=@(ViewBag.Id)&siteIframeWithoutMenu=1" style="position:fixed; top:50px; left:0px; bottom:0px; right:0px; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden;"></iframe>
+
+@section Scripts{
+
+    <script>
+        $(".footer").hide();     
+    </script>
+}

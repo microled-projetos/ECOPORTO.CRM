@@ -1,0 +1,197 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    ViewBag.Title = "Cadastrar Solicitação";
+    var habilitaCampo = (Model.StatusSolicitacao == StatusSolicitacao.NOVO || Model.StatusSolicitacao == StatusSolicitacao.REJEITADO);
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Solicitações
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contatos</a>
+        </li>
+        <li class="active">Cadastrar Solicitação</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-edit fa-lg"></i>
+                Detalhes da Solicitação
+                <div class="float-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("Cadastrar", "Solicitacoes", FormMethod.Post, new { id = "frmSolicitacoes" }))
+                {
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.TipoSolicitacao)
+
+                            <select class="form-control form-control-sm" id="TipoSolicitacao" name="TipoSolicitacao">
+                                <option selected="selected" value="0"></option>
+
+                                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesCancelamento:Acessar"))
+                                {
+                                    <option value="1">Cancelamento NF</option>
+                                }
+
+                                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Acessar"))
+                                {
+                                    <option value="2">Desconto</option>
+                                }
+
+                                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesProrrogacao:Acessar"))
+                                {
+                                    <option value="3">Prorrogação Boleto</option>
+                                }
+
+                                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesRestituicao:Acessar"))
+                                {
+                                    <option value="4">Restituição</option>
+                                }
+
+                                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesOutros:Acessar"))
+                                {
+                                    <option value="5">Outros</option>
+                                }
+                            </select>
+
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.StatusSolicitacao)
+                            @Html.EnumDropDownListFor(c => c.StatusSolicitacao, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.UnidadeSolicitacaoId)
+                            @if (habilitaCampo)
+                            {
+                                @Html.PrivilegedDropDownListFor(model => model.UnidadeSolicitacaoId, new MultiSelectList(Model.UnidadesSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                            else
+                            {
+                                @Html.FullControlDropDownListFor(model => model.UnidadeSolicitacaoId, new MultiSelectList(Model.UnidadesSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.OcorrenciaId)
+                            @if (habilitaCampo)
+                            {
+                                @Html.PrivilegedDropDownListFor(model => model.OcorrenciaId, new MultiSelectList(Model.SolicitacaoComercialOcorrenciasViewModel.Ocorrencias, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                            else
+                            {
+                                @Html.FullControlDropDownListFor(model => model.OcorrenciaId, new MultiSelectList(Model.SolicitacaoComercialOcorrenciasViewModel.Ocorrencias, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.AreaOcorrenciaSolicitacao)
+                            @if (habilitaCampo)
+                            {
+                                @Html.PrivilegedEnumDropDownListFor(c => c.AreaOcorrenciaSolicitacao, "form-control form-control-sm")
+                            }
+                            else
+                            {
+                                @Html.FullControlEnumDropDownListFor(c => c.AreaOcorrenciaSolicitacao, "form-control form-control-sm")
+                            }
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.TipoOperacaoId)
+                            @if (habilitaCampo)
+                            {
+                                @Html.PrivilegedDropDownListFor(model => model.TipoOperacaoId, new MultiSelectList(Model.TiposOperacaoSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                            else
+                            {
+                                @Html.FullControlDropDownListFor(model => model.TipoOperacaoId, new MultiSelectList(Model.TiposOperacaoSolicitacao, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.MotivoId)
+                            @if (habilitaCampo)
+                            {
+                                @Html.PrivilegedDropDownListFor(model => model.MotivoId, new MultiSelectList(Model.SolicitacaoComercialMotivosViewModel.Motivos, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                            else
+                            {
+                                @Html.FullControlDropDownListFor(model => model.MotivoId, new MultiSelectList(Model.SolicitacaoComercialMotivosViewModel.Motivos, "Id", "Descricao"), "form-control form-control-sm")
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.LabelFor(model => model.Justificativa)
+                            @if (habilitaCampo)
+                            {
+                                @Html.PrivilegedTextAreaFor(model => model.Justificativa, "form-control form-control-sm", 4)
+                            }
+                            else
+                            {
+                                @Html.FullControlTextAreaFor(model => model.Justificativa, "form-control form-control-sm", 4)
+                            }
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <a href="@Url.Action("Index", "Solicitacoes")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </div>
+                        <div class="form-group col-md-2 offset-md-8">
+                            <p>
+                                @if (User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:Cadastrar"))
+                                {
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/solicitacoes")
+}

@@ -1,0 +1,218 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAdendosViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = "Detalhes do Adendo";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Oportunidades
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Oportunidades</a>
+        </li>
+        <li class="active">Cadastro de Oportunidades</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="card-header">
+        <i class="fa fa-edit fa-lg"></i>
+        Detalhes do Adendo
+        <div class="float-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="form-row">
+                    <div class="form-group col-md-1">
+                        <label>Identificação: A-@Html.DisplayFor(model => model.Id)</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-10">
+                        <label>Tipo Adendo</label>
+                        @Html.EditorFor(model => model.DescricaoTipoAdendo, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Status Adendo</label>
+                        @Html.EditorFor(model => model.DescricaoStatusAdendo, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled" } })
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    @if (Model.TipoAdendo == TipoAdendo.ALTERACAO_VENDEDOR)
+                    {
+                        <div class="form-group col-md-12">
+                            <label>Vendedor:</label>
+                            @Html.DropDownListFor(c => c.AdendoVendedorId, new MultiSelectList(Model.Vendedores, "Id", "Nome"), string.Empty, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+                        </div>
+                    }
+
+                    @if (Model.TipoAdendo == TipoAdendo.FORMA_PAGAMENTO)
+                    {
+                        <div class="form-group col-md-12">
+                            <label>Forma Pagamento:</label>
+                            @Html.EnumDropDownListFor(c => c.AdendoFormaPagamento, new { @class = "form-control form-control-sm", @disabled = "disabled" })
+                        </div>
+                    }
+
+                    @if (Model.TipoAdendo == TipoAdendo.INCLUSAO_GRUPO_CNPJ)
+                    {
+                        <label>Grupos CNPJ para inclusão:</label>
+
+                        <div class="table-responsive">
+                            <table id="tbAdendosInclusaoGruposCNPJ" class="table table-sm table-striped" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nome Fantasia</th>
+                                        <th scope="col">CNPJ/CPF</th>
+                                        <th scope="col">Segmento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ClientesGrupoCNPJ)
+                                    {
+                                    <tr>
+                                        <td>@item.Descricao</td>
+                                        <td>@item.Documento</td>
+                                        <td>@item.SegmentoOportunidade.ToName()</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    @if (Model.TipoAdendo == TipoAdendo.EXCLUSAO_GRUPO_CNPJ)
+                    {
+                        <label>Grupos CNPJ para exclusão:</label>
+
+                        <div class="table-responsive">
+                            <table id="tbAdendosExclusaoGruposCNPJ" class="table table-sm table-striped" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nome Fantasia</th>
+                                        <th scope="col">CNPJ/CPF</th>
+                                        <th scope="col">Segmento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ClientesGrupoCNPJ)
+                                    {
+                                    <tr>
+                                        <td>@item.Descricao</td>
+                                        <td>@item.Documento</td>
+                                        <td>@item.SegmentoOportunidade.ToName()</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    @if (Model.TipoAdendo == TipoAdendo.INCLUSAO_SUB_CLIENTE)
+                    {
+                        <label>Sub Clientes para inclusão:</label>
+
+                        <div class="table-responsive">
+                            <table id="tbAdendosInclusaoGruposCNPJ" class="table table-sm table-striped" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nome Fantasia</th>
+                                        <th scope="col">CNPJ/CPF</th>
+                                        <th scope="col">Segmento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.SubClientes)
+                                    {
+                                        <tr>
+                                            <td>@item.Descricao</td>
+                                            <td>@item.Documento</td>
+                                            <td>@item.Segmento.ToName()</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    @if (Model.TipoAdendo == TipoAdendo.EXCLUSAO_SUB_CLIENTE)
+                    {
+                        <label>Sub Clientes para exclusão:</label>
+
+                        <div class="table-responsive">
+                            <table id="tbAdendosExclusaoGruposCNPJ" class="table table-sm table-striped" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nome Fantasia</th>
+                                        <th scope="col">CNPJ/CPF</th>
+                                        <th scope="col">Segmento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.SubClientes)
+                                    {
+                                    <tr>
+                                        <td>@item.Descricao</td>
+                                        <td>@item.Documento</td>
+                                        <td>@item.Segmento.ToName()</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-footer">
+        <div class="float-left">
+            <p>
+                <a href="#" id="close-window" class="btn btn-secondary btn-sm">Fechar</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts{
+
+    <script>
+        document.getElementById("close-window").addEventListener("click", function () {
+            window.close();
+        });
+    </script>
+}

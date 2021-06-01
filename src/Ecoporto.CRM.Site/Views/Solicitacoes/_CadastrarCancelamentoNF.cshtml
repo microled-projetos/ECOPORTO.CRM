@@ -1,0 +1,295 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialCancelamentoNFViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    var ecopatioTransportes = (Model.CancelamentoNFUnidadeSolicitacao == 3 || Model.CancelamentoTipoOperacaoSolicitacao == 4);
+    var habilitaCampos = (Model.CancelamentoStatusSolicitacao == StatusSolicitacao.NOVO || Model.CancelamentoStatusSolicitacao == StatusSolicitacao.REJEITADO);
+}
+
+@using (Ajax.BeginForm("CadastrarCancelamentoNF", "Solicitacoes", new AjaxOptions
+{
+    UpdateTargetId = "_ConsultaCancelamentosNF",
+    OnSuccess = "solicitacoesMensagemSucesso",
+    OnFailure = "solicitacoesMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmSolicitacoesCancelamentoNF" }))
+{
+
+    @Html.HiddenFor(model => model.CancelamentoNFSolicitacaoId)
+    @Html.HiddenFor(model => model.CancelamentoNFId)
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFTipoPesquisa)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedDropDownListFor(model => model.CancelamentoNFTipoPesquisa, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlDropDownListFor(model => model.CancelamentoNFTipoPesquisa, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFTipoPesquisaNumero)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.CancelamentoNFTipoPesquisaNumero, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.CancelamentoNFTipoPesquisaNumero, "form-control form-control-sm")
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFNotaFiscalId)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.CancelamentoNFNotaFiscal, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.CancelamentoNFNotaFiscal, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedDropDownListFor(model => model.CancelamentoNFNotaFiscalId, new MultiSelectList(Model.CancelamentoNFNotasFiscais, "Id", "Descricao"), "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlDropDownListFor(model => model.CancelamentoNFNotaFiscalId, new MultiSelectList(Model.CancelamentoNFNotasFiscais, "Id", "Descricao"), "form-control form-control-sm")
+                }
+            }
+
+        </div>
+
+        <div class="form-group col-md-2">
+
+            @Html.HiddenFor(model => model.CancelamentoNFReserva)
+
+            @Html.LabelFor(model => model.CancelamentoNFLote)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.CancelamentoNFLote, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.CancelamentoNFLote, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.CancelamentoNFLote, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFValorNF)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.CancelamentoNFValorNF, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.CancelamentoNFValorNF, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.CancelamentoNFValorNF, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoValorAPagar)
+            @Html.EditorFor(model => model.CancelamentoValorAPagar, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFDataEmissao)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.CancelamentoNFDataEmissao, "form-control form-control-sm data")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.CancelamentoNFDataEmissao, "form-control form-control-sm data")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.CancelamentoNFDataEmissao, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFFormaPagamento)
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEnumDropDownListFor(c => c.CancelamentoNFFormaPagamento, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEnumDropDownListFor(c => c.CancelamentoNFFormaPagamento, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.CancelamentoNFFormaPagamento)
+                @Html.EditorFor(model => model.DescricaoCancelamentoNFFormaPagamento, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFDesconto)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.CancelamentoNFDesconto, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.CancelamentoNFDesconto, "form-control form-control-sm")
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFDataProrrogacao)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.CancelamentoNFDataProrrogacao, "form-control form-control-sm data")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.CancelamentoNFDataProrrogacao, "form-control form-control-sm data")
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNFValorNovaNF)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.CancelamentoNFValorNovaNF, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.CancelamentoNFValorNovaNF, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.CancelamentoNovoValorAPagar)
+            @Html.EditorFor(model => model.CancelamentoNovoValorAPagar, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        @if (ecopatioTransportes)
+        {
+            if (Model.CancelamentoTipoOperacaoSolicitacao == 6)
+            {
+                <div class="form-group col-md-8">
+                    @Html.LabelFor(model => model.CancelamentoNFRazaoSocial)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedEditorFor(model => model.CancelamentoNFRazaoSocial, "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlEditorFor(model => model.CancelamentoNFRazaoSocial, "form-control form-control-sm")
+                    }
+                </div>
+            }
+            else
+            {
+                if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesCancelamento:PesquisarContaCancelamentoNF"))
+                {
+                    <div class="form-group col-md-7">
+                        @Html.LabelFor(model => model.CancelamentoNFContaId)
+                        @if (habilitaCampos)
+                        {
+                            @Html.PrivilegedDropDownListFor(model => model.CancelamentoNFContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                        else
+                        {
+                            @Html.FullControlDropDownListFor(model => model.CancelamentoNFContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="btnPesquisarContaCancelamentoNF">&nbsp;</label>
+                        <a id="btnPesquisarContaCancelamentoNF" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group col-md-8">
+                        @Html.LabelFor(model => model.CancelamentoNFContaId)
+                        @if (habilitaCampos)
+                        {
+                            @Html.PrivilegedDropDownListFor(model => model.CancelamentoNFContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                        else
+                        {
+                            @Html.FullControlDropDownListFor(model => model.CancelamentoNFContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <div class="form-group col-md-8">
+                @Html.LabelFor(model => model.CancelamentoNFRazaoSocial)
+                @Html.EditorFor(model => model.CancelamentoNFRazaoSocial, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            </div>
+        }
+
+        <div class="form-group col-md-2">
+            <label>&nbsp;</label>
+            <button id="btnLimparCancelamentoNF" type="button" class="btn btn-secondary btn-sm btn-block">Limpar</button>
+        </div>
+        <div class="form-group col-md-2">
+            <label>&nbsp;</label>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesCancelamento:Cadastrar") || User.IsInRole("SolicitacoesCancelamento:Atualizar"))
+            {
+                <button type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="_ConsultaCancelamentosNF">
+                @Html.Partial("_ConsultarCancelamentosNF", Model.CancelamentosNF)
+            </div>
+        </div>
+    </div>
+}

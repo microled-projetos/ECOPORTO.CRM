@@ -1,0 +1,114 @@
+﻿@model Ecoporto.CRM.Site.Models.UsuarioViewModel
+
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="~/Content/img/favicon.ico" />
+
+    <title>Ecoporto :: CRM - Login</title>
+
+    @Styles.Render("~/bundles/login")
+
+</head>
+
+<body class="text-center">
+
+    @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { @class = "form-signin" }))
+    {
+        <img class="mb-4" src="~/Content/img/logo.png" alt="">
+
+        @Html.LabelFor(model => model.Login, new { @class = "sr-only" })
+        @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control", placeholder = "Nome de usuário" } })
+
+        @Html.LabelFor(model => model.Senha, new { @class = "sr-only" })
+        @Html.EditorFor(model => model.Senha, new { htmlAttributes = new { @class = "form-control", placeholder = "Senha" } })
+
+        <div class="text-danger">
+            @ViewBag.Mensagem
+        </div>
+
+        <div class="checkbox mb-2">
+            <label>
+                @Html.CheckBoxFor(Model => Model.Lembrar) Lembrar-me
+            </label>
+        </div>
+
+        <button class="btn btn-lg btn-primary btn-block mb-2" type="submit">Autenticar</button>
+
+        if (ViewBag.Mensagem != null && ViewBag.Externo == true)
+        {
+            <a id="lnkEsqueciMinhaSenha" href="@Url.Action("ResetarSenha", "Home")">Esqueci minha Senha</a>
+        }
+        else
+        {
+            <a id="lnkEsqueciMinhaSenha" href="@Url.Action("ResetarSenha", "Home")" style="display: none;">Esqueci minha Senha</a>
+        }
+
+        <br />
+
+        if (ViewBag.Mensagem != null && ViewBag.Externo == true)
+        {
+            <a id="lnkTrocarSenha" href="@Url.Action("TrocarSenha","Home", new { login = Model.Login })">Trocar Senha</a>
+        }
+        else
+        {
+            <a id="lnkTrocarSenha" href="#" style="display: none;">
+                Trocar Senha
+            </a>
+        }
+
+        <p class="mt-5 mb-3 text-muted">Copyright &copy; @DateTime.Now.Year</p>
+    }
+
+    @Scripts.Render("~/bundles/jquery")
+
+    <script>
+
+        $('#Login').keyup(function () {
+            if ($(this).val().length > 3) {
+
+                var urlBase = '@Url.Content("~")';
+
+                $.get(urlBase + 'Usuarios/ObterDetalhesDoUsuarioExterno?login=' + $(this).val(), function (resultado) {
+
+                    if (resultado) {
+                        if (resultado.Externo) {
+
+                            var url = urlBase + 'Home/TrocarSenha/?login=' + resultado.LoginExterno;
+
+                            $('#lnkTrocarSenha')
+                                .attr('href', url)
+                                .show();
+
+                            $('#lnkEsqueciMinhaSenha')
+                                .show();
+                        } else {
+
+                            $('#lnkTrocarSenha')
+                                .attr('href', '')
+                                .hide();
+
+                            $('#lnkEsqueciMinhaSenha')
+                                .hide();
+                        }
+                    }
+
+                });
+
+            }
+        });
+
+    </script>
+
+
+</body>
+</html>
+

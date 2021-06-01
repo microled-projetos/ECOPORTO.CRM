@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.EquipeVendedorUsuarioDTO>
+
+<div class="table-responsive">
+    <table class="table table-hover table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col" class="td-w-10">Login</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Acesso à Conta</th>
+                <th scope="col">Acesso à Oportunidade</th>
+                <th scope="col">Papel</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-vinculo-@item.Id">
+                    <td>@item.Login</td>
+                    <td>@item.Nome</td>
+                    <td>
+                        <select id="acesso-conta-@item.Id">
+                            <option value="0">Somente Leitura</option>
+                            <option value="1">Leitura e Escrita</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select id="acesso-oportunidade-@item.Id">
+                            <option value="0">Somente Leitura</option>
+                            <option value="1">Leitura e Escrita</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="acesso-papel">
+                            <option value="0">Nenhum</option>
+                            <option value="1">Assistente</option>
+                            <option value="2">Corporativo</option>
+                        </select>
+                    </td>
+
+                    <td><a href="#" onclick="selecionarUsuario(@item.Id)"><i class="far fa-check-circle"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

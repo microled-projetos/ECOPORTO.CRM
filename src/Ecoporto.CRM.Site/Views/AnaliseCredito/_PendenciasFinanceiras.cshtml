@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.PendenciaFinanceiraDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<div class="row mb-2">
+    <div class="linha-colorida">
+        <i class="fa fa-minus-circle ml-1 mr-1"></i>
+        Pendências Financeiras Ecoporto
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table id="tbPendenciasEcoporto" class="table table-sm table-striped" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Nota Fiscal</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Vencimento</th>
+                <th scope="col">Lote/Reserva</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Operação</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NotaFiscal</td>
+                    <td>@item.Valor.ToMoeda(Moeda.REAL)</td>
+                    <td>@item.Cliente</td>
+                    <td>@item.Vencimento.DataFormatada()</td>
+                    <td>@item.Lote</td>
+                    <td>@item.Documento</td>
+                    <td>@item.Tipo</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

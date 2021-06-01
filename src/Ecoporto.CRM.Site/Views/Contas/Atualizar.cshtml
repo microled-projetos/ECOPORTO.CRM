@@ -1,0 +1,382 @@
+﻿@model Ecoporto.CRM.Site.Models.ContaViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Atualizar Conta";
+    bool? somenteLeitura = ViewBag.ContaSomenteLeitura;
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Contas
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contas</a>
+        </li>
+        <li class="active">Atualizar Conta</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, true)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                        <strong>Detalhes da Conta</strong>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                                @Html.HiddenFor(model => model.CriadoPor)
+                                @Html.HiddenFor(model => model.Id)
+
+                                <div class="row">
+                                    <div class="form-group col-md-8">
+                                        @Html.LabelFor(model => model.Descricao)
+                                        @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm", 255, readOnly: somenteLeitura)
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.SituacaoCadastral)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.SituacaoCadastral, "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.Segmento)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.Segmento, "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.ClassificacaoFiscal)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.ClassificacaoFiscal, "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.Documento)
+                                        @Html.PrivilegedEditorFor(model => model.Documento, "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.InscricaoEstadual)
+                                        @Html.PrivilegedEditorFor(model => model.InscricaoEstadual, "form-control form-control-sm", 20, readOnly: somenteLeitura)
+                                    </div>
+
+                                    <div class="form-group col-md-8">
+                                        @Html.LabelFor(model => model.NomeFantasia)
+                                        @Html.PrivilegedEditorFor(model => model.NomeFantasia, "form-control form-control-sm", 150, readOnly: somenteLeitura)
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.Telefone)
+                                        @Html.PrivilegedEditorFor(model => model.Telefone, "form-control form-control-sm telefone", readOnly: somenteLeitura)
+                                    </div>
+
+                                    <div class="form-group col-md-8">
+                                        @Html.LabelFor(model => model.VendedorId)
+
+                                        @if (User.IsInRole("Administrador"))
+                                        {
+                                            @Html.PrivilegedDropDownListFor(model => model.VendedorId, new MultiSelectList(Model.Vendedores, "Id", "Nome"), "form-control form-control-sm", readOnly: somenteLeitura)
+                                        }
+                                        else
+                                        {
+                                            @Html.PrivilegedDropDownListFor(model => model.VendedorId, new MultiSelectList(Model.Vendedores, "Id", "Nome"), "form-control form-control-sm", readOnly: true)
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <i class="fa fa-home fa-lg"></i>
+                                        <strong>Endereço</strong>
+                                        <small class="float-right text-danger">Criado por: <strong>@ViewBag.UsuarioCriacao</strong>, em: <strong>@ViewBag.DataCriacao</strong></small>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.CEP)
+                                        @Html.PrivilegedEditorFor(model => model.CEP, "form-control form-control-sm cep", readOnly: somenteLeitura)
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Logradouro)
+                                        @Html.PrivilegedEditorFor(model => model.Logradouro, "form-control form-control-sm", 150, readOnly: somenteLeitura)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.Numero)
+                                        @Html.PrivilegedEditorFor(model => model.Numero, "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Bairro)
+                                        @Html.PrivilegedEditorFor(model => model.Bairro, "form-control form-control-sm", 50, readOnly: somenteLeitura)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.Estado)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.Estado, "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.CidadeId)
+                                        @Html.PrivilegedDropDownListFor(model => model.CidadeId, new MultiSelectList(Model.Cidades, "Id", "Descricao"), "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.PaisId)
+                                        @Html.PrivilegedDropDownListFor(model => model.PaisId, new MultiSelectList(Model.Paises, "Id", "Descricao"), "form-control form-control-sm", readOnly: somenteLeitura)
+                                    </div>
+
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Complemento)
+                                        @Html.PrivilegedEditorFor(model => model.Complemento, "form-control form-control-sm", 150, readOnly: somenteLeitura)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-check form-check-inline">
+                                            @Html.PrivilegedCheckBoxFor(model => model.Blacklist, "form-check-input")&nbsp;
+                                            <strong>@Html.LabelFor(model => model.Blacklist, new { @class = "form-check-label" })</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <ul class="nav nav-tabs" id="abas" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="contatos-tab" data-toggle="tab" href="#contatos" role="tab" aria-controls="home" aria-selected="true">Contatos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="oportunidades-tab" data-toggle="tab" href="#oportunidades" role="tab" aria-controls="profile" aria-selected="false">Oportunidades</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="oportunidades-inativas-tab" data-toggle="tab" href="#oportunidades-inativas" role="tab" aria-controls="messages" aria-selected="false">Oportunidades Inativas</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="contatos" role="tabpanel" aria-labelledby="home-tab">
+                                    @Html.Partial("_AbaContatos", Model)
+                                </div>
+                                <div class="tab-pane" id="oportunidades" role="tabpanel" aria-labelledby="profile-tab">
+                                    @Html.Partial("_AbaOportunidades", Model)
+                                </div>
+                                <div class="tab-pane" id="oportunidades-inativas" role="tabpanel" aria-labelledby="messages-tab">
+                                    @Html.Partial("_AbaOportunidadesInativas", Model)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Contas")" class="btn btn-secondary btn-sm">Retornar</a>
+                            <a href="#" onclick="cadastrarRangeIPs()" class="btn btn-warning btn-sm">Cadastrar IP's</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-sm" @((somenteLeitura == true) ? "disabled" : "")>Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        }
+    </div>
+</div>
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="excluir-contato-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Excluir Contato</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja excluir o Contato selecionado?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="confirmarExclusaoContato()">Estou ciente e confirmo a exclusão</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="excluir-oportunidade-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Excluir Oportunidade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja excluir a Oportunidade selecionada?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="confirmarExclusaoOportunidade()">Estou ciente e confirmo a exclusão</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="vincular-ips-modal">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Vincular IP's</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Use os campos abaixo para cadastrar os ranges de IP's:</p>
+
+                @using (Ajax.BeginForm("CadastrarRangeIP", "Contas", null, new AjaxOptions
+                {
+                    UpdateTargetId = "ListaVinculos",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "ListaVinculosLoader",
+                    HttpMethod = "POST"
+                }, new { id = "frmVincularIP" }))
+                {
+                    <input type="hidden" id="contaIdVinculoIP" name="contaIdVinculoIP" value="@Model.Id" />
+
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label>Descrição:</label>&nbsp;<small>(opcional)</small>
+                            <input type="text" class="form-control" id="descricaoVinculoIP" name="descricaoVinculoIP" maxlength="50">
+                        </div>
+                        <div class="col-md-3">
+                            <label>IP Inicial:</label>
+                            <input type="text" class="form-control IP" id="ipInicial" name="ipInicial">
+                        </div>
+                        <div class="col-md-3">
+                            <label>IP Final:</label>
+                            <input type="text" class="form-control IP" id="ipFinal" name="ipFinal">
+                        </div>
+                        <div class="col-md-2">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-outline-primary btn-block btn-as-block">Cadastrar</button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <div id="ListaVinculosLoader" class="text-center progresso">
+                                <img src="@Url.Content("~/Content/img/loading.gif")" />
+                            </div>
+                            <div id="ListaVinculos">
+                                <div class="table-responsive">
+                                    <table id="tbVinculosIPs" class="table table-sm" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Descrição</th>
+                                                <th scope="col">IP Inicial</th>
+                                                <th scope="col">IP Final</th>
+                                                <th class="campo-acao">&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.VinculoIPS)
+                                            {
+                                                <tr id="item-vinculo-@item.Id">
+                                                    <td>@item.Descricao</td>
+                                                    <td>@item.IPInicial</td>
+                                                    <td>@item.IPFinal</td>
+                                                    <td><a href="#" onclick="excluirVinculoIP(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+@section Scripts{
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/contas")
+}

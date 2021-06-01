@@ -1,0 +1,218 @@
+﻿@model Ecoporto.CRM.Site.Models.ContaViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Cadastrar Conta";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Contas
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contas</a>
+        </li>
+        <li class="active">Cadastrar Conta</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <i class="fa fa-edit fa-lg"></i>
+                                        <strong>Detalhes da Conta</strong>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-8">
+                                        @Html.LabelFor(model => model.Descricao)
+                                        @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm", 255)
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.SituacaoCadastral)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.SituacaoCadastral, "form-control form-control-sm")
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.Segmento)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.Segmento, "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.ClassificacaoFiscal)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.ClassificacaoFiscal, "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.Documento)
+                                        @Html.PrivilegedEditorFor(model => model.Documento, "form-control form-control-sm cnpj")
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.InscricaoEstadual)
+                                        @Html.PrivilegedEditorFor(model => model.InscricaoEstadual, "form-control form-control-sm", 20)
+                                    </div>
+
+                                    <div class="form-group col-md-8">
+                                        @Html.LabelFor(model => model.NomeFantasia)
+                                        @Html.PrivilegedEditorFor(model => model.NomeFantasia, "form-control form-control-sm", 150)
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        @Html.LabelFor(model => model.Telefone)
+                                        @Html.PrivilegedEditorFor(model => model.Telefone, "form-control form-control-sm telefone")
+                                    </div>
+
+                                    <div class="form-group col-md-8">
+                                        @Html.LabelFor(model => model.VendedorId)
+                                        @Html.PrivilegedDropDownListFor(model => model.VendedorId, new MultiSelectList(Model.Vendedores, "Id", "Nome"), "form-control form-control-sm")
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <i class="fa fa-home fa-lg"></i>
+                                        <strong>Endereço</strong>
+                                        <hr />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.CEP)
+                                        @Html.PrivilegedEditorFor(model => model.CEP, "form-control form-control-sm cep")
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Logradouro)
+                                        @Html.PrivilegedEditorFor(model => model.Logradouro, "form-control form-control-sm", 150)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.Numero)
+                                        @Html.PrivilegedEditorFor(model => model.Numero, "form-control form-control-sm")
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Bairro)
+                                        @Html.PrivilegedEditorFor(model => model.Bairro, "form-control form-control-sm", 50)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.Estado)
+                                        @Html.PrivilegedEnumDropDownListFor(c => c.Estado, "form-control form-control-sm")
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.CidadeId)
+                                        @Html.PrivilegedDropDownListFor(model => model.CidadeId, new MultiSelectList(Model.Cidades, "Id", "Descricao"), "form-control form-control-sm")
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.PaisId)
+                                        @Html.PrivilegedDropDownListFor(model => model.PaisId, new MultiSelectList(Model.Paises, "Id", "Descricao"), "form-control form-control-sm")
+                                    </div>
+
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Complemento)
+                                        @Html.PrivilegedEditorFor(model => model.Complemento, "form-control form-control-sm", 150)
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-check form-check-inline">
+                                            @Html.PrivilegedCheckBoxFor(model => model.Blacklist, "form-check-input")&nbsp;
+                                            <strong>@Html.LabelFor(model => model.Blacklist, new { @class = "form-check-label" })</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Contas")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+
+                    <div class="float-right">
+                        <p>
+                            <a href="@Url.Action("Cadastrar", "Contas")" class="btn btn-secondary btn-sm">Nova Conta</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+        }
+    </div>
+</div>
+<br />
+@section Scripts{
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/contas")
+}

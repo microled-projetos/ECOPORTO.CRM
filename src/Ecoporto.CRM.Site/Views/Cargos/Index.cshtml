@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Consultar Cargos";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Cargos
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Cargos</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="row">
+
+    <div class="col-md-2">
+        @Html.Partial("~/Views/Usuarios/_MenuUsuarios.cshtml")
+    </div>
+
+    <div class="col-md-10">
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-table fa-lg"></i>
+                Cargos Cadastrados
+                @if (User.IsInRole("Administrador") || User.IsInRole("Cargos:Cadastrar"))
+                {
+                    <div class="float-right">
+                        <a href="@Url.Action("Cadastrar", "Cargos")" class="btn btn-primary btn-sm btn-novo"><i class="fa fa-edit"></i>&nbsp;Cadastrar Cargo</a>
+                    </div>
+                }
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col" class="text-center">Vendedor</th>
+                                <th class="campo-acao">&nbsp;</th>
+                                <th class="campo-acao">&nbsp;</th>
+                                <th class="campo-acao">&nbsp;</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@Html.Partial("_ModalExclusao")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+         function excluir(id) {
+            $('#modal-mensagem').text('Confirma a exclusão do Cargo?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data) {
+                    toastr.success('Cargo excluído com sucesso!', 'CRM');
+                    $('#item-' + _id).remove();
+                }).fail(function () {
+                    toastr.error('O registro não pode ser excluído', 'CRM');
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "ajax": {
+                    "url": "@Url.Action("Consultar", "Cargos")",
+                    "dataSrc": "dados",
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "columns": [
+                    {
+                        "data": "Id",
+                        "width": "30px"
+                    },
+                    { "data": "Descricao" },
+                    {
+                        "data": "Vendedor",
+                        "render": function (data, type, row) {
+                            return data
+                                ? '<i class="far fa-check-square"></i>'
+                                : '<i class="far fa-square"></i>';
+                        },
+                        "width": "100px",
+                        "className": "text-center"
+                    },
+                    {
+                        "data": "permissoes",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Cadastrar", "Permissoes")/?cargoId=' + row.Id + '" class="btn btn-success btn-sm btn-acao"><i class="fa fa-user"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Permissoes:Acessar") ? "true" : "false")
+                    },
+                    {
+                        "data": "editar",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Atualizar", "Cargos")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Cargos:Atualizar") ? "true" : "false")
+                    },
+                    {
+                        "data": "excluir",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Cargos:Excluir") ? "true" : "false")
+                    },
+                ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

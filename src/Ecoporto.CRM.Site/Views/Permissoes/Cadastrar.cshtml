@@ -1,0 +1,252 @@
+﻿@model Ecoporto.CRM.Site.Models.PermissaoViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Cadastrar Permissões";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Permissões
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Permissões</a>
+        </li>
+        <li class="active">Cadastrar Permissões</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="card">
+        <div class="card-header">
+            <i class="fa fa-edit fa-lg"></i>
+            Detalhes da Permissão
+            <div class="float-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+
+            @Html.HiddenFor(model => model.CargoId)
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    @Html.LabelFor(model => model.CargoId)
+                    @Html.DropDownListFor(c => c.CargoId, new MultiSelectList(Model.Cargos, "Id", "Descricao"), new { @class = "form-control form-control-sm", @disabled = "disabled" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+
+                    <table width="100%">
+
+                        @for (int i = 0; i < Model.Menus.Count; i++)
+                        {
+                        <tr class="alert-secondary">
+                            <td>
+                                <span class="align-middle">
+                                    @*nome da pagina*@
+                                    <i class="fa fa-edit"></i> <strong> @Html.DisplayFor(x => x.Menus[i].DescricaoCompleta)</strong>
+                                    @Html.HiddenFor(x => x.Menus[i].Id)
+                                </span>
+                            </td>
+                            <td><small><a href="#" onclick="selecionaTodosLeitura(@Model.Menus[i].Id)">[&nbsp;Selecionar Todos&nbsp;]</a></small></td>
+                            <td><small><a href="#" onclick="selecionaTodosEscrita(@Model.Menus[i].Id)">[&nbsp;Selecionar Todos&nbsp;]</a></small></td>
+
+                            @if (Model.Menus[i].Id == 6 || Model.Menus[i].Id == 7 || Model.Menus[i].Id == 8 || Model.Menus[i].Id == 9 || Model.Menus[i].Id == 10 || Model.Menus[i].Id == 11 || Model.Menus[i].Id == 22 || Model.Menus[i].Id == 23 || Model.Menus[i].Id == 24 || Model.Menus[i].Id == 25 || Model.Menus[i].Id == 26 || Model.Menus[i].Id == 29)
+                            {
+                                <td><small><a href="#" onclick="selecionaTodosAcessoTotal(@Model.Menus[i].Id)">[&nbsp;Selecionar Todos&nbsp;]</a></small></td>
+                            }
+                            else
+                            {
+                                <td><small><a href="#"></a></small></td>
+                            }
+
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    @Html.CheckBoxFor(x => x.Menus[i].Acessar) &nbsp; Acessar
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    @Html.CheckBoxFor(x => x.Menus[i].Cadastrar) &nbsp; Cadastrar
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    @Html.CheckBoxFor(x => x.Menus[i].Atualizar) &nbsp; Atualizar
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    @Html.CheckBoxFor(x => x.Menus[i].Excluir) &nbsp; Excluir
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    @Html.CheckBoxFor(x => x.Menus[i].Logs) &nbsp; Logs
+                                </div>
+                            </td>
+                        </tr>
+
+                            <div>
+
+                                @for (int j = 0; j < Model.Menus[i]?.Campos?.Count; j++)
+                                {
+                                    if (Model.Menus[i]?.Campos != null)
+                                    {
+                                        <tr>
+                                            @*nome dos campos*@
+                                            <td>
+                                                <span class="text-danger">@(Model.Menus[i].Campos[j].Requerido ? Html.Raw("*") : Html.Raw("&nbsp;"))</span>
+                                                @Html.DisplayFor(x => x.Menus[i].Campos[j].ObjetoDescricao)
+                                                @Html.HiddenFor(x => x.Menus[i].Campos[j].ObjetoId)
+                                                @Html.HiddenFor(x => x.Menus[i].Campos[j].Id)
+                                            </td>
+
+                                            <td>
+                                                <div class="form-check form-check-inline">
+                                                    @Html.RadioButtonFor(x => x.Menus[i].Campos[j].TipoPermissao, Ecoporto.CRM.Business.Models.TipoPermissao.SOMENTE_LEITURA, new { id = "rbLeitura_" + Model.Menus[i].Id + "_" + j }) &nbsp; Somente Leitura
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check form-check-inline">
+                                                    @Html.RadioButtonFor(x => x.Menus[i].Campos[j].TipoPermissao, Ecoporto.CRM.Business.Models.TipoPermissao.LEITURA_ESCRITA, new { id = "rbEscrita_" + Model.Menus[i].Id + "_" + j }) &nbsp; Leitura / Escrita
+                                                </div>
+                                            </td>
+                                            @if (Model.Menus[i].Id == 6 || Model.Menus[i].Id == 7 || Model.Menus[i].Id == 8 || Model.Menus[i].Id == 9 || Model.Menus[i].Id == 10 || Model.Menus[i].Id == 11 || Model.Menus[i].Id == 22 || Model.Menus[i].Id == 23 || Model.Menus[i].Id == 24 || Model.Menus[i].Id == 25 || Model.Menus[i].Id == 26 || Model.Menus[i].Id == 29)
+                                            {
+                                                <td>
+                                                    <div class="form-check form-check-inline">
+                                                        @Html.RadioButtonFor(x => x.Menus[i].Campos[j].TipoPermissao, Ecoporto.CRM.Business.Models.TipoPermissao.ACESSO_TOTAL, new { id = "rbAcessoTotal_" + Model.Menus[i].Id + "_" + j }) &nbsp; Acesso Total
+                                                    </div>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+
+                            </div>
+                        }
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <div class="float-left">
+                <p>
+                    <a href="@Url.Action("Index", "Cargos")" class="btn btn-secondary btn-sm">Retornar</a>
+                </p>
+            </div>
+            <div class="float-right">
+                <p>
+                    <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <br />
+}
+
+@section Scripts{
+
+    <script>
+
+        function selecionaTodosLeitura(menuId) {
+
+            event.preventDefault();
+
+            $("input:radio[id^='rbLeitura_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbEscrita_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbAcessoTotal_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbLeitura_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", true);
+                });
+        }
+
+        function selecionaTodosEscrita(menuId) {
+
+            event.preventDefault();
+
+            $("input:radio[id^='rbLeitura_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbEscrita_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbAcessoTotal_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbEscrita_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", true);
+                });
+        }
+
+        function selecionaTodosAcessoTotal(menuId) {
+
+            event.preventDefault();
+
+            $("input:radio[id^='rbLeitura_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbEscrita_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbAcessoTotal_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", false);
+                });
+
+            $("input:radio[id^='rbAcessoTotal_" + menuId + "']")
+                .each(function (index, radio) {
+                    $(this).prop("checked", true);
+                });
+        }
+    </script>
+}

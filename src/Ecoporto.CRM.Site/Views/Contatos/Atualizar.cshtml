@@ -1,0 +1,153 @@
+﻿@model Ecoporto.CRM.Site.Models.ContatoViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Atualizar Contato";
+    bool? somenteLeitura = ViewBag.ContatoSomenteLeitura;
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Contatos
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contatos</a>
+        </li>
+        <li class="active">Atualizar Contato</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, true)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Contato
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    @Html.HiddenFor(model => model.Id)
+
+                    <div class="row">
+                        <div class="form-group col-md-10">
+                            @Html.LabelFor(model => model.ContaId)
+                            @Html.PrivilegedDropDownListFor(c => c.ContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="btnPesquisarContas">&nbsp;</label>
+                            <a id="btnPesquisarContas" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Nome)
+                            @Html.PrivilegedEditorFor(model => model.Nome, "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Sobrenome)
+                            @Html.PrivilegedEditorFor(model => model.Sobrenome, "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Email)
+                            @Html.PrivilegedEditorFor(model => model.Email, "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Telefone)
+                            @Html.PrivilegedEditorFor(model => model.Telefone, "form-control form-control-sm telefone", readOnly: somenteLeitura)
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Celular)
+                            @Html.PrivilegedEditorFor(model => model.Celular, "form-control form-control-sm celular", readOnly: somenteLeitura)
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.DataNascimento)
+                            @Html.PrivilegedEditorFor(model => model.DataNascimento, "form-control form-control-sm data", readOnly: somenteLeitura)
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Departamento)
+                            @Html.PrivilegedEditorFor(model => model.Departamento, "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Cargo)
+                            @Html.PrivilegedEditorFor(model => model.Cargo, "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Status)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.Status, "form-control form-control-sm", readOnly: somenteLeitura)
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="#" id="close-window" class="btn btn-secondary btn-sm">Fechar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-primary btn-sm" @((somenteLeitura == null || somenteLeitura == true) ? "disabled" : "")>Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+@Html.Partial("_PesquisarContas")
+
+@section Scripts{
+    @Scripts.Render("~/bundles/contatos")
+
+    <script>
+
+        document.getElementById("close-window").addEventListener("click", function () {
+            window.close();
+        });
+    </script>
+}

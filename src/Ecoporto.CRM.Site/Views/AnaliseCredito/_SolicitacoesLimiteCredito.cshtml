@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.LimiteCreditoSpcDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<div class="table-responsive">
+    <table id="tbWorkflow" class="table table-sm table-striped" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Cond. Pagamento</th>
+                <th scope="col">Limite Crédito</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="campo-acao"></th>
+                <th scope="col" class="campo-acao"></th>
+                <th scope="col" class="campo-acao"></th>
+                <th scope="col" class="campo-acao"></th>
+                @*<th scope="col" class="campo-acao"></th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="linha-limite-@item.Id">
+                    <td>@item.CondicaoPagamentoDescricao</td>
+                    <td>@item.LimiteCredito.ToMoeda(Moeda.REAL)</td>
+                    <td>@item.StatusLimiteCredito.ToName()</td>
+                    @*<td class="campo-acao">
+                        <a href="#" onclick="" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-list"></i>&nbsp;Histórico Workflow</a>
+                    </td>*@
+                    <td class="campo-acao">
+                        <a href="#" onclick="enviarParaAprovacao(@item.Id, 14, @item.ContaId);" class="btn btn-warning btn-sm btn-acao @((item.StatusLimiteCredito != StatusLimiteCredito.PENDENTE) ? "disabled" : "")"><i class="fa fa-upload"></i>&nbsp;Enviar para Aprovação</a>
+                    </td>
+                    <td class="campo-acao">
+                        <a href="#" id="btn-recall-limite-@item.Id" onclick="recallLimiteCredito(@item.Id)" class="btn btn-warning btn-sm btn-acao @((item.StatusLimiteCredito != StatusLimiteCredito.EM_APROVACAO) ? "disabled" : "")"><i class="fa fa-undo-alt"></i>&nbsp;Recall</a>
+                    </td>
+                    <td class="campo-acao">
+                        <a href="#" onclick="selecionarLimiteCredito(@item.Id)" class="btn btn-info btn-sm btn-acao btn-atualiza-ficha @((item.StatusLimiteCredito != StatusLimiteCredito.PENDENTE) ? "disabled" : "")"><i class="fa fa-edit"></i></a>
+                    </td>
+                    <td class="campo-acao">
+                        <a href="#" onclick="excluirLimiteCredito(@item.Id)" class="btn btn-danger btn-sm btn-acao @((item.StatusLimiteCredito != StatusLimiteCredito.PENDENTE) ? "disabled" : "")"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

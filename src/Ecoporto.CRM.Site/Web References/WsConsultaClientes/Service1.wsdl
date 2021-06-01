@@ -1,0 +1,906 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Importacao_Cliente">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CPF" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SENHA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="APENAS_CONSULTA" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="ID_USUARIO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Importacao_ClienteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Importacao_ClienteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Importacao_Interna_Cliente">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="APENAS_CONSULTA" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="ID_USUARIO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Importacao_Interna_ClienteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Importacao_Interna_ClienteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Importacao_Cliente">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CPF" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SENHA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Importacao_ClienteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Consulta_Importacao_ClienteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Interna_Importacao_Cliente">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Interna_Importacao_ClienteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Consulta_Interna_Importacao_ClienteResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Importacao_Cliente_V2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CPF" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SENHA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="APENAS_CONSULTA" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="ID_USUARIO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="EMAIL_ANEXO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Importacao_Cliente_V2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Importacao_Cliente_V2Result" type="tns:RespostaCliente" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RespostaCliente">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Resposta" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Arquivos" type="tns:ArrayOfArquivo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfArquivo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Arquivo" nillable="true" type="tns:Arquivo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Arquivo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Nome" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Extensao" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="dataArray" type="s:base64Binary" />
+          <s:element minOccurs="0" maxOccurs="1" name="Proposta" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Importacao_Interna_Cliente_V2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="APENAS_CONSULTA" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="ID_USUARIO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="EMAIL_ANEXO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Importacao_Interna_Cliente_V2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Importacao_Interna_Cliente_V2Result" type="tns:RespostaCliente" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Importacao_Cliente_V2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CPF" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SENHA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="EMAIL_ANEXO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Importacao_Cliente_V2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Consulta_Importacao_Cliente_V2Result" type="tns:RespostaCliente" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Interna_Importacao_Cliente_V2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_CONTA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CNPJ_IMPORTADOR" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="EMAIL_ANEXO" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consulta_Interna_Importacao_Cliente_V2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Consulta_Interna_Importacao_Cliente_V2Result" type="tns:RespostaCliente" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SistemaSegurancaAutenticaUser">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CPF" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="SENHA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PRCNTR" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PRNAVIO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PRBL" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="PRFLAGMASTER" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SistemaSegurancaAutenticaUserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SistemaSegurancaAutenticaUserResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="string" nillable="true" type="s:string" />
+      <s:element name="RespostaCliente" nillable="true" type="tns:RespostaCliente" />
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="Importacao_ClienteSoapIn">
+    <wsdl:part name="parameters" element="tns:Importacao_Cliente" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_ClienteSoapOut">
+    <wsdl:part name="parameters" element="tns:Importacao_ClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_ClienteSoapIn">
+    <wsdl:part name="parameters" element="tns:Importacao_Interna_Cliente" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_ClienteSoapOut">
+    <wsdl:part name="parameters" element="tns:Importacao_Interna_ClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_ClienteSoapIn">
+    <wsdl:part name="parameters" element="tns:Consulta_Importacao_Cliente" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_ClienteSoapOut">
+    <wsdl:part name="parameters" element="tns:Consulta_Importacao_ClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_ClienteSoapIn">
+    <wsdl:part name="parameters" element="tns:Consulta_Interna_Importacao_Cliente" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_ClienteSoapOut">
+    <wsdl:part name="parameters" element="tns:Consulta_Interna_Importacao_ClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Cliente_V2SoapIn">
+    <wsdl:part name="parameters" element="tns:Importacao_Cliente_V2" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Cliente_V2SoapOut">
+    <wsdl:part name="parameters" element="tns:Importacao_Cliente_V2Response" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_Cliente_V2SoapIn">
+    <wsdl:part name="parameters" element="tns:Importacao_Interna_Cliente_V2" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_Cliente_V2SoapOut">
+    <wsdl:part name="parameters" element="tns:Importacao_Interna_Cliente_V2Response" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_Cliente_V2SoapIn">
+    <wsdl:part name="parameters" element="tns:Consulta_Importacao_Cliente_V2" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_Cliente_V2SoapOut">
+    <wsdl:part name="parameters" element="tns:Consulta_Importacao_Cliente_V2Response" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_Cliente_V2SoapIn">
+    <wsdl:part name="parameters" element="tns:Consulta_Interna_Importacao_Cliente_V2" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_Cliente_V2SoapOut">
+    <wsdl:part name="parameters" element="tns:Consulta_Interna_Importacao_Cliente_V2Response" />
+  </wsdl:message>
+  <wsdl:message name="SistemaSegurancaAutenticaUserSoapIn">
+    <wsdl:part name="parameters" element="tns:SistemaSegurancaAutenticaUser" />
+  </wsdl:message>
+  <wsdl:message name="SistemaSegurancaAutenticaUserSoapOut">
+    <wsdl:part name="parameters" element="tns:SistemaSegurancaAutenticaUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_ClienteHttpGetIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_ClienteHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_ClienteHttpGetIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_ClienteHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_ClienteHttpGetIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_ClienteHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_ClienteHttpGetIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_ClienteHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Cliente_V2HttpGetIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Cliente_V2HttpGetOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_Cliente_V2HttpGetIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_Cliente_V2HttpGetOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_Cliente_V2HttpGetIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_Cliente_V2HttpGetOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_Cliente_V2HttpGetIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_Cliente_V2HttpGetOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="SistemaSegurancaAutenticaUserHttpGetIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="PRCNTR" type="s:string" />
+    <wsdl:part name="PRNAVIO" type="s:string" />
+    <wsdl:part name="PRBL" type="s:string" />
+    <wsdl:part name="PRFLAGMASTER" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SistemaSegurancaAutenticaUserHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_ClienteHttpPostIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_ClienteHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_ClienteHttpPostIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_ClienteHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_ClienteHttpPostIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_ClienteHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_ClienteHttpPostIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_ClienteHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Cliente_V2HttpPostIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Cliente_V2HttpPostOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_Cliente_V2HttpPostIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="APENAS_CONSULTA" type="s:string" />
+    <wsdl:part name="ID_USUARIO" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Importacao_Interna_Cliente_V2HttpPostOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_Cliente_V2HttpPostIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Importacao_Cliente_V2HttpPostOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_Cliente_V2HttpPostIn">
+    <wsdl:part name="CNPJ_CONTA" type="s:string" />
+    <wsdl:part name="CNPJ_IMPORTADOR" type="s:string" />
+    <wsdl:part name="EMAIL_ANEXO" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="Consulta_Interna_Importacao_Cliente_V2HttpPostOut">
+    <wsdl:part name="Body" element="tns:RespostaCliente" />
+  </wsdl:message>
+  <wsdl:message name="SistemaSegurancaAutenticaUserHttpPostIn">
+    <wsdl:part name="CPF" type="s:string" />
+    <wsdl:part name="SENHA" type="s:string" />
+    <wsdl:part name="PRCNTR" type="s:string" />
+    <wsdl:part name="PRNAVIO" type="s:string" />
+    <wsdl:part name="PRBL" type="s:string" />
+    <wsdl:part name="PRFLAGMASTER" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="SistemaSegurancaAutenticaUserHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:portType name="Service1Soap">
+    <wsdl:operation name="Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_ClienteSoapIn" />
+      <wsdl:output message="tns:Importacao_ClienteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão/consulta interna de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Interna_ClienteSoapIn" />
+      <wsdl:output message="tns:Importacao_Interna_ClienteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Importacao_ClienteSoapIn" />
+      <wsdl:output message="tns:Consulta_Importacao_ClienteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta interna de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Interna_Importacao_ClienteSoapIn" />
+      <wsdl:output message="tns:Consulta_Interna_Importacao_ClienteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Cliente_V2SoapIn" />
+      <wsdl:output message="tns:Importacao_Cliente_V2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão/consulta interna de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Interna_Cliente_V2SoapIn" />
+      <wsdl:output message="tns:Importacao_Interna_Cliente_V2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Importacao_Cliente_V2SoapIn" />
+      <wsdl:output message="tns:Consulta_Importacao_Cliente_V2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta interna de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Interna_Importacao_Cliente_V2SoapIn" />
+      <wsdl:output message="tns:Consulta_Interna_Importacao_Cliente_V2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de Liberação / Bloqueio de carga.</wsdl:documentation>
+      <wsdl:input message="tns:SistemaSegurancaAutenticaUserSoapIn" />
+      <wsdl:output message="tns:SistemaSegurancaAutenticaUserSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="Service1HttpGet">
+    <wsdl:operation name="Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_ClienteHttpGetIn" />
+      <wsdl:output message="tns:Importacao_ClienteHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão/consulta interna de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Interna_ClienteHttpGetIn" />
+      <wsdl:output message="tns:Importacao_Interna_ClienteHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Importacao_ClienteHttpGetIn" />
+      <wsdl:output message="tns:Consulta_Importacao_ClienteHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta interna de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Interna_Importacao_ClienteHttpGetIn" />
+      <wsdl:output message="tns:Consulta_Interna_Importacao_ClienteHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Cliente_V2HttpGetIn" />
+      <wsdl:output message="tns:Importacao_Cliente_V2HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão/consulta interna de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Interna_Cliente_V2HttpGetIn" />
+      <wsdl:output message="tns:Importacao_Interna_Cliente_V2HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Importacao_Cliente_V2HttpGetIn" />
+      <wsdl:output message="tns:Consulta_Importacao_Cliente_V2HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta interna de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Interna_Importacao_Cliente_V2HttpGetIn" />
+      <wsdl:output message="tns:Consulta_Interna_Importacao_Cliente_V2HttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de Liberação / Bloqueio de carga.</wsdl:documentation>
+      <wsdl:input message="tns:SistemaSegurancaAutenticaUserHttpGetIn" />
+      <wsdl:output message="tns:SistemaSegurancaAutenticaUserHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="Service1HttpPost">
+    <wsdl:operation name="Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_ClienteHttpPostIn" />
+      <wsdl:output message="tns:Importacao_ClienteHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão/consulta interna de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Interna_ClienteHttpPostIn" />
+      <wsdl:output message="tns:Importacao_Interna_ClienteHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Importacao_ClienteHttpPostIn" />
+      <wsdl:output message="tns:Consulta_Importacao_ClienteHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta interna de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Interna_Importacao_ClienteHttpPostIn" />
+      <wsdl:output message="tns:Consulta_Interna_Importacao_ClienteHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Cliente_V2HttpPostIn" />
+      <wsdl:output message="tns:Importacao_Cliente_V2HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de inclusão/consulta interna de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Importacao_Interna_Cliente_V2HttpPostIn" />
+      <wsdl:output message="tns:Importacao_Interna_Cliente_V2HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Importacao_Cliente_V2HttpPostIn" />
+      <wsdl:output message="tns:Consulta_Importacao_Cliente_V2HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de consulta interna de inclusão de sub-cliente no CRM.</wsdl:documentation>
+      <wsdl:input message="tns:Consulta_Interna_Importacao_Cliente_V2HttpPostIn" />
+      <wsdl:output message="tns:Consulta_Interna_Importacao_Cliente_V2HttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Rotina de Liberação / Bloqueio de carga.</wsdl:documentation>
+      <wsdl:input message="tns:SistemaSegurancaAutenticaUserHttpPostIn" />
+      <wsdl:output message="tns:SistemaSegurancaAutenticaUserHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Service1Soap" type="tns:Service1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Importacao_Cliente">
+      <soap:operation soapAction="http://tempuri.org/Importacao_Cliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <soap:operation soapAction="http://tempuri.org/Importacao_Interna_Cliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <soap:operation soapAction="http://tempuri.org/Consulta_Importacao_Cliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <soap:operation soapAction="http://tempuri.org/Consulta_Interna_Importacao_Cliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <soap:operation soapAction="http://tempuri.org/Importacao_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <soap:operation soapAction="http://tempuri.org/Importacao_Interna_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <soap:operation soapAction="http://tempuri.org/Consulta_Importacao_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <soap:operation soapAction="http://tempuri.org/Consulta_Interna_Importacao_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <soap:operation soapAction="http://tempuri.org/SistemaSegurancaAutenticaUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Service1Soap12" type="tns:Service1Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Importacao_Cliente">
+      <soap12:operation soapAction="http://tempuri.org/Importacao_Cliente" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <soap12:operation soapAction="http://tempuri.org/Importacao_Interna_Cliente" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <soap12:operation soapAction="http://tempuri.org/Consulta_Importacao_Cliente" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <soap12:operation soapAction="http://tempuri.org/Consulta_Interna_Importacao_Cliente" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <soap12:operation soapAction="http://tempuri.org/Importacao_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <soap12:operation soapAction="http://tempuri.org/Importacao_Interna_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <soap12:operation soapAction="http://tempuri.org/Consulta_Importacao_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <soap12:operation soapAction="http://tempuri.org/Consulta_Interna_Importacao_Cliente_V2" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <soap12:operation soapAction="http://tempuri.org/SistemaSegurancaAutenticaUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Service1HttpGet" type="tns:Service1HttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="Importacao_Cliente">
+      <http:operation location="/Importacao_Cliente" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <http:operation location="/Importacao_Interna_Cliente" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <http:operation location="/Consulta_Importacao_Cliente" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <http:operation location="/Consulta_Interna_Importacao_Cliente" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <http:operation location="/Importacao_Cliente_V2" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <http:operation location="/Importacao_Interna_Cliente_V2" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <http:operation location="/Consulta_Importacao_Cliente_V2" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <http:operation location="/Consulta_Interna_Importacao_Cliente_V2" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <http:operation location="/SistemaSegurancaAutenticaUser" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Service1HttpPost" type="tns:Service1HttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="Importacao_Cliente">
+      <http:operation location="/Importacao_Cliente" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente">
+      <http:operation location="/Importacao_Interna_Cliente" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente">
+      <http:operation location="/Consulta_Importacao_Cliente" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente">
+      <http:operation location="/Consulta_Interna_Importacao_Cliente" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Cliente_V2">
+      <http:operation location="/Importacao_Cliente_V2" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Importacao_Interna_Cliente_V2">
+      <http:operation location="/Importacao_Interna_Cliente_V2" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Importacao_Cliente_V2">
+      <http:operation location="/Consulta_Importacao_Cliente_V2" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consulta_Interna_Importacao_Cliente_V2">
+      <http:operation location="/Consulta_Interna_Importacao_Cliente_V2" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SistemaSegurancaAutenticaUser">
+      <http:operation location="/SistemaSegurancaAutenticaUser" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service1">
+    <wsdl:port name="Service1Soap" binding="tns:Service1Soap">
+      <soap:address location="http://srv0019:5040/wsexterno/Service1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="Service1Soap12" binding="tns:Service1Soap12">
+      <soap12:address location="http://srv0019:5040/wsexterno/Service1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="Service1HttpGet" binding="tns:Service1HttpGet">
+      <http:address location="http://srv0019:5040/wsexterno/Service1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="Service1HttpPost" binding="tns:Service1HttpPost">
+      <http:address location="http://srv0019:5040/wsexterno/Service1.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

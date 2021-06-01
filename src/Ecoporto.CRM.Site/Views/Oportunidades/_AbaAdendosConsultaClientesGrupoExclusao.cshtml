@@ -1,0 +1,36 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAdendosViewModel
+
+<br />
+
+<div class="form-row">
+    <div class="form-group col-md-12">
+
+        <label>Selecione o(s) sub cliente(s) para exclusão:</label>
+
+        <div class="table-responsive">
+            <table id="tbAdendosExclusaoClientesGrupo" class="table table-sm table-striped" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">&nbsp;</th>
+                        <th scope="col">Nome Fantasia</th>
+                        <th scope="col">CNPJ/CPF</th>
+                        <th scope="col">Usuário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ClientesGrupoCNPJ)
+                    {
+                        <tr>
+                            <td><input type="checkbox" name="AdendosClientesGrupoExclusao" id="AdendosClientesGrupoExclusao_@item.ContaId" value="@item.ContaId" /></td>
+                            <td>@item.Descricao</td>
+                            <td>@item.Documento</td>
+                            <td>@item.CriadoPor</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

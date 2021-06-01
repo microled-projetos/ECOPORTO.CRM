@@ -1,0 +1,986 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B8C23B49-5210-407E-B170-6A4960FB4BAD}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ecoporto.CRM.Site</RootNamespace>
+    <AssemblyName>Ecoporto.CRM.Site</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0" />
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\itextsharp.xmlworker.5.5.5\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Office.Interop.Word.15.0.4797.1003\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.ProcessingObjectModel.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Report.Viewer.11.0.0.0\lib\net\Microsoft.ReportViewer.WebForms.DLL</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcRazorToPdf, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvcRazorToPdf.1.0.2\lib\40\MvcRazorToPdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.Web.4.5.3\lib\net35\NLog.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.2.1.2\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.1.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="ReportViewerForMvc, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ReportViewerForMvc.1.1.1\lib\net45\ReportViewerForMvc.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.2.2.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestSharp.106.2.2\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.AppContext.4.1.0\lib\net46\System.AppContext.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Console, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Console.4.0.0\lib\net46\System.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Globalization.Calendars, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Globalization.Calendars.4.0.1\lib\net46\System.Globalization.Calendars.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Compression.4.1.0\lib\net46\System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.Compression.ZipFile.4.0.1\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.4.0.1\lib\net46\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Net.Http.4.1.0\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Net.Sockets.4.1.0\lib\net46\System.Net.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Reflection.TypeExtensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.TypeExtensions.4.3.0\lib\net46\System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.2.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Encoding.4.0.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.Primitives.4.0.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Cryptography.X509Certificates.4.1.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Thread, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Threading.Thread.4.0.0\lib\net46\System.Threading.Thread.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Abstractions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Abstractions.3.3.0\lib\net45\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.7.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Container.5.7.0\lib\net46\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mvc, Version=5.0.13.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Mvc.5.0.13\lib\net46\Unity.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ApplicationInsights">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Agent.Intercept">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.DependencyCollector">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.2.0\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.PerfCounterCollector">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.2.0\lib\net45\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.ServerTelemetryChannel">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.2.2.0\lib\net45\Microsoft.AI.ServerTelemetryChannel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.WindowsServer">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.WindowsServer.2.2.0\lib\net45\Microsoft.AI.WindowsServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AI.Web">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.Web.2.2.0\lib\net45\Microsoft.AI.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\DecimalModelBinder.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\NLogConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="App_Start\UnityMvcActivator.cs" />
+    <Compile Include="Controllers\AnexosController.cs" />
+    <Compile Include="Controllers\AtualizacaoValoresPropostaController.cs" />
+    <Compile Include="Controllers\AuditoriaController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BuscaController.cs" />
+    <Compile Include="Controllers\AnaliseCreditoController.cs" />
+    <Compile Include="Controllers\ConsultaClienteController.cs" />
+    <Compile Include="Controllers\EnviarAprovacoesController.cs" />
+    <Compile Include="Controllers\EquipesOportunidadeController.cs" />
+    <Compile Include="Controllers\EquipesContaController.cs" />
+    <Compile Include="Controllers\EquipesVendedorController.cs" />
+    <Compile Include="Controllers\ContasController.cs" />
+    <Compile Include="Controllers\ImpostosExcessaoController.cs" />
+    <Compile Include="Controllers\ModeloSimuladorController.cs" />
+    <Compile Include="Controllers\SimuladorPropostaController.cs" />
+    <Compile Include="Controllers\SimuladorController.cs" />
+    <Compile Include="Controllers\OcorrenciasController.cs" />
+    <Compile Include="Controllers\MotivosController.cs" />
+    <Compile Include="Controllers\RecallController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SolicitacoesController.cs" />
+    <Compile Include="Controllers\FaixasVolumeController.cs" />
+    <Compile Include="Controllers\CargosController.cs" />
+    <Compile Include="Controllers\MercadoriasController.cs" />
+    <Compile Include="Controllers\FaixasPesoController.cs" />
+    <Compile Include="Controllers\FaixasCIFController.cs" />
+    <Compile Include="Controllers\FaixasBLController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LayoutsController.cs" />
+    <Compile Include="Controllers\ContatosController.cs" />
+    <Compile Include="Controllers\ModelosController.cs" />
+    <Compile Include="Controllers\OportunidadesController.cs" />
+    <Compile Include="Controllers\PermissoesController.cs" />
+    <Compile Include="Controllers\ServicosController.cs" />
+    <Compile Include="Controllers\UsuariosController.cs" />
+    <Compile Include="Controllers\WorkflowController.cs" />
+    <Compile Include="Extensions\UserExtensions.cs" />
+    <Compile Include="Filtros\CanActivateAtualizarLayout.cs" />
+    <Compile Include="Filtros\CanActivateContaUsuarioExterno.cs" />
+    <Compile Include="Filtros\CanActivateOportunidadeUsuarioExterno.cs" />
+    <Compile Include="Filtros\CanActivateUsuarioIntegracao.cs" />
+    <Compile Include="Filtros\CanActivateUsuarioIntegracaoFicha.cs" />
+    <Compile Include="Filtros\CanActivateUsuarioIntegracaoAdendo.cs" />
+    <Compile Include="Filtros\CanActivateVisualizarContatos.cs" />
+    <Compile Include="Filtros\CanActivateVisualizarContas.cs" />
+    <Compile Include="Filtros\CanActivateVisualizarOportunidade.cs" />
+    <Compile Include="Filtros\CanActivateAtualizarContas.cs" />
+    <Compile Include="Filtros\CanActivate.cs" />
+    <Compile Include="Filtros\UsuarioExternoFilter.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\Controls.cs" />
+    <Compile Include="Helpers\DiasSemanaHelper.cs" />
+    <Compile Include="Helpers\FichaFaturamento.cs" />
+    <Compile Include="Helpers\HTMLCharacterConverter.cs" />
+    <Compile Include="Helpers\Identity.cs" />
+    <Compile Include="Helpers\Internet.cs" />
+    <Compile Include="Helpers\OpenOffice.cs" />
+    <Compile Include="Helpers\PdfHelpers.cs" />
+    <Compile Include="Helpers\PremioParceria.cs" />
+    <Compile Include="Helpers\PropostaPdfHelper.cs" />
+    <Compile Include="Helpers\PropostaWordHelper.cs" />
+    <Compile Include="Helpers\Workflow.cs" />
+    <Compile Include="Helpers\Validation.cs" />
+    <Compile Include="Models\AnaliseCreditoViewModel.cs" />
+    <Compile Include="Models\ConsultaClienteViewModel.cs" />
+    <Compile Include="Models\ConsultaCliente\ConsultaCliente.cs" />
+    <Compile Include="Models\ConsultaCliente\ConsultaClienteRetorno.cs" />
+    <Compile Include="Models\ImpostosExcecaoViewModel.cs" />
+    <Compile Include="Models\ModeloSimulador\ModeloSimuladorViewModel.cs" />
+    <Compile Include="Models\Oportunidades\EdicaoValoresViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeDownloadPropostaViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesIntegracaoChronosViewModel.cs" />
+    <Compile Include="Models\ResetarSenhaViewModel.cs" />
+    <Compile Include="Models\AuditoriaViewModel.cs" />
+    <Compile Include="Models\BuscaViewModel.cs" />
+    <Compile Include="Models\EquipeOportunidadeViewModel.cs" />
+    <Compile Include="Models\EquipeContaViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesAnexosNotasViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesNotasViewModel.cs" />
+    <Compile Include="Models\Simulador\SimuladorPropostaViewModel.cs" />
+    <Compile Include="Models\ReportInfoViewModel.cs" />
+    <Compile Include="Models\Simulador\SimuladorDownloadRelatorioViewModel.cs" />
+    <Compile Include="Models\Simulador\SimuladorViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialAnexosViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialAlteracaoFormaPagamentoViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialDescontoViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialRestituicaoViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialProrrogacaoViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialOcorrenciasViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialMotivosViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialCancelamentoNFViewModel.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialViewModel.cs" />
+    <Compile Include="Models\Faixas\FaixasVolumeViewModel.cs" />
+    <Compile Include="Models\CargosViewModel.cs" />
+    <Compile Include="Models\MercadoriaViewModel.cs" />
+    <Compile Include="Models\ContaViewModel.cs" />
+    <Compile Include="Models\ErroViewModel.cs" />
+    <Compile Include="Models\Faixas\FaixasPesoViewModel.cs" />
+    <Compile Include="Models\Faixas\FaixasBLViewModel.cs" />
+    <Compile Include="Models\LayoutViewModel.cs" />
+    <Compile Include="Models\Faixas\FaixasCIFViewModel.cs" />
+    <Compile Include="Models\ContatoViewModel.cs" />
+    <Compile Include="Models\ModeloViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesAdendosViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesInformacoesIniciaisViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesFichaFaturamentoViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesAnexosViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesPremioParceriaViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesClonarPropostaViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesPropostaViewModel.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadesViewModel.cs" />
+    <Compile Include="Models\HistoricoWorkflowViewModel.cs" />
+    <Compile Include="Models\Pdf\CancelamentoOportunidade.cs" />
+    <Compile Include="Models\Pdf\Proposta.cs" />
+    <Compile Include="Models\PermissaoViewModel.cs" />
+    <Compile Include="Models\AlterarSenhaViewModel.cs" />
+    <Compile Include="Models\UsuarioAutenticado.cs" />
+    <Compile Include="Models\UsuarioViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\ServicoViewModel.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Services\CalculoDescontoMinutaService.cs" />
+    <Compile Include="Services\CalculoDescontoRedexService.cs" />
+    <Compile Include="Services\CalculoDescontoService.cs" />
+    <Compile Include="Services\EquipesService.cs" />
+    <Compile Include="Services\LayoutService.cs" />
+    <Compile Include="Services\ResultadoCalculo.cs" />
+    <Compile Include="Services\SimuladorService.cs" />
+    <Compile Include="Web References\WsCalculo\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WsConsultaClientes\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WsControleSenha\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WsIntegraChronos\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WsSimulador\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WsSPC\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\css\estilos.css" />
+    <Content Include="Content\css\fontawesome-all.css" />
+    <Content Include="Content\css\login.css" />
+    <Content Include="Content\css\pdf.css" />
+    <Content Include="Content\img\ajuda.png" />
+    <Content Include="Content\img\cancela-tabela-sucesso.png" />
+    <Content Include="Content\img\checked.png" />
+    <Content Include="Content\img\editar.png" />
+    <Content Include="Content\img\excel-erro.png" />
+    <Content Include="Content\img\excel-icone.png" />
+    <Content Include="Content\img\excel-sucesso.png" />
+    <Content Include="Content\img\excluir.png" />
+    <Content Include="Content\img\favicon.ico" />
+    <Content Include="Content\img\header-pdf.png" />
+    <Content Include="Content\img\header-word.png" />
+    <Content Include="Content\img\icone-download.png" />
+    <Content Include="Content\img\icone-email.png" />
+    <Content Include="Content\img\icone-excel.png" />
+    <Content Include="Content\img\icone-integracao-erro.png" />
+    <Content Include="Content\img\icone-integracao.png" />
+    <Content Include="Content\img\icone-outros.png" />
+    <Content Include="Content\img\icone-pdf.png" />
+    <Content Include="Content\img\icone-word.png" />
+    <Content Include="Content\img\loading.gif" />
+    <Content Include="Content\img\logo-header.png" />
+    <Content Include="Content\img\logo.png" />
+    <Content Include="Content\img\unchecked.png" />
+    <Content Include="Content\js\auditoria\default.js" />
+    <Content Include="Content\js\bootstrap.js" />
+    <Content Include="Content\js\contas\contas.js" />
+    <Content Include="Content\js\contatos\default.js" />
+    <Content Include="Content\js\default.js" />
+    <Content Include="Content\js\jquery-3.3.1.js" />
+    <Content Include="Content\js\jquery.unobtrusive-ajax.js" />
+    <Content Include="Content\js\layout\default.js" />
+    <Content Include="Content\js\oportunidades\atualizar.js" />
+    <Content Include="Content\js\oportunidades\default.js" />
+    <Content Include="Content\js\popper.js" />
+    <Content Include="Content\js\Solicitacoes\default.js" />
+    <Content Include="Content\plugins\arrow-table\arrow-table.js" />
+    <Content Include="Content\plugins\datatables\css\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\plugins\datatables\js\colReorderWithResize.js" />
+    <Content Include="Content\plugins\datatables\js\dataTables.bootstrap4.min.js" />
+    <Content Include="Content\plugins\datatables\js\dataTables.checkboxes.min.js" />
+    <Content Include="Content\plugins\datatables\js\datetime-moment.js" />
+    <Content Include="Content\plugins\datatables\js\jquery.dataTables.min.js" />
+    <Content Include="Content\plugins\easyAutocomplete\easy-autocomplete.css" />
+    <Content Include="Content\plugins\easyAutocomplete\jquery.easy-autocomplete.js" />
+    <Content Include="Content\plugins\jdd\jdd.js" />
+    <Content Include="Content\plugins\jdd\jsl.format.js" />
+    <Content Include="Content\plugins\jdd\jsl.interactions.js" />
+    <Content Include="Content\plugins\jdd\jsl.parser.js" />
+    <Content Include="Content\plugins\jquery-mask\jquery.mask.js" />
+    <Content Include="Content\plugins\jquery-url\jquery-url.js" />
+    <Content Include="Content\plugins\jquery-validate\jquery.validate.min.js" />
+    <Content Include="Content\plugins\jquery-validate\language\messages_pt_BR.min.js" />
+    <Content Include="Content\plugins\jsonToTable\json-to-table.js" />
+    <Content Include="Content\plugins\jsonTree\jsonTree.css" />
+    <Content Include="Content\plugins\jsonTree\jsonTree.js" />
+    <Content Include="Content\plugins\moment\moment-with-locales.js" />
+    <Content Include="Content\plugins\select2\css\select2.css" />
+    <Content Include="Content\plugins\select2\js\select2.min.js" />
+    <Content Include="Content\plugins\summernote\css\summernote-lite.css" />
+    <Content Include="Content\plugins\summernote\js\lang\summernote-pt-BR.js" />
+    <Content Include="Content\plugins\summernote\js\summernote-cleaner.js" />
+    <Content Include="Content\plugins\summernote\js\summernote-lite.js" />
+    <Content Include="Content\plugins\tags\tagsinput.css" />
+    <Content Include="Content\plugins\tags\tagsinput.js" />
+    <Content Include="Content\plugins\toastr\toastr.css" />
+    <Content Include="Content\plugins\toastr\toastr.js" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\plugins\datatables\language\pt-br.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="ReportViewerWebForm.aspx" />
+    <Content Include="Views\Oportunidades\_RecallOportunidade.cshtml" />
+    <Content Include="Views\Oportunidades\_RecallFichas.cshtml" />
+    <Content Include="Views\Oportunidades\_RecallPremios.cshtml" />
+    <Content Include="Views\Oportunidades\_RecallAdendos.cshtml" />
+    <Content Include="Views\Solicitacoes\_Recall.cshtml" />
+    <Content Include="Views\Solicitacoes\_ModalExclusaoDesconto.cshtml" />
+    <Content Include="Views\Solicitacoes\_ModalExclusaoCancelamento.cshtml" />
+    <Content Include="Views\Solicitacoes\_ModalExclusaoRestituicao.cshtml" />
+    <Content Include="Views\Solicitacoes\_ModalExclusaoProrrogacao.cshtml" />
+    <Content Include="Views\Workflow\Index.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\EnviarAprovacoes\Index.cshtml" />
+    <Content Include="Views\Oportunidades\_ConsultaHistoricoWorkflow.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAnexosNotas.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaNotas.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaNotasConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisAtualizarReadOnly.cshtml" />
+    <Content Include="Views\Usuarios\_VincularConta.cshtml" />
+    <Content Include="Views\Usuarios\_ConsultaVinculoContas.cshtml" />
+    <Content Include="Views\Usuarios\_PesquisarContas.cshtml" />
+    <Content Include="Views\Usuarios\_PesquisarContasConsulta.cshtml" />
+    <Content Include="Views\Home\TrocarSenha.cshtml" />
+    <Content Include="Views\Home\ResetarSenha.cshtml" />
+    <Content Include="Views\ConsultaCliente\Index.cshtml" />
+    <Content Include="Views\ConsultaCliente\_PesquisarContas.cshtml" />
+    <Content Include="Views\ConsultaCliente\_PesquisarContasConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\EdicaoValores.cshtml" />
+    <Content Include="Views\ConsultaCliente\_PesquisarImportadoresConsulta.cshtml" />
+    <Content Include="Views\ConsultaCliente\_PesquisarImportadores.cshtml" />
+    <Content Include="Views\Solicitacoes\_CadastrarAlteracaoFormaPagamento.cshtml" />
+    <Content Include="Views\Solicitacoes\_ConsultarAlteracoesFormasPagamento.cshtml" />
+    <Content Include="Views\Solicitacoes\_ModalExclusaoAlteracaoFormaPgto.cshtml" />
+    <Content Include="Views\Auditoria\_ConsultaLogsFichasFaturamento.cshtml" />
+    <Content Include="Views\Shared\_ModalAuditoria.cshtml" />
+    <Content Include="Views\Auditoria\_ConsultaLogsPremiosParceria.cshtml" />
+    <Content Include="Views\Auditoria\_ConsultaLogsProposta.cshtml" />
+    <Content Include="Views\Auditoria\_ConsultaLogsAdendos.cshtml" />
+    <Content Include="Views\Shared\_LayoutWide.cshtml" />
+    <Content Include="Views\Oportunidades\_ClonarProposta.cshtml" />
+    <Content Include="Views\Auditoria\LogsAcesso.cshtml" />
+    <Content Include="Views\Contas\_ConsultarVinculosIPs.cshtml" />
+    <Content Include="Views\Shared\_ModalConfirmacao.cshtml" />
+    <Content Include="Views\Simulador\Index.cshtml" />
+    <Content Include="Views\Simulador\_ConsultarSimuladores.cshtml" />
+    <Content Include="Views\Simulador\_ConsultarCargaConteiner.cshtml" />
+    <Content Include="Views\Simulador\_ConsultarCargaSolta.cshtml" />
+    <Content Include="Views\Simulador\_PesquisarArmadores.cshtml" />
+    <Content Include="Views\Simulador\_PesquisarArmadoresConsulta.cshtml" />
+    <Content Include="Views\Simulador\_ConsultarTabelas.cshtml" />
+    <Content Include="Views\AtualizacaoValoresProposta\_ConsultaFaixasBL.cshtml" />
+    <Content Include="Views\AtualizacaoValoresProposta\_ConsultaFaixasCIF.cshtml" />
+    <Content Include="Views\AtualizacaoValoresProposta\_ConsultaFaixasPeso.cshtml" />
+    <Content Include="Views\AtualizacaoValoresProposta\_ConsultaFaixasVolume.cshtml" />
+    <Content Include="Views\Auditoria\_ConsultaLogsAnexos.cshtml" />
+    <Content Include="Views\Simulador\_Sucesso.cshtml" />
+    <Content Include="Views\Simulador\_Erro.cshtml" />
+    <Content Include="Views\SimuladorProposta\_ErroSimulador.cshtml" />
+    <Content Include="Views\SimuladorProposta\_SucessoSimulador.cshtml" />
+    <Content Include="Views\ModeloSimulador\Cadastrar.cshtml" />
+    <Content Include="Views\ModeloSimulador\_Consultar.cshtml" />
+    <Content Include="Views\ModeloSimulador\Index.cshtml" />
+    <Content Include="Views\ModeloSimulador\Atualizar.cshtml" />
+    <Content Include="Views\Layouts\_PeriodoPadrao.cshtml" />
+    <Content Include="Views\SimuladorProposta\_CadastrarParametros.cshtml" />
+    <Content Include="Views\SimuladorProposta\_ConsultaParametros.cshtml" />
+    <Content Include="Views\Modelos\_ModelosSimulador.cshtml" />
+    <Content Include="Views\Modelos\_ModelosSimuladorConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\_DownloadProposta.cshtml" />
+    <Content Include="Views\Oportunidades\PropostaPdf.cshtml" />
+    <Content Include="Views\Oportunidades\_ModalTabelaCobrancaExportada.cshtml" />
+    <Content Include="Views\Simulador\_BarraParametrosExcel.cshtml" />
+    <Content Include="Views\Oportunidades\_ModalIntegracaoChronos.cshtml" />
+    <Content Include="Views\Layouts\_ArmazenagemCIF.cshtml" />
+    <Content Include="Views\Layouts\_ArmazenagemMinimoCIF.cshtml" />
+    <Content Include="Views\Oportunidades\_ModalPropostasConcomitantes.cshtml" />
+    <Content Include="Views\Oportunidades\_ConfirmarExportacaoTabela.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoSelecionaDiasCondicaoPgto.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoSelecionaDiasSemanaCondicaoPgto.cshtml" />
+    <Content Include="Views\Oportunidades\_ConfirmarRevisaoFicha.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoAcessoTotal.cshtml" />
+    <Content Include="Views\ImpostosExcessao\Index.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaPropostaSelecionaLotes.cshtml" />
+    <Content Include="Views\ImpostosExcessao\_ConsultaServicos.cshtml" />
+    <Content Include="Views\Oportunidades\_ConfirmarExportacaoTabelaCancelada.cshtml" />
+    <Content Include="Views\Oportunidades\_ModalTabelaCobrancaCancelada.cshtml" />
+    <Content Include="Views\AnaliseCredito\Index.cshtml" />
+    <Content Include="Views\AnaliseCredito\_PesquisarContas.cshtml" />
+    <Content Include="Views\AnaliseCredito\_PesquisarContasConsulta.cshtml" />
+    <Content Include="Views\AnaliseCredito\_ResultadoSpc.cshtml" />
+    <Content Include="Views\AnaliseCredito\_PendenciasFinanceiras.cshtml" />
+    <Content Include="Views\AnaliseCredito\_SolicitacoesLimiteCredito.cshtml" />
+    <Content Include="Views\AnaliseCredito\_ConsultaHistoricoWorkflow.cshtml" />
+    <Content Include="Views\ImpostosExcessao\_ConsultaServicosReadOnly.cshtml" />
+    <Content Include="Views\AnaliseCredito\_RecallLimite.cshtml" />
+    <Content Include="Views\AnaliseCredito\_RecallAnaliseCredito.cshtml" />
+    <None Include="Web References\WsCalculo\Calcular.disco" />
+    <Content Include="Web References\WsConsultaClientes\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\WsConsultaClientes\RespostaCliente.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\WsCalculo\Calcular.wsdl" />
+    <None Include="Web References\WsCalculo\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\WsCalculo\RetornoCalculo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\WsConsultaClientes\Service1.wsdl" />
+    <None Include="Web References\WsControleSenha\Criptografia.disco" />
+    <None Include="Web References\WsIntegraChronos\IntegraChronos.wsdl" />
+    <None Include="Web References\WsIntegraChronos\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\WsIntegraChronos\Response.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\WsSimulador\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\WsConsultaClientes\Service1.disco" />
+    <None Include="Web References\WsIntegraChronos\IntegraChronos.disco" />
+    <Content Include="Web References\WsSimulador\Response.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\WsSimulador\SimuladorCalculo.disco" />
+    <Content Include="Web References\WsSPC\ConsultaSpcResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\WsSPC\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\WsSPC\ws.disco" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Webfonts\fa-brands-400.svg" />
+    <Content Include="Webfonts\fa-regular-400.svg" />
+    <Content Include="Webfonts\fa-solid-900.svg" />
+    <Content Include="Webfonts\fa-solid-900.ttf" />
+    <Content Include="Webfonts\fa-solid-900.woff" />
+    <Content Include="Webfonts\fa-solid-900.woff2" />
+    <Content Include="Webfonts\summernote.ttf" />
+    <Content Include="Webfonts\summernote.woff" />
+    <Content Include="Views\Servicos\Index.cshtml" />
+    <None Include="Web References\WsControleSenha\Criptografia.wsdl" />
+    <Content Include="Web References\WsControleSenha\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <None Include="Web References\WsSimulador\SimuladorCalculo.wsdl" />
+    <None Include="Web References\WsSPC\ws.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <Content Include="Views\Servicos\Cadastrar.cshtml" />
+    <Content Include="Views\Servicos\Atualizar.cshtml" />
+    <Content Include="Views\Layouts\_Armazenagem.cshtml" />
+    <Content Include="Views\Layouts\_ArmazenagemMinimo.cshtml" />
+    <Content Include="Views\Layouts\_ArmazenagemAllIn.cshtml" />
+    <Content Include="Views\Layouts\_Cabecalho.cshtml" />
+    <Content Include="Views\Layouts\_CondicoesGerais.cshtml" />
+    <Content Include="Views\Layouts\_MinimoGerais.cshtml" />
+    <Content Include="Views\Layouts\_MinimoMecanicaManual.cshtml" />
+    <Content Include="Views\Layouts\_MinimoPorMargem.cshtml" />
+    <Content Include="Views\Layouts\_ServicoHubPort.cshtml" />
+    <Content Include="Views\Layouts\_ServicoLiberacao.cshtml" />
+    <Content Include="Views\Layouts\_ServicoMecanicaManual.cshtml" />
+    <Content Include="Views\Layouts\_ServicoPorMargem.cshtml" />
+    <Content Include="Views\Layouts\_ServicosGerais.cshtml" />
+    <Content Include="Views\Layouts\Index.cshtml" />
+    <Content Include="Views\Layouts\_Consulta.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Webfonts\fa-brands-400.eot" />
+    <Content Include="Webfonts\fa-brands-400.ttf" />
+    <Content Include="Webfonts\fa-brands-400.woff" />
+    <Content Include="Webfonts\fa-brands-400.woff2" />
+    <Content Include="Webfonts\fa-regular-400.eot" />
+    <Content Include="Webfonts\fa-regular-400.ttf" />
+    <Content Include="Webfonts\fa-regular-400.woff" />
+    <Content Include="Webfonts\fa-regular-400.woff2" />
+    <Content Include="Webfonts\fa-solid-900.eot" />
+    <Content Include="Views\Layouts\Atualizar.cshtml" />
+    <Content Include="Views\Layouts\Excluir.cshtml" />
+    <Content Include="Views\Modelos\Atualizar.cshtml" />
+    <Content Include="Views\Modelos\Cadastrar.cshtml" />
+    <Content Include="Views\Modelos\Index.cshtml" />
+    <Content Include="Views\Modelos\Importar.cshtml" />
+    <Content Include="Views\FaixasBL\_Consulta.cshtml" />
+    <Content Include="Views\FaixasCIF\_Consulta.cshtml" />
+    <Content Include="Views\FaixasPeso\_Consulta.cshtml" />
+    <Content Include="Views\Contatos\Atualizar.cshtml" />
+    <Content Include="Views\Contatos\Cadastrar.cshtml" />
+    <Content Include="Views\Contatos\Index.cshtml" />
+    <Content Include="Views\Contas\Cadastrar.cshtml" />
+    <Content Include="Views\Contas\Index.cshtml" />
+    <Content Include="Views\Contas\Atualizar.cshtml" />
+    <Content Include="Views\Contas\_AbaContatos.cshtml" />
+    <Content Include="Views\Oportunidades\Cadastrar.cshtml" />
+    <Content Include="Views\Shared\_Menu.cshtml" />
+    <Content Include="Views\Shared\_ModalExclusao.cshtml" />
+    <Content Include="Views\Oportunidades\_PesquisarContas.cshtml" />
+    <Content Include="Views\Oportunidades\_PesquisarContasConsulta.cshtml" />
+    <Content Include="Views\Mercadorias\Atualizar.cshtml" />
+    <Content Include="Views\Mercadorias\Cadastrar.cshtml" />
+    <Content Include="Views\Mercadorias\Index.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisPesquisaOportunidades.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisPesquisaOportunidadesConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\Atualizar.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaProposta.cshtml" />
+    <Content Include="Views\Oportunidades\Index.cshtml" />
+    <Content Include="Views\Layouts\_CadastrarFaixasPeso.cshtml" />
+    <Content Include="Views\Layouts\_CadastrarFaixasCIF.cshtml" />
+    <Content Include="Views\Layouts\_CadastrarFaixasBL.cshtml" />
+    <Content Include="Views\FaixasVolume\_Consulta.cshtml" />
+    <Content Include="Views\Layouts\_CadastrarFaixasVolume.cshtml" />
+    <Content Include="Views\Contas\_AbaOportunidades.cshtml" />
+    <Content Include="Views\Contas\_AbaOportunidadesInativas.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisCadastraSubClientes.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisConsultaSubClientes.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamento.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoConsultaClientesProposta.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoSelecionaDiasSemana.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoSelecionaDias.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAnexos.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaFichaFaturamentoConsultaFichas.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisAtualizar.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisCadastrar.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisAtualizarAcessoTotal.cshtml" />
+    <Content Include="Views\Oportunidades\PdfCancelamento.cshtml" />
+    <Content Include="Views\Shared\_PdfLayout.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisCadastraGrupoCNPJ.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaInformacoesIniciaisConsultaGrupoCNPJ.cshtml" />
+    <Content Include="Views\Oportunidades\_CancelarOportunidade.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAnexosConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaPremioParceria.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaPremioParceriaConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\_ClonarOportunidade.cshtml" />
+    <Content Include="Views\Oportunidades\GerarProposta.cshtml" />
+    <Content Include="Views\Oportunidades\_ConfirmarGeracaoProposta.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendos.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosVendedor.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosExclusaoGrupoCNPJ.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosExclusaoSubClientes.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosFormaPagamento.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosInclusaoSubClientes.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosInclusaoGrupoCNPJ.cshtml" />
+    <Content Include="Views\Oportunidades\DetalhesAdendo.cshtml" />
+    <Content Include="Views\Busca\Index.cshtml" />
+    <Content Include="Views\Cargos\_Consulta.cshtml" />
+    <Content Include="Views\Cargos\Atualizar.cshtml" />
+    <Content Include="Views\Cargos\Cadastrar.cshtml" />
+    <Content Include="Views\Cargos\Index.cshtml" />
+    <Content Include="Views\Usuarios\Index.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaPropostaReadOnly.cshtml" />
+    <Content Include="Views\Usuarios\_MenuUsuarios.cshtml" />
+    <Content Include="Views\Contatos\_PesquisarContas.cshtml" />
+    <Content Include="Views\Contatos\_PesquisarContasConsulta.cshtml" />
+    <Content Include="Views\Usuarios\Cadastrar.cshtml" />
+    <Content Include="Views\Usuarios\Atualizar.cshtml" />
+    <Content Include="Views\Shared\_ConsultaHistoricoWorkflow.cshtml" />
+    <Content Include="Views\Layouts\_CondicoesIniciais.cshtml" />
+    <Content Include="Views\Auditoria\Timeline.cshtml" />
+    <Content Include="Views\Permissoes\Cadastrar.cshtml" />
+    <Content Include="Views\Home\Indisponivel.cshtml" />
+    <Content Include="Views\Home\Erro.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosConsultaSubClientesExclusao.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosConsultaClientesGrupoExclusao.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosConsultaClientesGrupoInclusao.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosConsultaSubClientesInclusao.cshtml" />
+    <Content Include="Views\Oportunidades\_PesquisarPremios.cshtml" />
+    <Content Include="Views\Oportunidades\_PesquisarPremiosConsulta.cshtml" />
+    <Content Include="Views\Oportunidades\PropostaOnline.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaPremioParceriaReadOnly.cshtml" />
+    <Content Include="Views\Oportunidades\_AbaAdendosReadOnly.cshtml" />
+    <Content Include="Views\Usuarios\_PesquisarUsuarios.cshtml" />
+    <Content Include="Views\Usuarios\_PesquisarUsuariosConsulta.cshtml" />
+    <Content Include="Views\Shared\_MenusDinamicos.cshtml" />
+    <Content Include="Views\Oportunidades\AtualizarAdendo.cshtml" />
+    <Content Include="Views\Solicitacoes\Cadastrar.cshtml" />
+    <Content Include="Views\Motivos\Cadastrar.cshtml" />
+    <Content Include="Views\Ocorrencias\Cadastrar.cshtml" />
+    <Content Include="Views\Motivos\_Consultar.cshtml" />
+    <Content Include="Views\Ocorrencias\_Consultar.cshtml" />
+    <Content Include="Views\Oportunidades\_PesquisarContatos.cshtml" />
+    <Content Include="Views\Contatos\_PesquisarContatosConsulta.cshtml" />
+    <Content Include="Views\Solicitacoes\_CadastrarCancelamentoNF.cshtml" />
+    <Content Include="Views\Motivos\Atualizar.cshtml" />
+    <Content Include="Views\Solicitacoes\_ConsultarCancelamentosNF.cshtml" />
+    <Content Include="Views\Solicitacoes\Atualizar.cshtml" />
+    <Content Include="Views\Solicitacoes\Index.cshtml" />
+    <Content Include="Views\Oportunidades\_ConfirmarRevisaoPremio.cshtml" />
+    <Content Include="Views\Oportunidades\_ConfirmarCancelamentoPremio.cshtml" />
+    <Content Include="Views\Solicitacoes\_CadastrarProrrogacao.cshtml" />
+    <Content Include="Views\Solicitacoes\_ConsultarProrrogacoes.cshtml" />
+    <Content Include="Views\Solicitacoes\_CadastrarRestituicao.cshtml" />
+    <Content Include="Views\Solicitacoes\_ConsultarRestituicoes.cshtml" />
+    <Content Include="Views\Solicitacoes\_PesquisarContas.cshtml" />
+    <Content Include="Views\Solicitacoes\_PesquisarContasConsulta.cshtml" />
+    <Content Include="Views\Solicitacoes\_CadastrarDescontos.cshtml" />
+    <Content Include="Views\Ocorrencias\Atualizar.cshtml" />
+    <Content Include="Views\Solicitacoes\_ConsultarDescontos.cshtml" />
+    <Content Include="Views\Solicitacoes\_AbaAnexos.cshtml" />
+    <Content Include="Views\Solicitacoes\_AbaAnexosConsulta.cshtml" />
+    <Content Include="Views\EquipesVendedor\Index.cshtml" />
+    <Content Include="Views\EquipesVendedor\EquipeUsuarios.cshtml" />
+    <Content Include="Views\EquipesVendedor\_ConsultarUsuariosVinculo.cshtml" />
+    <Content Include="Views\EquipesConta\_ConsultarUsuariosVinculo.cshtml" />
+    <Content Include="Views\EquipesConta\EquipeUsuarios.cshtml" />
+    <Content Include="Views\EquipesConta\Index.cshtml" />
+    <Content Include="Views\Shared\_PesquisarUsuariosConsulta.cshtml" />
+    <Content Include="Views\Shared\_PesquisarUsuarios.cshtml" />
+    <Content Include="Views\EquipesOportunidade\_ConsultarUsuariosVinculo.cshtml" />
+    <Content Include="Views\EquipesOportunidade\EquipeUsuarios.cshtml" />
+    <Content Include="Views\EquipesOportunidade\Index.cshtml" />
+    <Content Include="Views\Home\AcessoNegado.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ecoporto.CRM.Business\Ecoporto.CRM.Business.csproj">
+      <Project>{3e92d4d3-f2d0-462d-8958-d16d56425d91}</Project>
+      <Name>Ecoporto.CRM.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ecoporto.CRM.Infra\Ecoporto.CRM.Infra.csproj">
+      <Project>{cb56c925-4aae-4e92-8e49-be8df5965923}</Project>
+      <Name>Ecoporto.CRM.Infra</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ecoporto.CRM.Sharepoint\Ecoporto.CRM.Sharepoint.csproj">
+      <Project>{c3075bdc-e451-49f7-86ce-a01a2f5386bd}</Project>
+      <Name>Ecoporto.CRM.Sharepoint</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ecoporto.CRM.Workflow\Ecoporto.CRM.Workflow.csproj">
+      <Project>{d5f34d8e-2a67-4b6e-bb2d-aa1cdca06433}</Project>
+      <Name>Ecoporto.CRM.Workflow</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://10.1.50.4:3567/ws.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WsSPC\</RelPath>
+      <UpdateFromURL>http://10.1.50.4:3567/ws.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Ecoporto_CRM_Site_WsSPC_Ws</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost:2897/IntegraChronos.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WsIntegraChronos\</RelPath>
+      <UpdateFromURL>http://localhost:2897/IntegraChronos.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Ecoporto_CRM_Site_WsIntegraChronos_IntegraChronos</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost:2897/SimuladorCalculo.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WsSimulador\</RelPath>
+      <UpdateFromURL>http://localhost:2897/SimuladorCalculo.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Ecoporto_CRM_Site_WsSimulador_SimuladorCalculo</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://srv0019:2530/Calcular.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WsCalculo\</RelPath>
+      <UpdateFromURL>http://srv0019:2530/Calcular.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Ecoporto_CRM_Site_WsCalculo_Calcular</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://srv0019:5040/wsexterno/Service1.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WsConsultaClientes\</RelPath>
+      <UpdateFromURL>http://srv0019:5040/wsexterno/Service1.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Ecoporto_CRM_Site_WsConsultaClientes_Service1</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://srv0310:5456/Criptografia.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WsControleSenha\</RelPath>
+      <UpdateFromURL>http://srv0310:5456/Criptografia.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Ecoporto_CRM_Site_WsControleSenha_Criptografia</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51766</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:53545/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

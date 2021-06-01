@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.OportunidadeParametrosSimuladorDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<div class="table-responsive">
+    <table id="tbSimuladoresCadastrados" class="table table-sm table-striped" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Modelo</th>
+                <th scope="col" class="td-w-10">Períodos</th>
+                <th scope="col" class="td-w-10">Volume M³</th>
+                <th scope="col" class="td-w-10">Tonelada</th>
+                <th scope="col" class="td-w-10">CIF</th>
+                <th scope="col" class="campo-acao"></th>
+                <th scope="col" class="campo-acao"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var simulador in Model)
+            {
+                <tr id="item-parametro-simulador-@simulador.Id">
+                    <td>@simulador.ModeloDescricao</td>
+                    <td>@simulador.Periodos</td>                    
+                    <td>@simulador.VolumeM3</td>
+                    <td>@simulador.Peso</td>
+                    <td>@simulador.CifOportunidade.ToMoeda(Moeda.REAL)</td>
+                    <td>
+                        <button id="lnkSimular-@simulador.Id" onclick="simularOportunidade(@simulador.OportunidadeId, @simulador.Id, @simulador.ModeloId)" class="btn btn-info btn-sm btn-acao"><i class="fa fa-check"></i>&nbsp;&nbsp; Simular</button>
+                    </td>
+                    <td>
+                        <button id="lnkExcluir-@simulador.Id" onclick="excluirParametroSimulador(@simulador.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;&nbsp; Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

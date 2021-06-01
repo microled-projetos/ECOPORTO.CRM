@@ -1,0 +1,124 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.BaseCalculoServMargem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.TipoCargaServMargem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.ValorMargemDireitaServMargem)
+        @Html.PrivilegedEditorFor(model => model.ValorMargemDireitaServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.ValorMargemEsquerdaServMargem)
+        @Html.PrivilegedEditorFor(model => model.ValorMargemEsquerdaServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorEntreMargensServMargem)
+        @Html.PrivilegedEditorFor(model => model.ValorEntreMargensServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOServMargem)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ExercitoServMargem)
+        @Html.PrivilegedEditorFor(model => model.ExercitoServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PesoMaximoServicoParaMargem)
+        @Html.PrivilegedEditorFor(model => model.PesoMaximoServicoParaMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalPesoServicoParaMargem)
+        @Html.PrivilegedEditorFor(model => model.AdicionalPesoServicoParaMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MoedaServMargem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.MoedaServMargem, "form-control form-control-sm")
+    </div>
+
+</div>
+
+<div class="form-row">
+
+    @if (Model.Id > 0)
+    {
+        <div class="form-group col-sm-2">
+            @Html.LabelFor(model => model.DescricaoValorServMargem)
+            @Html.PrivilegedEditorFor(model => model.DescricaoValorServMargem, "form-control form-control-sm")
+        </div>
+    }
+    else
+    {
+        <div class="form-group col-sm-2">
+            @Html.LabelFor(model => model.DescricaoValorServMargem)
+            @Html.PrivilegedEditorFor(model => model.DescricaoValorServMargem, "form-control form-control-sm")
+        </div>
+    }
+
+    <div class="form-group col-sm-4">
+        @Html.LabelFor(model => model.TipoDocumentoServMargem)
+        @Html.PrivilegedDropDownListFor(model => model.TipoDocumentoServMargem, new MultiSelectList(Model.TiposDocumentos, "Id", "Descricao"), "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2">
+        @Html.LabelFor(model => model.BaseExcessoServMargem)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseExcessoServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ValorExcessoServMargem)
+        @Html.PrivilegedEditorFor(model => model.ValorExcessoServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AcrescimoPesoServMargem)
+        @Html.PrivilegedEditorFor(model => model.AcrescimoPesoServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PesoLimiteServMargem)
+        @Html.PrivilegedEditorFor(model => model.PesoLimiteServMargem, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        <label>&nbsp;</label>
+        <div>
+            <div class="form-check form-check-inline">
+                @Html.PrivilegedCheckBoxFor(model => model.ProRataServMargem, "form-check-input")
+                @Html.LabelFor(model => model.ProRataServMargem, new { @class = "form-check-label" })
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@if (Model.Id > 0 && Model.TipoCargaServMargem == Ecoporto.CRM.Business.Enums.TipoCarga.CARGA_SOLTA)
+{
+    <div class="form-row">
+        <div class="form-group col-sm-2">
+            <label>&nbsp;</label>
+            <a id="btnCadastrarFaixasPeso" href="#" class="btn btn-secondary btn-sm btn-block btn-as-block btn-acao"><i class="fa fa-edit"></i>&nbsp;Faixas Peso</a>
+        </div>
+        <div class="form-group col-sm-2">
+            <label>&nbsp;</label>
+            <a id="btnCadastrarFaixasVolume" href="#" class="btn btn-secondary btn-sm btn-block btn-as-block btn-acao"><i class="fa fa-edit"></i>&nbsp;Faixas Volume</a>
+        </div>
+    </div>
+}

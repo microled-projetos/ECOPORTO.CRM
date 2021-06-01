@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.SolicitacaoComercialMotivo>
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descrição do Motivo</th>
+                <th class="td-w-10" scope="col">Status</th>
+                <th class="td-w-10" scope="col">Cancelamento NF</th>
+                <th class="td-w-10" scope="col">Desconto</th>
+                <th class="td-w-10" scope="col">Restituição</th>
+                <th class="td-w-10" scope="col">Prorrogação Boleto</th>
+                <th class="td-w-10" scope="col">Outros</th>
+                <th class="campo-acao">&nbsp;</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr id="item-@item.Id">
+                <td class="campo-acao">@item.Id</td>
+                <td>@item.Descricao</td>
+                <td>@item.Status.ToName()</td>
+                <td>@(item.CancelamentoNF ? Html.Raw("<i class='far fa-check-square'></i>") : Html.Raw("<i class='far fa-square'></i>"))</td>
+                <td>@(item.Desconto ? Html.Raw("<i class='far fa-check-square'></i>") : Html.Raw("<i class='far fa-square'></i>"))</td>
+                <td>@(item.Restituicao ? Html.Raw("<i class='far fa-check-square'></i>") : Html.Raw("<i class='far fa-square'></i>"))</td>
+                <td>@(item.ProrrogacaoBoleto ? Html.Raw("<i class='far fa-check-square'></i>") : Html.Raw("<i class='far fa-square'></i>"))</td>
+                <td>@(item.Outros ? Html.Raw("<i class='far fa-check-square'></i>") : Html.Raw("<i class='far fa-square'></i>"))</td>
+                <td><a href="@Url.Action("Atualizar", "Motivos", new { id= item.Id })" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i>&nbsp;Atualizar</a></td>
+                <td><a href="#" onclick="excluirMotivo(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

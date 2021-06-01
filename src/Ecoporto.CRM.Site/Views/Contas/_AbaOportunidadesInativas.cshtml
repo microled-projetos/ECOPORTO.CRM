@@ -1,0 +1,41 @@
+﻿@model Ecoporto.CRM.Site.Models.ContaViewModel
+@using Ecoporto.CRM.Business.Extensions
+
+<div id="abaOportunidadesAtivas" style="height:350px;" class="pre-scrollable">
+
+    <div class="table-responsive">
+        <table id="tbOportunidadesAtivas" class="table table-hover table-sm" cellspacing="0">
+            <thead>
+                <tr>
+                    <th scope="col">Proposta</th>
+                    <th scope="col">Criado Por</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Estágio Negociação</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Tipo Proposta</th>
+                    <th scope="col">Início</th>
+                    <th scope="col">Término</th>
+                    <th scope="col" class="campo-acao">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OportunidadesInativas)
+                {
+                <tr id="item-oportunidade-ativa-@item.Id">
+                    <td>@item.Identificacao</td>
+                    <td>@item.CriadoPor</td>
+                    <td>@item.Descricao</td>
+                    <td>@item.EstagioNegociacao.ToName()</td>
+                    <td>@item.StatusOportunidade.ToName()</td>
+                    <td>@item.TipoDeProposta.ToName()</td>
+                    <td>@item.DataInicio.DataFormatada()</td>
+                    <td>@item.DataTermino.DataFormatada()</td>
+                    <td class="campo-acao">
+                        <a href="@Url.Action("Atualizar", "Oportunidades", new { id = item.Id })" target="_blank" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

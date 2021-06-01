@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3E92D4D3-F2D0-462D-8958-D16D56425D91}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ecoporto.CRM.Business</RootNamespace>
+    <AssemblyName>Ecoporto.CRM.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentValidation.7.5.1\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.4.1\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.ComponentModel.Primitives, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Primitives.4.3.0\lib\net45\System.ComponentModel.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DTO\AuditoriaAcessosDTO.cs" />
+    <Compile Include="DTO\AuditoriaDTO.cs" />
+    <Compile Include="DTO\CampoPermissaoDTO.cs" />
+    <Compile Include="DTO\ConsultaSpcDTO.cs" />
+    <Compile Include="DTO\EdicaoValoresPropostaDTO.cs" />
+    <Compile Include="DTO\ImpostosExcecaoDTO.cs" />
+    <Compile Include="DTO\LotesMasterDTO.cs" />
+    <Compile Include="DTO\Oportunidades\AnexosNotasDTO.cs" />
+    <Compile Include="DTO\Oportunidades\CancelamentoOportunidadeDTO.cs" />
+    <Compile Include="DTO\Oportunidades\ClonarOportunidadeDTO.cs" />
+    <Compile Include="DTO\ContaDTO.cs" />
+    <Compile Include="DTO\ContatoDTO.cs" />
+    <Compile Include="DTO\Equipes\EquipeOportunidadeUsuarioDTO.cs" />
+    <Compile Include="DTO\Equipes\EquipeContaUsuarioDTO.cs" />
+    <Compile Include="DTO\Equipes\EquipeVendedorUsuarioDTO.cs" />
+    <Compile Include="DTO\Oportunidades\DetalhesAdendoDTO.cs" />
+    <Compile Include="DTO\Oportunidades\OportunidadeAdendosDTO.cs" />
+    <Compile Include="DTO\Oportunidades\OportunidadeAdendoClientesDTO.cs" />
+    <Compile Include="DTO\Oportunidades\DetalhesOportunidadeDTO.cs" />
+    <Compile Include="DTO\AnexosDTO.cs" />
+    <Compile Include="DTO\Oportunidades\OportunidadeDTO.cs" />
+    <Compile Include="DTO\Oportunidades\OportunidadeParametrosSimuladorDTO.cs" />
+    <Compile Include="DTO\Oportunidades\OportunidadePropostaDTO.cs" />
+    <Compile Include="DTO\Oportunidades\PremioParceriaDetalhesDTO.cs" />
+    <Compile Include="DTO\Oportunidades\PremioParceriaDTO.cs" />
+    <Compile Include="DTO\Oportunidades\FichaFaturamentoDTO.cs" />
+    <Compile Include="DTO\ClientePropostaDTO.cs" />
+    <Compile Include="DTO\LayoutDTO.cs" />
+    <Compile Include="DTO\PendenciaFinanceiraDTO.cs" />
+    <Compile Include="DTO\Simulador\SimuladorDTO.cs" />
+    <Compile Include="DTO\ServicoFaturamentoDTO.cs" />
+    <Compile Include="DTO\Simulador\SimuladorTabelasDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoCancelamentoNFDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoDescontoDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoFormaPagamentoDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoProrrogacaoDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoRestituicaoDTO.cs" />
+    <Compile Include="DTO\Solicitacoes\SolicitacaoWorkflowDTO.cs" />
+    <Compile Include="DTO\UsuarioContaDTO.cs" />
+    <Compile Include="DTO\UsuarioDTO.cs" />
+    <Compile Include="DTO\UsuarioIntegracao.cs" />
+    <Compile Include="Enums\AmbienteOracle.cs" />
+    <Compile Include="Enums\StatusAnaliseDeCredito.cs" />
+    <Compile Include="Enums\StatusLimiteCredito.cs" />
+    <Compile Include="Enums\TipoPessoa.cs" />
+    <Compile Include="Enums\TiposExcecoesImpostos.cs" />
+    <Compile Include="Enums\Layouts\BaseCalculoExcesso.cs" />
+    <Compile Include="Enums\Oportunidades\AbaOportunidade.cs" />
+    <Compile Include="Enums\PapelEquipe.cs" />
+    <Compile Include="Enums\Solicitacoes\TipoDesconto.cs" />
+    <Compile Include="Enums\Solicitacoes\TipoOperacaoSolicitacao.cs" />
+    <Compile Include="Enums\Solicitacoes\TipoPesquisa.cs" />
+    <Compile Include="Enums\Solicitacoes\UnidadeSolicitacao.cs" />
+    <Compile Include="Enums\Oportunidades\Instrucao.cs" />
+    <Compile Include="Enums\Oportunidades\ModalidadesComissionamento.cs" />
+    <Compile Include="Enums\Oportunidades\Adendos\AdendoAcao.cs" />
+    <Compile Include="Enums\Oportunidades\SegmentoSubCliente.cs" />
+    <Compile Include="Enums\Solicitacoes\AreaOcorrenciaSolicitacao.cs" />
+    <Compile Include="Enums\Solicitacoes\StatusSolicitacao.cs" />
+    <Compile Include="Enums\Oportunidades\StatusPremioParceria.cs" />
+    <Compile Include="Enums\Oportunidades\Adendos\StatusAdendo.cs" />
+    <Compile Include="Enums\TipoAnexo.cs" />
+    <Compile Include="Enums\Boleano.cs" />
+    <Compile Include="Enums\Oportunidades\ClassificacaoCliente.cs" />
+    <Compile Include="Enums\Estado.cs" />
+    <Compile Include="Enums\Layouts\BaseCalculo.cs" />
+    <Compile Include="Enums\Contas\ClassificacaoFiscal.cs" />
+    <Compile Include="Enums\Oportunidades\EstagioNegociacao.cs" />
+    <Compile Include="Enums\FormaPagamento.cs" />
+    <Compile Include="Enums\Oportunidades\MotivoPerda.cs" />
+    <Compile Include="Enums\Segmento.cs" />
+    <Compile Include="Enums\Layouts\Margem.cs" />
+    <Compile Include="Enums\Layouts\Moeda.cs" />
+    <Compile Include="Enums\Contas\SituacaoCadastral.cs" />
+    <Compile Include="Enums\Regime.cs" />
+    <Compile Include="Enums\Status.cs" />
+    <Compile Include="Enums\Oportunidades\StatusFichaFaturamento.cs" />
+    <Compile Include="Enums\Oportunidades\StatusOportunidade.cs" />
+    <Compile Include="Enums\Oportunidades\SucessoNegociacao.cs" />
+    <Compile Include="Enums\Oportunidades\Adendos\TipoAdendo.cs" />
+    <Compile Include="Enums\Oportunidades\TipoArquivo.cs" />
+    <Compile Include="Enums\Oportunidades\TipoDeProposta.cs" />
+    <Compile Include="Enums\Tela.cs" />
+    <Compile Include="Enums\TipoLogAuditoria.cs" />
+    <Compile Include="Enums\Oportunidades\TipoNegocio.cs" />
+    <Compile Include="Enums\TipoOperacao.cs" />
+    <Compile Include="Enums\Oportunidades\TipoOperacaoOportunidade.cs" />
+    <Compile Include="Enums\Layouts\TipoRegistro.cs" />
+    <Compile Include="Enums\Solicitacoes\TipoSolicitacao.cs" />
+    <Compile Include="Enums\Oportunidades\TipoServicoPremioParceria.cs" />
+    <Compile Include="Enums\Oportunidades\TipoServico.cs" />
+    <Compile Include="Enums\Layouts\TipoTrabalho.cs" />
+    <Compile Include="Enums\Layouts\TipoCarga.cs" />
+    <Compile Include="Enums\Oportunidades\TipoValidade.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\BooleanExtensions.cs" />
+    <Compile Include="Extensions\DecimalExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Factory\LayoutFactory.cs" />
+    <Compile Include="Filtros\AuditoriaAcessoFiltro.cs" />
+    <Compile Include="Filtros\OportunidadesFiltro.cs" />
+    <Compile Include="Filtros\AdendosFiltro.cs" />
+    <Compile Include="Filtros\SolicitacoesFiltro.cs" />
+    <Compile Include="Filtros\SolicitacoesUsuarioExternoFiltro.cs" />
+    <Compile Include="Helpers\Converters.cs" />
+    <Compile Include="Helpers\Criptografia.cs" />
+    <Compile Include="Helpers\DateTimeHelpers.cs" />
+    <Compile Include="Helpers\ObjetoHelpers.cs" />
+    <Compile Include="Helpers\StringHelpers.cs" />
+    <Compile Include="Interfaces\Repositorios\Faixas\IFaixasVolumeRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IAnaliseCreditoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IDocumentoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IGrupoAtracacaoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IImpostosExcecaoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ILocalAtracacaoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ILoteRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IMargemRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IModeloSimuladorRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ISimuladorPropostaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ISimuladorRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IAnexoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IBookingRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IEmpresaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IEquipeOportunidadeRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IEquipeContaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IEquipeVendedorRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IMinutaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IGRRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IBancoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IMotivosRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IParametrosRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IOcorrenciasRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ISolicitacoesRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IControleAcessoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ICondicaoPagamentoFaturaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IAuditoriaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ILayoutBase.cs" />
+    <Compile Include="Interfaces\Repositorios\ILayoutPropostaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\INotaFiscalRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ITabelasRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IUsuarioRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IWorkflowRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\Usuarios\ICargoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IPremioParceriaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IContaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IMercadoriaRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IOportunidadeRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IParceiroRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IPaisRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ICidadeRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IContatoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\Faixas\IFaixasBLRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\Faixas\IFaixasCIFRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\Faixas\IFaixasPesoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IImpostoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\ILayoutRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IModeloRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IHubPortRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\Servicos\IServicoFaturamentoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\Servicos\IServicoRepositorio.cs" />
+    <Compile Include="Interfaces\Repositorios\IVendedorRepositorio.cs" />
+    <Compile Include="Interfaces\Servicos\IAmbienteOracleService.cs" />
+    <Compile Include="Interfaces\Servicos\IConcomitanciaTabelaService.cs" />
+    <Compile Include="Interfaces\Servicos\IControleAcessoService.cs" />
+    <Compile Include="Interfaces\Servicos\IOportunidadeService.cs" />
+    <Compile Include="Interfaces\Servicos\IRelogioService.cs" />
+    <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\ConsultaPaginada.cs" />
+    <Compile Include="Models\Dominio.cs" />
+    <Compile Include="Models\Empresa.cs" />
+    <Compile Include="Models\Equipes\EquipeOportunidade.cs" />
+    <Compile Include="Models\Equipes\EquipeConta.cs" />
+    <Compile Include="Models\Equipes\EquipeVendedor.cs" />
+    <Compile Include="Models\GR.cs" />
+    <Compile Include="Models\Banco.cs" />
+    <Compile Include="Models\Layout\LayoutArmazenagemCIF.cs" />
+    <Compile Include="Models\Layout\LayoutArmazenagemMinimoCIF.cs" />
+    <Compile Include="Models\Layout\LayoutPeriodoPadrao.cs" />
+    <Compile Include="Models\Lote.cs" />
+    <Compile Include="Models\ControleAcessoConta.cs" />
+    <Compile Include="Models\Minuta.cs" />
+    <Compile Include="Models\OportunidadeConcomitancia.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeTabelaConcomitante.cs" />
+    <Compile Include="Models\RetornoConsultaSPC.cs" />
+    <Compile Include="Models\Simulador\ModeloSimulador.cs" />
+    <Compile Include="Models\NotaFiscal.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeAlteracaoLinhaProposta.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeNotas.cs" />
+    <Compile Include="Models\Documento.cs" />
+    <Compile Include="Models\Armazem.cs" />
+    <Compile Include="Models\Simulador\SimuladorPropostaParametros.cs" />
+    <Compile Include="Models\Porto.cs" />
+    <Compile Include="Models\ParametrosFatura.cs" />
+    <Compile Include="Models\Parametros.cs" />
+    <Compile Include="Models\Simulador\Simulador.cs" />
+    <Compile Include="Models\Simulador\SimuladorCargaConteiner.cs" />
+    <Compile Include="Models\Simulador\SimuladorCargaSolta.cs" />
+    <Compile Include="Models\Simulador\SimuladorParametroServico.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoAlteraFormaPagamento.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoDesconto.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoRestituicao.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoProrrogacao.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoCancelamentoNF.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialOcorrencia.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercialMotivo.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoComercial.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoTipoOperacao.cs" />
+    <Compile Include="Models\Solicitacoes\SolicitacaoUnidade.cs" />
+    <Compile Include="Models\SubMenu.cs" />
+    <Compile Include="Models\Menu.cs" />
+    <Compile Include="Models\CondicaoPagamentoFatura.cs" />
+    <Compile Include="Models\Conta.cs" />
+    <Compile Include="Models\Layout\LayoutCondicoesIniciais.cs" />
+    <Compile Include="Models\Layout\LayoutSubTituloAllIn.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeAdendoSubCliente.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeAdendoGrupoCNPJ.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeAdendoFormaPagamento.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeAdendoVendedor.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeAdendo.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadePremioParceriaModalidade.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadePremioParceria.cs" />
+    <Compile Include="Models\Faixas\FaixaVolume.cs" />
+    <Compile Include="Models\Anexo.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeFichaFaturamento.cs" />
+    <Compile Include="Models\Layout\LayoutTituloMaster.cs" />
+    <Compile Include="Models\Mercadoria.cs" />
+    <Compile Include="Models\Oportunidades\Oportunidade.cs" />
+    <Compile Include="Models\Oportunidades\OportunidadeProposta.cs" />
+    <Compile Include="Models\EnvioWorkflow.cs" />
+    <Compile Include="Models\Parceiro.cs" />
+    <Compile Include="Models\Pais.cs" />
+    <Compile Include="Models\ClienteHubPort.cs" />
+    <Compile Include="Models\Cidade.cs" />
+    <Compile Include="Models\Contato.cs" />
+    <Compile Include="Models\Entidade.cs" />
+    <Compile Include="Models\Faixas\FaixaBL.cs" />
+    <Compile Include="Models\Faixas\FaixaCIF.cs" />
+    <Compile Include="Models\Faixas\FaixaPeso.cs" />
+    <Compile Include="Models\Imposto.cs" />
+    <Compile Include="Models\Layout\LayoutArmazenagem.cs" />
+    <Compile Include="Models\Layout\LayoutArmazenagemAllIn.cs" />
+    <Compile Include="Models\Layout\LayoutArmazenagemMinimo.cs" />
+    <Compile Include="Models\Layout\LayoutCondicoesGerais.cs" />
+    <Compile Include="Models\Layout\LayoutMinimoGeral.cs" />
+    <Compile Include="Models\Layout\LayoutMinimoMecanicaManual.cs" />
+    <Compile Include="Models\Layout\LayoutMinimoParaMargem.cs" />
+    <Compile Include="Models\Layout\LayoutServicoHubPort.cs" />
+    <Compile Include="Models\Layout\LayoutServicoLiberacao.cs" />
+    <Compile Include="Models\Layout\LayoutServicoMecanicaManual.cs" />
+    <Compile Include="Models\Layout\LayoutServicoParaMargem.cs" />
+    <Compile Include="Models\Layout\LayoutServicosGerais.cs" />
+    <Compile Include="Models\Layout\LayoutSubTituloMargem.cs" />
+    <Compile Include="Models\Layout\LayoutSubTitulo.cs" />
+    <Compile Include="Models\Layout\LayoutTitulo.cs" />
+    <Compile Include="Models\Modelo.cs" />
+    <Compile Include="Models\PermissaoAcessoMenu.cs" />
+    <Compile Include="Models\PermissaoAcessoMenuCampos.cs" />
+    <Compile Include="Models\PermissaoAcesso.cs" />
+    <Compile Include="Models\Servicos\Servico.cs" />
+    <Compile Include="Models\Servicos\ServicoFaturamento.cs" />
+    <Compile Include="Models\Servicos\ServicoTipoOperacao.cs" />
+    <Compile Include="Models\Servicos\ServicoVinculo.cs" />
+    <Compile Include="Models\Terminal.cs" />
+    <Compile Include="Models\Usuario.cs" />
+    <Compile Include="Models\Usuarios\Cargo.cs" />
+    <Compile Include="Models\Vendedor.cs" />
+    <Compile Include="DTO\VinculoModeloSimuladoDTO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\HtmlBuilder.cs" />
+    <Compile Include="Utils\Validacoes.cs" />
+    <Compile Include="Models\Layout\Cabecalho.cs" />
+    <Compile Include="ValueObjects\ValorCargaMinimo.cs" />
+    <Compile Include="ValueObjects\ValorCarga.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ecoporto.CRM.Workflow\Ecoporto.CRM.Workflow.csproj">
+      <Project>{D5F34D8E-2A67-4B6E-BB2D-AA1CDCA06433}</Project>
+      <Name>Ecoporto.CRM.Workflow</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

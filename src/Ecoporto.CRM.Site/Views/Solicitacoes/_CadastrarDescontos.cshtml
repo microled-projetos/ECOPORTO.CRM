@@ -1,0 +1,437 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialDescontoViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    var ecopatioTransportes = (Model.DescontoUnidadeSolicitacao == 3 || Model.DescontoTipoOperacaoSolicitacao == 4);
+    var habilitaCampos = (Model.DescontoStatusSolicitacao == StatusSolicitacao.NOVO || Model.DescontoStatusSolicitacao == StatusSolicitacao.REJEITADO);
+}
+
+@using (Ajax.BeginForm("CadastrarDesconto", "Solicitacoes", new AjaxOptions
+{
+    UpdateTargetId = "_ConsultaDescontos",
+    OnSuccess = "solicitacoesMensagemSucesso",
+    OnFailure = "solicitacoesMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmSolicitacoesDescontos" }))
+{
+
+    @Html.HiddenFor(model => model.DescontoSolicitacaoId)
+    @Html.HiddenFor(model => model.DescontoId)
+    @Html.HiddenFor(model => model.ClienteFaturamentoId)
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.TipoPesquisaSolicitacaoDesconto)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedDropDownListFor(model => model.TipoPesquisaSolicitacaoDesconto, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlDropDownListFor(model => model.TipoPesquisaSolicitacaoDesconto, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoTipoPesquisaNumero)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.DescontoTipoPesquisaNumero, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.DescontoTipoPesquisaNumero, "form-control form-control-sm")
+            }
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoGRMinutaId)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedDropDownListFor(model => model.DescontoGRMinutaId, new MultiSelectList(Model.GRs, "Id", "Descricao"), "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlDropDownListFor(model => model.DescontoGRMinutaId, new MultiSelectList(Model.GRs, "Id", "Descricao"), "form-control form-control-sm")
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoValor)
+
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.DescontoValor, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.DescontoValor, "form-control form-control-sm")
+            }
+        </div>
+
+        @if (ecopatioTransportes)
+        {
+            if (Model.DescontoTipoOperacaoSolicitacao == 6)
+            {
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(model => model.DescontoRazaoSocial)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedEditorFor(model => model.DescontoRazaoSocial, "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlEditorFor(model => model.DescontoRazaoSocial, "form-control form-control-sm")
+                    }
+                </div>
+            }
+            else
+            {
+                if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:PesquisarClienteDesconto"))
+                {
+                    <div class="form-group col-md-3">
+                        @Html.LabelFor(model => model.DescontoClienteId)
+                        @if (habilitaCampos)
+                        {
+                            @Html.PrivilegedDropDownListFor(model => model.DescontoClienteId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                        else
+                        {
+                            @Html.FullControlDropDownListFor(model => model.DescontoClienteId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="btnPesquisarClienteDesconto">&nbsp;</label>
+                        <a id="btnPesquisarClienteDesconto" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(model => model.DescontoClienteId)
+                        @if (habilitaCampos)
+                        {
+                            @Html.PrivilegedDropDownListFor(model => model.DescontoClienteId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                        else
+                        {
+                            @Html.FullControlDropDownListFor(model => model.DescontoClienteId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                        }
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.DescontoClienteId)
+                @Html.HiddenFor(model => model.DescontoClienteId)
+                @Html.EditorFor(model => model.DescontoClienteDescricao, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            </div>
+        }
+
+        @if (ecopatioTransportes)
+        {
+            if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:PesquisarIndicadorDesconto"))
+            {
+                <div class="form-group col-md-3">
+                    @Html.LabelFor(model => model.DescontoIndicadorId)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedDropDownListFor(model => model.DescontoIndicadorId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlDropDownListFor(model => model.DescontoIndicadorId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                </div>
+                <div class="form-group col-md-1">
+                    <label for="btnPesquisarIndicadorDesconto">&nbsp;</label>
+                    <a id="btnPesquisarIndicadorDesconto" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+                </div>
+            }
+            else
+            {
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(model => model.DescontoIndicadorId)
+                    @if (habilitaCampos)
+                    {
+                        @Html.PrivilegedDropDownListFor(model => model.DescontoIndicadorId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlDropDownListFor(model => model.DescontoIndicadorId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="form-group col-md-4">
+                @Html.LabelFor(model => model.DescontoIndicadorId)
+                @Html.HiddenFor(model => model.DescontoIndicadorId)
+                @Html.EditorFor(model => model.DescontoIndicadorDescricao, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            </div>
+        }
+
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoProposta)
+
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.DescontoProposta, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.DescontoProposta, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.DescontoProposta, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoVencimentoGR)
+
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.DescontoVencimentoGR, "form-control form-control-sm data")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.DescontoVencimentoGR, "form-control form-control-sm data")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.DescontoVencimentoGR, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoFreeTimeGR)
+
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.DescontoFreeTimeGR, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.DescontoFreeTimeGR, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.DescontoFreeTimeGR, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        @if (Model.DescontoTipoOperacaoSolicitacao == 3)
+        {
+            <div class="form-group col-md-2">
+                @Html.LabelFor(model => model.DescontoReserva)
+
+                @if (ecopatioTransportes)
+                {
+                    if (habilitaCampos)
+                    {
+                        @Html.PrivilegedEditorFor(model => model.DescontoReserva, "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlEditorFor(model => model.DescontoReserva, "form-control form-control-sm")
+                    }
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.DescontoReserva, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+                }
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-2">
+                @Html.LabelFor(model => model.DescontoLote)
+
+                @if (ecopatioTransportes)
+                {
+                    if (habilitaCampos)
+                    {
+                        @Html.PrivilegedEditorFor(model => model.DescontoLote, "form-control form-control-sm")
+                    }
+                    else
+                    {
+                        @Html.FullControlEditorFor(model => model.DescontoLote, "form-control form-control-sm")
+                    }
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.DescontoLote, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+                }
+            </div>
+        }
+
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.DescontoPeriodo)
+
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEditorFor(model => model.DescontoPeriodo, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEditorFor(model => model.DescontoPeriodo, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.EditorFor(model => model.DescontoPeriodo, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+
+        <div class="form-group col-md-3">
+            @Html.LabelFor(model => model.DescontoFormaPagamento)
+
+            @if (ecopatioTransportes)
+            {
+                if (habilitaCampos)
+                {
+                    @Html.PrivilegedEnumDropDownListFor(c => c.DescontoFormaPagamento, "form-control form-control-sm")
+                }
+                else
+                {
+                    @Html.FullControlEnumDropDownListFor(c => c.DescontoFormaPagamento, "form-control form-control-sm")
+                }
+            }
+            else
+            {
+                @Html.HiddenFor(model => model.DescontoFormaPagamento)
+                @Html.EditorFor(model => model.DescontoDescricaoFormaPagamento, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-12 mt-2">
+            <label>Desconto a ser aplicado na GR</label>
+            <hr class="mt-0" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            <label>Escolha:</label>
+            <div>
+                <div class="form-check form-check-inline mr-0">
+                    @if (habilitaCampos)
+                    {
+                        @Html.RadioButtonFor(model => model.DescontoTipoDescontoPorServico, false, new { id = "DescontoTipoDescontoGeral" })
+                    }
+                    else
+                    {
+                        @Html.FullControlRadioButtonFor(model => model.DescontoTipoDescontoPorServico, Model.DescontoTipoDescontoPorServico)
+                    }
+                    Geral
+                </div>
+                <div class="form-check form-check-inline">
+                    @if (habilitaCampos)
+                    {
+                        @Html.RadioButtonFor(model => model.DescontoTipoDescontoPorServico, true, new { id = "DescontoTipoDescontoPorServico" })
+                    }
+                    else
+                    {
+                        @Html.FullControlRadioButtonFor(model => model.DescontoTipoDescontoPorServico, Model.DescontoTipoDescontoPorServico)
+                    }
+                    Por Serviço
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            @Html.LabelFor(model => model.DescontoServicoId)
+            @Html.PrivilegedDropDownListFor(model => model.DescontoServicoId, new MultiSelectList(Model.ServicosFaturamento, "Id", "Descricao"), "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoFreeTime) <input type="checkbox" id="chkHabilitaDescontoFreeTime" class="form-check-input" />
+            @Html.PrivilegedEditorFor(model => model.DescontoFreeTime, "form-control form-control-sm data")
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoVencimento) <input type="checkbox" id="chkHabilitaDescontoVencimento" class="form-check-input" />
+            @Html.PrivilegedEditorFor(model => model.DescontoVencimento, "form-control form-control-sm data")
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoTipoDesconto)
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEnumDropDownListFor(c => c.DescontoTipoDesconto, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEnumDropDownListFor(c => c.DescontoTipoDesconto, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoValorDesconto) <small class="label-calculando text-danger invisivel">Calculando...</small>
+            @if (habilitaCampos)
+            {
+                @Html.PrivilegedEditorFor(model => model.DescontoValorDesconto, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.FullControlEditorFor(model => model.DescontoValorDesconto, "form-control form-control-sm")
+            }
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoValorDescontoNoServico)
+            @Html.PrivilegedEditorFor(model => model.DescontoValorDescontoNoServico, "form-control form-control-sm", readOnly: true)
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoValorDescontoFinal)
+            @Html.PrivilegedEditorFor(model => model.DescontoValorDescontoFinal, "form-control form-control-sm", readOnly: true)
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.DescontoValorDescontoComImposto)
+            @Html.PrivilegedEditorFor(model => model.DescontoValorDescontoComImposto, "form-control form-control-sm", readOnly: true)
+        </div>
+
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            <button id="btnLimparDadosDesconto" type="button" class="btn btn-secondary btn-sm btn-block">Limpar</button>
+        </div>
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Cadastrar") || User.IsInRole("SolicitacoesDesconto:Atualizar"))
+            {
+                <button id="btnCadastrarDesconto" type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="_ConsultaDescontos">
+                @Html.Partial("_ConsultarDescontos", Model.Descontos)
+            </div>
+        </div>
+    </div>
+}

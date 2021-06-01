@@ -1,0 +1,152 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialAlteracaoFormaPagamentoViewModel
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Enums
+
+@{
+    var ecopatioTransportes = (Model.AlteracaoFormaPagamentoUnidadeSolicitacao == 3 || Model.AlteracaoFormaPagamentoTipoOperacaoSolicitacao == 4);
+}
+
+@using (Ajax.BeginForm("CadastrarAlteracaoFormaPagamento", "Solicitacoes", new AjaxOptions
+{
+    UpdateTargetId = "_ConsultaAlteracaoFormaPagamento",
+    OnSuccess = "solicitacoesMensagemSucesso",
+    OnFailure = "solicitacoesMensagemErro",
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "POST"
+}, new { id = "frmSolicitacoesAlteracaoFormaPgto" }))
+{
+    
+
+    @Html.HiddenFor(model => model.AlteracaoFormaPagamentoSolicitacaoId)
+    @Html.HiddenFor(model => model.AlteracaoFormaPagamentoId)
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <div id="msgErro" class="invisivel alert alert-danger" role="alert"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoTipoPesquisa)
+            @Html.PrivilegedDropDownListFor(model => model.AlteracaoFormaPagamentoTipoPesquisa, (MultiSelectList)ViewBag.TipoPesquisa, "form-control form-control-sm")
+        </div>
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoTipoPesquisaNumero)
+            @Html.PrivilegedEditorFor(model => model.AlteracaoFormaPagamentoTipoPesquisaNumero, "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoGrId)
+            @Html.PrivilegedDropDownListFor(model => model.AlteracaoFormaPagamentoGrId, new MultiSelectList(Model.GRs, "Id", "Descricao"), "form-control form-control-sm")
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoValor)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoValor, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoLote)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoLote, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoProposta)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoProposta, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+       
+        <div class="form-group col-md-1">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoPeriodo)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoPeriodo, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoFreeTimeGR)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoFreeTimeGR, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoCliente)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoCliente, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoIndicador)
+            @Html.EditorFor(model => model.AlteracaoFormaPagamentoIndicador, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly " } })
+        </div>
+
+        <div class="form-group col-md-2">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoCondicaoPagamentoId)
+            @Html.PrivilegedDropDownListFor(model => model.AlteracaoFormaPagamentoCondicaoPagamentoId, new MultiSelectList(Model.CondicoesPagamentoFaturamento, "Id", "Descricao"), "form-control form-control-sm")
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        @if (ecopatioTransportes)
+        {
+            <div class="form-group col-md-12">
+                @Html.LabelFor(model => model.AlteracaoFormaPagamentoFaturadoDescricao)
+                @Html.EditorFor(model => model.AlteracaoFormaPagamentoFaturadoDescricao, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            </div>
+        }
+        else
+        {
+            <div class="form-group col-md-10">
+                @Html.LabelFor(model => model.AlteracaoFormaPagamentoFaturadoContraId)
+                @Html.PrivilegedDropDownListFor(model => model.AlteracaoFormaPagamentoFaturadoContraId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm")
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="btnPesquisarFatContraFormaPgto">&nbsp;</label>
+                <a id="btnPesquisarFatContraFormaPgto" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i></a>
+            </div>
+        }
+       
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-10">
+            @Html.LabelFor(model => model.AlteracaoFormaPagamentoEncaminharPara)
+
+            @if (ecopatioTransportes)
+            {
+                @Html.PrivilegedEditorFor(model => model.AlteracaoFormaPagamentoEncaminharPara, "form-control form-control-sm")
+            }
+            else
+            {
+                @Html.EditorFor(model => model.AlteracaoFormaPagamentoEncaminharPara, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+            }
+        </div>
+
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            <button onclick="limparDadosAlteracaoFormaPgto()" type="button" class="btn btn-secondary btn-sm btn-block">Limpar</button>
+        </div>
+
+        <div class="form-group col-md-1">
+            <label>&nbsp;</label>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesCancelamento:Cadastrar") || User.IsInRole("SolicitacoesCancelamento:Atualizar"))
+            {
+                <button type="submit" class="btn btn-primary btn-sm btn-block">Salvar</button>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="_ConsultaAlteracaoFormaPagamento">
+                @Html.Partial("_ConsultarAlteracoesFormasPagamento", Model.SolicitacoesAlteracaoFormaPgto)
+            </div>
+        </div>
+    </div>
+}

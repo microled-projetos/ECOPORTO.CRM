@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.UsuarioContaDTO>
+
+<table id="tbVinculoContas" class="table table-sm table-striped" cellspacing="0">
+    <thead>
+        <tr>
+            <th scope="col">Nome Fantasia</th>
+            <th scope="col">CNPJ/CPF</th>
+            <th class="campo-acao">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="item-subcliente-@item.Id">
+                <td>@item.ContaDescricao</td>
+                <td>@item.ContaDocumento</td>
+                <td class="campo-acao"><a href="#" onclick="excluirVinculoConta(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

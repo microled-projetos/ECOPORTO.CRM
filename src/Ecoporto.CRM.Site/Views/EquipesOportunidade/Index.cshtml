@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Consultar Equipes Vendedor";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Equipes
+        <small>Oportunidade</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Equipes</a>
+        </li>
+        <li class="active">Equipes Oportunidade</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Oportunidades Ativas
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Proposta</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Vendedor</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Consultar", "Oportunidades")",
+                "bProcessing": true,
+                "pagingType": "full_numbers",
+                "searchDelay": 1000,
+                "pageLength": 50,
+                "order": [0, 'desc'],
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "aoColumns":
+                    [
+                        {
+                            "sName": "Identificacao",
+                            "mData": "Identificacao"
+                        },
+                        {
+                            "sName": "Descricao",
+                            "render": function (data, type, row) {
+                                if (row.Descricao) {
+                                    return row.Descricao.length > 40 ?
+                                        row.Descricao.substr(0, 40) + '…' :
+                                        row.Descricao;
+                                }
+
+                            },
+                            "defaultContent": ""
+                        },
+                        {
+                            "sName": "StatusOportunidade",
+                            "mData": "StatusOportunidade"
+                        },
+                        {
+                            "sName": "Vendedor",
+                            "mData": "Vendedor"
+                        },
+                        {
+                            sortable: false,
+                            "render": function (data, type, row) {
+                                return '<a href="@Url.Action("EquipeUsuarios", "EquipesOportunidade")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-user-plus"></i></a>';
+                            }
+                        }
+                    ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

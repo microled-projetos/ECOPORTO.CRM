@@ -1,0 +1,36 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadeDownloadPropostaViewModel
+@using Ecoporto.CRM.Business.Enums
+
+<table>
+    <tr>
+        <td style="width: 150px;" valign="top"><img src="~/Content/img/icone-download.png" /></td>
+        <td>
+            <h4 class="mt-0 mb-0">Sua proposta já está pronta para Download!</h4>
+
+            @if (!string.IsNullOrEmpty(Model.Mensagem))
+            {
+                <br />
+                <div class="alert alert-warning" role="alert">
+                    <strong>Atenção:</strong> @Model.Mensagem
+                </div>
+            }
+            <br />
+            @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:btnGerarPropostaWord") || User.IsInRole("OportunidadesProposta:btnGerarPropostaPdf"))
+            {
+                <p class="mt-0 mb-0">
+                    Escolha o formato:
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:btnGerarPropostaWord"))
+                    {
+                        <a href="@Url.Action("DownloadArquivoProposta","Oportunidades", new { id = Model.OportunidadeId, formato = TipoArquivo.WORD })">Word</a>
+                    }
+                    &nbsp;|&nbsp;
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesProposta:btnGerarPropostaPdf"))
+                    {
+                        <a href="@Url.Action("DownloadArquivoProposta", "Oportunidades", new { id = Model.OportunidadeId, formato = TipoArquivo.PDF })">Pdf</a>
+                    }
+                </p>
+            }
+
+        </td>
+    </tr>
+</table>

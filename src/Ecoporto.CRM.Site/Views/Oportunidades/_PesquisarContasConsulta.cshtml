@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.Conta>
+@{
+    ViewBag.Valor = "false";
+    ViewBag.ClienteId = "";
+    ViewBag.RazaoSocial = "";
+    ViewBag.Cnpj = "";
+
+}
+
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Descrição</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+            <tr>
+                <td>
+                    <input hidden type="text" id="_RazaoSocial" />
+                    <input hidden type="text" id="_Cnpj" />
+                    <input hidden type="text" id="_ClienteId" />
+                    <input hidden type="text" id="_Valor" />
+                </td>
+            </tr>
+
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr id="item-@item.Id">
+                    <td>@item.Descricao (@item.Documento)</td>
+                    <td><a href="#" onclick="selecionarConta_(@item.Id, '@item.Descricao.Replace("'","") (@item.Documento)', @item.VendedorId)"><i class="far fa-check-circle"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    function selecionarConta_(id, descricao, vendedorId) {
+
+        var toggle = $('#pesquisa-modal-contas').data('toggle');
+
+        var subCliente = false;
+
+        if (toggle !== 'ContaId') {
+            subCliente = true;
+        }
+
+        if (isNumero(vendedorId)) {
+            $('#VendedorId').val(vendedorId);
+        }
+
+        $.get(urlBase + 'Oportunidades/ValidarPermissaoSPC?contaId=' + id + '&razaoSocial=' + descricao + '&subCliente=' + subCliente, function (resultado) {
+
+            $('#pesquisa-modal-contas').modal('hide');
+
+            $("#" + toggle)
+                .empty()
+                .append($('<option>', {
+                    value: id,
+                    text: descricao
+                })).focus();
+
+            $("#ListaContas").empty();
+
+        }).fail(function (data) {
+            if (data.statusText) {
+                toastr.error(data.statusText, 'CRM');
+            } else {
+                toastr.error('Falha ao selecionar a Conta', 'CRM');
+            }
+        });
+    }
+
+    $("#ContaId").focusin(function () {
+        consultarContatos($(this).val());
+    });
+</script>

@@ -1,0 +1,83 @@
+﻿@model Ecoporto.CRM.Site.Models.CargosViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Cadastrar Cargo";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Usuários
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Cargos</a>
+        </li>
+        <li class="active">Cadastrar Cargo</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    
+
+    <div class="card">
+        <div class="card-header">
+            <i class="fa fa-edit fa-lg"></i>
+            Detalhes do Cargo
+            <div class="float-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+                <div class="form-group col-md-10">
+                    @Html.LabelFor(model => model.Descricao)
+                    @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm", 150)
+                </div>
+                <div class="form-group col-md-2 text-center">
+                    <label>&nbsp;</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            @Html.PrivilegedCheckBoxFor(model => model.Vendedor, "form-check-input")
+                            @Html.LabelFor(model => model.Vendedor, new { @class = "form-check-label" })
+                        </div>
+                    </div>
+                </div>
+            </div>           
+
+        </div>
+
+        <div class="card-footer">
+            <div class="float-left">
+                <p>
+                    <a href="@Url.Action("Index", "Cargos")" class="btn btn-secondary btn-sm">Retornar</a>
+                </p>
+            </div>
+            <div class="float-right">
+                <p>
+                    <a href="@Url.Action("Cadastrar", "Cargos")" class="btn btn-secondary btn-sm">Novo Cargo</a>
+                    <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+}

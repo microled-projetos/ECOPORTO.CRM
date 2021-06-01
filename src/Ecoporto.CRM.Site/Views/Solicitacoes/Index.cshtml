@@ -1,0 +1,342 @@
+﻿@{
+    ViewBag.Title = "Consultar Solicitações Comerciais";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Solicitações Comerciais
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Solicitações Comerciais</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Solicitações Cadastradas
+        <div class="float-right">
+            <a id="btnFiltro" href="#" class="btn btn-info btn-sm"><i class="fa fa-search"></i>&nbsp;Filtro</a>
+
+            @if (User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:Cadastrar"))
+            {
+                <a href="@Url.Action("Cadastrar", "Solicitacoes")" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i>&nbsp;Nova Solicitação</a>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div id="pnlFiltro" class="card mb-4" style="display:none;">
+            <div class="card-header">
+                <i class="fa fa-search fa-lg"></i>
+                Filtro
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="txtID">ID:</label>
+                        <input type="text" id="txtID" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="cbTipoSolicitacao">Tipo: </label>
+                        <select id="cbTipoSolicitacao" class="form-control form-control-sm">
+                            <option value=""></option>
+                            <option value="1">Cancelamento NF</option>
+                            <option value="2">Desconto</option>
+                            <option value="3">Prorrogação</option>
+                            <option value="4">Restituição</option>
+                            <option value="5">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtDe">De:</label>
+                        <input type="text" id="txtDe" class="form-control form-control-sm data" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtAte">Até:</label>
+                        <input type="text" id="txtAte" class="form-control form-control-sm data" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="cbOcorrenciasSolicitacao">Ocorrência:</label>
+                        <select id="cbOcorrenciasSolicitacao" class="form-control form-control-sm"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="cbStatusSolicitacao">Status:</label>
+                        <select id="cbStatusSolicitacao" class="form-control form-control-sm">
+                            <option value=""></option>
+                            <option value="1">Novo</option>
+                            <option value="2">Em Aprovação</option>
+                            <option value="3">Aprovado</option>
+                            <option value="4">Rejeitado</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="cbUsuarioSolicitacao">Usuário:</label>
+                        <select id="cbUsuarioSolicitacao" class="form-control form-control-sm"></select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtLote">Lote:</label>
+                        <input type="text" id="txtLote" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtGR">GR:</label>
+                        <input type="text" id="txtGR" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="txtMinuta">Minuta:</label>
+                        <input type="text" id="txtMinuta" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label for="txtNF">Nota Fiscal:</label>
+                        <input type="text" id="txtNF" class="form-control form-control-sm" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="cbUnidade">Unidade:</label>
+                        <select id="cbUnidade" class="form-control form-control-sm">
+                            <option value=""></option>
+                            <option value="1">Ecoporto Santos</option>
+                            <option value="2">Ecoporto Alfandegado</option>
+                            <option value="3">Ecoporto Transportes</option>
+                            <option value="4">Ecopatio</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>&nbsp;</label>
+                        <a id="btnLimparFiltro" href="#" class="btn btn-secondary btn-sm btn-sm btn-block"><i class="fa fa-trash"></i>&nbsp;&nbsp;Limpar</a>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>&nbsp;</label>
+                        <a id="btnFiltrarSolicitacao" href="#" class="btn btn-info btn-sm btn-sm btn-block"><i class="fa fa-search"></i>&nbsp;&nbsp;Filtrar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Tipo Solicitação</th>
+                        <th scope="col">Ocorrência</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Tipo Operação</th>
+                        <th scope="col">Cliente</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@Html.Partial("_ModalExclusao")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+    @Styles.Render("~/bundles/select2CSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/select2")
+    @Scripts.Render("~/bundles/solicitacoes")
+
+    <script>
+
+            $('#btnFiltro').click(function () {
+                $('#pnlFiltro').toggle("slow");
+            });
+
+            $('#btnFiltrarSolicitacao').click(function () {
+                $('#datatables').dataTable().fnDraw();
+            });
+
+            $('#btnLimparFiltro').click(function () {
+                $('#txtID').val('');
+                $('#cbTipoSolicitacao').val('0');
+                $('#txtDe').val('');
+                $('#txtAte').val('');
+                $('#cbOcorrenciasSolicitacao').val('0');
+                $('#cbStatusSolicitacao').val('0');
+                $('#cbUsuarioSolicitacao').val('0');
+                $('#txtLote').val('');
+                $('#txtGR').val('');
+                $('#txtMinuta').val('');
+                $('#txtNF').val('');
+                $('#cbUnidade').val('0');
+            });
+
+            $('#cbTipoSolicitacao').change(function () {
+
+                var tipo = parseInt($(this).val());
+                var select = $('#cbOcorrenciasSolicitacao');
+
+                select.empty();
+
+                if (isNumero(tipo)){
+
+                    $.get(urlBase + 'Solicitacoes/PopularOcorrenciasPorTipoSolicitacaoJson?tipoSolicitacao=' + tipo, function (resultado) {
+
+                        select.append('<option value=""></option>');
+
+                        $.each(resultado, function (key, value) {
+                            select.append('<option value=' + value.Id + '>' + value.Descricao + '</option>');
+                        });
+                    });
+                }
+            });
+
+            function excluir(id) {
+                $('#modal-mensagem').text('Confirma a exclusão da Solicitação?');
+                $('#del-modal').data('id', id).modal('show');
+            }
+
+            function confirmarExclusao() {
+
+                var _url = '@Url.Action("Excluir")';
+                var _id = $('#del-modal').data('id');
+
+                $.post(_url, { id: _id })
+                    .done(function (data) {
+                        toastr.success('Solicitação excluída com sucesso!', 'CRM');
+                        $('#item-' + _id).remove();
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('O registro não pode ser excluído', 'CRM');
+                        }
+                    }).always(function () {
+                        $('#del-modal').data('id', '0').modal('hide');
+                    });
+            }
+
+        $(document).ready(function () {
+
+            obterUsuarios();
+
+                $('#datatables').DataTable({
+                    "bServerSide": true,
+                    "sAjaxSource": "@Url.Action("Consultar", "Solicitacoes")",
+                    "bProcessing": true,
+                    "pagingType": "full_numbers",
+                    "searchDelay": 1000,
+                    "bFilter": false,
+                    "fnServerParams": function (aoData) {
+                        aoData.push({ "name": "Id", "value": $('#txtID').val() }),
+                        aoData.push({ "name": "TipoSolicitacao", "value": $('#cbTipoSolicitacao').val() }),
+                        aoData.push({ "name": "De", "value": $('#txtDe').val() }),
+                        aoData.push({ "name": "Ate", "value": $('#txtAte').val() }),
+                        aoData.push({ "name": "OcorrenciaId", "value": $('#cbOcorrenciasSolicitacao').val() }),
+                        aoData.push({ "name": "StatusSolicitacao", "value": $('#cbStatusSolicitacao').val() }),
+                        aoData.push({ "name": "CriadoPor", "value": $('#cbUsuarioSolicitacao').val() }),
+                        aoData.push({ "name": "Lote", "value": $('#txtLote').val() }),
+                        aoData.push({ "name": "GR", "value": $('#txtGR').val() }),
+                        aoData.push({ "name": "Minuta", "value": $('#txtMinuta').val() }),
+                        aoData.push({ "name": "NotaFiscal", "value": $('#txtNF').val() }),
+                        aoData.push({ "name": "UnidadeSolicitacao", "value": $('#cbUnidade').val() })
+                    },
+                    "pageLength": 50,
+                    "order": [0, 'desc'],
+                    "createdRow": function (row, data, dataIndex) {
+                        $(row).attr('id', 'item-' + data.Id);
+                    },
+                    "aoColumns":
+                        [
+                            {
+                                "sName": "Id",
+                                "mData": "Id"
+                            },
+                            {
+                                "sName": "TipoSolicitacao",
+                                "mData": "TipoSolicitacao"
+                            },
+                            {
+                                "sName": "Ocorrencia",
+                                "mData": "Ocorrencia",
+                                "defaultContent": ""
+                            },
+                            {
+                                "sName": "StatusSolicitacao",
+                                "mData": "StatusSolicitacao"
+                            },
+                            {
+                                "sName": "TipoOperacao",
+                                "mData": "TipoOperacao"
+                            },
+                            {
+                                "sName": "Cliente",
+                                "mData": "Cliente",
+                                "defaultContent": "",
+                                "render": function (data, type, row) {
+                                    if (row.Cliente) {
+                                        return row.Cliente.length > 40 ?
+                                            row.Cliente.substr(0, 40) + '…' :
+                                            row.Cliente;
+                                    }
+                                }
+                            },
+                            {
+                                sortable: false,
+                                "render": function (data, type, row) {
+                                    return '<a href="@Url.Action("Atualizar", "Solicitacoes")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                                }
+                            },
+                            {
+                                sortable: false,
+                                "render": function (data, type, row) {
+                                    return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                                }
+                            },
+                            {
+                                sortable: false,
+                                "render": function (data, type, row) {
+                                    return '<a href="@Url.Action("Timeline", "Auditoria")?objeto=Solicitacoes&chave=' + row.Id +'" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-clock"></i></a>';
+                                },
+                                "visible": @(User.IsInRole("Administrador") || User.IsInRole("Solicitacoes:Logs") ? "true" : "false")
+                            }
+                        ],
+                    "language": {
+                        "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                    }
+                });
+            });
+
+
+        function obterUsuarios() {
+
+            var select = $('#cbUsuarioSolicitacao');
+
+            select.empty();
+
+            $.get(urlBase + 'Solicitacoes/ObterUsuariosSolicitacao', function (resultado) {
+
+                select.append('<option value=""></option>');
+
+                $.each(resultado, function (key, value) {
+                    select.append('<option value=' + value.Id + '>' + value.Login + '</option>');
+                });
+            });
+        }
+
+    </script>
+}

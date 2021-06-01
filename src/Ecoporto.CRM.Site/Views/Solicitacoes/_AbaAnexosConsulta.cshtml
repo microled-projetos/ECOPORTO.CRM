@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.AnexosDTO>
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="table-responsive">
+    <table id="tbAnexos" class="table table-sm table-striped" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Anexo</th>
+                <th scope="col">Criado Por</th>
+                <th scope="col">Data Cadastro</th>
+                <th scope="col">Tipo Anexo</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-anexo-@item.Id">
+                    <td>@Html.ActionLink(item.Anexo, "Download", "Anexos", new { id = item.IdFile }, null)</td>
+                    <td>@item.CriadoPor</td>
+                    <td>@item.DataCadastro</td>
+                    <td>@item.TipoAnexo.ToName()</td>
+                    <td class="campo-acao"><a href="#" onclick="excluirAnexo(@item.Id, '@item.IdFile')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

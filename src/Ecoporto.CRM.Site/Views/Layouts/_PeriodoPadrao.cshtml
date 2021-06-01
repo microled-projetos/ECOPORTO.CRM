@@ -1,0 +1,46 @@
+﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="form-row">
+
+    <div class="form-group col-md-2">
+        @Html.LabelFor(model => model.TipoCargaPeriodoPadrao)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaPeriodoPadrao, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.BaseCalculoPeriodoPadrao)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoPeriodoPadrao, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PeriodoPadrao)
+        @Html.PrivilegedEditorFor(model => model.PeriodoPadrao, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.QtdeDiasPeriodoPadrao)
+        @Html.PrivilegedEditorFor(model => model.QtdeDiasPeriodoPadrao, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlPerPadraoCntr20">
+        @Html.LabelFor(model => model.Valor20PeriodoPadrao)
+        @Html.PrivilegedEditorFor(model => model.Valor20PeriodoPadrao, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlPerPadraoCntr40">
+        @Html.LabelFor(model => model.Valor40PeriodoPadrao)
+        @Html.PrivilegedEditorFor(model => model.Valor40PeriodoPadrao, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2 invisivel" id="pnlPerPadraoCarga">
+        @Html.LabelFor(model => model.ValorPeriodoPadrao)
+        @Html.PrivilegedEditorFor(model => model.ValorPeriodoPadrao, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-5">
+        @Html.LabelFor(model => model.DescricaoValorPeriodoPadrao)
+        @Html.PrivilegedEditorFor(model => model.DescricaoValorPeriodoPadrao, "form-control form-control-sm")
+    </div>
+
+</div>

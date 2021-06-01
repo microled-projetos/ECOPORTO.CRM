@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.FichaFaturamentoDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="table-responsive">
+    <table id="tbFichasFaturamento" class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Anexo</th>
+                <th scope="col">Status</th>
+                <th scope="col">Revisão</th>
+
+                @if (!User.IsInRole("UsuarioExterno"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (ViewBag.HabilitaBotaoIntegracaoFicha)
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:EnviarParaAprovacao"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:RecallFichaFaturamento"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:Atualizar"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:Excluir"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-ficha-@item.Id">
+
+                    <td>F-@item.Id</td>
+
+                    @if (item.MesmaContaOportunidade)
+                    {
+                        <td>&nbsp;</td>
+                    }
+                    else
+                    {
+                        <td>@item.Cliente (@item.ClienteDocumento)</td>
+                    }
+
+                    @if (!string.IsNullOrEmpty(item.IdFile))
+                    {
+                        <td>@Html.ActionLink("(Visualizar anexo)", "Download", "Anexos", new { id = item.IdFile }, null)</td>
+                    }
+                    else
+                    {
+                        <td>&nbsp;</td>
+                    }
+
+                    <td id="item-status-ficha-@item.Id">@item.StatusFichaFaturamento.ToName()</td>
+
+                    <td>@item.RevisaoId</td>
+
+                    @if (!User.IsInRole("UsuarioExterno"))
+                    {
+                        <td class="campo-acao">
+                            <a href="#" onclick="obterHistoricoWorkflow(@item.Id, 2)" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-list"></i>&nbsp;Histórico Workflow</a>
+                        </td>
+                    }
+
+                    @if (ViewBag.HabilitaBotaoIntegracaoFicha)
+                    {
+                        <td class="campo-acao">
+                            <a href="#" id="btnIntegraFichaChronos-@item.Id" onclick="integrarFichaChronos(@item.Id, 4)" class="btn btn-primary btn-sm btn-acao @((item.StatusFichaFaturamento == StatusFichaFaturamento.APROVADO || item.StatusFichaFaturamento == StatusFichaFaturamento.REVISADA) ? "disabled" : "")"><i class="fa fa-cogs"></i>&nbsp;Integra Chronos</a>
+                        </td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:EnviarParaAprovacao"))
+                    {
+                        @Html.LinkEnviarFichaParaAprovacao(item.Id.ToString(), item.StatusOportunidade, item.StatusFichaFaturamento)
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:RecallFichaFaturamento"))
+                    {
+                        <td class="campo-acao">
+                            <a href="#" id="btn-recall-ficha-@item.Id" onclick="recallFichaFaturamento(@item.Id)" class="btn btn-warning btn-sm btn-acao @((item.StatusFichaFaturamento != StatusFichaFaturamento.EM_APROVACAO) ? "disabled" : "")"><i class="fa fa-undo-alt"></i>&nbsp;Recall</a>
+                        </td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:Atualizar"))
+                    {
+                        <td class="campo-acao">
+                            <a href="#" onclick="atualizarFichaFaturamento(@item.Id)" class="btn btn-info btn-sm btn-acao btn-atualiza-ficha"><i class="fa fa-edit"></i></a>
+                        </td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("OportunidadesFichas:Excluir"))
+                    {
+                        <td class="campo-acao">
+                            <a href="#" onclick="excluirFichaFaturamento(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

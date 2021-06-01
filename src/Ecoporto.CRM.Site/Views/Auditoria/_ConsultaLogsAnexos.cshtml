@@ -1,0 +1,36 @@
+﻿@model Ecoporto.CRM.Site.Models.AuditoriaViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="timeline-centered">
+
+            @foreach (var item in Model.Historico)
+            {
+                <article class="timeline-entry">
+                    <div class="timeline-entry-inner">
+
+                        @if (item.Acao == TipoLogAuditoria.DELETE)
+                        {
+                            <div class="timeline-icon bg-danger">
+                                <i class="entypo-feather"></i>
+                            </div>
+
+                            <div class="timeline-label">
+                                <h2>Anexo excluído&nbsp;<span>@item.Data.DataHoraFormatada()</span></h2>
+                                <p>Usuário: @item.Usuario</p>
+                                <p class="wrapper-logs-anexos wrapper-logs-anexos-update">@item.Objeto</p>
+                            </div>
+                        }
+                      
+                    </div>
+                </article>
+            }
+
+        </div>
+    </div>
+
+</div>
+

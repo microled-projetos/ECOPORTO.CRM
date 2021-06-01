@@ -1,0 +1,145 @@
+﻿@model Ecoporto.CRM.Site.Models.SolicitacaoComercialOcorrenciasViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Cadastrar Motivos Ocorrências";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Solicitações (Ocorrências)
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Contatos</a>
+        </li>
+        <li class="active">Cadastrar Ocorrências (Solicitação)</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm("Cadastrar", "Ocorrencias", FormMethod.Post))
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes da Ocorrência da Solicitação
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Descricao)
+                            @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-1">
+                            @Html.LabelFor(model => model.Status)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.Status, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-7">
+                            <label>Tipo</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.CancelamentoNF, "form-check-input")
+                                    @Html.LabelFor(model => model.CancelamentoNF, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Desconto, "form-check-input")
+                                    @Html.LabelFor(model => model.Desconto, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Restituicao, "form-check-input")
+                                    @Html.LabelFor(model => model.Restituicao, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Outros, "form-check-input")
+                                    @Html.LabelFor(model => model.Outros, new { @class = "form-check-label" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            @Html.Partial("_Consultar", Model.Ocorrencias)
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="#" onclick="javascript: history.back();" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <a href="@Url.Action("Cadastrar", "Ocorrencias")" class="btn btn-secondary btn-sm">Nova Ocorrência</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+
+</div>
+
+@Html.Partial("_ModalExclusao")
+
+@section Scripts{
+
+    <script>
+
+        function excluirOcorrencia(id) {
+            $('#modal-mensagem').text('Confirma a exclusão da ocorrência?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data) {
+                    toastr.success('Ocorrência excluída com sucesso!', 'CRM');
+                    $('#item-' + _id).remove();
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'CRM');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }        
+
+    </script>
+}
+

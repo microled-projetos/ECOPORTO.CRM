@@ -1,0 +1,111 @@
+﻿using Ecoporto.CRM.Business.DTO;
+using Ecoporto.CRM.Business.Enums;
+using Ecoporto.CRM.Business.Filtros;
+using Ecoporto.CRM.Business.Models;
+using System;
+using System.Collections.Generic;
+
+namespace Ecoporto.CRM.Business.Interfaces.Repositorios
+{
+    public interface IOportunidadeRepositorio
+    {
+        IEnumerable<Oportunidade> ObterOportunidades();
+        int Cadastrar(Oportunidade oportunidade);
+        void Atualizar(Oportunidade oportunidade);
+        void AtualizarDataInicial(OportunidadeProposta oportunidade);
+        void AtualizarDataTermino(OportunidadeProposta oportunidade);
+        void AtualizarProposta(OportunidadeProposta oportunidadeProposta);
+        void AtualizarReferencia(string referencia, int id);
+        void AtualizarNumeroTabela(string tabela, int oportunidadeId);
+        void AtualizarStatusOportunidade(StatusOportunidade? statusOportunidade, int oportunidadeId);
+        void Excluir(int id);
+        Oportunidade ObterOportunidadePorId(int id);
+        IEnumerable<Oportunidade> ObterOportunidadePorRevisaoId(int revisaoId);
+        Oportunidade ObterOportunidadePorTabela(int tabelaId);
+        IEnumerable<OportunidadeDTO> ObterOportunidadesPorDescricao(string descricao, int? usuarioId);
+        IEnumerable<OportunidadeDTO> ObterOportunidadesPorConta(int contaId);
+        IEnumerable<OportunidadeDTO> ObterOportunidades(int pagina, int registrosPorPagina, OportunidadesFiltro filtro, string orderBy, out int totalFiltro, int? usuarioId);
+        int ObterTotalOportunidades();
+        IEnumerable<OportunidadeDTO> ObterOportunidadesPorStatus(StatusOportunidade statusOportunidade);
+        void IncluirSubCliente(int segmento, int contaId, int oportunidadeId, int criadoPor);
+        void ExcluirSubCliente(int id);
+        ClientePropostaDTO ObterSubClientePorId(int id);
+        IEnumerable<ClientePropostaDTO> ObterSubClientesPorDescricao(string descricao, int? usuarioId);
+        void IncluirClienteGrupoCNPJ(int contaId, int oportunidadeId, int criadoPor);
+        void ExcluirClienteGrupoCNPJ(int id);
+        ClientePropostaDTO ObterClienteGrupoCNPJPorId(int id);
+        IEnumerable<ClientePropostaDTO> ObterSubClientes(int oportunidadeId);
+        IEnumerable<ClientePropostaDTO> ObterSubClientesPorConta(int contaId);
+        ClientePropostaDTO ObterSubClientePorContaEOportunidade(int contaId, int oportunidadeId);
+        IEnumerable<Conta> ObterContasDaOportunidade(int oportunidadeId);
+        IEnumerable<ClientePropostaDTO> ObterSubClientesDaProposta(int oportunidadeId);
+        IEnumerable<ClientePropostaDTO> ObterSubClientesDaPropostaPorSegmento(int oportunidadeId, SegmentoSubCliente segmento);
+        IEnumerable<ClientePropostaDTO> ObterClientesGrupoCNPJ(int oportunidadeId);
+        IEnumerable<ClientePropostaDTO> ObterClientesGrupoCNPJPorConta(int contaId);
+        IEnumerable<ClientePropostaDTO> ObterClientesGrupoCNPJPorDescricao(string descricao, int? usuarioId);
+        IEnumerable<AnexosDTO> ObterAnexosDaOportunidade(int oportunidadeId, bool usuarioExterno);
+        IEnumerable<AnexosNotasDTO> ObterNotasDaOportunidade(int oportunidadeId);
+        int IncluirFichaFaturamento(OportunidadeFichaFaturamento ficha);
+        bool ExisteFichaFaturamento(OportunidadeFichaFaturamento ficha);
+        void AtualizarFichaFaturamento(OportunidadeFichaFaturamento ficha);
+        void ExcluirFichasFaturamentoDaOportunidade(int oportunidadeId);
+        void ExcluirFichaFaturamento(int fichaFaturamentoId);
+        void AtualizarStatusFichaFaturamento(StatusFichaFaturamento status, int id);
+        OportunidadeFichaFaturamento ObterFichaFaturamentoPorId(int id);
+        OportunidadeFichaFaturamento ObterFichaFaturamentoPorClienteCnpj(string clienteCnpj, int oportunidadeId);
+        IEnumerable<FichaFaturamentoDTO> ObterFichasFaturamento(int oportunidadeId);
+        int ObterStatusCondPgto(int oportunidadeid);
+        int ObterStatusCondPgtoNew(int contaid, string condpgto);
+
+        FichaFaturamentoDTO ObterDetalhesFichaFaturamento(int fichaFaturamentoId);
+        int IncluirAdendo(OportunidadeAdendo adendo);
+        void ExcluirAdendo(int id);
+        IEnumerable<OportunidadeAdendosDTO> ObterAdendos(int oportunidadeId);
+        IEnumerable<OportunidadeAdendosDTO> ObterAdendos(AdendosFiltro filtro);
+        OportunidadeAdendo ObterAdendoPorId(int id);
+        int IncluirAdendoVendedor(OportunidadeAdendoVendedor adendoVendedor);
+        void AtualizarAdendoVendedor(OportunidadeAdendoVendedor adendoVendedor);
+        int IncluirAdendoFormaPagamento(OportunidadeAdendoFormaPagamento adendoFormaPagamento);
+        void AtualizarAdendoFormaPagamento(OportunidadeAdendoFormaPagamento adendoFormaPagamento);
+        int IncluirAdendoGruposCNPJ(OportunidadeAdendoGrupoCNPJ adendoGrupoCNPJ);
+        void ExcluirGruposCNPJDoAdendo(int adendoId, AdendoAcao acao);
+        bool ExisteAdendoClienteGrupoCNPJ(int oportunidadeId, int grupoCnpjId, AdendoAcao adendoAcao);
+        int IncluirAdendoSubCliente(OportunidadeAdendoSubCliente adendoSubCliente);
+        void ExcluirSubClientesDoAdendo(int adendoId, AdendoAcao adendoAcao);
+        bool ExisteAdendoSubCliente(int oportunidadeId, int subClienteId, AdendoAcao adendoAcao);
+        OportunidadeAdendoVendedor ObterAdendoVendedor(int adendoId);
+        OportunidadeAdendoFormaPagamento ObterAdendoFormaPagamento(int adendoId);
+        IEnumerable<ClientePropostaDTO> ObterAdendoGruposCNPJ(int adendoId, AdendoAcao acao);
+        IEnumerable<ClientePropostaDTO> ObterAdendoSubClientesInclusao(int adendoId);
+        IEnumerable<ClientePropostaDTO> ObterAdendoSubClientesExclusao(int adendoId);
+        IEnumerable<OportunidadeAdendoClientesDTO> ObterAdendosPorSubClientes(string descricao, int? usuarioId);
+        void AtualizarStatusAdendo(StatusAdendo status, int id);
+        string ObterValorPorCampo(string campo, int id);
+        bool ExisteLayoutNaProposta(int oportunidadeId);
+        void AtualizarOportunidadeCancelada(Oportunidade oportunidade);
+        void AtualizarDataCancelamento(Oportunidade oportunidade);
+        void AtualizarDataCancelamentoOportunidade(DateTime? data, int oportunidadeId);
+        DetalhesOportunidadeDTO ObterDetalhesOportunidade(int id);
+        bool ExisteAdendo(OportunidadeAdendo adendo);
+        IEnumerable<UsuarioDTO> ObterUsuariosOportunidade();
+        IEnumerable<OportunidadeAdendo> ObterAdendosOportunidadePorStatus(StatusAdendo statusAdendo);
+        IEnumerable<OportunidadeFichaFaturamento> ObterFichasFaturamentoPorStatus(StatusFichaFaturamento statusFichaFaturamento);
+        void IncluirNota(OportunidadeNotas nota);
+        void AtualizarNota(OportunidadeNotas nota);
+        void ExcluirNota(int id);
+        OportunidadeNotas ObterNotaPorId(int id);
+        IEnumerable<AnexosNotasDTO> ObterNotaPorDescricao(string descricao, int oportunidadeId);
+        IEnumerable<SimuladorDTO> ObterParametrosSimulador();
+        IEnumerable<ClientePropostaDTO> ObterSubClientesEdicaoAdendo(int oportunidadeId, AdendoAcao adendoAcao);
+        OportunidadePropostaDTO ObterDetalhesProposta(int oportunidadeId);
+        DetalhesAdendoDTO ObterDetalhesAdendo(int adendoId);
+        bool PermiteAlterarDataCancelamento(int oportunidadeId, bool permite);
+        void AtualizarCancelamentoOportunidade(bool cancelado, int oportunidadeId);
+        bool ExistemImpostosExcecao(int oportunidadeId);
+        bool TabelaCanceladaChronos(int tabelaId);
+
+        int AnaliseDeCreditoPendente(int contaId);
+
+        int LimiteDeCreditoPendente(int contaId);
+    }
+}

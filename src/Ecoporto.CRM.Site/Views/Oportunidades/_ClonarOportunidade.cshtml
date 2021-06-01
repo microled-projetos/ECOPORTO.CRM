@@ -1,0 +1,111 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesClonarPropostaViewModel
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="clonar-oportunidade-modal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecione uma Oportunidade na lista abaixo:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @using (Ajax.BeginForm("ClonarOportunidade", "Oportunidades", null, new AjaxOptions
+            {
+                OnSuccess = "oportunidadeClonadaMensagemSucesso",
+                OnFailure = "oportunidadeMensagemErro",
+                HttpMethod = "POST"
+            }, new { id = "frmClonarOportunidade" }))
+            {
+
+                @Html.HiddenFor(model => model.CloneOportunidadeSelecionada)
+
+                <div class="modal-body">
+
+                    <table id="tbClonarOportunidade" class="table table-sm" cellspacing="0" style="width:100%; padding:0px;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Proposta</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Sucesso Negociação</th>
+                                <th scope="col">Tipo Serviço</th>
+                                <th scope="col">ID Tabela</th>
+                                <th scope="col">Início</th>
+                                <th scope="col">Término</th>
+                                <th class="campo-acao">Selecionar</th>
+                                <th class="campo-acao">Visualizar</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <div id="pnlOportunidadeSubClientes" class="invisivel">
+
+                        <div style="padding-left: 65px;">
+                            <hr /><strong>Sub Clientes da Oportunidade:</strong>
+                        </div>
+
+                        <table id="tbClonarOportunidadeSubClientes" class="table table-sm" cellspacing="0" style="width:100%; padding:0px;">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> <input type="checkbox" class="mt-1" id="SelTodosSubClientes" name="SelTodosSubClientes" checked /> </th>
+                                    <th scope="col" style="width:100px;">Id</th>
+                                    <th scope="col">Descrição</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+
+                    <div id="pnlOportunidadeGruposCNPJ" class="invisivel">
+
+                        <div style="padding-left: 65px;">
+                            <hr /><strong>Grupos CNPJ da Oportunidade:</strong>
+                        </div>
+
+                        <table id="tbClonarOportunidadeGruposCNPJ" class="table table-sm" cellspacing="0" style="width:100%; padding:0px;">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> <input type="checkbox" class="mt-1" id="SelTodosGruposCNPJ" name="SelTodosGruposCNPJ" checked /> </th>
+                                    <th scope="col" style="width:100px;">Id</th>
+                                    <th scope="col">Descrição</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+
+                    <div id="pnlOportunidadeContaPrincipal" class="invisivel">
+
+                        <div style="padding-left: 65px;">
+                            <hr /><strong>Conta da Oportunidade:</strong>
+                        </div>
+
+                        <table id="tbClonarOportunidadeConta" class="table table-sm" cellspacing="0" style="width:100%; padding:0px;">
+                            <thead>
+                                <tr>
+                                    <th scope="col">&nbsp;</th>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Descrição</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+
+                    <div class="mt-3 mb-3">
+                        <label>Descrição da Oportunidade:</label>
+                        <input type="text" name="Descricao" id="Descricao" maxlength="150" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a id="btnIrParaOportunidadeClonada" href="#" class="btn btn-info invisivel">Ir para Oportunidade</a>
+                    <button id="btnConfirmarClonagem" type="submit" class="btn btn-danger" disabled>Estou ciente e confirmo a cópia desta Oportunidade</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

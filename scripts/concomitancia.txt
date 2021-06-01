@@ -1,0 +1,2304 @@
+
+  CREATE OR REPLACE FORCE VIEW "CRM"."VW_PROPOSTAS_CONCOMITANTES" ("ID", "IMPORTADORID", "DESPACHANTEID", "COLOADERID", "COCOLOADERID", "COCOLOADER2ID", "DATATERMINO", "HUBPORT", "ACORDO", "EMPRESAID", "DATAINICIO", "SEGMENTO") AS 
+  SELECT
+    Id,
+    MAX(ImportadorId) AS ImportadorId,
+    MAX(DespachanteId) AS DespachanteId,
+    MAX(ColoaderId) AS ColoaderId,
+    MAX(CoColoaderId) AS CoColoaderId,
+    MAX(CoColoader2Id) AS CoColoader2Id,
+    DataTermino,
+    HubPort,
+    Acordo,
+    EmpresaId,
+    DataInicio,
+    Segmento
+FROM
+    (
+        SELECT
+            A.Id,
+            CASE
+                WHEN B.Segmento = 1 THEN
+                    B.ContaId
+                ELSE
+                    A.ContaId
+            END ImportadorId,
+            CASE
+                WHEN B.Segmento = 2 THEN
+                    B.ContaId
+                ELSE
+                    A.ContaId
+            END DespachanteId,                
+            CASE
+                WHEN B.Segmento = 3 THEN
+                    B.ContaId
+                ELSE
+                    A.ContaId
+            END ColoaderId,
+            CASE
+                WHEN B.Segmento = 4 THEN
+                    B.ContaId
+                ELSE
+                    A.ContaId
+            END CoColoaderId,
+            CASE
+                WHEN B.Segmento = 5 THEN
+                    B.ContaId
+                ELSE
+                    A.ContaId
+            END CoColoader2Id,
+            A.DataTermino,
+            A.HubPort,
+            A.Acordo,
+            A.EmpresaId,
+            A.DataInicio,
+            B.Segmento
+        FROM
+            TB_CRM_OPORTUNIDADES   A
+        LEFT JOIN 
+            TB_CRM_OPORTUNIDADE_CLIENTES  B ON A.Id = B.OportunidadeId
+        WHERE
+            A.Acordo = 0
+    )
+GROUP BY
+    Id,        
+    DataTermino,
+    HubPort,
+    Acordo,
+    EmpresaId,
+    DataInicio,
+    Segmento
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+                        WHEN B.Segmento = 1 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ImportadorId,
+                    CASE
+                        WHEN B.Segmento = 2 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END DespachanteId,                        
+                    CASE
+                        WHEN B.Segmento = 3 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ColoaderId,
+                    CASE
+                        WHEN B.Segmento = 4 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoaderId,
+                    CASE
+                        WHEN B.Segmento = 5 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoader2Id,                        
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 1
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+                        WHEN B.Segmento = 1 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ImportadorId,
+                    CASE
+                        WHEN B.Segmento = 2 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END DespachanteId,                        
+                    CASE
+                        WHEN B.Segmento = 3 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ColoaderId,
+                    CASE
+                        WHEN B.Segmento = 4 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoaderId,
+                    CASE
+                        WHEN B.Segmento = 5 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoader2Id,                        
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 2
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+                        WHEN B.Segmento = 1 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ImportadorId,
+                    CASE
+                        WHEN B.Segmento = 2 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END DespachanteId,                        
+                    CASE
+                        WHEN B.Segmento = 3 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ColoaderId,
+                    CASE
+                        WHEN B.Segmento = 4 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoaderId,
+                    CASE
+                        WHEN B.Segmento = 5 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoader2Id,                        
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 3
+UNION
+SELECT
+   A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+                        WHEN B.Segmento = 1 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ImportadorId,
+                    CASE
+                        WHEN B.Segmento = 2 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END DespachanteId,                        
+                    CASE
+                        WHEN B.Segmento = 3 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ColoaderId,
+                    CASE
+                        WHEN B.Segmento = 4 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoaderId,
+                    CASE
+                        WHEN B.Segmento = 5 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoader2Id,                        
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 4
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+                        WHEN B.Segmento = 1 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ImportadorId,
+                    CASE
+                        WHEN B.Segmento = 2 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END DespachanteId,                        
+                    CASE
+                        WHEN B.Segmento = 3 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END ColoaderId,
+                    CASE
+                        WHEN B.Segmento = 4 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoaderId,
+                    CASE
+                        WHEN B.Segmento = 5 THEN
+                            B.ContaId
+                        ELSE
+                            A.ContaId
+                    END CoColoader2Id,                        
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 5;
+
+
+
+
+  
+  
+  CREATE OR REPLACE FORCE VIEW CRM.VW_PROPOSTAS_CONCOMIT_CNPJ (ID, IMPORTADORID, DESPACHANTEID, COLOADERID, COCOLOADERID, COCOLOADER2ID, CNPJ_IMPORTADOR, CNPJ_DESPACHANTE, CNPJ_COLOADER, CNPJ_COCOLOADER, CNPJ_COCOLOADER2, DATATERMINO, HUBPORT, ACORDO, EMPRESAID, DATAINICIO, SEGMENTO) AS 
+  SELECT
+    Id,
+    MAX(ImportadorId) AS ImportadorId,
+    MAX(DespachanteId) AS DespachanteId,
+    MAX(ColoaderId) AS ColoaderId,
+    MAX(CoColoaderId) AS CoColoaderId,
+    MAX(CoColoader2Id) AS CoColoader2Id,
+    MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+    MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+    MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+    MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+    MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+    DataTermino,
+    HubPort,
+    Acordo,
+    EmpresaId,
+    DataInicio,
+    Segmento
+FROM
+    (
+        SELECT
+            A.Id,
+            CASE
+					WHEN NVL(B.Segmento,0) = 1 THEN
+						B.ContaId
+					ELSE
+					   CASE WHEN A.Segmento = 1 THEN A.ContaId ELSE NULL END
+					END ImportadorId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 2 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN A.ContaId ELSE NULL END
+					END DespachanteId,                
+					CASE
+						WHEN NVL(B.Segmento,0) = 3 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 6 THEN A.ContaId ELSE NULL END
+						END ColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 4 THEN
+							B.ContaId
+						ELSE
+							NULL
+						END CoColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 5 THEN
+							B.ContaId
+						ELSE
+							NULL
+					END CoColoader2Id,            
+					CASE
+						WHEN  NVL(B.Segmento,0) = 1 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 1 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+					END CNPJ_IMPORTADOR,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 2 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_DESPACHANTE,                
+					CASE
+						WHEN  NVL(B.Segmento,0) = 3 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 6 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_COLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 4 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							NULL
+						END CNPJ_COCOLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 5 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+                    NULL
+						END CNPJ_COCOLOADER2,
+            
+            A.DataTermino,
+            A.HubPort,
+            A.Acordo,
+            A.EmpresaId,
+            A.DataInicio,
+            B.Segmento
+        FROM
+            TB_CRM_OPORTUNIDADES   A
+        LEFT JOIN 
+            TB_CRM_OPORTUNIDADE_CLIENTES  B ON A.Id = B.OportunidadeId
+        WHERE
+            A.Acordo = 0
+    )
+GROUP BY
+    Id,        
+    DataTermino,
+    HubPort,
+    Acordo,
+    EmpresaId,
+    DataInicio,
+    Segmento
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.CNPJ_IMPORTADOR,
+    A.CNPJ_DESPACHANTE,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COCOLOADER2,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id, 
+            MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+            MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+            MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+            MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+            MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,  
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+					WHEN NVL(B.Segmento,0) = 1 THEN
+						B.ContaId
+					ELSE
+					   CASE WHEN A.Segmento = 1 THEN A.ContaId ELSE NULL END
+					END ImportadorId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 2 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN A.ContaId ELSE NULL END
+					END DespachanteId,                
+					CASE
+						WHEN NVL(B.Segmento,0) = 3 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 6 THEN A.ContaId ELSE NULL END
+						END ColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 4 THEN
+							B.ContaId
+						ELSE
+							NULL
+						END CoColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 5 THEN
+							B.ContaId
+						ELSE
+							NULL
+					END CoColoader2Id,            
+					CASE
+						WHEN  NVL(B.Segmento,0) = 1 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 1 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+					END CNPJ_IMPORTADOR,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 2 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_DESPACHANTE,                
+					CASE
+						WHEN  NVL(B.Segmento,0) = 3 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 6 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_COLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 4 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							NULL
+						END CNPJ_COCOLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 5 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+                    NULL
+						END CNPJ_COCOLOADER2,
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 1
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,   
+    A.CNPJ_IMPORTADOR,
+    A.CNPJ_DESPACHANTE,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COCOLOADER2,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,    
+            MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+            MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+            MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+            MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+            MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,  
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+					WHEN NVL(B.Segmento,0) = 1 THEN
+						B.ContaId
+					ELSE
+					   CASE WHEN A.Segmento = 1 THEN A.ContaId ELSE NULL END
+					END ImportadorId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 2 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN A.ContaId ELSE NULL END
+					END DespachanteId,                
+					CASE
+						WHEN NVL(B.Segmento,0) = 3 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 6 THEN A.ContaId ELSE NULL END
+						END ColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 4 THEN
+							B.ContaId
+						ELSE
+							NULL
+						END CoColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 5 THEN
+							B.ContaId
+						ELSE
+							NULL
+					END CoColoader2Id,            
+					CASE
+						WHEN  NVL(B.Segmento,0) = 1 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 1 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+					END CNPJ_IMPORTADOR,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 2 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_DESPACHANTE,                
+					CASE
+						WHEN  NVL(B.Segmento,0) = 3 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 6 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_COLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 4 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							NULL
+						END CNPJ_COCOLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 5 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+                    NULL
+						END CNPJ_COCOLOADER2,
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 2
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,      
+    A.CNPJ_IMPORTADOR,
+    A.CNPJ_DESPACHANTE,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COCOLOADER2,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,    
+            MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+            MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+            MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+            MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+            MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,  
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+					WHEN NVL(B.Segmento,0) = 1 THEN
+						B.ContaId
+					ELSE
+					   CASE WHEN A.Segmento = 1 THEN A.ContaId ELSE NULL END
+					END ImportadorId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 2 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN A.ContaId ELSE NULL END
+					END DespachanteId,                
+					CASE
+						WHEN NVL(B.Segmento,0) = 3 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 6 THEN A.ContaId ELSE NULL END
+						END ColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 4 THEN
+							B.ContaId
+						ELSE
+							NULL
+						END CoColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 5 THEN
+							B.ContaId
+						ELSE
+							NULL
+					END CoColoader2Id,            
+					CASE
+						WHEN  NVL(B.Segmento,0) = 1 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 1 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+					END CNPJ_IMPORTADOR,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 2 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_DESPACHANTE,                
+					CASE
+						WHEN  NVL(B.Segmento,0) = 3 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 6 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_COLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 4 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							NULL
+						END CNPJ_COCOLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 5 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+                    NULL
+						END CNPJ_COCOLOADER2,
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,                
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 3
+UNION
+SELECT
+   A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.CNPJ_IMPORTADOR,
+    A.CNPJ_DESPACHANTE,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COCOLOADER2,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,       
+            MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+            MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+            MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+            MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+            MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,  
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+        FROM
+            (
+                SELECT
+                    A.Id,
+                    CASE
+					WHEN NVL(B.Segmento,0) = 1 THEN
+						B.ContaId
+					ELSE
+					   CASE WHEN A.Segmento = 1 THEN A.ContaId ELSE NULL END
+					END ImportadorId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 2 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN A.ContaId ELSE NULL END
+					END DespachanteId,                
+					CASE
+						WHEN NVL(B.Segmento,0) = 3 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 6 THEN A.ContaId ELSE NULL END
+						END ColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 4 THEN
+							B.ContaId
+						ELSE
+							NULL
+						END CoColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 5 THEN
+							B.ContaId
+						ELSE
+							NULL
+					END CoColoader2Id,            
+					CASE
+						WHEN  NVL(B.Segmento,0) = 1 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 1 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+					END CNPJ_IMPORTADOR,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 2 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_DESPACHANTE,                
+					CASE
+						WHEN  NVL(B.Segmento,0) = 3 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 6 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_COLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 4 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							NULL
+						END CNPJ_COCOLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 5 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+                    NULL
+						END CNPJ_COCOLOADER2,
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 4
+UNION
+SELECT
+    A.Id,
+    B.ContaId AS ImportadorId,
+    A.DespachanteId,
+    A.ColoaderId,
+    A.COColoaderId,
+    A.CoColoader2Id,        
+    A.CNPJ_IMPORTADOR,
+    A.CNPJ_DESPACHANTE,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COLOADER,
+    A.CNPJ_COCOLOADER2,        
+    A.DataTermino,
+    A.HubPort,
+    A.Acordo,
+    A.EmpresaId,
+    A.DataInicio,
+    B.Segmento
+FROM
+    (
+        SELECT
+            Id,
+            MAX(ImportadorId) AS ImportadorId,
+            MAX(DespachanteId) AS DespachanteId,
+            MAX(ColoaderId) AS ColoaderId,
+            MAX(CoColoaderId) AS CoColoaderId,
+            MAX(CoColoader2Id) AS CoColoader2Id,    
+            MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+            MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+            MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+            MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+            MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,  
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+        FROM
+            (
+                SELECT
+                    A.Id,
+                   CASE
+					WHEN NVL(B.Segmento,0) = 1 THEN
+						B.ContaId
+					ELSE
+					   CASE WHEN A.Segmento = 1 THEN A.ContaId ELSE NULL END
+					END ImportadorId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 2 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN A.ContaId ELSE NULL END
+					END DespachanteId,                
+					CASE
+						WHEN NVL(B.Segmento,0) = 3 THEN
+							B.ContaId
+						ELSE
+							CASE WHEN A.Segmento = 6 THEN A.ContaId ELSE NULL END
+						END ColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 4 THEN
+							B.ContaId
+						ELSE
+							NULL
+						END CoColoaderId,
+					CASE
+						WHEN NVL(B.Segmento,0) = 5 THEN
+							B.ContaId
+						ELSE
+							NULL
+					END CoColoader2Id,            
+					CASE
+						WHEN  NVL(B.Segmento,0) = 1 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 1 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+					END CNPJ_IMPORTADOR,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 2 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							CASE WHEN A.Segmento = 3 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_DESPACHANTE,                
+					CASE
+						WHEN  NVL(B.Segmento,0) = 3 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+						   CASE WHEN A.Segmento = 6 THEN  (SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = A.ContaId) ELSE NULL END
+						END CNPJ_COLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 4 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+							NULL
+						END CNPJ_COCOLOADER,
+					CASE
+						WHEN  NVL(B.Segmento,0) = 5 THEN
+							(SELECT Documento FROM CRM.TB_CRM_CONTAS WHERE Id = B.ContaId)
+						ELSE
+                    NULL
+						END CNPJ_COCOLOADER2,
+                    A.DataTermino,
+                    A.HubPort,
+                    A.Acordo,
+                    A.EmpresaId,
+                    A.DataInicio,
+                    B.Segmento
+                FROM
+                    TB_CRM_OPORTUNIDADES   A
+                LEFT JOIN 
+                    TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+                WHERE
+                    A.Acordo = 0
+            )
+        GROUP BY
+            Id,
+            DataTermino,
+            HubPort,
+            Acordo,
+            EmpresaId,
+            DataInicio,
+            Segmento
+    ) A
+    INNER JOIN TB_CRM_OPORTUNIDADE_CLIENTES B ON A.Id = B.OportunidadeId
+WHERE
+    B.Segmento = 5;
+
+
+
+	
+	
+	
+	
+CREATE OR REPLACE FORCE VIEW SGIPA.VW_DADOS_LISTAS_PRECOS (
+    AUTONUM,
+    IMPORTADOR,
+    DESPACHANTE,
+    CAPTADOR,
+    COLOADER,
+    COCOLOADER,
+    COCOLOADER2,
+    CNPJ_IMPORTADOR,
+    CNPJ_DESPACHANTE,
+    CNPJ_CAPTADOR,
+    CNPJ_COLOADER,
+    CNPJ_COCOLOADER,
+    CNPJ_COCOLOADER2,
+    FLAG_ESPECIAL,
+    FLAG_LIBERADA,
+    FINAL_VALIDADE,
+    FLAG_HUBPORT,
+    FLAG_ACORDO,
+    COD_EMPRESA,
+    DATA_INICIO
+) AS
+    SELECT
+        AUTONUM,
+        MAX(IMPORTADOR) AS IMPORTADOR,
+        MAX(DESPACHANTE) AS DESPACHANTE,
+        MAX(CAPTADOR) AS CAPTADOR,
+        MAX(COLOADER) AS COLOADER,
+        MAX(COCOLOADER) AS COCOLOADER,
+        MAX(COCOLOADER2) AS COCOLOADER2,
+        MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+        MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+        MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+        MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+        MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+        MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                A.AUTONUM,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        B.AUTONUM_PARCEIRO
+                    ELSE
+                        A.IMPORTADOR
+                END IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        B.AUTONUM_PARCEIRO
+                    ELSE
+                        A.DESPACHANTE
+                END DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        B.AUTONUM_PARCEIRO
+                    ELSE
+                        A.CAPTADOR
+                END CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        B.AUTONUM_PARCEIRO
+                    ELSE
+                        A.COLOADER
+                END COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        B.AUTONUM_PARCEIRO
+                    ELSE
+                        A.COCOLOADER
+                END COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        B.AUTONUM_PARCEIRO
+                    ELSE
+                        A.COCOLOADER2
+                END COCOLOADER2,
+                
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                
+                A.FLAG_ESPECIAL,
+                A.FLAG_LIBERADA,
+                A.FINAL_VALIDADE,
+                A.FLAG_HUBPORT,
+                A.FLAG_ACORDO,
+                A.COD_EMPRESA,
+                A.DATA_INICIO
+            FROM
+                TB_LISTAS_PRECOS A
+            LEFT JOIN 
+                TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+            
+            WHERE
+                FLAG_ACORDO = 0
+        )
+    GROUP BY
+        AUTONUM,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        COD_EMPRESA,
+        DATA_INICIO
+    UNION
+    SELECT
+        A.AUTONUM,
+        B.AUTONUM_PARCEIRO AS IMPORTADOR,
+        DESPACHANTE,
+        CAPTADOR,
+        COLOADER,
+        COCOLOADER,
+        COCOLOADER2,
+        CNPJ_IMPORTADOR,
+        CNPJ_DESPACHANTE,
+        CNPJ_CAPTADOR,
+        CNPJ_COLOADER,
+        CNPJ_COCOLOADER,
+        CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        A.COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                AUTONUM,
+                MAX(IMPORTADOR) AS IMPORTADOR,
+                MAX(DESPACHANTE) AS DESPACHANTE,
+                MAX(CAPTADOR) AS CAPTADOR,
+                MAX(COLOADER) AS COLOADER,
+                MAX(COCOLOADER) AS COCOLOADER,
+                MAX(COCOLOADER2) AS COCOLOADER2,
+                MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+                MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+                MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+                MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+                MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+                MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+            FROM
+                (
+                    SELECT
+                        A.AUTONUM,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.IMPORTADOR
+                        END IMPORTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.DESPACHANTE
+                        END DESPACHANTE,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.CAPTADOR
+                        END CAPTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COLOADER
+                        END COLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER
+                        END COCOLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER2
+                        END COCOLOADER2,
+                        
+                        CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                        
+                        A.FLAG_ESPECIAL,
+                        A.FLAG_LIBERADA,
+                        A.FINAL_VALIDADE,
+                        A.FLAG_HUBPORT,
+                        A.FLAG_ACORDO,
+                        A.COD_EMPRESA,
+                        A.DATA_INICIO
+                    FROM
+                        TB_LISTAS_PRECOS   A
+                    LEFT JOIN 
+                        TB_TP_GRUPOS       B ON A.AUTONUM = B.AUTONUMLISTA
+                    WHERE
+                        FLAG_ACORDO = 0
+                )
+            GROUP BY
+                AUTONUM,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+        ) A
+        INNER JOIN TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+    WHERE
+        B.TIPO = 'I'
+    UNION
+    SELECT
+        A.AUTONUM,
+        IMPORTADOR,
+        B.AUTONUM_PARCEIRO AS DESPACHANTE,
+        CAPTADOR,
+        COLOADER,
+        COCOLOADER,
+        COCOLOADER2,
+        CNPJ_IMPORTADOR,
+        CNPJ_DESPACHANTE,
+        CNPJ_CAPTADOR,
+        CNPJ_COLOADER,
+        CNPJ_COCOLOADER,
+        CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        A.COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                AUTONUM,
+                MAX(IMPORTADOR) AS IMPORTADOR,
+                MAX(DESPACHANTE) AS DESPACHANTE,
+                MAX(CAPTADOR) AS CAPTADOR,
+                MAX(COLOADER) AS COLOADER,
+                MAX(COCOLOADER) AS COCOLOADER,
+                MAX(COCOLOADER2) AS COCOLOADER2,
+                MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+                MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+                MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+                MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+                MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+                MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+            FROM
+                (
+                    SELECT
+                        A.AUTONUM,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.IMPORTADOR
+                        END IMPORTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.DESPACHANTE
+                        END DESPACHANTE,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.CAPTADOR
+                        END CAPTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COLOADER
+                        END COLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER
+                        END COCOLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER2
+                        END COCOLOADER2,
+                        
+                        CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                
+                        A.FLAG_ESPECIAL,
+                        A.FLAG_LIBERADA,
+                        A.FINAL_VALIDADE,
+                        A.FLAG_HUBPORT,
+                        A.FLAG_ACORDO,
+                        A.COD_EMPRESA,
+                        A.DATA_INICIO
+                    FROM
+                        TB_LISTAS_PRECOS   A
+                        LEFT JOIN TB_TP_GRUPOS       B ON A.AUTONUM = B.AUTONUMLISTA
+                    WHERE
+                        FLAG_ACORDO = 0
+                )
+            GROUP BY
+                AUTONUM,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+        ) A
+        INNER JOIN TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+    WHERE
+        B.TIPO = 'D'
+    UNION
+    SELECT
+        A.AUTONUM,
+        IMPORTADOR,
+        DESPACHANTE,
+        B.AUTONUM_PARCEIRO AS CAPTADOR,
+        COLOADER,
+        COCOLOADER,
+        COCOLOADER2,
+        CNPJ_IMPORTADOR,
+        CNPJ_DESPACHANTE,
+        CNPJ_CAPTADOR,
+        CNPJ_COLOADER,
+        CNPJ_COCOLOADER,
+        CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        A.COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                AUTONUM,
+                MAX(IMPORTADOR) AS IMPORTADOR,
+                MAX(DESPACHANTE) AS DESPACHANTE,
+                MAX(CAPTADOR) AS CAPTADOR,
+                MAX(COLOADER) AS COLOADER,
+                MAX(COCOLOADER) AS COCOLOADER,
+                MAX(COCOLOADER2) AS COCOLOADER2,
+                MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+                MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+                MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+                MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+                MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+                MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+            FROM
+                (
+                    SELECT
+                        A.AUTONUM,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.IMPORTADOR
+                        END IMPORTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.DESPACHANTE
+                        END DESPACHANTE,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.CAPTADOR
+                        END CAPTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COLOADER
+                        END COLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER
+                        END COCOLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER2
+                        END COCOLOADER2,
+                        
+                        CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                
+                        A.FLAG_ESPECIAL,
+                        A.FLAG_LIBERADA,
+                        A.FINAL_VALIDADE,
+                        A.FLAG_HUBPORT,
+                        A.FLAG_ACORDO,
+                        A.COD_EMPRESA,
+                        A.DATA_INICIO
+                    FROM
+                        TB_LISTAS_PRECOS   A
+                        LEFT JOIN TB_TP_GRUPOS       B ON A.AUTONUM = B.AUTONUMLISTA
+                    WHERE
+                        FLAG_ACORDO = 0
+                )
+            GROUP BY
+                AUTONUM,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+        ) A
+        INNER JOIN TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+    WHERE
+        B.TIPO = 'C'
+    UNION
+    SELECT
+        A.AUTONUM,
+        IMPORTADOR,
+        DESPACHANTE,
+        CAPTADOR,
+        B.AUTONUM_PARCEIRO AS COLOADER,
+        COCOLOADER,
+        COCOLOADER2,
+        CNPJ_IMPORTADOR,
+        CNPJ_DESPACHANTE,
+        CNPJ_CAPTADOR,
+        CNPJ_COLOADER,
+        CNPJ_COCOLOADER,
+        CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        A.COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                AUTONUM,
+                MAX(IMPORTADOR) AS IMPORTADOR,
+                MAX(DESPACHANTE) AS DESPACHANTE,
+                MAX(CAPTADOR) AS CAPTADOR,
+                MAX(COLOADER) AS COLOADER,
+                MAX(COCOLOADER) AS COCOLOADER,
+                MAX(COCOLOADER2) AS COCOLOADER2,
+                MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+                MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+                MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+                MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+                MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+                MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+            FROM
+                (
+                    SELECT
+                        A.AUTONUM,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.IMPORTADOR
+                        END IMPORTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.DESPACHANTE
+                        END DESPACHANTE,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.CAPTADOR
+                        END CAPTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COLOADER
+                        END COLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER
+                        END COCOLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER2
+                        END COCOLOADER2,
+                        
+                        CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                
+                        A.FLAG_ESPECIAL,
+                        A.FLAG_LIBERADA,
+                        A.FINAL_VALIDADE,
+                        A.FLAG_HUBPORT,
+                        A.FLAG_ACORDO,
+                        A.COD_EMPRESA,
+                        A.DATA_INICIO
+                    FROM
+                        TB_LISTAS_PRECOS   A
+                        LEFT JOIN TB_TP_GRUPOS       B ON A.AUTONUM = B.AUTONUMLISTA
+                    WHERE
+                        FLAG_ACORDO = 0
+                )
+            GROUP BY
+                AUTONUM,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+        ) A
+        INNER JOIN TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+    WHERE
+        B.TIPO = 'S'
+    UNION
+    SELECT
+        A.AUTONUM,
+        IMPORTADOR,
+        DESPACHANTE,
+        CAPTADOR,
+        COLOADER,
+        B.AUTONUM_PARCEIRO AS COCOLOADER,
+        COCOLOADER2,
+        CNPJ_IMPORTADOR,
+        CNPJ_DESPACHANTE,
+        CNPJ_CAPTADOR,
+        CNPJ_COLOADER,
+        CNPJ_COCOLOADER,
+        CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        A.COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                AUTONUM,
+                MAX(IMPORTADOR) AS IMPORTADOR,
+                MAX(DESPACHANTE) AS DESPACHANTE,
+                MAX(CAPTADOR) AS CAPTADOR,
+                MAX(COLOADER) AS COLOADER,
+                MAX(COCOLOADER) AS COCOLOADER,
+                MAX(COCOLOADER2) AS COCOLOADER2,
+                MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+                MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+                MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+                MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+                MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+                MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+            FROM
+                (
+                    SELECT
+                        A.AUTONUM,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.IMPORTADOR
+                        END IMPORTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.DESPACHANTE
+                        END DESPACHANTE,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.CAPTADOR
+                        END CAPTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COLOADER
+                        END COLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER
+                        END COCOLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER2
+                        END COCOLOADER2,
+                        
+                        CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                
+                        A.FLAG_ESPECIAL,
+                        A.FLAG_LIBERADA,
+                        A.FINAL_VALIDADE,
+                        A.FLAG_HUBPORT,
+                        A.FLAG_ACORDO,
+                        A.COD_EMPRESA,
+                        A.DATA_INICIO
+                    FROM
+                        TB_LISTAS_PRECOS   A
+                        LEFT JOIN TB_TP_GRUPOS       B ON A.AUTONUM = B.AUTONUMLISTA
+                    WHERE
+                        FLAG_ACORDO = 0
+                )
+            GROUP BY
+                AUTONUM,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+        ) A
+        INNER JOIN TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+    WHERE
+        B.TIPO = 'U'
+    UNION
+    SELECT
+        A.AUTONUM,
+        IMPORTADOR,
+        DESPACHANTE,
+        CAPTADOR,
+        COLOADER,
+        COCOLOADER,
+        B.AUTONUM_PARCEIRO AS COCOLOADER2,
+        CNPJ_IMPORTADOR,
+        CNPJ_DESPACHANTE,
+        CNPJ_CAPTADOR,
+        CNPJ_COLOADER,
+        CNPJ_COCOLOADER,
+        CNPJ_COCOLOADER2,
+        FLAG_ESPECIAL,
+        FLAG_LIBERADA,
+        FINAL_VALIDADE,
+        FLAG_HUBPORT,
+        FLAG_ACORDO,
+        A.COD_EMPRESA,
+        DATA_INICIO
+    FROM
+        (
+            SELECT
+                AUTONUM,
+                MAX(IMPORTADOR) AS IMPORTADOR,
+                MAX(DESPACHANTE) AS DESPACHANTE,
+                MAX(CAPTADOR) AS CAPTADOR,
+                MAX(COLOADER) AS COLOADER,
+                MAX(COCOLOADER) AS COCOLOADER,
+                MAX(COCOLOADER2) AS COCOLOADER2,
+                MAX(CNPJ_IMPORTADOR) AS CNPJ_IMPORTADOR,
+                MAX(CNPJ_DESPACHANTE) AS CNPJ_DESPACHANTE,
+                MAX(CNPJ_CAPTADOR) AS CNPJ_CAPTADOR,
+                MAX(CNPJ_COLOADER) AS CNPJ_COLOADER,
+                MAX(CNPJ_COCOLOADER) AS CNPJ_COCOLOADER,
+                MAX(CNPJ_COCOLOADER2) AS CNPJ_COCOLOADER2,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+            FROM
+                (
+                    SELECT
+                        A.AUTONUM,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.IMPORTADOR
+                        END IMPORTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.DESPACHANTE
+                        END DESPACHANTE,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.CAPTADOR
+                        END CAPTADOR,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COLOADER
+                        END COLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER
+                        END COCOLOADER,
+                        CASE
+                            WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                                B.AUTONUM_PARCEIRO
+                            ELSE
+                                A.COCOLOADER2
+                        END COCOLOADER2,
+                        
+                        CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'I' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.IMPORTADOR)
+                END CNPJ_IMPORTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'D' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.DESPACHANTE)
+                END CNPJ_DESPACHANTE,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'C' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.CAPTADOR)
+                END CNPJ_CAPTADOR,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'S' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COLOADER)
+                END CNPJ_COLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'U' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER)
+                END CNPJ_COCOLOADER,
+                CASE
+                    WHEN NVL(B.TIPO, 'Z') = 'B' THEN
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = B.AUTONUM_PARCEIRO)
+                    ELSE
+                        (SELECT CGC FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM = A.COCOLOADER2)
+                END CNPJ_COCOLOADER2,
+                
+                        A.FLAG_ESPECIAL,
+                        A.FLAG_LIBERADA,
+                        A.FINAL_VALIDADE,
+                        A.FLAG_HUBPORT,
+                        A.FLAG_ACORDO,
+                        A.COD_EMPRESA,
+                        A.DATA_INICIO
+                    FROM
+                        TB_LISTAS_PRECOS   A
+                        LEFT JOIN TB_TP_GRUPOS       B ON A.AUTONUM = B.AUTONUMLISTA
+                    WHERE
+                        FLAG_ACORDO = 0
+                )
+            GROUP BY
+                AUTONUM,
+                FLAG_ESPECIAL,
+                FLAG_LIBERADA,
+                FINAL_VALIDADE,
+                FLAG_HUBPORT,
+                FLAG_ACORDO,
+                COD_EMPRESA,
+                DATA_INICIO
+        ) A
+        INNER JOIN TB_TP_GRUPOS B ON A.AUTONUM = B.AUTONUMLISTA
+    WHERE
+        B.TIPO = 'B';	

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.ImpostosExcecaoDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Site.Helpers
+
+<div class="table-responsive">
+    <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Serviço</th>
+                <th scope="col">Exceção</th>
+                <th scope="col">#</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+               
+                <tr>
+                    <td scope="col">
+                        <input type="checkbox" name="ServicosSelecionados" id="ServicosSelecionados_@item.ServicoId" value="@item.ServicoId" @(item.Selecionado ? "checked": "") />
+                    </td>
+                    <td scope="col">
+                        @if (item.Id > 0)
+                        {
+                            <a href="#" onclick="selecionarServico(@item.Id)">@item.Servico</a>
+                        }
+                        else
+                        {
+                            @item.Servico
+                        }
+                    </td>
+                    <td scope="col">@item.Tipo.ToName()</td>
+                    <td scope="col">
+                        @if (item.Id > 0)
+                        {
+                            <a href="#" onclick="excluirVinculo(@item.Id)">
+                                <i class="fa fa-trash text-danger"></i>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

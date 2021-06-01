@@ -1,0 +1,18 @@
+﻿﻿@model Ecoporto.CRM.Site.Models.Pdf.Proposta
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<div style="text-align:right; font-family: Verdana; font-size: 9pt;">Santos, @Model.DataInicio.Day de @Model.DataInicio.ToString("MMMM") de @Model.DataInicio.Year</div>
+
+<div id="proposta-condicoes-iniciais">
+    @Html.Raw(@Model.CondicoesIniciais)
+</div>
+
+@Html.Raw(@Model.Tabela)
+
+<div id="proposta-condicoes-gerais">
+    @Html.Raw(@Model.CondicoesGerais)
+</div>

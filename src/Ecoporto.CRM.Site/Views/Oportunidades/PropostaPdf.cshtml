@@ -1,0 +1,59 @@
+﻿﻿@model Ecoporto.CRM.Site.Models.Pdf.Proposta
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    var imagePath = Server.MapPath("~/Content/img");
+}
+
+<html>
+<head>
+
+    <style type="text/css">
+        @@media print {
+            thead {
+                display: table-header-group;
+            }
+
+            tr {
+                page-break-inside: avoid
+            }
+        }
+
+        @@media screen {
+            thead {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table width="100%">
+        <thead>
+            <tr>
+                <td>
+                    <div style=" background-color: white;">
+                        <img src="@imagePath\header-pdf.png" />
+                    </div>
+                    <div style="text-align:left; font-family: Verdana; font-size: 9pt;"><strong>ECO @Model.Identificacao</strong>&nbsp; @Model.DescricaoTipoServico&nbsp; @Model.Referencia</div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div style="text-align:right; font-family: Verdana; font-size: 9pt;">Santos, 29 de agosto de 2019</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Raw(@Model.CondicoesIniciais)
+                    @Html.Raw(@Model.Tabela)
+                    @Html.Raw(@Model.CondicoesGerais)
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</body>
+</html>

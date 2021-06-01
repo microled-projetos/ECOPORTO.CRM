@@ -1,0 +1,2394 @@
+﻿@model Ecoporto.CRM.Site.Models.EdicaoValoresViewModel
+@using Ecoporto.CRM.Business.Enums
+@using Ecoporto.CRM.Business.Extensions
+
+@{
+    ViewBag.Title = $"Edição de Valores  #{Model.Identificacao}";
+    var imprimeCabecalho = false;
+    TipoRegistro ultimoTipo = TipoRegistro.ARMAZENAGEM;
+}
+
+<section class="content-header">
+    <h1>
+        @ViewBag.Title
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li class="active">@ViewBag.Title</li>
+    </ol>
+</section>
+
+<div id="pnlExistemErros" class="alert alert-danger invisivel" role="alert">
+
+    <h4 class="alert-heading">Houve um problema!</h4>
+    <p>Um ou mais valores digitados nesta página não pôde ser gravados. A falta de conexão ou uma instabilidade momentânea pode ter ocasionado o problema.</p>
+    <hr>
+    <p class="mb-0">
+        <strong>Nossa recomendação:</strong> Revise os valores digitados antes de sair desta página!
+    </p>
+
+</div>
+
+@Html.HiddenFor(c => c.OportunidadeId)
+@Html.HiddenFor(c => c.ApenasLeitura)
+
+<div class="row">
+    <div class="col-md-12">
+
+        <table id="tblEdicaoProposta" class="table table-sm table-bordered table-responsive-md text-center" style="background-color: white;">
+
+            @foreach (var linha in Model.Valores.OrderBy(c => c.Linha))
+            {
+                if (linha.TipoRegistro == TipoRegistro.TITULO)
+                {
+                    <tr style="background:#EAF3DE;" id="titulo-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td colspan="999" class="pt-3-half text-left titulos" contenteditable="false" onblur="AtualizarTitulos(@linha.Linha, @linha.OportunidadeId, 3, this)">
+                            <strong class="valor"> @Html.Raw(linha.Descricao)</strong>
+                        </td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SUB_TITULO)
+                {
+                    <tr style="background:#EAF3DE;" id="sub-titulo-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td colspan="999" class="pt-3-half text-left titulos" contenteditable="true" onblur="AtualizarTitulos(@linha.Linha, @linha.OportunidadeId, 4, this)">
+                            <strong class="valor">@Html.Raw(@linha.Descricao)</strong>
+                        </td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SUB_TITULO_MARGEM)
+                {
+                    <tr style="background:#EAF3DE;" id="sub-titulo-margem-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td colspan="999" class="pt-3-half text-left titulos" contenteditable="true" onblur="AtualizarTitulos(@linha.Linha, @linha.OportunidadeId, 5, this)">
+                            <strong class="valor">@Html.Raw(@linha.Descricao)</strong>
+                        </td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SUB_TITULO_MARGEM_D_E)
+                {
+                    <tr style="background:#EAF3DE;" id="sub-titulo-margemDE-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td colspan="999" class="pt-3-half text-left titulos" contenteditable="true" onblur="AtualizarTitulos(@linha.Linha, @linha.OportunidadeId, 20, this)">
+                            <strong class="valor">@Html.Raw(@linha.Descricao)</strong>
+                        </td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.ARMAZENAGEM)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha"></th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-center">B. Cálculo</th>
+                            <th class="text-center">Tipo Carga</th>
+                            <th class="text-center">Período</th>
+                            <th class="text-center">Qtde Dias</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor 20'</th>
+                                <th class="text-center">Valor 40'</th>
+                            }
+
+                            <th class="text-center">% Ad.Arm</th>
+                            <th class="text-center">% IMO</th>
+                            <th class="text-center">Exército</th>
+                            <th class="text-center">% Anvisa</th>
+                            <th class="text-center">% GRC</th>
+                            <th class="text-center">Min GRC</th>
+                            <th class="text-center">% Anvisa GRC</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="2">% IMO GRC</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">% IMO GRC</th>
+                            }
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="arm-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="arm-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId, 7, 'Descricao')">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "arm-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagem(" + linha.Linha + "," + linha.OportunidadeId + ",7, 'BaseCalculo')", @disabled = "disabled" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "arm-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagem(" + linha.Linha + "," + linha.OportunidadeId + ",7, 'TipoCarga')", @disabled = "disabled" })</td>
+                        <td id="arm-periodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Periodo')">@Html.Raw(@linha.Periodo)</td>
+                        <td id="arm-qtdeDias-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'QtdeDias')">@Html.Raw(@linha.QtdeDias)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="arm-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Valor')">@Html.Raw(@linha.Valor)</td>
+                        }
+                        else
+                        {
+                            <td id="arm-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Valor20')">@Html.Raw(@linha.Valor20)</td>
+                            <td id="arm-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Valor40')">@Html.Raw(@linha.Valor40)</td>
+                        }
+
+                        <td id="arm-adicionalArmazenagem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AdicionalArmazenagem')">@Html.Raw(@linha.AdicionalArmazenagem)</td>
+                        <td id="arm-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AdicionalIMO')">@Html.Raw(@linha.AdicionalIMO)</td>
+                        <td id="arm-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Exercito')">@Html.Raw(@linha.Exercito)</td>
+                        <td id="arm-valorANVISA-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'ValorANVISA')">@Html.Raw(@linha.ValorANVISA)</td>
+                        <td id="arm-adicionalGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AdicionalGRC')">@Html.Raw(@linha.AdicionalGRC)</td>
+                        <td id="arm-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
+                        <td id="arm-anvisaGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AnvisaGRC')">@Html.Raw(@linha.AnvisaGRC)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="arm-AdicionalIMOGRC-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
+                        }
+                        else
+                        {
+                            <td id="arm-AdicionalIMOGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
+                        }
+
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.ARMAZENAGEM_CIF)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha"></th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-center">B. Cálculo</th>
+                            <th class="text-center">Tipo Carga</th>
+                            <th class="text-center">Período</th>
+                            <th class="text-center">Qtde Dias</th>
+                            <th class="text-center">CIF Inicial</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor 20'</th>
+                                <th class="text-center">Valor 40'</th>
+                            }
+
+                            <th class="text-center">% Ad.Arm</th>
+                            <th class="text-center">% IMO</th>
+                            <th class="text-center">% Anvisa</th>
+                            <th class="text-center">% GRC</th>
+                            <th class="text-center">Min GRC</th>
+                            <th class="text-center">% Anvisa GRC</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="2">% IMO GRC</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">% IMO GRC</th>
+                            }
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="arm-cif-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="arm-cif-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId, 21, 'Descricao')">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "arm-cif-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemCIF(" + linha.Linha + "," + linha.OportunidadeId + ",21, 'BaseCalculo')", @disabled = "disabled" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "arm-cif-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemCIF(" + linha.Linha + "," + linha.OportunidadeId + ",21, 'TipoCarga')", @disabled = "disabled" })</td>
+                        <td id="arm-cif-periodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Periodo')">@Html.Raw(@linha.Periodo)</td>
+                        <td id="arm-cif-qtdeDias-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'QtdeDias')">@Html.Raw(@linha.QtdeDias)</td>
+                        <td id="arm-cif-valorCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorCif')">@Html.Raw(@linha.ValorCif)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="arm-cif-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor')">@Html.Raw(@linha.Valor)</td>
+                        }
+                        else
+                        {
+                            <td id="arm-cif-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor20')">@Html.Raw(@linha.Valor20)</td>
+                            <td id="arm-cif-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor40')">@Html.Raw(@linha.Valor40)</td>
+                        }
+
+                        <td id="arm-cif-adicionalArmazenagem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalArmazenagem')">@Html.Raw(@linha.AdicionalArmazenagem)</td>
+                        <td id="arm-cif-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMO')">@Html.Raw(@linha.AdicionalIMO)</td>
+                        <td id="arm-cif-valorANVISA-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorANVISA')">@Html.Raw(@linha.ValorANVISA)</td>
+                        <td id="arm-cif-adicionalGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalGRC')">@Html.Raw(@linha.AdicionalGRC)</td>
+                        <td id="arm-cif-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
+                        <td id="arm-cif-anvisaGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AnvisaGRC')">@Html.Raw(@linha.AnvisaGRC)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
+                        }
+                        else
+                        {
+                            <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
+                        }
+
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.ARMAZENAGEM_MINIMO)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left"></th>
+                            <th class="text-center">Tipo Carga</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center">Valor Mín CS</th>
+                                <th class="text-center">Valor Mín 20'</th>
+                                <th class="text-center">Valor Mín 40'</th>
+                                <th class="text-center">Limite BL's</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor Mín 20'</th>
+                                <th class="text-center">Valor Mín 40'</th>
+                            }
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="8">Descrição Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center" colspan="10">Descrição Valor</th>
+                            }
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="armazenagem-minimo-@linha.Linha" data-id="@linha.Linha">
+
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="armmin-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td id="armmin-" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "armmin-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimo(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="armmin-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+                            <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                            <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                            <td id="armmin-limiteBls-@linha.Linha" class="pt-3-half" contenteditable="false" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.LimiteBls)</td>
+                        }
+                        else
+                        {
+                            <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                            <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                        }
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="8">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                        else
+                        {
+                            <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="10">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                        @*<td id="armmin-btnFaixasBL-@linha.Linha" class="pt-3-half pr-1" contenteditable="false"><button onclick="abrirFaixasBL(@linha.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;&nbsp;Faixas BL</button></td>*@
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.ARMAZENAGEM_MINIMO_CIF)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left"></th>
+                            <th class="text-center">Tipo Carga</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center">Valor Mín CS</th>
+                                <th class="text-center">Valor Mín 20'</th>
+                                <th class="text-center">Valor Mín 40'</th>
+                                <th class="text-center">Limite BL's</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor Mín 20'</th>
+                                <th class="text-center">Valor Mín 40'</th>
+                            }
+
+                            <th class="text-center">Valor CIF</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="8">Descrição Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center" colspan="9">Descrição Valor</th>
+                            }
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="armMinCif-@linha.Linha" data-id="@linha.Linha">
+
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="armMinCif-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td id="armMinCif-" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "armMinCif-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimoCIF(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="armMinCif-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+                            <td id="armMinCif-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                            <td id="armMinCif-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                            <td id="armMinCif-limiteBls-@linha.Linha" class="pt-3-half" contenteditable="false" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.LimiteBls)</td>
+                        }
+                        else
+                        {
+                            <td id="armMinCif-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                            <td id="armMinCif-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                        }
+
+                        <td id="armMinCif-valorCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorCif)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="armMinCif-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)" colspan="8">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                        else
+                        {
+                            <td id="armMinCif-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)" colspan="9">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.ARMAZENAMEM_ALL_IN)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left"></th>
+                            <th class="text-center">B. Cálculo</th>
+                            <th class="text-center">Margem</th>
+                            <th class="text-center">Período</th>
+                            <th class="text-center">Descrição Período</th>
+                            <th class="text-center">Valor 20'</th>
+                            <th class="text-center">Valor 40'</th>
+                            <th class="text-center">Valor Mínimo</th>
+                            <th class="text-center">CIF Mínimo</th>
+                            <th class="text-center">CIF Máximo</th>
+                            <th class="text-center" colspan="2">Descrição CIF</th>
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="armazenagem-allIn-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="armAllIn-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "armAllIn-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemAllIn(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaMargem, new SelectList(linha.ListaMargem, "Key", "Value", linha.Margem), new { id = "armAllIn-margem-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemAllIn(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td id="armAllIn-periodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Periodo)</td>
+                        <td id="armAllIn-descricaoPeriodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoPeriodo)</td>
+                        <td id="armAllIn-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor20)</td>
+                        <td id="armAllIn-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor40)</td>
+                        <td id="armAllIn-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+                        <td id="armAllIn-cifMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.CifMinimo)</td>
+                        <td id="armAllIn-cifMaximo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.CifMaximo)</td>
+                        <td id="armAllIn-descricaoCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemAllIn(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoCif)</td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SERVIÇO_PARA_MARGEM)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-center">B. Cálculo</th>
+                            <th class="text-center">Tipo Carga</th>
+                            <th class="text-center">Direita</th>
+                            <th class="text-center">Esquerda</th>
+                            <th class="text-center">Entre Margem</th>
+                            <th class="text-center" colspan="2">% IMO</th>
+                            <th class="text-center" colspan="2">Exército</th>
+                            <th class="text-center" colspan="3">Peso Máx.</th>
+                            <th class="text-center campo-acao" colspan="2">% Peso</th>
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="servico-margem-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="servMargem-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "servMargem-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMargem(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMargem-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMargem(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td id="servMargem-direita-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMargemDireita)</td>
+                        <td id="servMargem-esquerda-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMargemEsquerda)</td>
+                        <td id="servMargem-entreMargem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorEntreMargens)</td>
+                        <td id="servMargem-imo-@linha.Linha"  colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalIMO)</td>
+                        <td id="servMargem-exercito-@linha.Linha"  colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Exercito)</td>
+                        <td id="servMargem-pesoMaximo-@linha.Linha" class="pt-3-half" colspan="3" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.PesoMaximo)</td>
+                        <td id="servMargem-adicionalPeso-@linha.Linha" class="pt-3-half" colspan="2" contenteditable="true" onblur="AtualizarServicoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalPeso)</td>
+                        @*<td id="servMargem-btnFaixasPeso-@linha.Linha" class="pt-3-half pr-1" contenteditable="false"><button onclick="abrirFaixasPeso(@linha.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;&nbsp;Faixas Peso</button></td>
+                            <td id="servMargem-btnFaixasVolume-@linha.Linha" class="pt-3-half pr-1" contenteditable="false"><button onclick="abrirFaixasVolume(@linha.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;&nbsp;Faixas Vol</button></td>*@
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.MINIMO_PARA_MARGEM)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left"></th>
+                            <th class="text-center">Direita</th>
+                            <th class="text-center">Esquerda</th>
+                            <th class="text-center">Entre Margem</th>
+                            <th class="text-center" colspan="10">Descrição Valor</th>
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="minimo-margem-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="minimoMargem-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td id="minimoMargem-direita-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimoMargemDireita)</td>
+                        <td id="minimoMargem-esquerda-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimoMargemEsquerda)</td>
+                        <td id="minimoMargem-margem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimoEntreMargens)</td>
+                        <td id="minimoMargem-descricaoValor-@linha.Linha" class="pt-3-half" colspan="10" contenteditable="true" onblur="AtualizarMinimoMargem(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SERVICO_MECANICA_MANUAL)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-center">Tipo Carga</th>
+                            <th class="text-center">B. Cálculo</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor 20'</th>
+                                <th class="text-center">Valor 40'</th>
+                            }
+
+                            <th class="text-center">% IMO</th>
+                            <th class="text-center">Exército</th>
+                            <th class="text-center">Peso Máx</th>
+                            <th class="text-center">% Peso</th>
+                            <th class="text-center">Tipo Oper.</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="5">Descrição Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center" colspan="3">Descrição Valor</th>
+                            }
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="servico-mecanica-manual-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="servMecManual-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMecManual-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMecanicaManual(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "servMecManual-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMecanicaManual(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="servMecManual-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
+                        }
+                        else
+                        {
+                            <td id="servMecManual-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor20)</td>
+                            <td id="servMecManual-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor40)</td>
+                        }
+
+                        <td id="servMecManual-imo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalIMO)</td>
+                        <td id="servMecManual-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Exercito)</td>
+                        <td id="servMecManual-pesoMaximo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.PesoMaximo)</td>
+                        <td id="servMecManual-adicionalPeso-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalPeso)</td>
+                        <td class="pt-3-half celula-select-grid-editavel" colspan="2"> @Html.DropDownListFor(c => linha.ListaTipoTrabalho, new SelectList(linha.ListaTipoTrabalho, "Key", "Value", linha.TipoTrabalho.ToValue()), new { id = "servMecManual-tipoTrabalho-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMecanicaManual(" + linha.Linha + "," + linha.OportunidadeId + ")" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="servMecManual-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="5" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                        else
+                        {
+                            <td id="servMecManual-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="3" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.MINIMO_MECANICA_MANUAL)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="2">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor Min 20'</th>
+                                <th class="text-center">Valor Min 40'</th>
+                            }
+
+                            <th class="text-center" colspan="10">Descrição Valor</th>
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="minimo-mecanica-manual-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="minMercanicaManual-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td colspan="2" id="minMercanicaManual-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+                        }
+                        else
+                        {
+                            <td id="minMercanicaManual-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                            <td id="minMercanicaManual-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                        }
+
+                        <td id="minMercanicaManual-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="10" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SERVICO_LIBERACAO)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-center">Tipo Carga</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th colspan="2" class="text-center">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor 20'</th>
+                                <th class="text-center">Valor 40'</th>
+                            }
+                            <th class="text-center">% IMO</th>
+                            <th class="text-center">Exército</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="9">Descrição Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center" colspan="7">Descrição Valor</th>
+                            }
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="servico-liberacao-@linha.Linha" data-id="@linha.Linha">
+
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="servicoLib-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servicoLib-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoLiberacao(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td colspan="2" id="servicoLib-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
+                        }
+                        else
+                        {
+                            <td id="servicoLib-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor20)</td>
+                            <td id="servicoLib-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor40)</td>
+                        }
+                        <td id="servicoLib-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalIMO)</td>
+                        <td id="servicoLib-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Exercito)</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="servicoLib-descricaoValor-@linha.Linha" class="pt-3-half" colspan="9" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                        else
+                        {
+                            <td id="servicoLib-descricaoValor-@linha.Linha" class="pt-3-half" colspan="7" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.SERVICO_HUBPORT)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-center" colspan="3">Origem</th>
+                            <th class="text-center" colspan="3">Destino</th>
+                            <th class="text-center">Forma Pgto</th>
+                            <th class="text-center">Valor</th>
+                            <th class="text-center" colspan="4">Descrição Valor</th>
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="servico-hubport-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="hubport-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarHubPort(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel" colspan="3" contenteditable="true">@Html.DropDownListFor(model => linha.ClientesHubPort, new SelectList(linha.ClientesHubPort, "Id", "Descricao", linha.Origem), new { id = "hubport-origem-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarHubPort(" + linha.Linha + "," + linha.OportunidadeId + ")" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel" colspan="3" contenteditable="true">@Html.DropDownListFor(model => linha.ClientesHubPort, new SelectList(linha.ClientesHubPort, "Id", "Descricao", linha.Destino), new { id = "hubport-destino-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarHubPort(" + linha.Linha + "," + linha.OportunidadeId + ")" })</td>
+                        <td class="pt-3-half celula-select-grid-editavel" contenteditable="true">@Html.DropDownListFor(model => linha.ListaFormaPagamentoHubPort, new SelectList(linha.ListaFormaPagamentoHubPort, "Key", "Value", linha.FormaPagamentoNVOCC.ToValue()), new { id = "hubport-formaPgto-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarHubPort(" + linha.Linha + "," + linha.OportunidadeId + ")" })</td>
+                        <td id="hubport-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarHubPort(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
+                        <td id="hubport-descricaoValor-@linha.Linha" class="pt-3-half" colspan="5" contenteditable="true" onblur="AtualizarHubPort(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.GERAIS)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-left">B. Cálculo</th>
+                            <th class="text-left">Tipo Carga</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="2">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor 20'</th>
+                                <th class="text-center">Valor 40'</th>
+                            }
+
+                            <th class="text-center">% IMO</th>
+                            <th class="text-center">Exército</th>
+                            <th class="text-center" colspan="8">Descrição Valor</th>
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="gerais-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="servGerais-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "servGerais-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicosGerais(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td id="servGerais-tipoCarga" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servGerais-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicosGerais(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="servGerais-valor-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
+                        }
+                        else
+                        {
+                            <td id="servGerais-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor20)</td>
+                            <td id="servGerais-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor40)</td>
+                        }
+
+                        <td id="servGerais-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalIMO)</td>
+                        <td id="servGerais-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Exercito)</td>
+                        <td id="servGerais-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="8" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.MINIMO_GERAL)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left"></th>
+                            <th class="text-left">Tipo Carga</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th colspan="2" class="text-center">Valor Min</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor Min 20'</th>
+                                <th class="text-center">Valor Min 40'</th>
+                            }
+
+                            <th class="text-center" colspan="10">Descrição Valor</th>
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="minimo-geral-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="servMinGeral-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td id="" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMinGeral-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarMinimoGeral(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="servMinGeral-valorMin-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+                        }
+                        else
+                        {
+                            <td id="servMinGeral-valorMin20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                            <td id="servMinGeral-valorMin40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                        }
+
+                        <td id="servMinGeral-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="10" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                    </tr>
+                }
+
+                if (linha.TipoRegistro == TipoRegistro.PERIODO_PADRAO)
+                {
+                    if (linha.TipoRegistro != ultimoTipo)
+                    {
+                        imprimeCabecalho = true;
+                    }
+
+                    if (imprimeCabecalho)
+                    {
+                        <tr class="cabecalho">
+                            <th class="text-left numeroLinha">&nbsp;</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-left">B. Cálculo</th>
+                            <th class="text-left">Tipo Carga</th>
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="2">Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center">Valor 20'</th>
+                                <th class="text-center">Valor 40'</th>
+                            }
+
+
+
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            {
+                                <th class="text-center" colspan="10">Descrição Valor</th>
+                            }
+                            else
+                            {
+                                <th class="text-center" colspan="8">Descrição Valor</th>
+                            }
+
+                        </tr>
+
+                        imprimeCabecalho = false;
+                    }
+
+                    <tr id="gerais-@linha.Linha" data-id="@linha.Linha">
+                        <td class="numeroLinha">@linha.Linha</td>
+                        <td id="periodoPadrao-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "periodoPadrao-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarPeriodoPadrao(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+                        <td id="periodoPadrao-tipoCarga" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "periodoPadrao-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarPeriodoPadrao(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled", @tabindex = "-1" })</td>
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="periodoPadrao-valor-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
+                        }
+                        else
+                        {
+                            <td id="periodoPadrao-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor20)</td>
+                            <td id="periodoPadrao-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor40)</td>
+                        }
+
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        {
+                            <td id="periodoPadrao-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="10" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+                        else
+                        {
+                            <td id="periodoPadrao-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="8" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+                        }
+
+                    </tr>
+                }
+
+                ultimoTipo = linha.TipoRegistro;
+
+            }
+        </table>
+
+    </div>
+</div>
+
+<div data-id="0" class="modal" tabindex="-1" role="dialog" id="del-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Exclusão de Linha</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Atenção: Confirma a exclusão da linha da proposta? Esta operação não pode ser revertida</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="confirmarExclusaoLinha()">Estou ciente e confirmo a exclusão</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="faixas-bl-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Faixas BL</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @using (Ajax.BeginForm("CadastrarFaixasBL", "AtualizacaoValoresProposta", null, new AjaxOptions
+            {
+                UpdateTargetId = "ListaFaixasBL",
+                OnFailure = "faixasBLErros",
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "POST"
+            }, new { id = "frmCadastrarFaixasBL" }))
+            {
+                <div class="modal-body">
+
+                    <input type="hidden" id="FaixaBLLayoutId" name="FaixaBLLayoutId" />
+
+                    <div class="form-row">
+
+                        <div class="form-group col-sm-4">
+                            <label>BL Mínimo</label>
+                            <input type="text" id="FaixasBLMinimo" name="FaixasBLMinimo" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label>BL Máximo</label>
+                            <input type="text" id="FaixasBLMaximo" name="FaixasBLMaximo" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label>Valor Mínimo</label>
+                            <input type="text" id="FaixasBLValorMinimo" name="FaixasBLValorMinimo" class="form-control form-control-sm" />
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <div id="ListaFaixasBL" style="height:200px;" class="pre-scrollable"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-outline-primary">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="faixas-peso-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Faixas Peso</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @using (Ajax.BeginForm("CadastrarFaixasPeso", "AtualizacaoValoresProposta", null, new AjaxOptions
+            {
+                UpdateTargetId = "ListaFaixasPeso",
+                OnFailure = "faixasPesoErros",
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "POST"
+            }, new { id = "frmCadastrarFaixasPeso" }))
+            {
+                <div class="modal-body">
+                    <div class="form-row">
+
+                        <input type="hidden" id="FaixaPesoLayoutId" name="FaixaPesoLayoutId" />
+
+                        <div class="form-group col-sm-4">
+                            <label>Valor Inicial</label>
+                            <input type="text" id="FaixasPesoValorInicial" name="FaixasPesoValorInicial" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label>Valor Final</label>
+                            <input type="text" id="FaixasPesoValorFinal" name="FaixasPesoValorFinal" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label>Preço</label>
+                            <input type="text" id="FaixasPesoPreco" name="FaixasPesoPreco" class="form-control form-control-sm" />
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <div id="ListaFaixasPeso" style="height:200px;" class="pre-scrollable"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-outline-primary">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="faixas-volume-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Faixas Volume</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @using (Ajax.BeginForm("CadastrarFaixasVolume", "AtualizacaoValoresProposta", null, new AjaxOptions
+            {
+                UpdateTargetId = "ListaFaixasVolume",
+                OnFailure = "faixasVolumeErros",
+                InsertionMode = InsertionMode.Replace,
+                HttpMethod = "POST"
+            }, new { id = "frmCadastrarFaixasVolume" }))
+            {
+                <div class="modal-body">
+                    <div class="form-row">
+
+                        <input type="hidden" id="FaixaVolumeLayoutId" name="FaixaVolumeLayoutId" />
+
+                        <div class="form-group col-sm-4">
+                            <label>Valor Inicial</label>
+                            <input type="text" id="FaixasVolumeValorInicial" name="FaixasVolumeValorInicial" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label>Valor Final</label>
+                            <input type="text" id="FaixasVolumeValorFinal" name="FaixasVolumeValorFinal" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label>Valor Final</label>
+                            <input type="text" id="FaixasVolumePreco" name="FaixasVolumePreco" class="form-control form-control-sm" />
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12">
+                            <div id="ListaFaixasVolume" style="height:200px;" class="pre-scrollable"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="float-right">
+                        <p>
+                            <button type="submit" class="btn btn-outline-primary">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+    </div>
+</div>
+
+<ul id="contextMenu" class="dropdown-menu" role="menu" style="display:none">
+    <li style="padding-left:10px;"><a tabindex="-1" href="#">Excluir Linha</a></li>
+</ul>
+
+@section Scripts{
+
+    <script>
+
+    var tab = '	';
+
+        var apenasLeitura = $('#ApenasLeitura').val();
+
+        if (toBoolean(apenasLeitura) === false) {
+
+            $.fn.contextMenu = function (settings) {
+
+                return this.each(function () {
+
+                    $(this).on("contextmenu", function (e) {
+
+                        $(settings.menuSelector)
+                            .data("invokedOn", $(e.target))
+                            .show()
+                            .css({
+                                position: "absolute",
+                                left: getLeftLocation(e),
+                                top: getTopLocation(e)
+                            })
+                            .off('click')
+                            .on('click', function (e) {
+                                $(this).hide();
+
+                                var $invokedOn = $(this).data("invokedOn");
+                                var $selectedMenu = $(e.target);
+                                var $flightID = $(this).data("invokedOn").find('.flightclm').attr('FlyID');
+
+                                settings.menuSelected.call(this, $invokedOn, $selectedMenu, $flightID);
+                            });
+
+                        return false;
+                    });
+
+                    $(document).click(function () {
+                        $(settings.menuSelector).hide();
+                    });
+                });
+
+                function getLeftLocation(e) {
+
+                    var mouseWidth = e.pageX;
+
+                    var pageWidth = $(window).width();
+                    var menuWidth = $(settings.menuSelector).width();
+
+                    if (mouseWidth + menuWidth > pageWidth &&
+                        menuWidth < mouseWidth) {
+                        return mouseWidth - menuWidth;
+                    }
+
+                    return mouseWidth;
+                }
+
+                function getTopLocation(e) {
+
+                    var mouseHeight = e.pageY;
+                    var pageHeight = $(window).height();
+                    var menuHeight = $(settings.menuSelector).height();
+
+                    if (mouseHeight + menuHeight > pageHeight &&
+                        menuHeight < mouseHeight) {
+                        return mouseHeight - menuHeight;
+                    }
+                    return mouseHeight;
+                }
+
+            };
+
+            $("#tblEdicaoProposta td").contextMenu({
+                menuSelector: "#contextMenu",
+                menuSelected: function (invokedOn, selectedMenu, flightID) {
+
+                    if (invokedOn[0] != null) {
+
+                        if (invokedOn[0] instanceof HTMLElement) {
+
+                            var elemento = invokedOn[0].parentElement;
+
+                            var linha = elemento.getAttribute('data-id');
+
+                            if (linha == null) {
+
+                                elemento = elemento.parentElement;
+
+                                if (elemento != null) {
+                                    linha = elemento.getAttribute('data-id');
+                                }
+                            }
+
+                            if (!isNumero(linha)) {
+                                toastr.error('Falha ao obter o número da linha', 'CRM');
+                                return;
+                            }
+
+                            $('#del-modal')
+                                .data('id', linha)
+                                .data('elemento', elemento)
+                                .modal('show');
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function confirmarExclusaoLinha() {
+
+            var _url = '@Url.Action("ExcluirLinhaProposta")';
+            var _linha = $('#del-modal').data('id');
+            var _elemento = $('#del-modal').data('elemento');
+            var _oportunidadeId = $('#OportunidadeId').val();
+
+            $.post(urlBase + 'AtualizacaoValoresProposta/ExcluirLinhaProposta', { oportunidadeId: _oportunidadeId, linha: _linha })
+                .done(function (data) {
+                    toastr.success('Linha excluída com sucesso!', 'CRM');
+                    _elemento.remove();
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'CRM');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        $("#tblEdicaoProposta .select-grid-editavel").change(function () {
+
+            sessionStorage.setItem('houveAlteracoes', $(this).val());
+        });
+
+        $(document).ready(function () {
+
+            var apenasLeitura = $('#ApenasLeitura').val();
+
+            if (toBoolean(apenasLeitura)) {
+
+                var colunas = document.querySelectorAll('#tblEdicaoProposta td');
+
+                for (var i = 0; i < colunas.length; i++) {
+                    colunas[i].contentEditable = false;
+                }
+
+                $('#tblEdicaoProposta tr > td').attr('onblur', null);
+                $('#tblEdicaoProposta tr > td > select').attr('onblur', null).addClass('select-readonly');
+            }
+
+            $('#tblEdicaoProposta td').on('focus', function () {
+                var cell = this;
+                var range, selection;
+                if (document.body.createTextRange) {
+                    range = document.body.createTextRange();
+                    range.moveToElementText(cell);
+                    range.select();
+                } else if (window.getSelection) {
+                    selection = window.getSelection();
+                    range = document.createRange();
+                    range.selectNodeContents(cell);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            });
+
+            $('#tblEdicaoProposta td').keydown(function (e) {
+
+                if (e.which !== 9  ) {
+                    sessionStorage.setItem('houveAlteracoes', String.fromCharCode(e.which));
+                }
+            });
+
+            $("td").keydown(function(e){
+                if (e.keyCode == 13)
+                {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        function abrirFaixasBL(id) {
+
+            $('#FaixaBLLayoutId').val(id);
+
+            $.get(urlBase + 'AtualizacaoValoresProposta/ObterFaixasBLJson?oportunidadeId=' + id, function (resultado) {
+
+                $('#ListaFaixasBL').html(resultado);
+
+                $('#faixas-bl-modal').modal('show');
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao obter as Faixas BL', 'CRM');
+                }
+            });
+        }
+
+        function excluirFaixaBL(id) {
+
+            if (isNumero(id)) {
+
+                $.post(urlBase + 'AtualizacaoValoresProposta/ExcluirFaixaBL/' + id, function (resultado) {
+                    toastr.success('Faixa excluída com sucesso!', 'Faixas BL');
+                    $("#ListaFaixasBL").html(resultado);
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'Faixas BL');
+                    } else {
+                        toastr.error('Falha ao excluir a Faixa', 'Faixas BL');
+                    }
+                });
+            }
+        }
+
+        var faixasBLErros = function (xhr) {
+
+            toastr.error(xhr.statusText, 'CRM');
+        }
+
+        function abrirFaixasPeso(id) {
+
+            $('#FaixaPesoLayoutId').val(id);
+
+            $.get(urlBase + 'AtualizacaoValoresProposta/ObterFaixasPesoJson?oportunidadeId=' + id, function (resultado) {
+
+                $('#ListaFaixasPeso').html(resultado);
+
+                $('#faixas-peso-modal').modal('show');
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao obter as Faixas Peso', 'CRM');
+                }
+            });
+        }
+
+        function excluirFaixaPeso(id) {
+
+            if (isNumero(id)) {
+
+                $.post(urlBase + 'AtualizacaoValoresProposta/ExcluirFaixaPeso/' + id, function (resultado) {
+                    toastr.success('Faixa excluída com sucesso!', 'Faixas Peso');
+                    $("#ListaFaixasPeso").html(resultado);
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('Falha ao excluir a Faixa', 'Faixas Peso');
+                    }
+                });
+            }
+        }
+
+        var faixasPesoErros = function (xhr) {
+
+            toastr.error(xhr.statusText, 'CRM');
+        }
+
+        function abrirFaixasVolume(id) {
+
+            $('#FaixaVolumeLayoutId').val(id);
+
+            $.get(urlBase + 'AtualizacaoValoresProposta/ObterFaixasVolumeJson?oportunidadeId=' + id, function (resultado) {
+
+                $('#ListaFaixasVolume').html(resultado);
+
+                $('#faixas-volume-modal').modal('show');
+
+            }).fail(function (data) {
+                if (data.statusText) {
+                    toastr.error(data.statusText, 'CRM');
+                } else {
+                    toastr.error('Falha ao obter as Faixas Volume', 'CRM');
+                }
+            });
+        }
+
+        function excluirFaixaVolume(id) {
+
+            if (isNumero(id)) {
+
+                $.post(urlBase + 'AtualizacaoValoresProposta/ExcluirFaixaVolume/' + id, function (resultado) {
+                    toastr.success('Faixa excluída com sucesso!', 'Faixas Volume');
+                    $("#ListaFaixasVolume").html(resultado);
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'Faixas Volume');
+                    } else {
+                        toastr.error('Falha ao excluir a Faixa', 'Faixas Volume');
+                    }
+                });
+            }
+        }
+
+        var faixasVolumeErros = function (xhr) {
+
+            toastr.error(xhr.statusText, 'CRM');
+        }
+
+        function AtualizarTitulos(linha, oportunidadeId, tipoRegistro, elemento) {
+
+            if (elemento != null) {
+
+                var controle = elemento.querySelector('.valor');
+
+                if (controle != null) {
+
+                    var valor = controle.innerText;
+
+                    if (valor != null) {
+
+                        var obj = {
+                            linha: linha,
+                            descricao: valor,
+                            tipoRegistro: tipoRegistro,
+                            oportunidadeId: oportunidadeId
+                        };
+
+                        if (sessionStorage.getItem('houveAlteracoes') != null) {
+                            if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                                sessionStorage.clear();
+
+                                $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarTitulo/', obj, function () {
+
+                                }).fail(function (data) {
+
+                                    if (data.statusText) {
+                                        toastr.error(data.statusText, 'CRM');
+                                    } else {
+                                        toastr.error('Falha ao salvar o Registro', 'CRM');
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function AtualizarArmazenagem(linha, oportunidadeId, tipoRegistro, target) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes') !== '') {
+
+                    var descricao = document.getElementById('arm-descricao-' + linha);
+                    var baseCalculo = document.getElementById('arm-baseCalculo-' + linha);
+                    var tipoCarga = document.getElementById('arm-tipoCarga-' + linha);
+                    var periodo = document.getElementById('arm-periodo-' + linha);
+                    var qtdeDias = document.getElementById('arm-qtdeDias-' + linha);
+                    var valor = document.getElementById('arm-valor-' + linha);
+                    var valor20 = document.getElementById('arm-valor20-' + linha);
+                    var valor40 = document.getElementById('arm-valor40-' + linha);
+                    var adicionalArmazenagem = document.getElementById('arm-adicionalArmazenagem-' + linha);
+                    var adicionalGRC = document.getElementById('arm-adicionalGRC-' + linha);
+                    var minimoGRC = document.getElementById('arm-minimoGRC-' + linha);
+                    var adicionalIMO = document.getElementById('arm-adicionalIMO-' + linha);
+                    var exercito = document.getElementById('arm-exercito-' + linha);
+                    var valorANVISA = document.getElementById('arm-valorANVISA-' + linha);
+                    var anvisaGRC = document.getElementById('arm-anvisaGRC-' + linha);
+                    var AdicionalIMOGRC = document.getElementById('arm-AdicionalIMOGRC-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        tipoRegistro: tipoRegistro,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        baseCalculo: baseCalculo.value,
+                        tipoCarga: tipoCarga.value,
+                        periodo: isNull(periodo),
+                        qtdeDias: isNull(qtdeDias),
+                        valor: isNull(valor),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+                        adicionalArmazenagem: isNull(adicionalArmazenagem),
+                        adicionalGRC: isNull(adicionalGRC),
+                        minimoGRC: isNull(minimoGRC),
+                        adicionalIMO: isNull(adicionalIMO),
+                        exercito: isNull(exercito),
+                        AdicionalIMOGRC: isNull(AdicionalIMOGRC),
+                        valorANVISA: isNull(valorANVISA),
+                        anvisaGRC: isNull(anvisaGRC),
+                        target: target
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarArmazenagem/', obj, function (resultado, status, xhr) {
+
+                        if (target === 'QtdeDias' || target === 'AdicionalArmazenagem' ||
+                            target === 'AdicionalGRC' || target === 'MinimoGRC' || target === 'AdicionalIMO' || target === 'ValorANVISA' || target === 'AnvisaGRC' || target === 'AdicionalIMOGRC') {
+
+                            if (xhr.statusText != null) {
+
+                                var linhasAtualizadas = xhr.statusText.split(',');
+
+                                for (i = 0; i < linhasAtualizadas.length; i++) {
+
+                                    var linhaBusca = linhasAtualizadas[i];
+
+                                    if (target === 'QtdeDias') {
+                                        var qtdeDiasBusca = document.getElementById('arm-qtdeDias-' + linhaBusca);
+                                        //
+                                        if (qtdeDiasBusca != null) {
+                                            qtdeDiasBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.qtdeDias + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalArmazenagem') {
+                                        var adicionalArmBusca = document.getElementById('arm-adicionalArmazenagem-' + linhaBusca);
+
+                                        if (adicionalArmBusca != null) {
+                                            adicionalArmBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalArmazenagem + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalGRC') {
+                                        var adicionalGRCBusca = document.getElementById('arm-adicionalGRC-' + linhaBusca);
+
+                                        if (adicionalGRCBusca != null) {
+                                            adicionalGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalGRC + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'MinimoGRC') {
+                                        var minimoGRCBusca = document.getElementById('arm-minimoGRC-' + linhaBusca);
+
+                                        if (minimoGRCBusca != null) {
+                                            minimoGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.minimoGRC + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalIMO') {
+                                        var adicionalIMOBusca = document.getElementById('arm-adicionalIMO-' + linhaBusca);
+
+                                        if (adicionalIMOBusca != null) {
+                                            adicionalIMOBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalIMO + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalIMOGRC') {
+                                        var AdicionalIMOGRCBusca = document.getElementById('arm-AdicionalIMOGRC-' + linhaBusca);
+
+                                        if (AdicionalIMOGRCBusca != null) {
+                                            AdicionalIMOGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.AdicionalIMOGRC + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'ValorANVISA') {
+                                        var valorANVISABusca = document.getElementById('arm-valorANVISA-' + linhaBusca);
+
+                                        if (valorANVISABusca != null) {
+                                            valorANVISABusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.valorANVISA + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AnvisaGRC') {
+                                        var anvisaGRCBusca = document.getElementById('arm-anvisaGRC-' + linhaBusca);
+
+                                        if (anvisaGRCBusca != null) {
+                                            anvisaGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.anvisaGRC + '</span>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+         function AtualizarArmazenagemCIF(linha, oportunidadeId, tipoRegistro, target) {
+
+             if (sessionStorage.getItem('houveAlteracoes') != null) {
+                 if (sessionStorage.getItem('houveAlteracoes') !== '') {
+
+                    var descricao = document.getElementById('arm-cif-descricao-' + linha);
+                    var baseCalculo = document.getElementById('arm-cif-baseCalculo-' + linha);
+                    var tipoCarga = document.getElementById('arm-cif-tipoCarga-' + linha);
+                    var periodo = document.getElementById('arm-cif-periodo-' + linha);
+                    var qtdeDias = document.getElementById('arm-cif-qtdeDias-' + linha);
+                    var valor = document.getElementById('arm-cif-valor-' + linha);
+                    var valor20 = document.getElementById('arm-cif-valor20-' + linha);
+                    var valor40 = document.getElementById('arm-cif-valor40-' + linha);
+			        var valorCif = document.getElementById('arm-cif-valorCif-' + linha);
+                    var adicionalArmazenagem = document.getElementById('arm-cif-adicionalArmazenagem-' + linha);
+                    var adicionalGRC = document.getElementById('arm-cif-adicionalGRC-' + linha);
+                    var minimoGRC = document.getElementById('arm-cif-minimoGRC-' + linha);
+                    var adicionalIMO = document.getElementById('arm-cif-adicionalIMO-' + linha);
+                    var valorANVISA = document.getElementById('arm-cif-valorANVISA-' + linha);
+                    var anvisaGRC = document.getElementById('arm-cif-anvisaGRC-' + linha);
+                    var AdicionalIMOGRC = document.getElementById('arm-cif-AdicionalIMOGRC-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        tipoRegistro: tipoRegistro,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        baseCalculo: baseCalculo.value,
+                        tipoCarga: tipoCarga.value,
+                        periodo: isNull(periodo),
+                        qtdeDias: isNull(qtdeDias),
+                        valor: isNull(valor),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+				        valorCif: isNull(valorCif),
+                        adicionalArmazenagem: isNull(adicionalArmazenagem),
+                        adicionalGRC: isNull(adicionalGRC),
+                        minimoGRC: isNull(minimoGRC),
+                        adicionalIMO: isNull(adicionalIMO),
+                        AdicionalIMOGRC: isNull(AdicionalIMOGRC),
+                        valorANVISA: isNull(valorANVISA),
+                        anvisaGRC: isNull(anvisaGRC),
+                        target: target
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarArmazenagemCIF/', obj, function (resultado, status, xhr) {
+
+                        if (target === 'QtdeDias' || target === 'AdicionalArmazenagem' || target === 'CifInicial' || target === 'ValorCif' ||
+                            target === 'AdicionalGRC' || target === 'MinimoGRC' || target === 'AdicionalIMO' || target === 'ValorANVISA' || target === 'AnvisaGRC' || target === 'AdicionalIMOGRC') {
+
+                            if (xhr.statusText != null) {
+
+                                var linhasAtualizadas = xhr.statusText.split(',');
+
+                                for (i = 0; i < linhasAtualizadas.length; i++) {
+
+                                    var linhaBusca = linhasAtualizadas[i];
+
+                                    if (target === 'QtdeDias') {
+                                        var qtdeDiasBusca = document.getElementById('arm-cif-qtdeDias-' + linhaBusca);
+
+                                        if (qtdeDiasBusca != null) {
+                                            qtdeDiasBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.qtdeDias + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalArmazenagem') {
+                                        var adicionalArmBusca = document.getElementById('arm-cif-adicionalArmazenagem-' + linhaBusca);
+
+                                        if (adicionalArmBusca != null) {
+                                            adicionalArmBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalArmazenagem + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalGRC') {
+                                        var adicionalGRCBusca = document.getElementById('arm-cif-adicionalGRC-' + linhaBusca);
+
+                                        if (adicionalGRCBusca != null) {
+                                            adicionalGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalGRC + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'MinimoGRC') {
+                                        var minimoGRCBusca = document.getElementById('arm-cif-minimoGRC-' + linhaBusca);
+
+                                        if (minimoGRCBusca != null) {
+                                            minimoGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.minimoGRC + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalIMO') {
+                                        var adicionalIMOBusca = document.getElementById('arm-cif-adicionalIMO-' + linhaBusca);
+
+                                        if (adicionalIMOBusca != null) {
+                                            adicionalIMOBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalIMO + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AdicionalIMOGRC') {
+                                        var AdicionalIMOGRCBusca = document.getElementById('arm-cif-AdicionalIMOGRC-' + linhaBusca);
+
+                                        if (AdicionalIMOGRCBusca != null) {
+                                            AdicionalIMOGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.AdicionalIMOGRC + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'ValorANVISA') {
+                                        var valorANVISABusca = document.getElementById('arm-cif-valorANVISA-' + linhaBusca);
+
+                                        if (valorANVISABusca != null) {
+                                            valorANVISABusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.valorANVISA + '</span>';
+                                        }
+                                    }
+
+                                    if (target === 'AnvisaGRC') {
+                                        var anvisaGRCBusca = document.getElementById('arm-cif-anvisaGRC-' + linhaBusca);
+
+                                        if (anvisaGRCBusca != null) {
+                                            anvisaGRCBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.anvisaGRC + '</span>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarArmazenagemMinimoCIF(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('armMinCif-descricao-' + linha);
+                    var tipoCarga = document.getElementById('armMinCif-tipoCarga-' + linha);
+                    var valorCif = document.getElementById('armMinCif-valorCif-' + linha);
+                    var valorMinimo = document.getElementById('armMinCif-valorMinimo-' + linha);
+                    var valorMinimo20 = document.getElementById('armMinCif-valorMinimo20-' + linha);
+                    var valorMinimo40 = document.getElementById('armMinCif-valorMinimo40-' + linha);
+                    var limiteBls = document.getElementById('armMinCif-limiteBls-' + linha);
+                    var descricaoValor = document.getElementById('armMinCif-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        tipoRegistro: tipoRegistro,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        tipoCarga: tipoCarga.value,
+                        valorCif: isNull(valorCif),
+                        valorMinimo: isNull(valorMinimo),
+                        valorMinimo20: isNull(valorMinimo20),
+                        valorMinimo40: isNull(valorMinimo40),
+                        limiteBls: isNull(limiteBls),
+                        descricaoValor: isNull(descricaoValor)
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarArmazenagemMinimoCIF/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarArmazenagemMinimo(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('armmin-descricao-' + linha);
+                    var tipoCarga = document.getElementById('armmin-tipoCarga-' + linha);
+                    var valorMinimo = document.getElementById('armmin-valorMinimo-' + linha);
+                    var valorMinimo20 = document.getElementById('armmin-valorMinimo20-' + linha);
+                    var valorMinimo40 = document.getElementById('armmin-valorMinimo40-' + linha);
+                    var limiteBls = document.getElementById('armmin-limiteBls-' + linha);
+                    var descricaoValor = document.getElementById('armmin-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        tipoRegistro: tipoRegistro,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        tipoCarga: tipoCarga.value,
+                        valorMinimo: isNull(valorMinimo),
+                        valorMinimo20: isNull(valorMinimo20),
+                        valorMinimo40: isNull(valorMinimo40),
+                        limiteBls: isNull(limiteBls),
+                        descricaoValor: isNull(descricaoValor)
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarArmazenagemMinimo/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarArmazenagemAllIn(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('armAllIn-descricao-' + linha);
+                    var baseCalculo = document.getElementById('armAllIn-baseCalculo-' + linha);
+                    var margem = document.getElementById('armAllIn-margem-' + linha);
+                    var periodo = document.getElementById('armAllIn-periodo-' + linha);
+                    var descricaoPeriodo = document.getElementById('armAllIn-descricaoPeriodo-' + linha);
+                    var valor20 = document.getElementById('armAllIn-valor20-' + linha);
+                    var valor40 = document.getElementById('armAllIn-valor40-' + linha);
+                    var valorMinimo = document.getElementById('armAllIn-valorMinimo-' + linha);
+                    var cifMinimo = document.getElementById('armAllIn-cifMinimo-' + linha);
+                    var cifMaximo = document.getElementById('armAllIn-cifMaximo-' + linha);
+                    var descricaoCif = document.getElementById('armAllIn-descricaoCif-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        baseCalculo: baseCalculo.value,
+                        margem: margem.value,
+                        periodo: isNull(periodo),
+                        descricaoPeriodo: isNull(descricaoPeriodo),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+                        valorMinimo: isNull(valorMinimo),
+                        cifMinimo: isNull(cifMinimo),
+                        cifMaximo: isNull(cifMaximo),
+                        descricaoCif: isNull(descricaoCif),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarArmazenagemAllIn/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarServicoMargem(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('servMargem-descricao-' + linha);
+                    var baseCalculo = document.getElementById('servMargem-baseCalculo-' + linha);
+                    var tipoCarga = document.getElementById('servMargem-tipoCarga-' + linha);
+                    var direita = document.getElementById('servMargem-direita-' + linha);
+                    var esquerda = document.getElementById('servMargem-esquerda-' + linha);
+                    var entreMargem = document.getElementById('servMargem-entreMargem-' + linha);
+                    var imo = document.getElementById('servMargem-imo-' + linha);
+                    var exercito = document.getElementById('servMargem-exercito-' + linha);
+                    var pesoMaximo = document.getElementById('servMargem-pesoMaximo-' + linha);
+                    var adicionalPeso = document.getElementById('servMargem-adicionalPeso-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        baseCalculo: baseCalculo.value,
+                        tipoCarga: tipoCarga.value,
+                        direita: isNull(direita),
+                        esquerda: isNull(esquerda),
+                        entreMargem: isNull(entreMargem),
+                        imo: isNull(imo),
+                        exercito: isNull(exercito),
+                        pesoMaximo: isNull(pesoMaximo),
+                        adicionalPeso: isNull(adicionalPeso)
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarServicoMargem/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarMinimoMargem(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('minimoMargem-descricao-' + linha);
+                    var direita = document.getElementById('minimoMargem-direita-' + linha);
+                    var esquerda = document.getElementById('minimoMargem-esquerda-' + linha);
+                    var entreMargem = document.getElementById('minimoMargem-margem-' + linha);
+                    var descricaoValor = document.getElementById('minimoMargem-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        direita: isNull(direita),
+                        esquerda: isNull(esquerda),
+                        entreMargem: isNull(entreMargem),
+                        descricaoValor: isNull(descricaoValor),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarMinimoMargem/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarServicoMecanicaManual(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('servMecManual-descricao-' + linha);
+                    var baseCalculo = document.getElementById('servMecManual-baseCalculo-' + linha);
+                    var valor = document.getElementById('servMecManual-valor-' + linha);
+                    var valor20 = document.getElementById('servMecManual-valor20-' + linha);
+                    var valor40 = document.getElementById('servMecManual-valor40-' + linha);
+                    var adicionalIMO = document.getElementById('servMecManual-imo-' + linha);
+                    var exercito = document.getElementById('servMecManual-exercito-' + linha);
+                    var pesoMaximo = document.getElementById('servMecManual-pesoMaximo-' + linha);
+                    var adicionalPeso = document.getElementById('servMecManual-adicionalPeso-' + linha);
+                    var tipoTrabalho = document.getElementById('servMecManual-tipoTrabalho-' + linha);
+                    var tipoCarga = document.getElementById('servMecManual-tipoCarga-' + linha);
+                    var descricaoValor = document.getElementById('servMecManual-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        baseCalculo: baseCalculo.value,
+                        tipoCarga: tipoCarga.value,
+                        valor: isNull(valor),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+                        adicionalIMO: isNull(adicionalIMO),
+                        exercito: isNull(exercito),
+                        pesoMaximo: isNull(pesoMaximo),
+                        adicionalPeso: isNull(adicionalPeso),
+                        tipoTrabalho: tipoTrabalho.value,
+                        descricaoValor: isNull(descricaoValor),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarServicoMecanicaManual/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarMinimoMecanicaManual(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('minMercanicaManual-descricao-' + linha);
+                    var valorMinimo = document.getElementById('minMercanicaManual-valorMinimo-' + linha);
+                    var valorMinimo20 = document.getElementById('minMercanicaManual-valorMinimo20-' + linha);
+                    var valorMinimo40 = document.getElementById('minMercanicaManual-valorMinimo40-' + linha);
+                    var descricaoValor = document.getElementById('minMercanicaManual-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        valorMinimo:  isNull(valorMinimo),
+                        valorMinimo20: isNull(valorMinimo20),
+                        valorMinimo40: isNull(valorMinimo40),
+                        descricaoValor: isNull(descricaoValor),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarMinimoMecanicaManual/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarServicoLiberacao(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('servicoLib-descricao-' + linha);
+                    var tipoCarga = document.getElementById('servicoLib-tipoCarga-' + linha);
+                    var valor = document.getElementById('servicoLib-valor-' + linha);
+                    var valor20 = document.getElementById('servicoLib-valor20-' + linha);
+                    var valor40 = document.getElementById('servicoLib-valor40-' + linha);
+                    var adicionalIMO = document.getElementById('servicoLib-adicionalIMO-' + linha);
+                    var exercito = document.getElementById('servicoLib-exercito-' + linha);
+                    var descricaoValor = document.getElementById('servicoLib-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        tipoCarga: tipoCarga.value,
+                        valor: isNull(valor),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+                        adicionalIMO: isNull(adicionalIMO),
+                        exercito: isNull(exercito),
+                        descricaoValor: isNull(descricaoValor)
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarServicoLiberacao/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarServicosGerais(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('servGerais-descricao-' + linha);
+                    var tipoCarga = document.getElementById('servGerais-tipoCarga-' + linha);
+                    var valor = document.getElementById('servGerais-valor-' + linha);
+                    var valor20 = document.getElementById('servGerais-valor20-' + linha);
+                    var valor40 = document.getElementById('servGerais-valor40-' + linha);
+                    var baseCalculo = document.getElementById('servGerais-baseCalculo-' + linha);
+                    var descricaoValor = document.getElementById('servGerais-descricaoValor-' + linha);
+                    var adicionalIMO = document.getElementById('servGerais-adicionalIMO-' + linha);
+                    var exercito = document.getElementById('servGerais-exercito-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        tipoCarga: tipoCarga.value,
+                        valor: isNull(valor),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+                        adicionalIMO: isNull(adicionalIMO),
+                        exercito: isNull(exercito),
+                        baseCalculo: baseCalculo.value,
+                        descricaoValor: isNull(descricaoValor),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarServicosGerais/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarHubPort(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('hubport-descricao-' + linha);
+                    var origem = document.getElementById('hubport-origem-' + linha);
+                    var destino = document.getElementById('hubport-destino-' + linha);
+                    var valor = document.getElementById('hubport-valor-' + linha);
+                    var descricaoValor = document.getElementById('hubport-descricaoValor-' + linha);
+                    var formaPgto = document.getElementById('hubport-formaPgto-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        origem: origem.value,
+                        destino: destino.value,
+                        valor: isNull(valor),
+                        descricaoValor: isNull(descricaoValor),
+                        formaPgto: formaPgto.value
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarHubPort/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarMinimoGeral(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('servMinGeral-descricao-' + linha);
+                    var tipoCarga = document.getElementById('servMinGeral-tipoCarga-' + linha);
+                    var valorMin = document.getElementById('servMinGeral-valorMin-' + linha);
+                    var valorMin20 = document.getElementById('servMinGeral-valorMin20-' + linha);
+                    var valorMin40 = document.getElementById('servMinGeral-valorMin40-' + linha);
+                    var descricaoValor = document.getElementById('servMinGeral-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        tipoCarga: tipoCarga.value,
+                        valorMin: isNull(valorMin),
+                        valorMin20: isNull(valorMin20),
+                        valorMin40: isNull(valorMin40),
+                        descricaoValor: isNull(descricaoValor),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarMinimoGeral/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function AtualizarCondicaoInicial(linha, oportunidadeId, elemento) {
+
+            if (elemento != null) {
+
+                var controle = elemento.querySelector('.valor');
+
+                if (controle != null) {
+
+                    var valor = controle.innerHTML;
+
+                    if (valor != null) {
+
+                        var obj = {
+                            linha: linha,
+                            descricao: valor,
+                            oportunidadeId: oportunidadeId
+                        };
+
+                        if (sessionStorage.getItem('houveAlteracoes') != null) {
+                            if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                                sessionStorage.clear();
+
+                                $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarCondicaoInicial/', obj, function () {
+
+                                }).fail(function (data) {
+                                    if (data.statusText) {
+                                        toastr.error(data.statusText, 'CRM');
+                                    } else {
+                                        toastr.error('Falha ao salvar o Registro', 'CRM');
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function AtualizarCondicaoGeral(linha, oportunidadeId, elemento) {
+
+            if (elemento != null) {
+
+                var controle = elemento.querySelector('.valor');
+
+                if (controle != null) {
+
+                    var valor = controle.innerHTML;
+
+                    if (valor != null) {
+
+                        var obj = {
+                            linha: linha,
+                            descricao: valor,
+                            oportunidadeId: oportunidadeId
+                        };
+
+                        if (sessionStorage.getItem('houveAlteracoes') != null) {
+                            if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                                sessionStorage.clear();
+
+                                $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarCondicaoGeral/', obj, function () {
+
+                                }).fail(function (data) {
+                                    if (data.statusText) {
+                                        toastr.error(data.statusText, 'CRM');
+                                    } else {
+                                        toastr.error('Falha ao salvar o Registro', 'CRM');
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function AtualizarPeriodoPadrao(linha, oportunidadeId, tipoRegistro) {
+
+            if (sessionStorage.getItem('houveAlteracoes') != null) {
+                if (sessionStorage.getItem('houveAlteracoes').toString().trim() !== '') {
+
+                    var descricao = document.getElementById('periodoPadrao-descricao-' + linha);
+                    var tipoCarga = document.getElementById('periodoPadrao-tipoCarga-' + linha);
+                    var valor = document.getElementById('periodoPadrao-valor-' + linha);
+                    var valor20 = document.getElementById('periodoPadrao-valor20-' + linha);
+                    var valor40 = document.getElementById('periodoPadrao-valor40-' + linha);
+                    var baseCalculo = document.getElementById('periodoPadrao-baseCalculo-' + linha);
+                    var descricaoValor = document.getElementById('periodoPadrao-descricaoValor-' + linha);
+
+                    var obj = {
+                        linha: linha,
+                        oportunidadeId: oportunidadeId,
+                        descricao: isNull(descricao),
+                        tipoCarga: tipoCarga.value,
+                        valor: isNull(valor),
+                        valor20: isNull(valor20),
+                        valor40: isNull(valor40),
+                        baseCalculo: baseCalculo.value,
+                        descricaoValor: isNull(descricaoValor),
+                    };
+
+                    sessionStorage.clear();
+
+                    $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarPeriodoPadrao/', obj, function () {
+
+                    }).fail(function (data) {
+                        if (data.statusText) {
+                            toastr.error(data.statusText, 'CRM');
+                        } else {
+                            toastr.error('Falha ao salvar o Registro', 'CRM');
+                        }
+                    });
+                }
+            }
+        }
+
+        function isNull(object) {
+
+            if (object == null)
+                return '';
+
+            if (object instanceof HTMLElement) {
+
+                var elemento = object;
+
+                if (elemento != null) {
+                    if (elemento.classList.contains('valor-proposta-alterado')) {
+
+                        return elemento.firstChild;
+                    }
+                }
+            }
+
+            return object.innerText;
+        }
+
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "500",
+            "timeOut": "1500",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        $(document).ajaxSend(function () {
+
+            toastr.success('Salvando valores...');
+        });
+
+        $(document).ajaxError(function () {
+
+            $('#pnlExistemErros').removeClass('invisivel');
+
+            $(window).scrollTop(0);
+        });
+
+    </script>
+}

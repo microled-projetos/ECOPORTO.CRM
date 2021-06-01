@@ -1,0 +1,65 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesInformacoesIniciaisViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    bool? somenteLeitura = ViewBag.OportunidadeSomenteLeitura;
+
+    bool pesquisaSubCliente = (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:PesquisarSubCliente"));
+    bool adicionarSubCliente = (User.IsInRole("Administrador") || User.IsInRole("OportunidadesIniciais:AdicionarSubCliente"));
+
+    int colunaSubCliente = 6;
+}
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+
+        <div class="form-row mt-2">
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(model => model.SubClienteSegmento)
+                @Html.PrivilegedEnumDropDownListFor(c => c.SubClienteSegmento, "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+
+            @if ((pesquisaSubCliente && !adicionarSubCliente) || (!pesquisaSubCliente && adicionarSubCliente))
+            {
+                colunaSubCliente = 8;
+            }
+            else if (pesquisaSubCliente && adicionarSubCliente)
+            {
+                colunaSubCliente = 6;
+            }
+            else
+            {
+                colunaSubCliente = 10;
+            }
+
+            <div class="form-group col-sm-@colunaSubCliente">
+                @Html.LabelFor(model => model.SubClienteContaId)
+                @Html.PrivilegedDropDownListFor(model => model.SubClienteContaId, new MultiSelectList(Model.Contas, "Id", "Descricao"), "form-control form-control-sm", readOnly: somenteLeitura)
+            </div>
+
+            @if (pesquisaSubCliente)
+            {
+                <div class="form-group col-md-2">
+                    <label for="btnPesquisarSubCliente">&nbsp;</label>
+                    <a id="btnPesquisarSubCliente" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                </div>
+            }
+
+            @if (adicionarSubCliente)
+            {
+                <div class="form-group col-sm-2">
+                    <label>&nbsp;</label>
+                    <a id="btnAdicionarSubCliente" href="#" class="btn btn-secondary btn-sm btn-block btn-as-block btn-acao"><i class="fa fa-edit"></i>&nbsp;Adicionar</a>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-sm-12">
+        @Html.Partial("_AbaInformacoesIniciaisConsultaSubClientes", Model.SubClientes)
+    </div>
+</div>

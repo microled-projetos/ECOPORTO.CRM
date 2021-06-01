@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.DTO.SolicitacaoDescontoDTO>
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Business.Enums
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                @if (Model.Select(c => c.TipoOperacao).FirstOrDefault() == 4)
+                {
+                    <th scope="col">Fatura</th>
+                }
+                @if (Model.Select(c => c.TipoOperacao).FirstOrDefault() == 3)
+                {
+                    <th scope="col">Reserva</th>
+                }
+                else
+                {
+                    <th scope="col">Lote</th>
+                }
+                <th scope="col">Tipo</th>
+                <th scope="col">Serviço</th>
+                <th scope="col">Desconto</th>
+                <th scope="col">Serviço Liquido</th>
+                <th scope="col">Desconto  c/ Imposto</th>
+                <th scope="col">Valor Final</th>
+                <th scope="col">Dt. Cadastro</th>
+                <th scope="col">Usuário</th>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Atualizar"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Excluir"))
+                {
+                    <th class="campo-acao">&nbsp;</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-desconto-@item.Id">
+
+                    @if (Model.Select(c => c.TipoOperacao).FirstOrDefault() == 4)
+                    {
+                        <td>@item.TipoPesquisaNumero</td>
+                    }
+
+                    @if (Model.Select(c => c.TipoOperacao).FirstOrDefault() == 3)
+                    {
+                        <td>@item.Reserva</td>
+                    }
+                    else
+                    {
+                        <td>@item.Lote</td>
+                    }
+
+                    <td>@item.TipoDesconto.ToName()</td>
+                    <td>@item.ServicoDescricao</td>
+
+                    <td> @((item.TipoDesconto == TipoDesconto.REAIS ? "R$" : "%")) @item.Desconto.ToNumero()</td>
+
+                    <td>@item.DescontoNoServico.ToMoeda(Moeda.REAL)</td>
+                    <td>@item.DescontoComImposto.ToMoeda(Moeda.REAL)</td>
+                    <td>@item.DescontoFinal.ToMoeda(Moeda.REAL)</td>
+                    <td>@item.DataCadastro.DataHoraFormatada()</td>
+                    <td>@item.CriadoPor</td>
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Atualizar"))
+                    {
+                        <td><a href="#" onclick="atualizarDesconto(@item.Id)" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i>&nbsp;Atualizar</a></td>
+                    }
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SolicitacoesDesconto:Excluir"))
+                    {
+                        <td><a href="#" onclick="excluirDesconto(@item.Id)" class="btn btn-danger btn-sm btn-acao @((item.StatusSolicitacao != StatusSolicitacao.NOVO && item.StatusSolicitacao != StatusSolicitacao.REJEITADO) ? "disabled" : "")"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

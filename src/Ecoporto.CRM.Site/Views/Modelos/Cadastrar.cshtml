@@ -1,0 +1,251 @@
+﻿@model Ecoporto.CRM.Site.Models.ModeloViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Cadastrar Modelo";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Modelos
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Modelos</a>
+        </li>
+        <li class="active">Cadastro de Modelos</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Modelo
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.TipoOperacao)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.TipoOperacao, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.Descricao)
+                            @Html.PrivilegedEditorFor(model => model.Descricao, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Status)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.Status, "form-control form-control-sm")
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.FormaPagamento)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.FormaPagamento, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.DiasFreeTime)
+                            <small class="text-muted">(em dias)</small>
+                            @Html.PrivilegedEditorFor(model => model.DiasFreeTime, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-8">
+                            @Html.LabelFor(model => model.VendedorId)
+                            @Html.PrivilegedDropDownListFor(model => model.VendedorId, new MultiSelectList(Model.Vendedores, "Id", "Nome"), "form-control form-control-sm")
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.QtdeDias)
+                            @Html.PrivilegedEditorFor(model => model.QtdeDias, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Validade)
+                            @Html.PrivilegedEditorFor(model => model.Validade, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.TipoValidade)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.TipoValidade, "form-control form-control-sm")
+                        </div>
+
+                        @if (User.IsInRole("Administrador") || User.IsInRole("Modelos:btnImportarModelo"))
+                        {
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(model => model.ImpostoId)
+                                @Html.PrivilegedDropDownListFor(model => model.ImpostoId, new MultiSelectList(Model.Impostos, "Id", "Descricao"), "form-control form-control-sm")
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="btnArmAllInFaixasCIF">&nbsp;</label>
+                                <a id="btnImportarModelo" href="@Url.Action("Importar", "Modelos")" class="btn btn-secondary btn-sm btn-block btn-as-block">Importar</a>
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="form-group col-md-6">
+                                @Html.LabelFor(model => model.ImpostoId)
+                                @Html.PrivilegedDropDownListFor(model => model.ImpostoId, new MultiSelectList(Model.Impostos, "Id", "Descricao"), "form-control form-control-sm")
+                            </div>
+                        }
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-4 text-center">
+                            <label>&nbsp;</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.HubPort, "form-check-input")&nbsp;
+                                    <strong> @Html.LabelFor(model => model.HubPort, new { @class = "form-check-label" })</strong>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.CobrancaEspecial, "form-check-input")&nbsp;
+                                    <strong> @Html.LabelFor(model => model.CobrancaEspecial, new { @class = "form-check-label" })</strong>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Acordo, "form-check-input")&nbsp;
+                                    <strong>  @Html.LabelFor(model => model.Acordo, new { @class = "form-check-label" })</strong>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Escalonado, "form-check-input")&nbsp;
+                                    <strong> @Html.LabelFor(model => model.Escalonado, new { @class = "form-check-label" })</strong>
+                                </div>
+
+                                <div id="pnlParametros" class="invisivel">
+
+                                    <div class="form-check form-check-inline">
+                                        @Html.PrivilegedCheckBoxFor(model => model.ParametroLote, "form-check-input")&nbsp;
+                                        <strong> @Html.LabelFor(model => model.ParametroLote, new { @class = "form-check-label" })</strong>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        @Html.PrivilegedCheckBoxFor(model => model.ParametroBL, "form-check-input")&nbsp;
+                                        <strong> @Html.LabelFor(model => model.ParametroBL, new { @class = "form-check-label" })</strong>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        @Html.PrivilegedCheckBoxFor(model => model.ParametroConteiner, "form-check-input")&nbsp;
+                                        <strong> @Html.LabelFor(model => model.ParametroConteiner, new { @class = "form-check-label" })</strong>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        @Html.PrivilegedCheckBoxFor(model => model.ParametroIdTabela, "form-check-input")&nbsp;
+                                        <strong> @Html.LabelFor(model => model.ParametroIdTabela, new { @class = "form-check-label" })</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.TipoServico)
+                            @Html.PrivilegedEnumDropDownListFor(c => c.TipoServico, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.DesovaParcial)
+                            @Html.PrivilegedEditorFor(model => model.DesovaParcial, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.FatorCP)
+                            @Html.PrivilegedEditorFor(model => model.FatorCP, "form-control form-control-sm")
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.PosicIsento)
+                            @Html.PrivilegedEditorFor(model => model.PosicIsento, "form-control form-control-sm")
+                        </div>
+
+                    </div>                  
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Modelos")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <a href="@Url.Action("Cadastrar", "Modelos")" class="btn btn-secondary btn-sm">Novo Modelo</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+@section Scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            if ($('#Acordo').is(':checked')) {
+                $('#pnlParametros')
+                    .removeClass('invisivel');
+            } else {                
+                $('#pnlParametros')
+                    .addClass('invisivel');
+            }
+        });
+
+        $('#Acordo').change(function () {
+            if ($(this).is(':checked')) {
+                $('#pnlParametros')
+                    .removeClass('invisivel');
+            } else {
+
+                $('#ParametroLote').prop("checked", false);
+                $('#ParametroBL').prop("checked", false);
+                $('#ParametroConteiner').prop("checked", false);
+
+                $('#pnlParametros')
+                    .addClass('invisivel');
+            }
+        });
+
+    </script>
+}

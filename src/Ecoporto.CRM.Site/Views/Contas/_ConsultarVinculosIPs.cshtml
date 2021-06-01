@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.ControleAcessoConta>
+
+<div class="table-responsive">
+    <table id="tbVinculosIPs" class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Descrição</th>
+                <th scope="col">IP Inicial</th>
+                <th scope="col">IP Final</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="item-vinculo-@item.Id">
+                    <td>@item.Descricao</td>
+                    <td>@item.IPInicial</td>
+                    <td>@item.IPFinal</td>
+                    <td><a href="#" onclick="excluirVinculoIP(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

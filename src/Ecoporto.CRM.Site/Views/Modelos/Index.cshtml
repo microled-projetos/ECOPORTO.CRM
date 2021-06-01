@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Consultar Modelos";
+}
+
+<section class="content-header">
+    <h1>
+        Consultar Modelos
+        <small>Proposta</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Modelos</a>
+        </li>
+        <li class="active">Consultar</li>
+    </ol>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-table fa-lg"></i>
+        Modelos Cadastrados
+        @if (User.IsInRole("Administrador") || User.IsInRole("Modelos:Cadastrar"))
+        {
+            <div class="float-right">
+                <a href="@Url.Action("Cadastrar", "Modelos")" class="btn btn-primary btn-sm btn-novo"><i class="fa fa-edit"></i>&nbsp;Cadastrar Modelo</a>
+            </div>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatables" class="table table-hover table-sm" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Tipo de Operação</th>
+                        <th scope="col">Forma Pagamento</th>
+                        <th scope="col">Data Cadastro</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Data Inativo</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                        <th class="campo-acao">&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<br />
+@Html.Partial("_ModalExclusao")
+
+@section Css{
+    @Styles.Render("~/bundles/datatablesCSS")
+}
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/datatables")
+
+    <script>
+
+        function excluir(id) {
+            $('#modal-mensagem').text('Confirma a exclusão do Modelo?');
+            $('#del-modal').data('id', id).modal('show');
+        }
+
+        function confirmarExclusao() {
+
+            var _url = '@Url.Action("Excluir")';
+            var _id = $('#del-modal').data('id');
+
+            $.post(_url, { id: _id })
+                .done(function (data) {
+                    toastr.success('Modelo excluído com sucesso!', 'CRM');
+                    $('#item-' + _id).remove();
+                }).fail(function (data) {
+                    if (data.statusText) {
+                        toastr.error(data.statusText, 'CRM');
+                    } else {
+                        toastr.error('O registro não pode ser excluído', 'CRM');
+                    }
+                }).always(function () {
+                    $('#del-modal').data('id', '0').modal('hide');
+                });
+        }
+
+        $(document).ready(function () {
+            $('#datatables').DataTable({
+                "pageLength": 50,
+                "ajax": {
+                    "url": "@Url.Action("Consultar", "Modelos")",
+                    "dataSrc": "dados",
+                },
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).attr('id', 'item-' + data.Id);
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Descricao" },
+                    { "data": "TipoOperacao" },
+                    { "data": "FormaPagamento" },
+                    { "data": "DataCadastro" },
+                    {
+                        "data": "Status",
+                        "render": function (data, type, row) {
+                            return data === 1 ? '<span class="badge badge-success">Ativo</span>' : '<span class="badge badge-danger">Inativo</span>';
+                        }
+                    },
+                    {
+                        "data": "DataInatividade",
+                        "render": function (data, type, row) {
+                            return !data ? 'N/D' : data;
+                        }
+                    },
+                    {
+                        "data": "editar",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Atualizar", "Modelos")/' + row.Id + '" class="btn btn-info btn-sm btn-acao"><i class="fa fa-edit"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Modelos:Atualizar") ? "true" : "false")
+                    },
+                    {
+                        "data": "excluir",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="#" onclick="excluir(' + row.Id + ')" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Modelos:Atualizar") ? "true" : "false")
+                    },
+                    {
+                        "data": "historico",
+                        sortable: false,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Timeline", "Auditoria")?objeto=Modelos&chave=' + row.Id +'" class="btn btn-secondary btn-sm btn-acao"><i class="fa fa-clock"></i></a>';
+                        },
+                        "visible": @(User.IsInRole("Administrador") || User.IsInRole("Modelos:Logs") ? "true" : "false")
+                    }
+                ],
+                "language": {
+                    "url": "@Url.Content("~/Content/plugins/datatables/language/pt-br.json")"
+                }
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,26 @@
+﻿@model Ecoporto.CRM.Site.Models.OportunidadesAnexosNotasViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+<br />
+
+<ul class="nav nav-tabs" id="abasAnexosNota" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="anexos-tab" data-toggle="tab" href="#sub-anexos" role="tab" aria-controls="home" aria-selected="true">Anexos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="notas-tab" data-toggle="tab" href="#sub-notas" role="tab" aria-controls="profile" aria-selected="false">Notas</a>
+    </li>
+    <li class="nav-item ml-auto">
+        <small class="float-right text-danger mt-1">Proposta: <strong>@ViewBag.AnexosNotasProposta</strong></small>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="sub-anexos" role="tabpanel" aria-labelledby="anexos-tab">
+        @Html.Partial("_AbaAnexos", Model.OportunidadesAnexosViewModel)
+    </div>
+    <div class="tab-pane" id="sub-notas" role="tabpanel" aria-labelledby="notas-tab">
+        @Html.Partial("_AbaNotas", Model.OportunidadesNotasViewModel)
+    </div>
+</div>
+

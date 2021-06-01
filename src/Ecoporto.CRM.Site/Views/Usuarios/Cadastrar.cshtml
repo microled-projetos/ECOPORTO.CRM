@@ -1,0 +1,213 @@
+﻿@model Ecoporto.CRM.Site.Models.UsuarioViewModel
+@using Ecoporto.CRM.Site.Helpers
+
+@{
+    ViewBag.Title = "Habilitar Usuários";
+}
+
+<section class="content-header">
+    <h1>
+        Gerenciamento de Usuários
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="#">
+                <i class="fa fa-home"></i>Home
+            </a>
+        </li>
+        <li>
+            <a href="#">Usuários</a>
+        </li>
+        <li class="active">Habilitar Usuários</li>
+    </ol>
+</section>
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.ValidarFormulario(ViewContext.ViewData.ModelState, false)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-edit fa-lg"></i>
+                    Detalhes do Usuário
+                    <div class="float-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-10">
+                            <label>Selecione um Usuário:</label>
+                            <select id="Login" name="Login" class="form-control form-control-sm"></select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="btnPesquisarUsuarios">&nbsp;</label>
+                            <a id="btnPesquisarUsuarios" href="#" class="btn btn-outline-info btn-sm btn-block btn-as-block"><i class="fas fa-search"></i>&nbsp;&nbsp;Pesquisar</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Nome)
+                            @Html.PrivilegedEditorFor(model => model.Nome, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.LoginExterno)
+                            @Html.TextBoxFor(x => x.LoginExterno, new { @class = "form-control form-control-sm", @readonly = "@readonly" })
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.Senha)
+                            @Html.PasswordFor(x => x.Senha, new { @class = "form-control form-control-sm", @readonly = "@readonly" })
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Email)
+                            @Html.PrivilegedEditorFor(model => model.Email, "form-control form-control-sm")
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.CargoId)
+                            @Html.PrivilegedDropDownListFor(model => model.CargoId, new MultiSelectList(Model.Cargos, "Id", "Descricao"), "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.CPF)
+                            @Html.PrivilegedEditorFor(model => model.CPF, "form-control form-control-sm cpf")
+                        </div>
+                        <div class="form-group col-md-2">
+                            @Html.LabelFor(model => model.LoginWorkflow)
+                            @Html.PrivilegedEditorFor(model => model.LoginWorkflow, "form-control form-control-sm")
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Selecione:</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Ativo, "form-check-input")
+                                    @Html.LabelFor(model => model.Ativo, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Administrador, "form-check-input ml-4")
+                                    @Html.LabelFor(model => model.Administrador, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Externo, "form-check-input", check: Model.Externo)
+                                    @Html.LabelFor(model => model.Externo, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.ValidarIP, "form-check-input")
+                                    @Html.LabelFor(model => model.ValidarIP, new { @class = "form-check-label" })
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    @Html.PrivilegedCheckBoxFor(model => model.Remoto, "form-check-input ml-05")
+                                    @Html.LabelFor(model => model.Remoto, new { @class = "form-check-label" })
+                                    <img src="~/Content/img/ajuda.png" data-toggle="tooltip" title="Use esta opção para usuários internos que poderão acessar o sistema de fora" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="float-left">
+                        <p>
+                            <a href="@Url.Action("Index", "Usuarios")" class="btn btn-secondary btn-sm">Retornar</a>
+                        </p>
+                    </div>
+                    <div class="float-right">
+                        <p>
+                            <a href="@Url.Action("Cadastrar", "Usuarios")" class="btn btn-secondary btn-sm">Novo Usuário</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        }
+    </div>
+
+</div>
+
+@Html.Partial("_PesquisarUsuarios")
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('#LoginExterno').prop('readonly', !$('#Externo').is(':checked'));
+            $('#Senha').prop('readonly', !$('#Externo').is(':checked'));
+        });
+
+        $('#Externo').change(function () {
+            $('#LoginExterno').prop('readonly', !this.checked);
+            $('#Senha').prop('readonly', !this.checked);
+        });
+
+        function obterDetalhesUsuarios(id, dominio) {
+            $.get(urlBase + 'Usuarios/ObterDetalhesDoUsuario?login=' + id + '&dominio=' + dominio, function (resultado) {
+                if (resultado) {
+                    $('#Nome').val(resultado.Nome);
+                    $('#Email').val(resultado.Email);
+                }
+            });
+        }
+
+        $('#Login').change(function () {
+            obterDetalhesUsuarios($(this).val());
+        });
+
+        $("#btnPesquisarUsuarios").click(function () {
+
+            event.preventDefault();
+
+            $('#pesquisa-modal-usuarios')
+                .data('toggle', 'Login')
+                .modal('show');
+        });
+
+        function selecionarUsuario(login, descricao) {
+
+            console.log(login);
+            console.log(descricao);
+
+            var toggle = $('#pesquisa-modal-usuarios').data('toggle');
+
+            $('#pesquisa-modal-usuarios').modal('hide');
+
+            $("#" + toggle)
+                .empty()
+                .append($('<option>', {
+                    value: login,
+                    text: descricao
+                })).focus();
+
+            obterDetalhesUsuarios(login, $('#dominio').val());
+
+            $("#ListaUsuarios").empty();
+        }
+
+        $('#btnPesquisarUsuariosDominio').click(function () {
+            $('#ListaUsuarios').hide();
+        });
+
+        listaUsuariosSucesso = function () {
+            $('#ListaUsuarios').show();
+        };
+
+    </script>
+}

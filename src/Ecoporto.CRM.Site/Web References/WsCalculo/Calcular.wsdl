@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="InicializarCalculoManual">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="_Lote" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_Documento" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="_PreCalculo" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_PreCalculoLote" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="_Pre_Calculo_Terminal" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Pre_Calculo_Ferrovia" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Pre_Calculo_Anvisa" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Pre_Calculo_HubPort" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Pre_Calculo_Reefer" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Pre_Calculo_IMO" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="_Pre_Calculo_Solicitante" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="_CalcAuto" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_CalcAverba" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Usuario" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="_DataBase" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_DataCarregamento" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_DataReefer" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_Lista" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PreCalculoDataDesova" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PreCalculoPesoCarga" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PreCalculoEntrada" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PreCalculoQtdCs" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PreCalculoCLA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PreCalculoM3" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="_MargemDireita" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_EntreMargens" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_MargemEsquerda" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="_DestinoFinal" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_LocalAtracacao" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="_DTA" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_Ferrovia" type="s:boolean" />
+            <s:element minOccurs="1" maxOccurs="1" name="_PortalFinanceiro" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="_PortalFinanceiroUsuarioICC" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="_Patios" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InicializarCalculoManualResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="InicializarCalculoManualResult" type="tns:RetornoCalculo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RetornoCalculo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Sucesso" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mensagem" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="UltimoCalculo" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Atualiza_Temps_BL">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="pLote" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Atualiza_Temps_BLResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Atualiza_Temps_BLResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Gr">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="pLote" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="DataBase" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_GrResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="Calcula_Impostos_Bl">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pLote" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pReeferGr" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pCalculoReefer" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pServico_Vista" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pLista" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="pPre_Calculo" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_BlResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="Atualiza_Vencimento">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DataArmazenagem" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DataReefer" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="BL_Reefer" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="FormaPag" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Lote" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Atualiza_VencimentoResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="IsPartLoad">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Lote" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="IsPartLoadResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="IsPartLoadResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Valida_Minimo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="pLote" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="pLista" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Valida_MinimoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Valida_MinimoResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Verifica_Local">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="pLote" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Verifica_LocalResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Verifica_LocalResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Eferiado">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pValor" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="pValidaDomingos" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EferiadoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="EferiadoResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consiste_Primeira_Entrada">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="pLote" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Consiste_Primeira_EntradaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Consiste_Primeira_EntradaResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Primeira_Hub">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="lista" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="lote" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Primeira_HubResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Primeira_HubResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Forma_Hub">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="lista" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Forma_HubResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Forma_HubResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_Desconto_Redex">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Booking" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="Servico" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="ValorDesconto" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="Seqgr" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="ClienteId" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="TabelaId" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="SolicitacaoId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_Desconto_RedexResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Calcula_Impostos_Desconto_RedexResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_Minuta_Desconto">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Minuta" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="Servico" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="ValorDesconto" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="SolicitacaoId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_Minuta_DescontoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Calcula_Impostos_Minuta_DescontoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_Desconto">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Lote" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="Servico" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="ValorDesconto" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="SeqGR" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="IdTabela" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="SolicitacaoId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Calcula_Impostos_DescontoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Calcula_Impostos_DescontoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuscaIndicador">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Importador" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="Despachante" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="Lote" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="grava" type="s:unsignedByte" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="BuscaIndicadorResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="BuscaIndicadorResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TabelaVinculadaColoader">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Lote" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="ClienteLogado" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Grava" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Importador" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Indicador" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="CargaPatio" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Pre_Calculo_Lote" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TabelaVinculadaColoaderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="TabelaVinculadaColoaderResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="InicializarCalculoManualSoapIn">
+    <wsdl:part name="parameters" element="tns:InicializarCalculoManual" />
+  </wsdl:message>
+  <wsdl:message name="InicializarCalculoManualSoapOut">
+    <wsdl:part name="parameters" element="tns:InicializarCalculoManualResponse" />
+  </wsdl:message>
+  <wsdl:message name="Atualiza_Temps_BLSoapIn">
+    <wsdl:part name="parameters" element="tns:Atualiza_Temps_BL" />
+  </wsdl:message>
+  <wsdl:message name="Atualiza_Temps_BLSoapOut">
+    <wsdl:part name="parameters" element="tns:Atualiza_Temps_BLResponse" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_GrSoapIn">
+    <wsdl:part name="parameters" element="tns:Calcula_Gr" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_GrSoapOut">
+    <wsdl:part name="parameters" element="tns:Calcula_GrResponse" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_BlSoapIn">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_Bl" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_BlSoapOut">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_BlResponse" />
+  </wsdl:message>
+  <wsdl:message name="Atualiza_VencimentoSoapIn">
+    <wsdl:part name="parameters" element="tns:Atualiza_Vencimento" />
+  </wsdl:message>
+  <wsdl:message name="Atualiza_VencimentoSoapOut">
+    <wsdl:part name="parameters" element="tns:Atualiza_VencimentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IsPartLoadSoapIn">
+    <wsdl:part name="parameters" element="tns:IsPartLoad" />
+  </wsdl:message>
+  <wsdl:message name="IsPartLoadSoapOut">
+    <wsdl:part name="parameters" element="tns:IsPartLoadResponse" />
+  </wsdl:message>
+  <wsdl:message name="Valida_MinimoSoapIn">
+    <wsdl:part name="parameters" element="tns:Valida_Minimo" />
+  </wsdl:message>
+  <wsdl:message name="Valida_MinimoSoapOut">
+    <wsdl:part name="parameters" element="tns:Valida_MinimoResponse" />
+  </wsdl:message>
+  <wsdl:message name="Verifica_LocalSoapIn">
+    <wsdl:part name="parameters" element="tns:Verifica_Local" />
+  </wsdl:message>
+  <wsdl:message name="Verifica_LocalSoapOut">
+    <wsdl:part name="parameters" element="tns:Verifica_LocalResponse" />
+  </wsdl:message>
+  <wsdl:message name="EferiadoSoapIn">
+    <wsdl:part name="parameters" element="tns:Eferiado" />
+  </wsdl:message>
+  <wsdl:message name="EferiadoSoapOut">
+    <wsdl:part name="parameters" element="tns:EferiadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="Consiste_Primeira_EntradaSoapIn">
+    <wsdl:part name="parameters" element="tns:Consiste_Primeira_Entrada" />
+  </wsdl:message>
+  <wsdl:message name="Consiste_Primeira_EntradaSoapOut">
+    <wsdl:part name="parameters" element="tns:Consiste_Primeira_EntradaResponse" />
+  </wsdl:message>
+  <wsdl:message name="Primeira_HubSoapIn">
+    <wsdl:part name="parameters" element="tns:Primeira_Hub" />
+  </wsdl:message>
+  <wsdl:message name="Primeira_HubSoapOut">
+    <wsdl:part name="parameters" element="tns:Primeira_HubResponse" />
+  </wsdl:message>
+  <wsdl:message name="Forma_HubSoapIn">
+    <wsdl:part name="parameters" element="tns:Forma_Hub" />
+  </wsdl:message>
+  <wsdl:message name="Forma_HubSoapOut">
+    <wsdl:part name="parameters" element="tns:Forma_HubResponse" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_Desconto_RedexSoapIn">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_Desconto_Redex" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_Desconto_RedexSoapOut">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_Desconto_RedexResponse" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_Minuta_DescontoSoapIn">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_Minuta_Desconto" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_Minuta_DescontoSoapOut">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_Minuta_DescontoResponse" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_DescontoSoapIn">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_Desconto" />
+  </wsdl:message>
+  <wsdl:message name="Calcula_Impostos_DescontoSoapOut">
+    <wsdl:part name="parameters" element="tns:Calcula_Impostos_DescontoResponse" />
+  </wsdl:message>
+  <wsdl:message name="BuscaIndicadorSoapIn">
+    <wsdl:part name="parameters" element="tns:BuscaIndicador" />
+  </wsdl:message>
+  <wsdl:message name="BuscaIndicadorSoapOut">
+    <wsdl:part name="parameters" element="tns:BuscaIndicadorResponse" />
+  </wsdl:message>
+  <wsdl:message name="TabelaVinculadaColoaderSoapIn">
+    <wsdl:part name="parameters" element="tns:TabelaVinculadaColoader" />
+  </wsdl:message>
+  <wsdl:message name="TabelaVinculadaColoaderSoapOut">
+    <wsdl:part name="parameters" element="tns:TabelaVinculadaColoaderResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CalcularSoap">
+    <wsdl:operation name="InicializarCalculoManual">
+      <wsdl:input message="tns:InicializarCalculoManualSoapIn" />
+      <wsdl:output message="tns:InicializarCalculoManualSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Atualiza_Temps_BL">
+      <wsdl:input message="tns:Atualiza_Temps_BLSoapIn" />
+      <wsdl:output message="tns:Atualiza_Temps_BLSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Gr">
+      <wsdl:input message="tns:Calcula_GrSoapIn" />
+      <wsdl:output message="tns:Calcula_GrSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Bl">
+      <wsdl:input message="tns:Calcula_Impostos_BlSoapIn" />
+      <wsdl:output message="tns:Calcula_Impostos_BlSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Atualiza_Vencimento">
+      <wsdl:input message="tns:Atualiza_VencimentoSoapIn" />
+      <wsdl:output message="tns:Atualiza_VencimentoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="IsPartLoad">
+      <wsdl:input message="tns:IsPartLoadSoapIn" />
+      <wsdl:output message="tns:IsPartLoadSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Valida_Minimo">
+      <wsdl:input message="tns:Valida_MinimoSoapIn" />
+      <wsdl:output message="tns:Valida_MinimoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Verifica_Local">
+      <wsdl:input message="tns:Verifica_LocalSoapIn" />
+      <wsdl:output message="tns:Verifica_LocalSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Eferiado">
+      <wsdl:input message="tns:EferiadoSoapIn" />
+      <wsdl:output message="tns:EferiadoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Consiste_Primeira_Entrada">
+      <wsdl:input message="tns:Consiste_Primeira_EntradaSoapIn" />
+      <wsdl:output message="tns:Consiste_Primeira_EntradaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Primeira_Hub">
+      <wsdl:input message="tns:Primeira_HubSoapIn" />
+      <wsdl:output message="tns:Primeira_HubSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Forma_Hub">
+      <wsdl:input message="tns:Forma_HubSoapIn" />
+      <wsdl:output message="tns:Forma_HubSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Desconto_Redex">
+      <wsdl:input message="tns:Calcula_Impostos_Desconto_RedexSoapIn" />
+      <wsdl:output message="tns:Calcula_Impostos_Desconto_RedexSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Minuta_Desconto">
+      <wsdl:input message="tns:Calcula_Impostos_Minuta_DescontoSoapIn" />
+      <wsdl:output message="tns:Calcula_Impostos_Minuta_DescontoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Desconto">
+      <wsdl:input message="tns:Calcula_Impostos_DescontoSoapIn" />
+      <wsdl:output message="tns:Calcula_Impostos_DescontoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="BuscaIndicador">
+      <wsdl:input message="tns:BuscaIndicadorSoapIn" />
+      <wsdl:output message="tns:BuscaIndicadorSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TabelaVinculadaColoader">
+      <wsdl:input message="tns:TabelaVinculadaColoaderSoapIn" />
+      <wsdl:output message="tns:TabelaVinculadaColoaderSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CalcularSoap" type="tns:CalcularSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InicializarCalculoManual">
+      <soap:operation soapAction="http://tempuri.org/InicializarCalculoManual" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Atualiza_Temps_BL">
+      <soap:operation soapAction="http://tempuri.org/Atualiza_Temps_BL" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Gr">
+      <soap:operation soapAction="http://tempuri.org/Calcula_Gr" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Bl">
+      <soap:operation soapAction="http://tempuri.org/Calcula_Impostos_Bl" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Atualiza_Vencimento">
+      <soap:operation soapAction="http://tempuri.org/Atualiza_Vencimento" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsPartLoad">
+      <soap:operation soapAction="http://tempuri.org/IsPartLoad" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Valida_Minimo">
+      <soap:operation soapAction="http://tempuri.org/Valida_Minimo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Verifica_Local">
+      <soap:operation soapAction="http://tempuri.org/Verifica_Local" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Eferiado">
+      <soap:operation soapAction="http://tempuri.org/Eferiado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consiste_Primeira_Entrada">
+      <soap:operation soapAction="http://tempuri.org/Consiste_Primeira_Entrada" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Primeira_Hub">
+      <soap:operation soapAction="http://tempuri.org/Primeira_Hub" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Forma_Hub">
+      <soap:operation soapAction="http://tempuri.org/Forma_Hub" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Desconto_Redex">
+      <soap:operation soapAction="http://tempuri.org/Calcula_Impostos_Desconto_Redex" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Minuta_Desconto">
+      <soap:operation soapAction="http://tempuri.org/Calcula_Impostos_Minuta_Desconto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Desconto">
+      <soap:operation soapAction="http://tempuri.org/Calcula_Impostos_Desconto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuscaIndicador">
+      <soap:operation soapAction="http://tempuri.org/BuscaIndicador" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TabelaVinculadaColoader">
+      <soap:operation soapAction="http://tempuri.org/TabelaVinculadaColoader" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CalcularSoap12" type="tns:CalcularSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InicializarCalculoManual">
+      <soap12:operation soapAction="http://tempuri.org/InicializarCalculoManual" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Atualiza_Temps_BL">
+      <soap12:operation soapAction="http://tempuri.org/Atualiza_Temps_BL" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Gr">
+      <soap12:operation soapAction="http://tempuri.org/Calcula_Gr" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Bl">
+      <soap12:operation soapAction="http://tempuri.org/Calcula_Impostos_Bl" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Atualiza_Vencimento">
+      <soap12:operation soapAction="http://tempuri.org/Atualiza_Vencimento" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsPartLoad">
+      <soap12:operation soapAction="http://tempuri.org/IsPartLoad" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Valida_Minimo">
+      <soap12:operation soapAction="http://tempuri.org/Valida_Minimo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Verifica_Local">
+      <soap12:operation soapAction="http://tempuri.org/Verifica_Local" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Eferiado">
+      <soap12:operation soapAction="http://tempuri.org/Eferiado" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Consiste_Primeira_Entrada">
+      <soap12:operation soapAction="http://tempuri.org/Consiste_Primeira_Entrada" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Primeira_Hub">
+      <soap12:operation soapAction="http://tempuri.org/Primeira_Hub" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Forma_Hub">
+      <soap12:operation soapAction="http://tempuri.org/Forma_Hub" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Desconto_Redex">
+      <soap12:operation soapAction="http://tempuri.org/Calcula_Impostos_Desconto_Redex" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Minuta_Desconto">
+      <soap12:operation soapAction="http://tempuri.org/Calcula_Impostos_Minuta_Desconto" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Calcula_Impostos_Desconto">
+      <soap12:operation soapAction="http://tempuri.org/Calcula_Impostos_Desconto" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BuscaIndicador">
+      <soap12:operation soapAction="http://tempuri.org/BuscaIndicador" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TabelaVinculadaColoader">
+      <soap12:operation soapAction="http://tempuri.org/TabelaVinculadaColoader" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Calcular">
+    <wsdl:port name="CalcularSoap" binding="tns:CalcularSoap">
+      <soap:address location="http://srv0019:2530/Calcular.asmx" />
+    </wsdl:port>
+    <wsdl:port name="CalcularSoap12" binding="tns:CalcularSoap12">
+      <soap12:address location="http://srv0019:2530/Calcular.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

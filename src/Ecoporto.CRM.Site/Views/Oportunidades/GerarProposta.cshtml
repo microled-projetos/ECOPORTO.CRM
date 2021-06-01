@@ -1,0 +1,20 @@
+﻿@model Ecoporto.CRM.Site.Models.Pdf.Proposta
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_PdfLayout.cshtml";
+    var imagePath = Server.MapPath("~/Content/img");
+    var dataAtual = DateTime.Now;
+}
+
+<img src="@imagePath\header-pdf.png" />
+
+<div style="float:left;"><strong>ECO @Model.Identificacao</strong>&nbsp; @Model.DescricaoTipoServico</div>
+
+<div style="float: right;">Santos, @dataAtual.Day de @dataAtual.ToString("MMMM") de @dataAtual.Year</div>
+
+<p>&nbsp;</p>
+
+@Html.Raw(@Model.CondicoesIniciais)
+@Html.Raw(@Model.Tabela)
+@Html.Raw(@Model.CondicoesGerais)

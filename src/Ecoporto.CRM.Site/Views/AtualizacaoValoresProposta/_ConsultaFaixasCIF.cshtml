@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Ecoporto.CRM.Business.Models.FaixaCIF>
+@using Ecoporto.CRM.Business.Extensions
+
+<div class="table-responsive">
+    <table class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">CIF Mínimo</th>
+                <th scope="col">CIF Máximo</th>
+                <th scope="col">Margem</th>
+                <th scope="col">Valor '20</th>
+                <th scope="col">Valor '40</th>
+                <th scope="col">Descrição</th>
+                <th class="campo-acao">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@String.Format("{0:N2}", item.Minimo)</td>
+                    <td>@String.Format("{0:N2}", item.Maximo)</td>
+                    <td>@item.Margem.ToName()</td>
+                    <td>@String.Format("{0:N2}", item.Valor20)</td>
+                    <td>@String.Format("{0:N2}", item.Valor40)</td>
+                    <td>@item.Descricao</td>
+                    <td><a href="#" onclick="excluirFaixaCIF(@item.Id)" class="btn btn-danger btn-sm btn-acao"><i class="fa fa-trash"></i>&nbsp;Excluir</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+

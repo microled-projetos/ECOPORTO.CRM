@@ -1,0 +1,94 @@
+﻿@model Ecoporto.CRM.Site.Models.HistoricoWorkflowViewModel
+@using Ecoporto.CRM.Business.Extensions
+@using Ecoporto.CRM.Site.Helpers
+@using Ecoporto.CRM.Business.Helpers
+
+<label>Histórico de Aprovações</label>
+
+<div class="table-responsive">
+    <table id="tbHistoricoWorkflow" class="table table-sm" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col">Ação</th>
+                <th scope="col">Data</th>
+                <th scope="col">Status</th>
+                <th scope="col">Data Aprovação</th>
+                <th scope="col">Aprovador</th>
+                <th scope="col">Comentários</th>
+                <th class="campo-acao">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var itemWorkflow in Model.WorkFlows)
+            {
+                if (itemWorkflow != null)
+                {
+                    if (DateTimeHelpers.IsDate(itemWorkflow.data_Cancelamento) && DateTimeHelpers.IsNotDefaultDate(itemWorkflow.data_Cancelamento))
+                    {
+                        <tr>
+                            <td colspan="6" class="alert-danger">
+                                <strong>@itemWorkflow.status</strong>
+                            </td>
+                            <td class="alert-danger campo-acao">
+                                <span class="btn btn-danger btn-sm btn-acao"><i class="fa fa-undo-alt"></i>&nbsp;Recall</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>@itemWorkflow.data_Cadastro.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>Aprovado</td>
+                            <td>@itemWorkflow.data_Cancelamento.DataHoraFormatada()</td>
+                            <td>@itemWorkflow.usuario_Canc_Nome</td>
+                            <td>@itemWorkflow.motivo_Cancelamento</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    }
+
+                    foreach (var etapa in itemWorkflow?.etapas)
+                    {
+                        <tr>
+                            <td colspan="6" class="alert-info">
+                                <strong>@etapa.etapa_Nome</strong>
+                            </td>
+                            <td class="alert-info campo-acao">
+                                @Html.StatusWorkflow(etapa.id_Status)
+                            </td>
+                        </tr>
+
+                        foreach (var aprovacao in etapa.aprovacoes)
+                        {
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>@aprovacao.data_Cadastro.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@Html.DescricaoStatusWorkflow(aprovacao.id_Status)</td>
+                                <td>@aprovacao.data_Aprovacao.DataHoraFormatada()</td>
+                                <td>@aprovacao.usuario_Aprovador_Nome</td>
+                                <td>@aprovacao.comentario</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        }
+                    }
+                }
+
+                <tr>
+                    <td colspan="6" class="alert-info">
+                        <strong>Solicitação de aprovação enviada</strong>
+                    </td>
+                    <td class="alert-info campo-acao">
+                        <span class="btn btn-light btn-sm btn-acao"><i class="fa fa-edit"></i>&nbsp;Enviado</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>@itemWorkflow.data_Cadastro.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>Enviado</td>
+                    <td>@itemWorkflow.usuario_Cad_Nome</td>
+                    <td>@itemWorkflow.usuario_Cad_Nome</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
