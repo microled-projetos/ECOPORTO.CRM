@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecoporto.CRM.Sharepoint", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsSimuladorCalculoTabelas", "..\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas.csproj", "{6A6C39B4-6B14-4990-B460-E2B0D3994646}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsSimuladorCalculoTabelas", "src\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas\WsSimuladorCalculoTabelas.csproj", "{874BCB59-DB70-4C24-9B69-82CB2E5EEDB8}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecoporto.CRM.IntegraChronosAPI", "src\Ecoporto.CRM.IntegraChronosAPI\Ecoporto.CRM.IntegraChronosAPI.csproj", "{BABEC4D2-D462-4FEB-BE6D-A76CE5D30959}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecoporto.CRM.IntegraChronosService", "src\Ecoporto.CRM.IntegraChronosService\Ecoporto.CRM.IntegraChronosService.csproj", "{4F2B1C33-6216-42EB-987E-503339C590FD}"
@@ -26,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecoporto.CRM.Testes", "src\Ecoporto.CRM.Testes\Ecoporto.CRM.Testes.csproj", "{C4A61E5C-C5DC-4703-8E9A-25C4A5BA0598}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsConsultaSPC", "..\WsConsultaSPC\WsConsultaSPC\WsConsultaSPC.csproj", "{936E30B1-19E6-4999-8195-008BB51D44E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsConsultaSPC", "src\WsConsultaSPC\WsConsultaSPC\WsConsultaSPC.csproj", "{BE3522B8-0A2E-4D0A-BADA-6A677AEFE026}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +65,10 @@ Global
 		{6A6C39B4-6B14-4990-B460-E2B0D3994646}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A6C39B4-6B14-4990-B460-E2B0D3994646}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A6C39B4-6B14-4990-B460-E2B0D3994646}.Release|Any CPU.Build.0 = Release|Any CPU
+		{874BCB59-DB70-4C24-9B69-82CB2E5EEDB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{874BCB59-DB70-4C24-9B69-82CB2E5EEDB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{874BCB59-DB70-4C24-9B69-82CB2E5EEDB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{874BCB59-DB70-4C24-9B69-82CB2E5EEDB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BABEC4D2-D462-4FEB-BE6D-A76CE5D30959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BABEC4D2-D462-4FEB-BE6D-A76CE5D30959}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BABEC4D2-D462-4FEB-BE6D-A76CE5D30959}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,6 +85,10 @@ Global
 		{936E30B1-19E6-4999-8195-008BB51D44E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{936E30B1-19E6-4999-8195-008BB51D44E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{936E30B1-19E6-4999-8195-008BB51D44E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE3522B8-0A2E-4D0A-BADA-6A677AEFE026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE3522B8-0A2E-4D0A-BADA-6A677AEFE026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE3522B8-0A2E-4D0A-BADA-6A677AEFE026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE3522B8-0A2E-4D0A-BADA-6A677AEFE026}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

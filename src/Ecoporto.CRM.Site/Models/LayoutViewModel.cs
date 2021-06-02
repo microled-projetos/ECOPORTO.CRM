@@ -488,6 +488,9 @@ namespace Ecoporto.CRM.Site.Models
         [Display(Name = "% IMO")]
         public decimal AdicionalIMOArmazenagemCIF { get; set; }
 
+        [Display(Name = "Exército")]
+        public decimal ExercitoArmazenagemCIF { get; set; }
+
         [Display(Name = "% IMO")]
         public decimal AdicionalIMOServMecManual { get; set; }
 

@@ -2473,7 +2473,7 @@ namespace Ecoporto.CRM.Site.Controllers
 
                     var limitesDeCreditom = _analiseCreditoRepositorio.ObterSolicitacoesLimiteDeCredito(fontePagadoraId);
 
-                    if (_oportunidadeRepositorio.ObterStatusCondPgto(oportunidadeBusca.Id) != 3)
+                    if (_oportunidadeRepositorio.ObterStatusCondPgtoNew(fontePagadoraId, fichaFaturamentoBusca.CondicaoPagamentoFaturamentoId) != 3)
                     {
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest, $"Condição de Pagamento sem aprovação ");
 

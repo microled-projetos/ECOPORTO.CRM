@@ -1,74 +1,80 @@
 ﻿@model Ecoporto.CRM.Site.Models.LayoutViewModel
 @using Ecoporto.CRM.Site.Helpers
 
-    <div class="form-row">
+<div class="form-row">
 
-        <div class="form-group col-md-1">
-            @Html.LabelFor(model => model.TipoCargaArmazenagemCIF)
-            @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-md-1">
-            @Html.LabelFor(model => model.BaseCalculoArmazenagemCIF)
-            @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.PeriodoArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.PeriodoArmazenagemCIF, "form-control form-control-sm inteiro")
-        </div>
-
-        <div class="form-group col-md-1">
-            @Html.LabelFor(model => model.QtdeDiasArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.QtdeDiasArmazenagemCIF, "form-control form-control-sm inteiro")
-        </div>
-
-        <div class="form-group col-sm-1" id="pnlArmCifCntr20">
-            @Html.LabelFor(model => model.Valor20ArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.Valor20ArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1" id="pnlArmCifCntr40">
-            @Html.LabelFor(model => model.Valor40ArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.Valor40ArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-2 invisivel" id="pnlArmCifCarga">
-            @Html.LabelFor(model => model.ValorArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.ValorArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.CIFArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.CIFArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.AdicionalArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.AdicionalArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.AdicionalGRCCIF)
-            @Html.PrivilegedEditorFor(model => model.AdicionalGRCCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.MinimoGRCCIF)
-            @Html.PrivilegedEditorFor(model => model.MinimoGRCCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.AdicionalIMOArmazenagemCIF)
-            @Html.PrivilegedEditorFor(model => model.AdicionalIMOArmazenagemCIF, "form-control form-control-sm")
-        </div>
-
-        <div class="form-group col-sm-1">
-            @Html.LabelFor(model => model.AdicionalIMOGRCCIF)
-            @Html.PrivilegedEditorFor(model => model.AdicionalIMOGRCCIF, "form-control form-control-sm")
-        </div>
-
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.TipoCargaArmazenagemCIF)
+        @Html.PrivilegedEnumDropDownListFor(c => c.TipoCargaArmazenagemCIF, "form-control form-control-sm")
     </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.BaseCalculoArmazenagemCIF)
+        @Html.PrivilegedEnumDropDownListFor(c => c.BaseCalculoArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.PeriodoArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.PeriodoArmazenagemCIF, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-md-1">
+        @Html.LabelFor(model => model.QtdeDiasArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.QtdeDiasArmazenagemCIF, "form-control form-control-sm inteiro")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlArmCifCntr20">
+        @Html.LabelFor(model => model.Valor20ArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.Valor20ArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1" id="pnlArmCifCntr40">
+        @Html.LabelFor(model => model.Valor40ArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.Valor40ArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-2 invisivel" id="pnlArmCifCarga">
+        @Html.LabelFor(model => model.ValorArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.ValorArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.CIFArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.CIFArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.AdicionalArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalGRCCIF)
+        @Html.PrivilegedEditorFor(model => model.AdicionalGRCCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.MinimoGRCCIF)
+        @Html.PrivilegedEditorFor(model => model.MinimoGRCCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.ExercitoArmazenagemCIF)
+        @Html.PrivilegedEditorFor(model => model.ExercitoArmazenagemCIF, "form-control form-control-sm")
+    </div>
+
+    <div class="form-group col-sm-1">
+        @Html.LabelFor(model => model.AdicionalIMOGRCCIF)
+        @Html.PrivilegedEditorFor(model => model.AdicionalIMOGRCCIF, "form-control form-control-sm")
+    </div>
+
+</div>
 
     <div class="form-row">
 

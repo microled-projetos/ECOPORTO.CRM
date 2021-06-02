@@ -24,6 +24,8 @@ namespace Ecoporto.CRM.Business.Models
 
         public decimal AdicionalIMO { get; set; }
 
+        public decimal Exercito{ get; set; }
+
         public decimal AdicionalIMOGRC { get; set; }
 
         public decimal ValorANVISA { get; set; }
@@ -64,7 +66,8 @@ namespace Ecoporto.CRM.Business.Models
             int qtdeDias, 
             ValorCarga valorCarga, 
             decimal valorCIF,
-            decimal adicionalArmazenagem, 
+            decimal adicionalArmazenagem,
+            decimal exercito,
             decimal adicionalGRC, 
             decimal minimoGRC, 
             decimal adicionalIMO,
@@ -92,7 +95,7 @@ namespace Ecoporto.CRM.Business.Models
             AdicionalGRC = adicionalGRC;
             MinimoGRC = minimoGRC;
             AdicionalIMO = adicionalIMO;
-            AdicionalIMOGRC = adicionalIMOGRC;
+            Exercito = exercito;            
             ValorANVISA = valorANVISA;
             AnvisaGRC = anvisaGRC;
             Periodo = periodo;

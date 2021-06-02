@@ -14,5 +14,6 @@ namespace Ecoporto.CRM.Business.Enums
         CARGA_BBK,
         [Display(Name = "Carga Veiculo")]
         CARGA_VEICULO
+
     }
 }

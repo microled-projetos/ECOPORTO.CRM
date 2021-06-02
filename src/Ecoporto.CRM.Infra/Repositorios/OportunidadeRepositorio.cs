@@ -1448,7 +1448,7 @@ SELECT NVL (
            ON     fil.contaid = c.contaid
               AND b.condicaopagamentofaturamentoid = c.condicaopagamentoid
        LEFT JOIN FATURA.TB_COND_PGTO D
-           ON b.condicaopagamentofaturamentoid = D.CODCPG                        where      a . id  = :oportunidadeId", parametros).Single();
+           ON b.condicaopagamentofaturamentoid = D.CODCPG where      a . id  = :oportunidadeId", parametros).Single();
 
 
             }

@@ -476,6 +476,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "ProRata", value: layout.ProRata.ToInt(), direction: ParameterDirection.Input);
                 parametros.Add(name: "Ocultar", value: layout.Cabecalho.Ocultar.ToInt(), direction: ParameterDirection.Input);
                 parametros.Add(name: "Id", value: layout.Id, direction: ParameterDirection.Input);
+                parametros.Add(name: "Exercito", value: layout.Exercito, direction: ParameterDirection.Input);
 
                 con.Execute($@"UPDATE 
                                 {_tabela} SET 
@@ -508,6 +509,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                                     AdicionalPeso = :AdicionalPeso, 
                                     PesoLimite = :PesoLimite, 
                                     ProRata = :ProRata,
+                                    Exercito = :Exercito,
                                     Ocultar = :Ocultar
                             WHERE Id = :Id", parametros);
             }

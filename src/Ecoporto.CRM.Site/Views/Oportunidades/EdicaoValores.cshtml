@@ -179,42 +179,43 @@
 
                     if (imprimeCabecalho)
                     {
-                        <tr class="cabecalho">
-                            <th class="text-left numeroLinha"></th>
-                            <th class="text-left">Descrição</th>
-                            <th class="text-center">B. Cálculo</th>
-                            <th class="text-center">Tipo Carga</th>
-                            <th class="text-center">Período</th>
-                            <th class="text-center">Qtde Dias</th>
-                            <th class="text-center">CIF Inicial</th>
+        <tr class="cabecalho">
+            <th class="text-left numeroLinha"></th>
+            <th class="text-left">Descrição</th>
+            <th class="text-center">B. Cálculo</th>
+            <th class="text-center">Tipo Carga</th>
+            <th class="text-center">Período</th>
+            <th class="text-center">Qtde Dias</th>
+            <th class="text-center">CIF Inicial</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
-                            {
-                                <th class="text-center">Valor</th>
-                            }
-                            else
-                            {
-                                <th class="text-center">Valor 20'</th>
-                                <th class="text-center">Valor 40'</th>
-                            }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+            {
+                <th class="text-center">Valor</th>
+            }
+            else
+            {
+                <th class="text-center">Valor 20'</th>
+                <th class="text-center">Valor 40'</th>
+            }
 
-                            <th class="text-center">% Ad.Arm</th>
-                            <th class="text-center">% IMO</th>
-                            <th class="text-center">% Anvisa</th>
-                            <th class="text-center">% GRC</th>
-                            <th class="text-center">Min GRC</th>
-                            <th class="text-center">% Anvisa GRC</th>
+            <th class="text-center">% Ad.Arm</th>
+            <th class="text-center">% IMO</th>
+            <th class="text-center">Exército</th>
+            <th class="text-center">% Anvisa</th>
+            <th class="text-center">% GRC</th>
+            <th class="text-center">Min GRC</th>
+            <th class="text-center">% Anvisa GRC</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
-                            {
-                                <th class="text-center" colspan="2">% IMO GRC</th>
-                            }
-                            else
-                            {
-                                <th class="text-center">% IMO GRC</th>
-                            }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+            {
+                <th class="text-center" colspan="2">% IMO GRC</th>
+            }
+            else
+            {
+                <th class="text-center">% IMO GRC</th>
+            }
 
-                        </tr>
+        </tr>
 
                         imprimeCabecalho = false;
                     }
