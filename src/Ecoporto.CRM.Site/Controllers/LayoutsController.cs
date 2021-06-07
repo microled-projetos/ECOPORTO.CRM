@@ -1768,6 +1768,33 @@ namespace Ecoporto.CRM.Site.Controllers
 
                     break;
 
+                case TipoRegistro.ARMAZENAGEM_CIF:
+
+                    campos = new Dictionary<string, string>()
+                    {
+                        { "s:BaseCalculo", "Base Cálculo" },
+                        { "i:QtdeDias", "Qtde  Dias" },
+                        { "p:AdicionalArmazenagem", "Adicional Armazenagem" },
+                        { "p:AdicionalGRC", "Adicional GRC" },
+                        { "p:AnvisaGRC", "Anvisa GRC" },
+                        { "f:MinimoGRC", "Mínimo GRC" },
+                        { "p:AdicionalIMO", "Adicional IMO" },
+                        { "p:AdicionalIMOGRC", "Adicional IMO GRC" },
+                        { "f:ValorANVISA", "Valor ANVISA" },
+                        { "f:ANVISAGRC", "Valor ANVISA GRC" },
+                        { "i:Periodo", "Período" },
+                        { "s:Moeda", "Moeda" },
+                        { "s:DescricaoValor", "Descrição Valor" },
+                        { "f:Valor", "Valor" },
+                        { "f:Valor20", "Valor 20" },
+                        { "f:Valor40", "Valor 40" },
+                        { "s:TipoCarga", "Tipo Carga" },
+                        { "p:Exercito", "Exercito" }
+                    };
+
+                    break;
+
+
                 case TipoRegistro.ARMAZENAGEM_MINIMO:
 
                     campos = new Dictionary<string, string>()
