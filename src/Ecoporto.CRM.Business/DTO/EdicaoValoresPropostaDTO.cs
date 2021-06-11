@@ -135,7 +135,9 @@ namespace Ecoporto.CRM.Business.DTO
             {0, ""},
             {1, "Contêiner"},
             {2, "Carga Solta"},
-            {3, "Mudança Regime"}
+            {3, "Mudança Regime"},
+            {4, "Carga BBK"},
+            {5, "Carga Veiculo"}
         };
 
         public Dictionary<int, string> ListaTipoTrabalho => new Dictionary<int, string>()

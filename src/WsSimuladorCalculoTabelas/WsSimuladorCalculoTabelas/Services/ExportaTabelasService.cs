@@ -194,7 +194,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                         objArmazenagem.ValorAcrescimo = layout.AdicionalIMOGRC;
                                         objArmazenagem.PrecoMinimo = layout.MinimoGRC;
                                         objArmazenagem.QtdeDias = layout.QtdeDias;
-                                        objArmazenagem.BaseCalculo = layout.BaseCalculo.ToName().ToUpper();
+                                        objArmazenagem.BaseCalculo = "CIF";
                                         _tabelaDAO.GravarServicoVariavel(objArmazenagem, 0);
                                         objArmazenagem.PrecoMinimo = 0;
                                         objArmazenagem.Periodo = layout.Periodo;
