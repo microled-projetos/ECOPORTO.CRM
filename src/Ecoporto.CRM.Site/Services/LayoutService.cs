@@ -479,7 +479,7 @@ namespace Ecoporto.CRM.Site.Services
                             .AbreLinha(registro.Id)
                                 .CriarColuna(3, COLUNA, registro.Descricao);
 
-                        if (registro.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        if (registro.TipoCarga == TipoCarga.CARGA_SOLTA || registro.TipoCarga == TipoCarga.CARGA_BBK || registro.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             if (string.IsNullOrEmpty(registro.DescricaoValor))
                             {

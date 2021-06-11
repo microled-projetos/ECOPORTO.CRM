@@ -100,7 +100,7 @@
                             <th class="text-center">Período</th>
                             <th class="text-center">Qtde Dias</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center">Valor</th>
                             }
@@ -118,7 +118,7 @@
                             <th class="text-center">Min GRC</th>
                             <th class="text-center">% Anvisa GRC</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="2">% IMO GRC</th>
                             }
@@ -140,7 +140,7 @@
                         <td id="arm-periodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Periodo')">@Html.Raw(@linha.Periodo)</td>
                         <td id="arm-qtdeDias-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'QtdeDias')">@Html.Raw(@linha.QtdeDias)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="arm-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'Valor')">@Html.Raw(@linha.Valor)</td>
                         }
@@ -158,7 +158,7 @@
                         <td id="arm-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
                         <td id="arm-anvisaGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AnvisaGRC')">@Html.Raw(@linha.AnvisaGRC)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="arm-AdicionalIMOGRC-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagem(@linha.Linha, @linha.OportunidadeId,7, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
                         }
@@ -188,7 +188,7 @@
             <th class="text-center">Qtde Dias</th>
             <th class="text-center">CIF Inicial</th>
 
-            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
             {
                 <th class="text-center">Valor</th>
             }
@@ -206,7 +206,7 @@
             <th class="text-center">Min GRC</th>
             <th class="text-center">% Anvisa GRC</th>
 
-            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
             {
                 <th class="text-center" colspan="2">% IMO GRC</th>
             }
@@ -229,7 +229,7 @@
                         <td id="arm-cif-qtdeDias-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'QtdeDias')">@Html.Raw(@linha.QtdeDias)</td>
                         <td id="arm-cif-valorCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorCif')">@Html.Raw(@linha.ValorCif)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="arm-cif-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor')">@Html.Raw(@linha.Valor)</td>
                         }
@@ -246,7 +246,7 @@
                         <td id="arm-cif-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
                         <td id="arm-cif-anvisaGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AnvisaGRC')">@Html.Raw(@linha.AnvisaGRC)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
                         }
@@ -272,7 +272,7 @@
                             <th class="text-left"></th>
                             <th class="text-center">Tipo Carga</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center">Valor Mín CS</th>
                                 <th class="text-center">Valor Mín 20'</th>
@@ -285,7 +285,7 @@
                                 <th class="text-center">Valor Mín 40'</th>
                             }
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="8">Descrição Valor</th>
                             }
@@ -305,7 +305,7 @@
                         <td id="armmin-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
                         <td id="armmin-" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "armmin-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimo(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="armmin-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
                             <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
@@ -318,7 +318,7 @@
                             <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
                         }
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="8">@Html.Raw(@linha.DescricaoValor)</td>
                         }
@@ -344,7 +344,7 @@
                             <th class="text-left"></th>
                             <th class="text-center">Tipo Carga</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center">Valor Mín CS</th>
                                 <th class="text-center">Valor Mín 20'</th>
@@ -359,7 +359,7 @@
 
                             <th class="text-center">Valor CIF</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="8">Descrição Valor</th>
                             }
@@ -379,7 +379,7 @@
                         <td id="armMinCif-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
                         <td id="armMinCif-" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "armMinCif-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimoCIF(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="armMinCif-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
                             <td id="armMinCif-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
@@ -394,7 +394,7 @@
 
                         <td id="armMinCif-valorCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorCif)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="armMinCif-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimoCIF(@linha.Linha, @linha.OportunidadeId)" colspan="8">@Html.Raw(@linha.DescricaoValor)</td>
                         }
@@ -537,7 +537,7 @@
                             <th class="text-center">Tipo Carga</th>
                             <th class="text-center">B. Cálculo</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center">Valor</th>
                             }
@@ -553,7 +553,7 @@
                             <th class="text-center">% Peso</th>
                             <th class="text-center">Tipo Oper.</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="5">Descrição Valor</th>
                             }
@@ -573,7 +573,7 @@
                         <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMecManual-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMecanicaManual(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
                         <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "servMecManual-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMecanicaManual(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="servMecManual-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
                         }
@@ -589,7 +589,7 @@
                         <td id="servMecManual-adicionalPeso-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalPeso)</td>
                         <td class="pt-3-half celula-select-grid-editavel" colspan="2"> @Html.DropDownListFor(c => linha.ListaTipoTrabalho, new SelectList(linha.ListaTipoTrabalho, "Key", "Value", linha.TipoTrabalho.ToValue()), new { id = "servMecManual-tipoTrabalho-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoMecanicaManual(" + linha.Linha + "," + linha.OportunidadeId + ")" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="servMecManual-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="5" onblur="AtualizarServicoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
                         }
@@ -615,7 +615,7 @@
                             <th class="text-left numeroLinha">&nbsp;</th>
                             <th class="text-left">Descrição</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="2">Valor</th>
                             }
@@ -636,7 +636,7 @@
                         <td class="numeroLinha">@linha.Linha</td>
                         <td id="minMercanicaManual-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td colspan="2" id="minMercanicaManual-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoMecanicaManual(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
                         }
@@ -664,7 +664,7 @@
                             <th class="text-left">Descrição</th>
                             <th class="text-center">Tipo Carga</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th colspan="2" class="text-center">Valor</th>
                             }
@@ -676,7 +676,7 @@
                             <th class="text-center">% IMO</th>
                             <th class="text-center">Exército</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="9">Descrição Valor</th>
                             }
@@ -694,7 +694,7 @@
                         <td class="numeroLinha">@linha.Linha</td>
                         <td id="servicoLib-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
                         <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servicoLib-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicoLiberacao(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td colspan="2" id="servicoLib-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
                         }
@@ -706,7 +706,7 @@
                         <td id="servicoLib-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.AdicionalIMO)</td>
                         <td id="servicoLib-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Exercito)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="servicoLib-descricaoValor-@linha.Linha" class="pt-3-half" colspan="9" contenteditable="true" onblur="AtualizarServicoLiberacao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
                         }
@@ -766,7 +766,7 @@
                             <th class="text-left">B. Cálculo</th>
                             <th class="text-left">Tipo Carga</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="2">Valor</th>
                             }
@@ -791,7 +791,7 @@
                         <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "servGerais-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicosGerais(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
                         <td id="servGerais-tipoCarga" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servGerais-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarServicosGerais(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="servGerais-valor-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarServicosGerais(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
                         }
@@ -822,7 +822,7 @@
                             <th class="text-left"></th>
                             <th class="text-left">Tipo Carga</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th colspan="2" class="text-center">Valor Min</th>
                             }
@@ -843,7 +843,7 @@
                         <td id="servMinGeral-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
                         <td id="" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMinGeral-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarMinimoGeral(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="servMinGeral-valorMin-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
                         }
@@ -872,7 +872,7 @@
                             <th class="text-left">B. Cálculo</th>
                             <th class="text-left">Tipo Carga</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="2">Valor</th>
                             }
@@ -884,7 +884,7 @@
 
 
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 <th class="text-center" colspan="10">Descrição Valor</th>
                             }
@@ -904,7 +904,7 @@
                         <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "periodoPadrao-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarPeriodoPadrao(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
                         <td id="periodoPadrao-tipoCarga" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "periodoPadrao-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarPeriodoPadrao(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled", @tabindex = "-1" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="periodoPadrao-valor-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor)</td>
                         }
@@ -914,7 +914,7 @@
                             <td id="periodoPadrao-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Valor40)</td>
                         }
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             <td id="periodoPadrao-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="10" onblur="AtualizarPeriodoPadrao(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
                         }

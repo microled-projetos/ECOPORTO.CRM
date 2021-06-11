@@ -251,7 +251,7 @@ namespace WsSimuladorCalculoTabelas.Services
                         else
                         {
 
-                            if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 objArmazenagem.PrecoUnitario = layout.Valor;
                                 objArmazenagem.TipoCarga = "CRGST";
@@ -476,7 +476,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     }
                                 }
 
-                                if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+                                if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                                 {
                                     var ids = _tabelaDAO.ObterServicosArmazenagemAnteriores(
                                         arm_minimo.Periodo, arm_minimo.TipoCarga, arm_minimo.BaseCalculo, tabelaCobranca, layout.Linha);
@@ -570,7 +570,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     objServicoMargem.PesoLimite = 25000;
                                 }
 
-                                if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+                                if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                                 {
                                     objServicoMargem.TipoCarga = "CRGST";
                                     _tabelaDAO.GravarServicoFixo(objServicoMargem);
@@ -643,7 +643,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                         if (layout.LinhaReferencia > 0)
                         {
-                            if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+                            if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                             {
                                 var servicosMecManualn = _tabelaDAO.ObterServicoFixoPorLinha(layout.LinhaReferencia, layout.OportunidadeId, "CRGST");
                                 foreach (var servicoMecManual in servicosMecManualn)
@@ -813,7 +813,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                         }
                                     }
 
-                                    if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+                                    if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                                     {
                                         _tabelaDAO.AtualizarPrecoMinimoVariavel(layout.ValorMinimo, arm_minimo.ServicoFixoVariavelId);
                                     }
@@ -918,7 +918,7 @@ namespace WsSimuladorCalculoTabelas.Services
                         }
 
 
-                        if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+                        if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                         {
                             objPeriodoPadrao.PrecoUnitario = layout.Valor;
                             objPeriodoPadrao.TipoCarga = "CRGST";
@@ -995,7 +995,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
         private void GravarServicoFixo(LayoutDTO layout, IEnumerable<ServicoIPA> servicosIPA, ServicoFixoVariavel obj)
         {
-            if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
+            if (layout.TipoCarga == TipoCarga.CARGA_SOLTA || layout.TipoCarga == TipoCarga.CARGA_BBK || layout.TipoCarga == TipoCarga.CARGA_VEICULO)
             {
                 obj.TipoCarga = "CRGST";
 
