@@ -220,42 +220,43 @@
                         imprimeCabecalho = false;
                     }
 
-                    <tr id="arm-cif-@linha.Linha" data-id="@linha.Linha">
-                        <td class="numeroLinha">@linha.Linha</td>
-                        <td id="arm-cif-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId, 21, 'Descricao')">@Html.Raw(@linha.Descricao)</td>
-                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "arm-cif-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemCIF(" + linha.Linha + "," + linha.OportunidadeId + ",21, 'BaseCalculo')", @disabled = "disabled" })</td>
-                        <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "arm-cif-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemCIF(" + linha.Linha + "," + linha.OportunidadeId + ",21, 'TipoCarga')", @disabled = "disabled" })</td>
-                        <td id="arm-cif-periodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Periodo')">@Html.Raw(@linha.Periodo)</td>
-                        <td id="arm-cif-qtdeDias-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'QtdeDias')">@Html.Raw(@linha.QtdeDias)</td>
-                        <td id="arm-cif-valorCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorCif')">@Html.Raw(@linha.ValorCif)</td>
+        <tr id="arm-cif-@linha.Linha" data-id="@linha.Linha">
+            <td class="numeroLinha">@linha.Linha</td>
+            <td id="arm-cif-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId, 21, 'Descricao')">@Html.Raw(@linha.Descricao)</td>
+            <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "arm-cif-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemCIF(" + linha.Linha + "," + linha.OportunidadeId + ",21, 'BaseCalculo')", @disabled = "disabled" })</td>
+            <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "arm-cif-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemCIF(" + linha.Linha + "," + linha.OportunidadeId + ",21, 'TipoCarga')", @disabled = "disabled" })</td>
+            <td id="arm-cif-periodo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Periodo')">@Html.Raw(@linha.Periodo)</td>
+            <td id="arm-cif-qtdeDias-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'QtdeDias')">@Html.Raw(@linha.QtdeDias)</td>
+            <td id="arm-cif-valorCif-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorCif')">@Html.Raw(@linha.ValorCif)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                        {
-                            <td id="arm-cif-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor')">@Html.Raw(@linha.Valor)</td>
-                        }
-                        else
-                        {
-                            <td id="arm-cif-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor20')">@Html.Raw(@linha.Valor20)</td>
-                            <td id="arm-cif-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor40')">@Html.Raw(@linha.Valor40)</td>
-                        }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <td id="arm-cif-valor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor')">@Html.Raw(@linha.Valor)</td>
+            }
+            else
+            {
+                <td id="arm-cif-valor20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor20')">@Html.Raw(@linha.Valor20)</td>
+                <td id="arm-cif-valor40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Valor40')">@Html.Raw(@linha.Valor40)</td>
+            }
 
-                        <td id="arm-cif-adicionalArmazenagem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalArmazenagem')">@Html.Raw(@linha.AdicionalArmazenagem)</td>
-                        <td id="arm-cif-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMO')">@Html.Raw(@linha.AdicionalIMO)</td>
-                        <td id="arm-cif-valorANVISA-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorANVISA')">@Html.Raw(@linha.ValorANVISA)</td>
-                        <td id="arm-cif-adicionalGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalGRC')">@Html.Raw(@linha.AdicionalGRC)</td>
-                        <td id="arm-cif-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
-                        <td id="arm-cif-anvisaGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AnvisaGRC')">@Html.Raw(@linha.AnvisaGRC)</td>
+            <td id="arm-cif-adicionalArmazenagem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalArmazenagem')">@Html.Raw(@linha.AdicionalArmazenagem)</td>
+            <td d="arm-cif-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMO')">@Html.Raw(@linha.AdicionalIMO)</td>
+            <td id="arm-cif-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,7, 'Exercito')">@Html.Raw(@linha.Exercito)</td>
+            <td id="arm-cif-valorANVISA-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorANVISA')">@Html.Raw(@linha.ValorANVISA)</td>
+            <td id="arm-cif-adicionalGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalGRC')">@Html.Raw(@linha.AdicionalGRC)</td>
+            <td id="arm-cif-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
+            <td id="arm-cif-anvisaGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AnvisaGRC')">@Html.Raw(@linha.AnvisaGRC)</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                        {
-                            <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
-                        }
-                        else
-                        {
-                            <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
-                        }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
+            }
+            else
+            {
+                <td id="arm-cif-AdicionalIMOGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMOGRC')">@Html.Raw(@linha.AdicionalIMOGRC)</td>
+            }
 
-                    </tr>
+        </tr>
                 }
 
                 if (linha.TipoRegistro == TipoRegistro.ARMAZENAGEM_MINIMO)
