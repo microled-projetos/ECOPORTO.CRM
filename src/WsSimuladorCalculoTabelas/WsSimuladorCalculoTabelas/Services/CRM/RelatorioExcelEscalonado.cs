@@ -151,7 +151,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 List<string> tipoCargas = parametrosSimulador.Regime == Regime.FCL
                     ? new List<string>() { "SVAR20", "SVAR40" }
-                    : new List<string>() { "CRGST" };
+                    : new List<string>() { "CRGST","BBK","VEIC" };
 
                 decimal valorTotalPlanilha = 0;
 

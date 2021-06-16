@@ -336,7 +336,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametros.Add(name: "BaseCalculo", value: baseCalculo, direction: ParameterDirection.Input);
                     parametros.Add(name: "Lista", value: lista, direction: ParameterDirection.Input);
                     parametros.Add(name: "Linha", value: linha, direction: ParameterDirection.Input);
-                    if (tipoCarga != "CRGST")
+                    if ((tipoCarga != "CRGST") && (tipoCarga != "BBK") && (tipoCarga != "VEIC"))
                     {
                         return con.Query<int>($@"
                         SELECT AUTONUM FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE SERVICO = 52 AND TIPO_CARGA = :TipoCarga 
@@ -2187,10 +2187,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametrosT.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
                     var TemCntr = con.Query($@"SELECT AUTONUM FROM  {_schema}.TB_LISTA_P_S_PERIODO 
-                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA <>'CRGST'", parametrosT).Any();
+                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA  NOT IN ('CRGST','BBK','VEIC')", parametrosT).Any();
 
                     var TemCs = con.Query($@"SELECT AUTONUM FROM  {_schema}.TB_LISTA_P_S_PERIODO 
-                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA ='CRGST'", parametrosT).Any();
+                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA IN ('CRGST','BBK','VEIC')", parametrosT).Any();
 
                     if (TemCntr == true)
 
@@ -2204,7 +2204,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                                     A.LOCAL_ATRACACAO As LocalAtracacaoId,
                                     A.GRUPO_ATRACACAO As GrupoAtracacaoId                                     
                                     FROM  {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS A INNER JOIN  SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM 
-                                   WHERE  tipo_carga<>'CRGST' AND (B.FLAG_TAXA_LIBERACAO >0  ) AND A.LISTA = 1");
+                                   WHERE  tipo_carga NOT IN ('CRGST','BBK','VEIC') AND (B.FLAG_TAXA_LIBERACAO >0  ) AND A.LISTA = 1");
 
                         foreach (var servicoSincronismo in servicosSincronismocntr)
                         {
@@ -2216,7 +2216,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             parametros.Add(name: "GrupoAtracacaoId", value: servicoSincronismo.GrupoAtracacaoId, direction: ParameterDirection.Input);
 
                             var Auto = con.Query<long>($@"SELECT NVL(MAX(AUTONUM),0) FROM  {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS WHERE Lista = :TabelaId 
-                                     and preco_unitario=0 AND tipo_carga<>'CRGST' AND Servico = :ServicoId    
+                                     and preco_unitario=0 AND tipo_carga NOT IN ('CRGST','BBK','VEIC') AND Servico = :ServicoId    
                                           ", parametros).FirstOrDefault();
 
                             if (Auto > 0)
@@ -6362,7 +6362,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var resultado = con.Query<ServicoFixoVariavel>($@"
                         SELECT A.AUTONUM As ServicoFixoVariavelId, A.SERVICO As ServicoId, A.VARIANTE_LOCAL As VarianteLocal 
                         FROM {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS A INNER JOIN {_schema}.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM 
-                        WHERE tipo_carga<>'CRGST' AND preco_unitario>0  and (B.FLAG_TAXA_LIBERACAO > 0 or servico=1) AND A.LISTA = :TabelaId", parametros);
+                        WHERE tipo_carga NOT IN ('CRGST','BBK','VEIC') AND preco_unitario>0  and (B.FLAG_TAXA_LIBERACAO > 0 or servico=1) AND A.LISTA = :TabelaId", parametros);
 
                     foreach (var item in resultado)
                     {
@@ -6371,7 +6371,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     }
                     con.Execute($@"DELETE  FROM SGIPA.TB_LISTA_PRECO_SERVICOS_FIXOS 
-                            WHERE tipo_carga='CRGST' AND VARIANTE_LOCAL='MESQ' AND servico=1 and LISTA = :TabelaId", parametros);
+                            WHERE tipo_carga IN ('CRGST','BBK','VEIC') AND VARIANTE_LOCAL='MESQ' AND servico=1 and LISTA = :TabelaId", parametros);
 
                 }
             }

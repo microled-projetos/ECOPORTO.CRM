@@ -837,7 +837,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var parametros = new DynamicParameters();
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
-                    var filtroSQL = ehConteiner ? " AND B.TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND B.TIPO_CARGA ='CRGST' ";
+                    var filtroSQL = ehConteiner ? " AND B.TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND B.TIPO_CARGA IN('CRGST','BBK','VEIC') ";
 
                     return con.Query<string>($@"SELECT MAX(NVL(B.QTDE_DIAS,0)) DIAS FROM {_schema}.TB_LISTAS_PRECOS A LEFT JOIN {_schema}.TB_LISTA_P_S_PERIODO B ON A.AUTONUM = B.LISTA WHERE A.AUTONUM = :TabelaId AND B.SERVICO = 52 {filtroSQL}", parametros).Single();
                 }
@@ -849,7 +849,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var parametros = new DynamicParameters();
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
-                    var filtroSQL = ehConteiner ? " AND B.TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND B.TIPO_CARGA ='CRGST' ";
+                    var filtroSQL = ehConteiner ? " AND B.TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND B.TIPO_CARGA IN('CRGST','BBK','VEIC') ";
 
                     return con.Query<string>($@"SELECT MAX(ISNULL(B.QTDE_DIAS,0)) DIAS FROM {_schema}..TB_LISTAS_PRECOS A LEFT JOIN {_schema}..TB_LISTA_P_S_PERIODO B ON A.AUTONUM = B.LISTA WHERE A.AUTONUM = @TabelaId AND B.SERVICO = 52 {filtroSQL}", parametros).Single();
                 }
@@ -952,7 +952,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
                     else
                     {
-                        filtroSQL += " AND TIPO_CARGA ='CRGST' ";
+                        filtroSQL += " AND TIPO_CARGA IN('CRGST','BBK','VEIC') ";
                     }
 
                     if (!string.IsNullOrEmpty(varianteLocal))
@@ -1004,7 +1004,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
                     else
                     {
-                        filtroSQL += " AND TIPO_CARGA ='CRGST' ";
+                        filtroSQL += " AND TIPO_CARGA IN('CRGST','BBK','VEIC') ";
                     }
 
                     if (!string.IsNullOrEmpty(varianteLocal))
@@ -1168,7 +1168,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var parametros = new DynamicParameters();
                     parametros.Add(name: "ServicoVariavelId", value: servicoVariavelId, direction: ParameterDirection.Input);
 
-                    var filtroSQL = ehConteiner ? " AND TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND TIPO_CARGA ='CRGST' ";
+                    var filtroSQL = ehConteiner ? " AND TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND TIPO_CARGA IN('CRGST','VEIC','BBK') ";
 
                     return con.Query<decimal?>($@"SELECT PRECO_MINIMO As PrecoMinimo FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE AUTONUM = :ServicoVariavelId {filtroSQL}", parametros).FirstOrDefault();
                 }
@@ -1180,7 +1180,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var parametros = new DynamicParameters();
                     parametros.Add(name: "ServicoVariavelId", value: servicoVariavelId, direction: ParameterDirection.Input);
 
-                    var filtroSQL = ehConteiner ? " AND TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND TIPO_CARGA ='CRGST' ";
+                    var filtroSQL = ehConteiner ? " AND TIPO_CARGA IN('SVAR','SVAR40','SVAR20') " : " AND TIPO_CARGA IN ('CRGST','BBK','VEIC') ";
 
                     return con.Query<decimal?>($@"SELECT PRECO_MINIMO As PrecoMinimo FROM {_schema}..TB_LISTA_P_S_PERIODO WHERE AUTONUM = @ServicoVariavelId {filtroSQL}", parametros).FirstOrDefault();
                 }
@@ -1209,7 +1209,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_P_S_PERIODO B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA='CRGST' AND 
+                        AND  B.TIPO_CARGAIN ('CRGST','BBK','VEIC')  AND 
                             (B.VALOR_ACRESCIMO > 0 or a.autonum=52 or a.autonum=45)  AND A.AUTONUM <> 295 AND A.FLAG_TAXA_LIBERACAO=0 
 
                         UNION ALL
@@ -1225,7 +1225,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA='CRGST' AND 
+                        AND  B.TIPO_CARGAIN ('CRGST','BBK','VEIC') AND 
                             (B.VALOR_ACRESCIMO > 0 or a.autonum=52 or a.autonum=45) AND A.AUTONUM <> 295 AND A.FLAG_TAXA_LIBERACAO=0 ", parametros);
                    
                     }
@@ -1243,7 +1243,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_P_S_PERIODO B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA<>'CRGST' AND 
+                        AND  B.TIPO_CARGA NOT IN ('CRGST','BBK','VEIC') AND 
                             (B.VALOR_ACRESCIMO > 0 or a.autonum=52 or a.autonum=45) AND A.AUTONUM <> 295 AND A.FLAG_TAXA_LIBERACAO=0 
 
                         UNION ALL
@@ -1259,7 +1259,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA<>'CRGST' AND 
+                        AND  B.TIPO_CARGA NOT IN ('CRGST','BBK','VEIC') AND 
                            (B.VALOR_ACRESCIMO > 0 or a.autonum=52 or a.autonum=45) AND A.AUTONUM <> 295 AND A.FLAG_TAXA_LIBERACAO=0 ", parametros);
                     }
                 }
@@ -1324,7 +1324,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_P_S_PERIODO B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA='CRGST' AND 
+                        AND  B.TIPO_CARGA IN ('CRGST','BBK','VEIC') AND 
                             B.VALOR_ANVISA > 0 AND A.AUTONUM <> 295
 
                         UNION ALL
@@ -1339,7 +1339,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA='CRGST' AND 
+                        AND  B.TIPO_CARGA IN ('CRGST','BBK','VEIC') AND 
                             B.VALOR_ANVISA > 0 AND A.AUTONUM <> 295", parametros);
                     }
                     else
@@ -1355,7 +1355,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_P_S_PERIODO B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA<>'CRGST' AND 
+                        AND  B.TIPO_CARGA NOT IN ('CRGST','BBK','VEIC') AND 
                             B.VALOR_ANVISA > 0 AND A.AUTONUM <> 295
 
                         UNION ALL
@@ -1370,7 +1370,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS B ON A.AUTONUM = B.SERVICO 
                         WHERE 
                             B.LISTA = :TabelaId 
-                        AND  B.TIPO_CARGA<>'CRGST' AND 
+                        AND  B.TIPO_CARGA NOT IN ('CRGST','BBK','VEIC') AND 
                             B.VALOR_ANVISA > 0 AND A.AUTONUM <> 295", parametros);
                     }
 
@@ -1425,11 +1425,11 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
                     if (Tipo_carga == 1)
                     {
-                        return con.Query<decimal>($@"SELECT NVL(MAX(PRECO_UNITARIO),0) PrecoUnitario FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE LISTA = :TabelaId AND SERVICO = 295 AND TIPO_CARGA='CRGST'", parametros).FirstOrDefault();
+                        return con.Query<decimal>($@"SELECT NVL(MAX(PRECO_UNITARIO),0) PrecoUnitario FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE LISTA = :TabelaId AND SERVICO = 295 AND TIPO_CARGA IN ('CRGST','BBK','VEIC')", parametros).FirstOrDefault();
                     }
                     else
                     {
-                        return con.Query<decimal>($@"SELECT NVL(MAX(PRECO_UNITARIO),0) PrecoUnitario FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE LISTA = :TabelaId AND SERVICO = 295  AND TIPO_CARGA<>'CRGST'", parametros).FirstOrDefault();
+                        return con.Query<decimal>($@"SELECT NVL(MAX(PRECO_UNITARIO),0) PrecoUnitario FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE LISTA = :TabelaId AND SERVICO = 295  AND TIPO_CARGA NOT IN ('CRGST','BBK','VEIC') ", parametros).FirstOrDefault();
                     }
 
                 }

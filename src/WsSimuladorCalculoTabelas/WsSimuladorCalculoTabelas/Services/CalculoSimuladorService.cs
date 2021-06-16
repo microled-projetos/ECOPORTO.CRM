@@ -57,7 +57,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
             List<string> tipoCargas = dadosSimulador.Regime == "FCL" 
                 ? new List<string>() { "SVAR20", "SVAR40" } 
-                : new List<string>() { "CRGST" };
+                : new List<string>() { "CRGST","BBK","VEIC" };
 
             var v20 = dadosSimulador.CargaConteiner20.Quantidade;
             var v40 = dadosSimulador.CargaConteiner40.Quantidade;
@@ -111,8 +111,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     if (dadosSimulador.Regime == "LCL")
                     {
-                        dadosSimulador.TipoCarga = "CRGST";
-                        dadosSimulador.TipoCargaSQL = " A.TIPO_CARGA ='CRGST' ";
+                        dadosSimulador.TipoCarga = "CRGST|BBK|VEIC";
+                        dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='CRGST' OR A.TIPO_CARGA='BBK' OR A.TIPO_CARGA='VEIC')";
                     }
 
                     decimal valorTicketMedio = 0;
@@ -146,8 +146,8 @@ namespace WsSimuladorCalculoTabelas.Services
                         {
                             if (dadosSimulador.Regime == "LCL")
                             {
-                                dadosSimulador.TipoCarga = "CRGST";
-                                dadosSimulador.TipoCargaSQL = " A.TIPO_CARGA ='CRGST' ";
+                                dadosSimulador.TipoCarga = "CRGST|BBK|VEIC";
+                                dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='CRGST' OR A.TIPO_CARGA='BBK' OR A.TIPO_CARGA='VEIC')";
 
                                 if (dadosSimulador.CargaSolta.Peso == 0)
                                 {
@@ -433,8 +433,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
                             if (dadosSimulador.Regime == "LCL")
                             {
-                                dadosSimulador.TipoCarga = "CRGST";
-                                dadosSimulador.TipoCargaSQL = " A.TIPO_CARGA='CRGST' ";
+                                dadosSimulador.TipoCarga = "CRGST|BBK|VEIC";
+                                dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='CRGST' OR A.TIPO_CARGA='BBK' OR A.TIPO_CARGA='VEIC')";
                             }
 
                             for (int periodo = 1; periodo <= dadosSimulador.Periodos; periodo++)
