@@ -1725,19 +1725,6 @@ $('#btnEnviarOportunidadeParaAprovacao').click(function () {
 
 });
 
-//$('#btnEnviarOportunidadeParaAprovacao').click(function () {
-
-//    event.preventDefault();
-
-//    var id = $("#Id").val();
-
-//    $('#btnEnviarOportunidadeParaAprovacao')
-//        .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
-//        .prop('disabled', true);
-
-
-//});
-
 $('#btnSalvarAdendoFormaPgto').click(function () {
 
     $(this).html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
@@ -2695,15 +2682,19 @@ $('#MotivoRecallAdendos').keyup(function () {
 $('#btnExportarTabelas').click(function () {
 
     var id = $('#Id').val();
+    var lotes = $('#Lote').val();
 
     $('#confirmar-exportacaoTabela-modal')
         .data('id', id)
+        .data('lotes', lotes)
         .modal('show');
 });
 
 function confirmarExportacaoTabela() {
 
     var id = $('#confirmar-exportacaoTabela-modal').data('id');
+    var lotes = $('#confirmar-exportacaoTabela-modal').data('lotes');
+    console.log(lotes);
 
     if (parseInt(id) > 0) {
 
@@ -2711,7 +2702,7 @@ function confirmarExportacaoTabela() {
             .html('<i class="fa fa-spinner fa-spin"></i> aguarde...')
             .addClass('disabled');
 
-        $.post(urlBase + 'Oportunidades/ExportarTabelas/', { id: id }, function (resultado) {
+        $.post(urlBase + 'Oportunidades/ExportarTabelas/', { id: id, lotes: lotes }, function (resultado) {
             $('#pnlTabelaGerada').html(resultado);
             $('#confirmar-exportacaoTabela-modal').modal('hide');
             $('#tabela-gerada-modal').modal('show');

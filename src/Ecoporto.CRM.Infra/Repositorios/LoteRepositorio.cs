@@ -113,5 +113,29 @@ namespace Ecoporto.CRM.Infra.Repositorios
                         LOTE", parametros);
             }
         }
+        public bool ValidarLoteNotaFiscal(int lote)
+        {
+            using (OracleConnection con = new OracleConnection(Config.StringConexao()))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add(name: "Lote", value: lote, direction: ParameterDirection.Input);
+
+                return con.Query($"select OBS_GR FROM SGIPA.TB_GR_BL where bl = :Lote and status_gr = 'IM'", parametros).Any();
+            }
+
+        }
+
+        public bool ValidarLoteCancelamentoNotaFiscal(int lote)
+        {
+            using (OracleConnection con = new OracleConnection(Config.StringConexao()))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add(name: "Lote", value: lote, direction: ParameterDirection.Input);
+
+                return con.Query($"SELECT LOTE FROM CRM.TB_CRM_SOLICITACAO_CANCEL_NF WHERE LOTE = :Lote", parametros).Any();
+            }
+        }
     }
 }

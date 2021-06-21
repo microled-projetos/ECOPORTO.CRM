@@ -889,6 +889,10 @@ namespace Ecoporto.CRM.Site.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if(viewModel.TipoNegocio == TipoNegocio.REVISAO_AJUSTE && viewModel.RevisaoId == null) 
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Campo Revisão é obrigatório quando o tipo de Negócio for igual a REVISÃO");
+            };
 
             var oportunidadeBusca = _oportunidadeRepositorio.ObterOportunidadePorId(id.Value);
 
@@ -5820,9 +5824,40 @@ namespace Ecoporto.CRM.Site.Controllers
         }
 
         [HttpPost]
-        public ActionResult ExportarTabelas(int id)
+        public ActionResult ExportarTabelas(int id, string lotes)
         {
             var oportunidadeBusca = _oportunidadeRepositorio.ObterOportunidadePorId(id);
+            //proposta - 66779
+            var lotesArr = Array.ConvertAll(lotes.Split(','), int.Parse);
+            var message = "";
+            Dictionary<int, bool> lotesVerificados = new Dictionary<int, bool>();
+
+            foreach (var lote in lotesArr)
+            {
+                var resultado = _loteRepositorio.ValidarLoteNotaFiscal(lote);
+                if (resultado)
+                {
+                    var cancelamento = _loteRepositorio.ValidarLoteCancelamentoNotaFiscal(lote);
+                    lotesVerificados.Add(lote, cancelamento);
+                    // > Se não: 
+                    //apresenta mensagem de aviso que o lote possui NF e não permite a integração (onde seguiremos com o rejeite do acordo).
+                };
+            }
+
+            foreach (KeyValuePair<int, bool> item in lotesVerificados)
+            {
+                if (item.Value == false) 
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Lote " + item.Key + ", Possue NF e não permite a integração");
+                };
+            }
+            foreach (KeyValuePair<int, bool> item in lotesVerificados)
+            {
+                if (item.Value == true)
+                {
+                    message = "Lote: " + item.Key + " possue nota de cancelamento: ";
+                };
+            }
 
             if (oportunidadeBusca == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Oportunidade não encontrada");
@@ -5853,7 +5888,8 @@ namespace Ecoporto.CRM.Site.Controllers
 
                     return PartialView("_ModalTabelaCobrancaExportada", new OportunidadesInformacoesIniciaisViewModel
                     {
-                        TabelaId = response.TabelaId
+                        TabelaId = response.TabelaId,
+                        Mensagem = message
                     });
                 }
             }
