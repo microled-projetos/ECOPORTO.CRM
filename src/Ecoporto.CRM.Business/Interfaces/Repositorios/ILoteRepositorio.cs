@@ -10,5 +10,7 @@ namespace Ecoporto.CRM.Business.Interfaces.Repositorios
         Lote ObterLotePorId(int lote);
         Lote ExisteAverbacao(int oportunidadeId, DateTime? dataCancelamento);
         IEnumerable<LotesMasterDTO> ObterLotesMaster(int lote);
+        bool ValidarLoteNotaFiscal(int lote);
+        bool ValidarLoteCancelamentoNotaFiscal(int lote);
     }
 }
