@@ -274,7 +274,9 @@ namespace Ecoporto.CRM.Business.Models
                 .GreaterThan(0)
                 .WithMessage("O CIF Médio é obrigatório");
 
-            ValidationResult = Validate(this);
+         
+
+                ValidationResult = Validate(this);
         }
     }
 }

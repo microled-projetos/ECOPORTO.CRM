@@ -891,7 +891,11 @@ namespace Ecoporto.CRM.Site.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             if(viewModel.TipoNegocio == TipoNegocio.REVISAO_AJUSTE && viewModel.RevisaoId == null) 
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Campo Revisão é obrigatório quando o tipo de Negócio for igual a REVISÃO");
+                ModelState.Clear();
+                ModelState.AddModelError("TipoNegocio", "Campo Revisão é obrigatório quando o tipo de Negócio for igual a REVISÃO");
+                return RetornarErros();
+                
+      
             };
 
             var oportunidadeBusca = _oportunidadeRepositorio.ObterOportunidadePorId(id.Value);
