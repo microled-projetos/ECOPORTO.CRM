@@ -764,8 +764,8 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     if (regime == "LCL")
                     {
-                        filtroFixos.Append(" AND C.SERVICO <> 245 AND (C.TIPO_CARGA IN('CRGST','BBK','VEIC') OR D.FLAG_DESOVA = 1) ");
-                        filtroVariaveis.Append(" AND (C.TIPO_CARGA IN('CRGST','BBK','VEIC') OR D.FLAG_DESOVA = 1) ");
+                        filtroFixos.Append(" AND C.SERVICO <> 245 AND (C.TIPO_CARGA = 'CRGST' OR D.FLAG_DESOVA = 1) ");
+                        filtroVariaveis.Append(" AND (C.TIPO_CARGA = 'CRGST' OR D.FLAG_DESOVA = 1) ");
                     }
                     else
                     {
@@ -833,8 +833,8 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     if (regime == "LCL")
                     {
-                        filtroFixos.Append(" AND C.SERVICO <> 245 AND (C.TIPO_CARGA IN('CRGST','BBK','VEIC') OR D.FLAG_DESOVA = 1) ");
-                        filtroVariaveis.Append(" AND (C.TIPO_CARGA IN('CRGST','BBK','VEIC') OR D.FLAG_DESOVA = 1) ");
+                        filtroFixos.Append(" AND C.SERVICO <> 245 AND (C.TIPO_CARGA = 'CRGST' OR D.FLAG_DESOVA = 1) ");
+                        filtroVariaveis.Append(" AND (C.TIPO_CARGA = 'CRGST' OR D.FLAG_DESOVA = 1) ");
                     }
                     else
                     {
@@ -1868,7 +1868,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         WHERE
                             A.ModeloSimuladorId = :ModeloSimuladorId
                         AND
-                            C.OportunidadeId = :OportunidadeId AND TIPO_CARGA IN('CRGST','BBK','VEIC')", parametros);
+                            C.OportunidadeId = :OportunidadeId AND TIPO_CARGA='CRGST'", parametros);
                     }
                     else
                    {
@@ -1890,7 +1890,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         WHERE
                             A.ModeloSimuladorId = :ModeloSimuladorId
                         AND
-                            C.OportunidadeId = :OportunidadeId AND TIPO_CARGA NOT IN('CRGST','BBK','VEIC')
+                            C.OportunidadeId = :OportunidadeId AND TIPO_CARGA<>'CRGST'
                             ", parametros);
                     }
                 }

@@ -336,7 +336,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametros.Add(name: "BaseCalculo", value: baseCalculo, direction: ParameterDirection.Input);
                     parametros.Add(name: "Lista", value: lista, direction: ParameterDirection.Input);
                     parametros.Add(name: "Linha", value: linha, direction: ParameterDirection.Input);
-                    if ((tipoCarga != "CRGST") && (tipoCarga != "BBK") && (tipoCarga != "VEIC"))
+                    if (tipoCarga != "CRGST")
                     {
                         return con.Query<int>($@"
                         SELECT AUTONUM FROM {_schema}.TB_LISTA_P_S_PERIODO WHERE SERVICO = 52 AND TIPO_CARGA = :TipoCarga 
@@ -2187,10 +2187,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametrosT.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
                     var TemCntr = con.Query($@"SELECT AUTONUM FROM  {_schema}.TB_LISTA_P_S_PERIODO 
-                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA  NOT IN ('CRGST','BBK','VEIC')", parametrosT).Any();
+                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA <>'CRGST'", parametrosT).Any();
 
                     var TemCs = con.Query($@"SELECT AUTONUM FROM  {_schema}.TB_LISTA_P_S_PERIODO 
-                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA IN ('CRGST','BBK','VEIC')", parametrosT).Any();
+                             WHERE Lista = :TabelaId AND Servico = 52 and TIPO_CARGA ='CRGST'", parametrosT).Any();
 
                     if (TemCntr == true)
 
@@ -2204,7 +2204,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                                     A.LOCAL_ATRACACAO As LocalAtracacaoId,
                                     A.GRUPO_ATRACACAO As GrupoAtracacaoId                                     
                                     FROM  {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS A INNER JOIN  SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM 
-                                   WHERE  tipo_carga NOT IN ('CRGST','BBK','VEIC') AND (B.FLAG_TAXA_LIBERACAO >0  ) AND A.LISTA = 1");
+                                   WHERE  tipo_carga<>'CRGST' AND (B.FLAG_TAXA_LIBERACAO >0  ) AND A.LISTA = 1");
 
                         foreach (var servicoSincronismo in servicosSincronismocntr)
                         {
@@ -2216,7 +2216,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             parametros.Add(name: "GrupoAtracacaoId", value: servicoSincronismo.GrupoAtracacaoId, direction: ParameterDirection.Input);
 
                             var Auto = con.Query<long>($@"SELECT NVL(MAX(AUTONUM),0) FROM  {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS WHERE Lista = :TabelaId 
-                                     and preco_unitario=0 AND tipo_carga NOT IN ('CRGST','BBK','VEIC') AND Servico = :ServicoId    
+                                     and preco_unitario=0 AND tipo_carga<>'CRGST' AND Servico = :ServicoId    
                                           ", parametros).FirstOrDefault();
 
                             if (Auto > 0)
@@ -5397,14 +5397,6 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
-                    con.Execute(@"UPDATE TB_LISTA_P_S_PERIODO SET 
-                                    PRECO_UNITARIO = ROUND(PRECO_UNITARIO / QTDE_DIAS, 6),
-                                    QTDE_DIAS = 1, 
-                                    FLAG_PRORATA = 0  
-                                    WHERE FLAG_PRORATA = 1 
-                                            AND QTDE_DIAS> 1 
-                                            AND SERVICO = 45 AND LISTA = :TabelaId",parametros);
-
                     var semminimos = con.Query<TabelaSemminimo>(@"SELECT A.AUTONUM,SERVICO, N_PERIODO, 
                                         TIPO_CARGA, BASE_CALCULO, 
                                         VARIANTE_LOCAL, LISTA
@@ -5459,7 +5451,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        TIPO_CARGA IN ('SVAR20', 'SVAR40') 
                         AND 
 	                        LISTA = :TabelaId
-                        AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)   
+AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)   
                         GROUP BY
 	                        SERVICO,
 	                        N_PERIODO,
@@ -5480,7 +5472,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
 	                        VALOR_ACRESC_PESO,
-	                        PESO_LIMITE ,EXERCITO
+	                        PESO_LIMITE 
                         HAVING COUNT(1) > 1 ", parametros);
 
                     foreach (var duplicidade in duplicidades)
@@ -5532,8 +5524,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                                              NVL(C.AUTONUM_VINCULADO,0) AS AUTONUM_VINCULADO,
                                              NVL(C.GRUPO_ATRACACAO,0) AS GRUPO_ATRACACAO,
                                              NVL(C.VALOR_ACRESC_PESO,0) AS VALOR_ACRESC_PESO,
-                                             NVL(C.PESO_LIMITE,0) AS PESO_LIMITE,
-                                             NVL(C.EXERCITO,0) AS EXERCITO
+                                             NVL(C.PESO_LIMITE,0) AS PESO_LIMITE
                                              FROM SGIPA.TB_LISTA_P_S_PERIODO C 
                                             GROUP BY
                                              C.LISTA,
@@ -5556,7 +5547,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                                              NVL(C.GRUPO_ATRACACAO,0) ,
                                              NVL(C.VALOR_ACRESC_PESO,0) ,
                                              NVL(C.PESO_LIMITE,0)
-                                             NVL(C.EXERCITO,0)
                                              ) M
                                              ON  A.N_PERIODO=M.N_PERIODO
                                              AND A.LISTA=M.LISTA
@@ -5577,7 +5567,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                                              AND NVL(A.GRUPO_ATRACACAO,0)=M.GRUPO_ATRACACAO
                                              AND NVL(A.VALOR_ACRESC_PESO,0)=M.VALOR_ACRESC_PESO
                                              AND NVL(A.PESO_LIMITE,0)=M.PESO_LIMITE
-                                             AND NVL(A.EXERCITO,0)=M.EXERCITO
                                              AND
                                              EXISTS (
                                              SELECT B.AUTONUM 
@@ -5603,7 +5592,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                                              AND NVL(A.GRUPO_ATRACACAO,0)=NVL(B.GRUPO_ATRACACAO,0)
                                              AND NVL(A.VALOR_ACRESC_PESO,0)= NVL(B.VALOR_ACRESC_PESO,0)
                                              AND NVL(A.PESO_LIMITE,0) =NVL(B.PESO_LIMITE,0)
-                                             AND NVL(A.EXERCITO,0) =NVL(B.EXERCITO,0)
                                              AND A.N_PERIODO=B.N_PERIODO+1
                                              )
   
@@ -5659,7 +5647,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 	                        AUTONUM_VINCULADO,
 	                        GRUPO_ATRACACAO,
 	                        VALOR_ACRESC_PESO,
-	                        PESO_LIMITE ,EXERCITO
+	                        PESO_LIMITE 
                         HAVING COUNT(1) > 1", parametros);
 
                     foreach (var duplicidade in duplicidades)
@@ -5716,7 +5704,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                                 AUTONUM_VINCULADO,
                                 GRUPO_ATRACACAO,
                                 VALOR_ACRESC_PESO,
-                                PESO_LIMITE ,EXERCITO
+                                PESO_LIMITE 
                             HAVING COUNT(1) > 1", parametros);
 
                         if (!duplicidades.Any())
@@ -6362,7 +6350,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     var resultado = con.Query<ServicoFixoVariavel>($@"
                         SELECT A.AUTONUM As ServicoFixoVariavelId, A.SERVICO As ServicoId, A.VARIANTE_LOCAL As VarianteLocal 
                         FROM {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS A INNER JOIN {_schema}.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM 
-                        WHERE tipo_carga NOT IN ('CRGST','BBK','VEIC') AND preco_unitario>0  and (B.FLAG_TAXA_LIBERACAO > 0 or servico=1) AND A.LISTA = :TabelaId", parametros);
+                        WHERE tipo_carga<>'CRGST' AND preco_unitario>0  and (B.FLAG_TAXA_LIBERACAO > 0 or servico=1) AND A.LISTA = :TabelaId", parametros);
 
                     foreach (var item in resultado)
                     {
@@ -6371,7 +6359,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     }
                     con.Execute($@"DELETE  FROM SGIPA.TB_LISTA_PRECO_SERVICOS_FIXOS 
-                            WHERE tipo_carga IN ('CRGST','BBK','VEIC') AND VARIANTE_LOCAL='MESQ' AND servico=1 and LISTA = :TabelaId", parametros);
+                            WHERE tipo_carga='CRGST' AND VARIANTE_LOCAL='MESQ' AND servico=1 and LISTA = :TabelaId", parametros);
 
                 }
             }

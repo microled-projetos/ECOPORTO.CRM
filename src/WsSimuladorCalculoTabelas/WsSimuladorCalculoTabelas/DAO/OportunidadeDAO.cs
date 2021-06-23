@@ -9,7 +9,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using WsSimuladorCalculoTabelas.Configuracao;
 using WsSimuladorCalculoTabelas.Enums;
-using WsSimuladorCalculoTabelas.Extensions;
 using WsSimuladorCalculoTabelas.Helpers;
 using WsSimuladorCalculoTabelas.Models;
 
@@ -725,14 +724,13 @@ where oportunidadeid=:OportunidadeId  and
                     parametros.Add(name: "DataCorte", value: ficha.DataCorte, direction: ParameterDirection.Input);
                     parametros.Add(name: "EmailFaturamento", value: ficha.EmailFaturamento, direction: ParameterDirection.Input);
                     parametros.Add(name: "CondicaoPagamentoFaturamentoId", value: ficha.CondicaoPagamentoFaturamentoId, direction: ParameterDirection.Input);
-                    parametros.Add(name: "EntregaEletronica", value: ficha.EntregaEletronica, direction: ParameterDirection.Input);
-                    parametros.Add(name: "EntregaManual", value: ficha.EntregaManual, direction: ParameterDirection.Input);
-                    parametros.Add(name: "CorrreiosComum", value: ficha.CorrreiosComum, direction: ParameterDirection.Input);
-                    parametros.Add(name: "CorreiosSedex", value: ficha.CorreiosSedex, direction: ParameterDirection.Input);
-                    parametros.Add(name: "DiaUtil", value: ficha.DiaUtil, direction: ParameterDirection.Input);
+                    parametros.Add(name: "EntregaEletronica", value: ficha.EntregaEletronica.ToInt(), direction: ParameterDirection.Input);
+                    parametros.Add(name: "EntregaManual", value: ficha.EntregaManual.ToInt(), direction: ParameterDirection.Input);
+                    parametros.Add(name: "CorrreiosComum", value: ficha.CorrreiosComum.ToInt(), direction: ParameterDirection.Input);
+                    parametros.Add(name: "CorreiosSedex", value: ficha.CorreiosSedex.ToInt(), direction: ParameterDirection.Input);
+                    parametros.Add(name: "DiaUtil", value: ficha.DiaUtil.ToInt(), direction: ParameterDirection.Input);
                     parametros.Add(name: "OportunidadeId", value: ficha.OportunidadeId, direction: ParameterDirection.Input);
                     parametros.Add(name: "FichaId", value: ficha.Id, direction: ParameterDirection.Input);
-                    parametros.Add(name: "Dias_Pgto", value: ficha.CondicaoPgtoDia, direction: ParameterDirection.Input);
 
                     try
                     {
@@ -751,8 +749,7 @@ where oportunidadeid=:OportunidadeId  and
                          	            AUTONUM_CLIENTE_NOTA,  
                          	            AUTONUM_CLIENTE_ENVIO_NOTA,  
                                         AUTONUM_CLIENTE_PAGAMENTO,
-                         	            CORTE,
-                                        Dias_Pgto,
+                         	            CORTE,  
                                         EMAIL,
                                         AUTONUM_FORMA_PAGAMENTO,
                                         FLAG_ENTREGA_ELETRONICA,
@@ -772,7 +769,6 @@ where oportunidadeid=:OportunidadeId  and
                          	            :ContaId,
                                         :FontePagadoraId,
                          	            A.DataCorte,
-                                        A.Dias_Pgto,
                                         A.EmailFaturamento,
                          	            A.CondicaoPagamentoFaturamentoId,
                                         A.EntregaEletronica,
@@ -890,18 +886,16 @@ where oportunidadeid=:OportunidadeId  and
                         parametrosGrupo.Add(name: "DataCorte", value: fichaRevisada.DataCorte, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "EmailFaturamento", value: fichaRevisada.EmailFaturamento, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "CondicaoPagamentoFaturamentoId", value: fichaRevisada.CondicaoPagamentoFaturamentoId, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "EntregaEletronica", value: fichaRevisada.EntregaEletronica, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "EntregaManual", value: fichaRevisada.EntregaManual, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "CorreiosComum", value: fichaRevisada.CorrreiosComum, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "CorreiosSedex", value: fichaRevisada.CorreiosSedex, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "DiaUtil", value: fichaRevisada.DiaUtil, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "UltimoDiaDoMes", value: fichaRevisada.UltimoDiaDoMes, direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "EntregaEletronica", value: fichaRevisada.EntregaEletronica.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "EntregaManual", value: fichaRevisada.EntregaManual.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "CorreiosComum", value: fichaRevisada.CorrreiosComum.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "CorreiosSedex", value: fichaRevisada.CorreiosSedex.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "DiaUtil", value: fichaRevisada.DiaUtil.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "UltimoDiaDoMes", value: fichaRevisada.UltimoDiaDoMes.ToInt(), direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "DiasFaturamento", value: fichaRevisada.DiasFaturamento, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "OportunidadeId", value: fichaRevisada.OportunidadeId, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "FichaId", value: fichaRevisada.Id, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "Dias_Pgto", value: fichaRevisada.CondicaoPgtoDia  , direction: ParameterDirection.Input);
 
-                        
                         if (!string.IsNullOrEmpty(fichaRevisada.ContaDocumento))
                         {
                             var subClienteChronos = _tabelasDAO.ConsultaParceiroFontePagadora(fichaRevisada.ContaDocumento, fichaRevisada.TabelaId, fichaRevisada.SegmentoSubCliente);
@@ -943,7 +937,6 @@ where oportunidadeid=:OportunidadeId  and
                                         AUTONUM_GRUPO_LISTA,
                                         CORTE,
                                         DIA,
-                                        Dias_Pgto,
                                         EMAIL,
                                         AUTONUM_FORMA_PAGAMENTO,
                                         FLAG_ENTREGA_ELETRONICA,
@@ -964,7 +957,6 @@ where oportunidadeid=:OportunidadeId  and
                                         :SubClienteId,
                                         :DataCorte,
                                         :DiasFaturamento,
-                                        :Dias_Pgto
                                         :EmailFaturamento,
                                         :CondicaoPagamentoFaturamentoId,
                                         :EntregaEletronica,
@@ -1065,16 +1057,15 @@ where oportunidadeid=:OportunidadeId  and
                         parametrosGrupo.Add(name: "DataCorte", value: ficha.DataCorte, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "EmailFaturamento", value: ficha.EmailFaturamento, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "CondicaoPagamentoFaturamentoId", value: ficha.CondicaoPagamentoFaturamentoId, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "EntregaEletronica", value: ficha.EntregaEletronica, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "EntregaManual", value: ficha.EntregaManual, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "CorreiosComum", value: ficha.CorrreiosComum, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "CorreiosSedex", value: ficha.CorreiosSedex, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "DiaUtil", value: ficha.DiaUtil, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "UltimoDiaDoMes", value: ficha.UltimoDiaDoMes, direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "EntregaEletronica", value: ficha.EntregaEletronica.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "EntregaManual", value: ficha.EntregaManual.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "CorreiosComum", value: ficha.CorrreiosComum.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "CorreiosSedex", value: ficha.CorreiosSedex.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "DiaUtil", value: ficha.DiaUtil.ToInt(), direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "UltimoDiaDoMes", value: ficha.UltimoDiaDoMes.ToInt(), direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "DiasFaturamento", value: ficha.DiasFaturamento, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "OportunidadeId", value: ficha.OportunidadeId, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "FichaId", value: ficha.Id, direction: ParameterDirection.Input);
-                        parametrosGrupo.Add(name: "Dias_Pgto", value: ficha.CondicaoPgtoDia, direction: ParameterDirection.Input);
 
                         if (!string.IsNullOrEmpty(ficha.ContaDocumento))
                         {
@@ -1152,7 +1143,6 @@ where oportunidadeid=:OportunidadeId  and
                                         AUTONUM_GRUPO_LISTA,
                                         CORTE,
                                         DIA,
-                                        Dias_Pgto,
                                         EMAIL,
                                         AUTONUM_FORMA_PAGAMENTO,
                                         FLAG_ENTREGA_ELETRONICA,
@@ -1173,7 +1163,6 @@ where oportunidadeid=:OportunidadeId  and
                                         :SubClienteId,
                                         :DataCorte,
                                         :DiasFaturamento,
-                                        :Dias_Pgto,
                                         :EmailFaturamento,
                                         :CondicaoPagamentoFaturamentoId,
                                         :EntregaEletronica,

@@ -1,4 +1,4 @@
-﻿using Ecoporto.CRM.Business.Enums;
+﻿using  Ecoporto.CRM.Business.Enums;
 using System;
 using System.Linq;
 using System.Web.Services;
@@ -200,7 +200,7 @@ namespace WsSimuladorCalculoTabelas
                     }
                 }
 
-                fichaBusca.FichaGeral = (oportunidadeBusca.ContaId == fichaBusca.ContaId);
+                fichaBusca.FichaGeral = (oportunidadeBusca.ContaId == fichaBusca.ContaId);               
 
                 var subClientes = _oportunidadeDAO.ObterSubClientesOportunidade(oportunidadeBusca.Id);
 
@@ -208,12 +208,12 @@ namespace WsSimuladorCalculoTabelas
 
                 if (fichaBusca.RevisaoId == 0 || (fichaBusca.RevisaoId > 0 && fichaBusca.FichaGeral))
                 {
-                    _oportunidadeDAO.IntegrarFontePagadora(fichaBusca);
+                    _oportunidadeDAO.IntegrarFontePagadora(fichaBusca);                   
                 }
                 else
                 {
                     _oportunidadeDAO.IntegrarFontePagadoraRevisada(fichaBusca);
-                }
+                }               
 
                 return new Response
                 {
@@ -494,9 +494,9 @@ namespace WsSimuladorCalculoTabelas
                                 CNPJ = grupoCnpj.Documento
                             };
 
-                            parceiroBusca.Id = _tabelasDAO.CadastrarParceiro(parceiro);
+                            parceiroBusca.Id = _tabelasDAO.CadastrarParceiro(parceiro);                            
                         }
-
+                        
                         //_tabelasDAO.AtualizarSegmentoParceiro(parceiroBusca.Id, oportunidadeBusca.SegmentoId);
                         _tabelasDAO.AtualizarSegmentoParceiroGrupoCNPJ(parceiroBusca.Id, grupoCnpj.SegmentoConta);
 
@@ -756,67 +756,5 @@ namespace WsSimuladorCalculoTabelas
                 };
             }
         }
-
-        [WebMethod(Description = "Integrações Baixa GR ")]
-        public Response IntregrarBaixaChronos(long NumeroTitulo)
-        {
-
-            try
-            {
-
-                if (NumeroTitulo == 0)
-                    return new Response
-                    {
-                        Sucesso = false,
-                        Mensagem = $"NUmero do Titulo não encontrada"
-                    };
-
-                return new Response
-                {
-                    Sucesso = true,
-                    Mensagem = $"Baixa do Titulo realizada com sucesso!"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new Response
-                {
-                    Sucesso = false,
-                    Mensagem = $"Falha durante a operação de Baixa"
-                };
-            }
-        }
-
-
-        [WebMethod(Description = "Cancela Titulo PIX")]
-        public Response CancelaTituloPix(long NumeroTitulo)
-        {
-
-            try
-            {
-
-                if (NumeroTitulo == 0)
-                    return new Response
-                    {
-                        Sucesso = false,
-                        Mensagem = $"NUmero do Titulo não encontrada"
-                    };
-
-                return new Response
-                {
-                    Sucesso = true,
-                    Mensagem = $"Baixa do Titulo realizada com sucesso!"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new Response
-                {
-                    Sucesso = false,
-                    Mensagem = $"Falha durante a operação de Baixa"
-                };
-            }
-        }
-
     }
 }
