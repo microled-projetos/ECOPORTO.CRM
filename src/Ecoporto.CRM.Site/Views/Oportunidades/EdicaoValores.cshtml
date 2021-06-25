@@ -240,8 +240,8 @@
             }
 
             <td id="arm-cif-adicionalArmazenagem-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalArmazenagem')">@Html.Raw(@linha.AdicionalArmazenagem)</td>
-            <td d="arm-cif-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMO')">@Html.Raw(@linha.AdicionalIMO)</td>
-            <td id="arm-cif-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,7, 'Exercito')">@Html.Raw(@linha.Exercito)</td>
+            <td id="arm-cif-adicionalIMO-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalIMO')">@Html.Raw(@linha.AdicionalIMO)</td>
+            <td id="arm-cif-exercito-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'Exercito')">@Html.Raw(@linha.Exercito)</td>
             <td id="arm-cif-valorANVISA-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'ValorANVISA')">@Html.Raw(@linha.ValorANVISA)</td>
             <td id="arm-cif-adicionalGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'AdicionalGRC')">@Html.Raw(@linha.AdicionalGRC)</td>
             <td id="arm-cif-minimoGRC-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemCIF(@linha.Linha, @linha.OportunidadeId,21, 'MinimoGRC')">@Html.Raw(@linha.MinimoGRC)</td>
@@ -1643,6 +1643,7 @@
                     var adicionalGRC = document.getElementById('arm-cif-adicionalGRC-' + linha);
                     var minimoGRC = document.getElementById('arm-cif-minimoGRC-' + linha);
                     var adicionalIMO = document.getElementById('arm-cif-adicionalIMO-' + linha);
+                    var exercito = document.getElementById('arm-cif-exercito-' + linha);
                     var valorANVISA = document.getElementById('arm-cif-valorANVISA-' + linha);
                     var anvisaGRC = document.getElementById('arm-cif-anvisaGRC-' + linha);
                     var AdicionalIMOGRC = document.getElementById('arm-cif-AdicionalIMOGRC-' + linha);
@@ -1664,6 +1665,7 @@
                         adicionalGRC: isNull(adicionalGRC),
                         minimoGRC: isNull(minimoGRC),
                         adicionalIMO: isNull(adicionalIMO),
+                        exercito: isNull(exercito),
                         AdicionalIMOGRC: isNull(AdicionalIMOGRC),
                         valorANVISA: isNull(valorANVISA),
                         anvisaGRC: isNull(anvisaGRC),
@@ -1675,7 +1677,7 @@
                     $.post(urlBase + 'AtualizacaoValoresProposta/AtualizarArmazenagemCIF/', obj, function (resultado, status, xhr) {
 
                         if (target === 'QtdeDias' || target === 'AdicionalArmazenagem' || target === 'CifInicial' || target === 'ValorCif' ||
-                            target === 'AdicionalGRC' || target === 'MinimoGRC' || target === 'AdicionalIMO' || target === 'ValorANVISA' || target === 'AnvisaGRC' || target === 'AdicionalIMOGRC') {
+                            target === 'AdicionalGRC' || target === 'MinimoGRC' || target === 'AdicionalIMO' || target === 'Exercito' || target === 'ValorANVISA' || target === 'AnvisaGRC' || target === 'AdicionalIMOGRC') {
 
                             if (xhr.statusText != null) {
 
@@ -1722,6 +1724,13 @@
 
                                         if (adicionalIMOBusca != null) {
                                             adicionalIMOBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.adicionalIMO + '</span>';
+                                        }
+                                    }
+                                    if (target === 'Exercito') {
+                                        var exercitoBusca = document.getElementById('arm-cif-exercito-' + linhaBusca);
+
+                                        if (exercitoBusca != null) {
+                                            exercitoBusca.innerHTML = '<span class="valor-proposta-alterado">' + obj.exercito + '</span>';
                                         }
                                     }
 

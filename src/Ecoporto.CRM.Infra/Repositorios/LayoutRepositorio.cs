@@ -1920,6 +1920,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "AdicionalGRC", value: layout.AdicionalGRC, direction: ParameterDirection.Input);
                 parametros.Add(name: "MinimoGRC", value: layout.MinimoGRC, direction: ParameterDirection.Input);
                 parametros.Add(name: "AdicionalIMO", value: layout.AdicionalIMO, direction: ParameterDirection.Input);
+                parametros.Add(name: "Exercito", value: layout.Exercito, direction: ParameterDirection.Input);
                 parametros.Add(name: "AdicionalIMOGRC", value: layout.AdicionalIMOGRC, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorANVISA", value: layout.ValorANVISA, direction: ParameterDirection.Input);
                 parametros.Add(name: "AnvisaGRC", value: layout.AnvisaGRC, direction: ParameterDirection.Input);
@@ -1938,6 +1939,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                                     Valor40 = :Valor40, 
                                     AdicionalArmazenagem = :AdicionalArmazenagem, 
                                     AdicionalGRC = :AdicionalGRC, 
+                                    Exercito = :Exercito,
                                     MinimoGRC = :MinimoGRC, 
                                     AdicionalIMO = :AdicionalIMO, 
                                     AdicionalIMOGRC = :AdicionalIMOGRC,

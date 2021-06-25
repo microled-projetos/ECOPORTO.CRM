@@ -111,8 +111,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     if (dadosSimulador.Regime == "LCL")
                     {
-                        dadosSimulador.TipoCarga = "CRGST|BBK|VEIC";
-                        dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='CRGST' OR A.TIPO_CARGA='BBK' OR A.TIPO_CARGA='VEIC')";
+                        dadosSimulador.TipoCarga = tipoCarga;
+                        dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='" + tipoCarga + "')";
                     }
 
                     decimal valorTicketMedio = 0;
@@ -146,8 +146,8 @@ namespace WsSimuladorCalculoTabelas.Services
                         {
                             if (dadosSimulador.Regime == "LCL")
                             {
-                                dadosSimulador.TipoCarga = "CRGST|BBK|VEIC";
-                                dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='CRGST' OR A.TIPO_CARGA='BBK' OR A.TIPO_CARGA='VEIC')";
+                                dadosSimulador.TipoCarga = tipoCarga;
+                                dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='" + tipoCarga  + "')";
 
                                 if (dadosSimulador.CargaSolta.Peso == 0)
                                 {
@@ -256,7 +256,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                            TipoCargaSQL = dadosSimulador.TipoCargaSQL
                                        });
                                 }
-                                if (servicos.Count() == 0 && ((servicoFixo.FlagDesova && dadosSimulador.Regime == "LCL") || (servicoFixo.FlagDesova && dadosSimulador.Regime == "FCL") || servicoFixo.FlagFCL))
+                                if ((dadosSimulador.TipoCargaSQL!="BBK" && dadosSimulador.TipoCargaSQL != "VEIC" ) && (servicos.Count() == 0 && ((servicoFixo.FlagDesova && dadosSimulador.Regime == "LCL") || (servicoFixo.FlagDesova && dadosSimulador.Regime == "FCL") || servicoFixo.FlagFCL)))
                                 {
                                     if (dadosSimulador.CargaConteiner20.Quantidade > 0 && dadosSimulador.CargaConteiner40.Quantidade == 0)
                                     {
@@ -433,8 +433,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
                             if (dadosSimulador.Regime == "LCL")
                             {
-                                dadosSimulador.TipoCarga = "CRGST|BBK|VEIC";
-                                dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='CRGST' OR A.TIPO_CARGA='BBK' OR A.TIPO_CARGA='VEIC')";
+                                dadosSimulador.TipoCarga = tipoCarga;
+                                dadosSimulador.TipoCargaSQL = " (A.TIPO_CARGA ='" + tipoCarga + "')";
                             }
 
                             for (int periodo = 1; periodo <= dadosSimulador.Periodos; periodo++)

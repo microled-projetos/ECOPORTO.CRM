@@ -63,14 +63,14 @@ namespace Ecoporto.CRM.Business.Models
             Cabecalho cabecalho, 
             int servicoId, 
             BaseCalculo baseCalculo, 
-            int qtdeDias, 
-            ValorCarga valorCarga, 
             decimal valorCIF,
+            ValorCarga valorCarga,
+            int qtdeDias,
             decimal adicionalArmazenagem,
-            decimal exercito,
             decimal adicionalGRC, 
             decimal minimoGRC, 
             decimal adicionalIMO,
+            decimal exercito,
             decimal adicionalIMOGRC,
             decimal valorANVISA, 
             decimal anvisaGRC,
@@ -88,14 +88,15 @@ namespace Ecoporto.CRM.Business.Models
             Cabecalho = cabecalho;
             ServicoId = servicoId;
             BaseCalculo = baseCalculo;
-            QtdeDias = qtdeDias;
-            ValorCarga = valorCarga;
             ValorCif = valorCIF;
+            ValorCarga = valorCarga;
+            QtdeDias = qtdeDias;
             AdicionalArmazenagem = adicionalArmazenagem;
             AdicionalGRC = adicionalGRC;
             MinimoGRC = minimoGRC;
             AdicionalIMO = adicionalIMO;
-            Exercito = exercito;            
+            Exercito = exercito;
+            AdicionalIMOGRC = adicionalIMOGRC;
             ValorANVISA = valorANVISA;
             AnvisaGRC = anvisaGRC;
             Periodo = periodo;
