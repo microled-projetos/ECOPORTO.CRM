@@ -179,10 +179,10 @@
 
             var tipoCargaArmazenagem = $('#TipoCargaArmazenagem').val();
 
-            if (parseInt(tipoCargaArmazenagem) === 1) {
+            if (parseInt(tipoCargaArmazenagem) == 1) {
                 $('#pnlArmCntr20, #pnlArmCntr40').removeClass('invisivel');
                 $('#pnlArmCarga').addClass('invisivel');
-            } else if (parseInt(tipoCargaArmazenagem) === 2) {
+            } else if (parseInt(tipoCargaArmazenagem) >1) {
                 $('#pnlArmCntr20, #pnlArmCntr40').addClass('invisivel');
                 $('#pnlArmCarga').removeClass('invisivel');
             }
@@ -192,7 +192,7 @@
             if (parseInt(tipoCargaArmazenagemMinimo) == 1) {
                 $('#pnlArmMinCntr20, #pnlArmMinCntr40').removeClass('invisivel');
                 $('#pnlArmMinCarga').addClass('invisivel');
-            } else if (parseInt(tipoCargaArmazenagemMinimo) == 2) {
+            } else if (parseInt(tipoCargaArmazenagemMinimo) >1) {
                 $('#pnlArmMinCntr20, #pnlArmMinCntr40').addClass('invisivel');
                 $('#pnlArmMinCarga').removeClass('invisivel');
             }

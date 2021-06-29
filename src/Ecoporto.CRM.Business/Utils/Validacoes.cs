@@ -95,7 +95,7 @@ namespace Ecoporto.CRM.Business.Utils
         public static bool EmailValido(string email)
         {
             if (!string.IsNullOrEmpty(email))
-                return new Regex("^[A-Za-z0-9](([_.-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)([.][A-Za-z]{2,4})$").Match(email.Trim()).Success;
+                return new Regex("^[_A-Za-z0-9](([_.-]?[_a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)([.][A-Za-z]{2,4})$").Match(email.Trim()).Success;
 
             return false;
         }
