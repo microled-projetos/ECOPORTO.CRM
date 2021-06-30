@@ -814,8 +814,13 @@ namespace WsSimuladorCalculoTabelas
         int Seq_Gr = 0;
         int BL = 0;
         int Usuario = 0;
+        int contar = 0;
+        bool blreefer = false;
         string SisFin = "SAP";
-        try
+        int diasAdicionais = 0;
+        int seq_gr = 0;
+
+            try
         {
             if (NumeroTitulo == 0)
             {
@@ -826,6 +831,8 @@ namespace WsSimuladorCalculoTabelas
                 };
             }
 
+
+
             var dadosLotes = _pagamentoPixDAO.GetListaBL(NumeroTitulo);
 
             foreach (var item in dadosLotes)
@@ -833,6 +840,59 @@ namespace WsSimuladorCalculoTabelas
                 Lote = Convert.ToInt32(item.LOTE);
                 Seq_Gr = item.SEQ_GR;
                 BL = item.AUTONUM;
+
+                    contar= _pagamentoPixDAO.Verificacalculo(Lote);
+                    if (contar == 0)
+                    {
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = " Lote sem cálculo pendente "
+                        };
+                    }
+
+                    contar = _pagamentoPixDAO.Verificaformapagamento(Lote);
+                    if (contar != 2)
+                    {
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = " Lote não tem a forma de pagamento A vista "
+                        };
+                    }
+
+                    contar = _pagamentoPixDAO.Verificaliberado(Lote);
+                    if (contar != 1)
+                    {
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = " Lote não tem liberação de calculo "
+                        };
+                    }
+
+
+                    contar = _pagamentoPixDAO.VerificaReefer(Lote);
+                    if (contar == 02)
+                    {
+                        blreefer = false;
+                    }
+                    else
+                    {
+                        blreefer = true;
+                    }
+
+                    contar = _pagamentoPixDAO.VerificaReefer(Lote);
+                    if (contar == 02)
+                    {
+                        blreefer = false;
+                    }
+                    else
+                    {
+                        blreefer = true;
+                    }
+
+
 
                 var dadosGRPre = _pagamentoPixDAO.obtemDadosGRPre(Lote);
 
@@ -846,25 +906,29 @@ namespace WsSimuladorCalculoTabelas
                 DateTime DataLiberado = dadosGRPre.dt_liberacao;
                 DateTime DataReefer = dadosGRPre.DATA_REFER;
 
-                if (DataReefer == null)
-                {
-                    return new Response
+                if (blreefer == true)
                     {
-                        Sucesso = false,
-                        Mensagem = " Gr sem Free-Time Reefer Recalcule a GR"
-                    };
-                }
+                        if (DataReefer == null)
+                        {
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = " Gr sem Free-Time Reefer Recalcule a GR"
+                            };
+                        }
 
-                if (DateTime.Now > DataReefer)
-                {
-                    return new Response
-                    {
-                        Sucesso = false,
-                        Mensagem = " Data Atual maior que o Free-Time Recalcule a GR"
-                    };
-                }
+                        if (DateTime.Now > DataReefer)
+                        {
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = " Data Atual maior que o Free-Time Recalcule a GR"
+                            };
+                        }
+                    }
 
-                int diasAdicionais = 0;
+
+              
 
                 var Tbh = _pagamentoPixDAO.obtemMaiorDataFinalGRPre(Lote);
                 int diaSemana = Convert.ToInt32(Tbh.Data_Final.DayOfWeek);
@@ -895,25 +959,32 @@ namespace WsSimuladorCalculoTabelas
                 {
                     if (_pagamentoPixDAO.EFeriado(WdT) != null)
                     {
-                        var rsx = _pagamentoPixDAO.verificaBLSemSaida(Lote);
-
-                        if (rsx == null)
-                        {
                             return new Response
                             {
                                 Sucesso = false,
                                 Mensagem = "Calculo Vencido - Favor executar o calculo novamente"
                             };
-                        }
                     }
                 }
 
-                if (ValidadeGR == null)
+                    contar= _pagamentoPixDAO.verificaBLSemSaida(Lote);
+
+                    if (contar != 0)
+                    {
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = "Lote com saída , favor verificar som setor reposnsável"
+                        };
+                    }
+
+
+               if (ValidadeGR == null)
                 {
                     return new Response
                     {
                         Sucesso = false,
-                        Mensagem = "Informe a data de validade da GR",
+                        Mensagem = "Data de validade da GR inválida",
                     };
                 }
 
@@ -922,7 +993,7 @@ namespace WsSimuladorCalculoTabelas
                     return new Response
                     {
                         Sucesso = false,
-                        Mensagem = "Informe a data base",
+                        Mensagem = "Data base do cálculo inválida",
                     };
                 }
 
@@ -931,7 +1002,7 @@ namespace WsSimuladorCalculoTabelas
                     return new Response
                     {
                         Sucesso = false,
-                        Mensagem = "Data de validade inválida",
+                        Mensagem = "Data de validade menor que a Data Base",
                     };
                 }
 
@@ -941,54 +1012,92 @@ namespace WsSimuladorCalculoTabelas
                     return new Response
                     {
                         Sucesso = false,
-                        Mensagem = "O usuário " + _pagamentoPixDAO.UsuarioEmProcessoDeCalculo(Lote).NOME + " está em processo de cálculo, favor aguardar "
+                        Mensagem = "O usuário em processo de cálculo "
                     };
                 }
 
-                if (NumeroTitulo == 0)
-                {
-                    var nroTitulo = _pagamentoPixDAO.obtemProximoNumGR();
-
-                    NumeroTitulo = nroTitulo;
-                }
+               seq_gr= _pagamentoPixDAO.obtemProximoNumGR();
 
                 var dadosPeriodoGr = _pagamentoPixDAO.obtemDadosPeriodoGR(Lote);
                 string wInicio = "";
                 string wFinal = "";
+                 int wperiodos = 0;
 
-                if (dadosPeriodoGr == null)
+                if (dadosPeriodoGr != null)
                 {
                     wInicio = dadosPeriodoGr.INICIO.ToString("dd/MM/yyyy");
                     wFinal = dadosPeriodoGr.FINAL.ToString("dd/MM/yyyy");
-                }
+                    wperiodos = dadosPeriodoGr.PERIODOS 
+                    }
 
-                if (_pagamentoPixDAO.UsuarioEmProcessoDeCalculo(Lote) != null)
-                {
-
-                    return new Response
-                    {
-                        Sucesso = false,
-                        Mensagem = "O usuário " + _pagamentoPixDAO.UsuarioEmProcessoDeCalculo(Lote).NOME + " está em processo de cálculo, favor aguardar "
-                    };
-                }
-
-
-                //nesta linha ver para pegar o ID do usuario logado
-
-                int usuario = 0;
-
-                _pagamentoPixDAO.atualizaGREmServico(Lote, Seq_Gr, usuario);
+                               
+                _pagamentoPixDAO.atualizaGREmServico(Lote, Seq_Gr, 90);
                 _pagamentoPixDAO.atualizaGREmDescricao(Lote, Seq_Gr);
                 _pagamentoPixDAO.atualizaGREmCNTR(Lote, Seq_Gr);
                 _pagamentoPixDAO.atualizaGREmCS(Lote, Seq_Gr);
 
 
-                //Colocar o metodo que se chama inserir() ver todas as variaveis dele e criar o metodo no repositorio que ainda não tem 
+                    //Colocar o metodo que se chama inserir() ver todas as variaveis dele e criar o metodo no repositorio que ainda não tem 
+                    var novaGR = new IntegracaoBaixa();
 
+            novaGR.AUTONUM_BL = Lote;
+            novaGR.SEQ_GR  = seq_gr;
+            novaGR.dtGR = NNull(txtData.Text, 1)
+            novaGR.valorGR = txtValGR.Text
+            novaGR.statusGR = "GE"
+            novaGR.flagGRPaga = "1"
+            novaGR.validadeGR = mskDT1.Text & " " & Format(Now, "hh:mm:ss")
+            novaGR.dtBaseCalculo = mskData.Text
+
+            If BLReefer Then
+                If mskDT2.Text = "__/__/____" Or mskDT2.Text = "  /  /" Then
+                    novaGR.dtBaseCalculoReefer = mskData.Text & " " & Format(Now, "hh:mm:ss")
+                Else
+                    novaGR.dtBaseCalculoReefer = mskDT2.Text & " " & Format(Now, "hh:mm:ss")
+                End If
+            Else
+                novaGR.dtBaseCalculoReefer = ""
+            End If
+
+            novaGR.grauTabelaGR = Grau
+            novaGR.tabelaGR = NNull(txtIDContrato.Text, 0)
+            novaGR.dtRegistro = CDate(Format(Now, "dd/MM/yyyy hh:mm:ss")).ToString
+            novaGR.importadorGR = NNull(txtimportador.Text, 0)
+            novaGR.dtFimPeriodo = wFinal
+            novaGR.formaPagamento = cbForma.SelectedValue
+            novaGR.numCheque = txtCheque.Text
+            novaGR.conta = txtConta.Text
+            novaGR.banco = cbBanco.SelectedValue
+            novaGR.agencia = txtAgencia.Text
+            novaGR.dtInicioPeriodo = wInicio
+
+            Dim rsUsu As New DataTable
+            Dim usuGR As String = "90"
+
+            Try
+                rsUsu = DAO.Consultar("SELECT AUTONUM FROM SGIPA.TB_CAD_USUARIOS WHERE USUARIO = '" & UsuarioLogado.Login & "' ")
+                If rsUsu.Rows.Count > 0 Then
+                    usuGR = rsUsu.Rows(0)(0).ToString
+                End If
+            Catch ex As Exception
+                Err.Clear()
+                usuGR = "90"
+            End Try
+
+            'novaGR.usuario = Cod_Usuario
+
+            novaGR.usuario = usuGR
+            novaGR.periodos = Text2.Text
+            novaGR.fQtdCntr = QCntr
+            novaGR.fQtdVolumes = Qvolumes
+            novaGR.fPesoCS = Qpeso
+            novaGR.dtInicioCalculo = DataFiltro
+            novaGR.dtLiberacao = DataLiberado
+            novaGR.inserir()
 
                 //Colocar o metodo Atualiza_Vencimento que no C# deixei separado
 
-                var dadosAtualizaDadosVencimento = _pagamentoPixDAO.GetDadosAtualizaVencimento(Lote);
+                    var dadosAtualizaDadosVencimento = _pagamentoPixDAO.GetDadosAtualizaVencimento(Lote);
 
                 if (dadosAtualizaDadosVencimento != null)
                 {
