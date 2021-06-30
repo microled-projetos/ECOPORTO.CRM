@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Configuracao\Configuracoes.cs" />
     <Compile Include="DAO\ModeloDAO.cs" />
+    <Compile Include="DAO\PagamentoPixDAO.cs" />
     <Compile Include="DAO\ParametrosDAO.cs" />
     <Compile Include="DAO\AnexosDAO.cs" />
     <Compile Include="DAO\ContaDAO.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Models\Conta.cs" />
     <Compile Include="Models\DadosArquivoUpload.cs" />
     <Compile Include="Models\FaixaCIF.cs" />
+    <Compile Include="Models\IntegracaoBaixa.cs" />
     <Compile Include="Models\LayoutDTO.cs" />
     <Compile Include="Models\Modelo.cs" />
     <Compile Include="Models\Oportunidade.cs" />
