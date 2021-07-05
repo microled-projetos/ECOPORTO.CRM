@@ -20,7 +20,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT AUTONUM LOTE, SEQ_GR, AUTONUM FROM SGIPA.TB_BL WHERE NUM_TITULO_PIX =  " + numeroTitulo);
+                    sb.AppendLine(" SELECT AUTONUM LOTE, SEQ_GR, AUTONUM , CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM SGIPA.TB_BL WHERE NUM_TITULO_PIX =  " + numeroTitulo);
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
 
@@ -145,6 +145,82 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return 0;
             }
         }
+
+        public bool inseregr_bl(long seq_gr, long lote, string inicio, string fim )
+        {
+            try
+            {
+                using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("INSERT INTO TB_GR_BL ");
+                    sb.AppendLine("(AUTONUM, ");
+                    sb.AppendLine("BL, ");
+                    sb.AppendLine("SEQ_GR, ");
+                    sb.AppendLine("DT_GR, ");
+                    sb.AppendLine("VALOR_GR, ");
+                    sb.AppendLine("STATUS_GR, ");
+                    sb.AppendLine("FLAG_GR_PAGA, ");
+                    sb.AppendLine("VALIDADE_GR, ");
+                    sb.AppendLine("DT_BASE_CALCULO, ");
+                    sb.AppendLine("Dt_Base_Calculo_Reefer,");
+                    sb.AppendLine("GRAU_TABELA_GR, ");
+                    sb.AppendLine("TABELA_GR, ");
+                    sb.AppendLine("DT_REGISTRO, ");
+                    sb.AppendLine("IMPORTADOR_GR, ");
+                    sb.AppendLine("DT_FIM_PERIODO, ");
+                    sb.AppendLine("FORMA_PAGAMENTO, ");
+                    sb.AppendLine("dt_inicio_periodo, ");
+                    sb.AppendLine("usuario, ");
+                    sb.AppendLine("periodos, ");
+                    sb.AppendLine("f_qtd_cntr, ");
+                    sb.AppendLine("f_qtd_volumes, ");
+                    sb.AppendLine("f_peso_cs, ");
+                    sb.AppendLine("DT_INICIO_CALCULO, ");
+                    sb.AppendLine("DT_LIBERACAO ");
+                    sb.AppendLine(") ");
+                    sb.AppendLine("select SEQ_GR_BL.NEXTVAL, ");
+                    sb.AppendLine("A.BL, ");
+                    sb.AppendLine(seq_gr + ", ");
+                    sb.AppendLine("sysdate,");
+                    sb.AppendLine("V.VALORGR,");
+                    sb.AppendLine("'GE', ");
+                    sb.AppendLine("0, ");
+                    sb.AppendLine("A.VALIDADE_GR,");
+                    sb.AppendLine("A.Datta_base, ");
+                    sb.AppendLine("A.Data_Reefer,");
+                    sb.AppendLine("0, ");
+                    sb.AppendLine("A.LISTA,");
+                    sb.AppendLine("SYSDATE, ");
+                    sb.AppendLine("B.IMPORTADOR,");
+                    sb.AppendLine("to_DATE('" + fim + "', 'DD/MM/YYYY'), ");
+                    sb.AppendLine("A.FORMAPAGAMENTO,");
+                    sb.AppendLine("to_DATE('" + inicio + "', 'DD/MM/YYYY'), ");
+                    sb.AppendLine("90, ");
+                    sb.AppendLine("A.periodos,");
+                    sb.AppendLine("0, ");
+                    sb.AppendLine("0, ");
+                    sb.AppendLine("0, ");
+                    sb.AppendLine("A.DT_INICIO_CALCULO, ");
+                    sb.AppendLine("B.DT_LIBERACAO ");
+                    sb.AppendLine("FROM  TB_GR_PRE_CALCULO  A INNER JOIN TB_BL B ON A.BL=B.AUTONUM ");
+                    sb.AppendLine("INNER JOIN (");
+                    sb.AppendLine("select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from tb_servicos_faturados a  ");
+                    sb.AppendLine("left join (select sum(valor_imposto) valori , autonum_servico_faturado from tb_servicos_faturados_impostos ");
+                    sb.AppendLine("group by autonum_servico_faturado) b on a.autonum=b.autonum_servico_faturado");
+                    sb.AppendLine("where nvl(seq_gr,0) =0  group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
+ 
+                    return db.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool atualizaDescontoCom(long seq_gr)
         {
             try
@@ -172,7 +248,7 @@ namespace WsSimuladorCalculoTabelas.DAO
         {
             try
             {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
 
@@ -443,124 +519,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public bool InserirGr(int lote, int seqGR)
-        {      
-            Try
-              {
-                using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    string sSql String;
-
-                    sSql = "INSERT INTO "
-            sSql = sSql & "TB_GR_BL "
-            sSql = sSql & "(AUTONUM, "
-            sSql = sSql & "BL, "
-            sSql = sSql & "SEQ_GR, "
-            sSql = sSql & "DT_GR, "
-            sSql = sSql & "VALOR_GR, "
-            sSql = sSql & "STATUS_GR, "
-            sSql = sSql & "FLAG_GR_PAGA, "
-            sSql = sSql & "VALIDADE_GR, "
-            sSql = sSql & "DT_BASE_CALCULO, "
-            sSql = sSql & "Dt_Base_Calculo_Reefer,"
-            sSql = sSql & "GRAU_TABELA_GR, "
-            sSql = sSql & "TABELA_GR, "
-            sSql = sSql & "DT_REGISTRO, "
-            sSql = sSql & "IMPORTADOR_GR, "
-            sSql = sSql & "DT_FIM_PERIODO, "
-            sSql = sSql & "FORMA_PAGAMENTO, "
-            sSql = sSql & "NUM_CHEQUE, "
-            sSql = sSql & "CONTA, "
-            sSql = sSql & "BANCO, "
-            sSql = sSql & "agencia, "
-            sSql = sSql & "dt_inicio_periodo, "
-            sSql = sSql & "usuario, "
-            sSql = sSql & "periodos, "
-            sSql = sSql & "f_qtd_cntr, "
-            sSql = sSql & "f_qtd_volumes, "
-            sSql = sSql & "f_peso_cs, "
-            sSql = sSql & "DT_INICIO_CALCULO, "
-            sSql = sSql & "DT_LIBERACAO "
-            sSql = sSql & ") VALUES ("
-            sSql = sSql & "SEQ_GR_BL.NEXTVAL, "
-            sSql = sSql & bl & ", "
-            sSql = sSql & Val(seqGR) & ", "
-            If IsDate(NNull(Me.dtGR, 1)) Then
-                sSql = sSql & "to_date('" & dtGR & "','dd/MM/yyyy hh24:mi:ss'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            sSql = sSql & " " & Me.valorGR.ToString.Replace(",", ".") & ", "
-            sSql = sSql & "'" & Me.statusGR & "', "
-            sSql = sSql & "" & Me.flagGRPaga & ", "
-            If IsDate(NNull(Me.validadeGR, 1)) Then
-                sSql = sSql & "to_date('" & validadeGR & "','dd/mm/yyyy hh24:mi:ss'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            If IsDate(NNull(Me.dtBaseCalculo, 1)) Then
-                sSql = sSql & "to_date('" & Me.dtBaseCalculo & "','dd/mm/yyyy'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            If IsDate(NNull(Me.dtBaseCalculoReefer, 1)) Then
-                sSql = sSql & "to_date('" & Me.dtBaseCalculoReefer & "','dd/mm/yyyy hh24:mi:ss'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            sSql = sSql & Me.grauTabelaGR & ", "
-            sSql = sSql & NNull(Me.tabelaGR, 0) & ", "
-            If IsDate(NNull(Me.dtRegistro, 1)) Then
-                sSql = sSql & "to_date('" & Me.dtRegistro & "','dd/mm/yyyy hh24:mi:ss'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            sSql = sSql & NNull(Me.importadorGR, 0) & ", "
-            If IsDate(NNull(Me.dtFimPeriodo, 1)) Then
-                sSql = sSql & "to_date('" & Me.dtFimPeriodo & "','dd/mm/yyyy'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            sSql = sSql & NNull(Me.formaPagamento, 0) & ", "
-            sSql = sSql & "'" & NNull(Me.numCheque, 1) & "', "
-            sSql = sSql & "'" & NNull(Me.conta, 1) & "', "
-            sSql = sSql & "" & NNull(Me.banco, 0) & ", "
-            sSql = sSql & "'" & NNull(Me.agencia, 1) & "', "
-            If IsDate(NNull(Me.dtInicioPeriodo, 1)) Then
-                sSql = sSql & "to_date('" & Me.dtInicioPeriodo & "','dd/mm/yyyy'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-            sSql = sSql & Me.usuario & ", "
-            sSql = sSql & NNull(Me.periodos, 0) & ", "
-            sSql = sSql & Me.fQtdCntr & ", "
-            sSql = sSql & Me.fQtdVolumes & ", "
-            sSql = sSql & Me.fPesoCS.ToString.Replace(",", ".") & ", "
-            If IsDate(NNull(Me.dtInicioCalculo, 1)) Then
-                sSql = sSql & "to_date('" & Me.dtInicioCalculo & "','dd/mm/yyyy HH24:MI'), "
-            Else
-                sSql = sSql & "NULL, "
-            End If
-
-            If IsDate(NNull(Me.dtLiberacao, 1)) Then
-                sSql = sSql & "TO_DATE('" & Me.dtLiberacao & "','DD/MM/YYYY HH24:MI')"
-            Else
-                sSql = sSql & "NULL "
-            End If
-            sSql = sSql & ")"
-         bool query = db.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-
-        }
-            catch (Exception ex)
-            {
-                return false;
-            }
-}
+       
     public bool atualizaGREmCNTR(int lote, int seqGR)
         {
             try
@@ -750,7 +709,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return count;
+                return 0;
             }
         }
         public bool atualizaAMRNFCNTRLavagem(int Lote, int seqGR)
@@ -799,7 +758,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" select C.AUTONUM ");
                     sb.AppendLine(" from SGIPA.TB_SERVICOS_ADICIONAIS_BL C, ");
                     sb.AppendLine(" SGIPA.TB_servicos_faturados D ");
-                    sb.AppendLine(" where c.seq_gr IS NULL AND d.seq_gr= " + seqGR);
+                    sb.AppendLine(" where nvl(c.seq_gr,0)=0 AND d.seq_gr= " + seqGR);
                     sb.AppendLine(" and c.servico=d.servico ");
                     sb.AppendLine(" and c.BL =  " + Lote + " AND D.BL= " + Lote);
                     sb.AppendLine(" ) ");
@@ -904,7 +863,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT MAX(ID) FROM FATURA FATURANOTA WHERE CANCELADA = 0 AND TIPO = 'GR' AND GR = '" + GR + "'  AND STATUSNFE NOT IN (4,5,0) ");
+                    sb.AppendLine(" SELECT nvl(MAX(ID),0) FROM FATURA FATURANOTA WHERE CANCELADA = 0 AND TIPO = 'GR' AND GR = '" + GR + "'  AND STATUSNFE NOT IN (4,5,0) ");
 
                     max = con.Query<int>(sb.ToString()).FirstOrDefault();
 

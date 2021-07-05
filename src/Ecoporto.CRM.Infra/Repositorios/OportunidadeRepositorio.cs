@@ -1435,17 +1435,8 @@ SELECT NVL (
   FROM crm.tb_crm_oportunidades  a
        INNER JOIN crm.tb_crm_oportunidade_ficha_fat b
            ON a.id = b.oportunidadeid
-       LEFT JOIN
-       (SELECT max(contaid) contaid
-          FROM crm.tb_crm_spc_consultas
-         WHERE SUBSTR (cnpj, 1, 10) IN
-                   (SELECT SUBSTR (documento, 1, 10)
-                      FROM CRM.TB_CRM_CONTAS
-                     WHERE Id IN (SELECT fontepagadoraid
-                                    FROM crm.tb_crm_oportunidade_ficha_fat
-                                   WHERE oportunidadeid = :oportunidadeId))) fil on 1=1
        LEFT JOIN crm.tb_crm_spc_limite_credito c
-           ON     fil.contaid = c.contaid
+           ON      b.fontepagadoraid  = c.contaid
               AND b.condicaopagamentofaturamentoid = c.condicaopagamentoid
        LEFT JOIN FATURA.TB_COND_PGTO D
            ON b.condicaopagamentofaturamentoid = D.CODCPG where      a . id  = :oportunidadeId", parametros).Single();

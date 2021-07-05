@@ -819,6 +819,7 @@ namespace WsSimuladorCalculoTabelas
         string SisFin = "SAP";
         int diasAdicionais = 0;
         int seq_gr = 0;
+        int cod_empresa =0;
 
             try
         {
@@ -840,6 +841,7 @@ namespace WsSimuladorCalculoTabelas
                 Lote = Convert.ToInt32(item.LOTE);
                 Seq_Gr = item.SEQ_GR;
                 BL = item.AUTONUM;
+                cod_empresa=item.PATIO;
 
                     contar= _pagamentoPixDAO.Verificacalculo(Lote);
                     if (contar == 0)
@@ -1027,7 +1029,7 @@ namespace WsSimuladorCalculoTabelas
                 {
                     wInicio = dadosPeriodoGr.INICIO.ToString("dd/MM/yyyy");
                     wFinal = dadosPeriodoGr.FINAL.ToString("dd/MM/yyyy");
-                    wperiodos = dadosPeriodoGr.PERIODOS 
+                        wperiodos = dadosPeriodoGr.PERIODOS;
                     }
 
                                
@@ -1036,107 +1038,15 @@ namespace WsSimuladorCalculoTabelas
                 _pagamentoPixDAO.atualizaGREmCNTR(Lote, Seq_Gr);
                 _pagamentoPixDAO.atualizaGREmCS(Lote, Seq_Gr);
 
+                    var insereGr = _pagamentoPixDAO.inseregr_bl(Seq_Gr, Lote, wInicio, wFinal);
 
-                    //Colocar o metodo que se chama inserir() ver todas as variaveis dele e criar o metodo no repositorio que ainda não tem 
-                    var novaGR = new IntegracaoBaixa();
+                  //  var dadosAtualizaDadosVencimento = _pagamentoPixDAO.GetDadosAtualizaVencimento(Lote);
 
-            novaGR.AUTONUM_BL = Lote;
-            novaGR.SEQ_GR  = seq_gr;
-            novaGR.dtGR = NNull(txtData.Text, 1)
-            novaGR.valorGR = txtValGR.Text
-            novaGR.statusGR = "GE"
-            novaGR.flagGRPaga = "1"
-            novaGR.validadeGR = mskDT1.Text & " " & Format(Now, "hh:mm:ss")
-            novaGR.dtBaseCalculo = mskData.Text
+                 
 
-            If BLReefer Then
-                If mskDT2.Text = "__/__/____" Or mskDT2.Text = "  /  /" Then
-                    novaGR.dtBaseCalculoReefer = mskData.Text & " " & Format(Now, "hh:mm:ss")
-                Else
-                    novaGR.dtBaseCalculoReefer = mskDT2.Text & " " & Format(Now, "hh:mm:ss")
-                End If
-            Else
-                novaGR.dtBaseCalculoReefer = ""
-            End If
+               var QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, Seq_Gr);
 
-            novaGR.grauTabelaGR = Grau
-            novaGR.tabelaGR = NNull(txtIDContrato.Text, 0)
-            novaGR.dtRegistro = CDate(Format(Now, "dd/MM/yyyy hh:mm:ss")).ToString
-            novaGR.importadorGR = NNull(txtimportador.Text, 0)
-            novaGR.dtFimPeriodo = wFinal
-            novaGR.formaPagamento = cbForma.SelectedValue
-            novaGR.numCheque = txtCheque.Text
-            novaGR.conta = txtConta.Text
-            novaGR.banco = cbBanco.SelectedValue
-            novaGR.agencia = txtAgencia.Text
-            novaGR.dtInicioPeriodo = wInicio
-
-            Dim rsUsu As New DataTable
-            Dim usuGR As String = "90"
-
-            Try
-                rsUsu = DAO.Consultar("SELECT AUTONUM FROM SGIPA.TB_CAD_USUARIOS WHERE USUARIO = '" & UsuarioLogado.Login & "' ")
-                If rsUsu.Rows.Count > 0 Then
-                    usuGR = rsUsu.Rows(0)(0).ToString
-                End If
-            Catch ex As Exception
-                Err.Clear()
-                usuGR = "90"
-            End Try
-
-            'novaGR.usuario = Cod_Usuario
-
-            novaGR.usuario = usuGR
-            novaGR.periodos = Text2.Text
-            novaGR.fQtdCntr = QCntr
-            novaGR.fQtdVolumes = Qvolumes
-            novaGR.fPesoCS = Qpeso
-            novaGR.dtInicioCalculo = DataFiltro
-            novaGR.dtLiberacao = DataLiberado
-            novaGR.inserir()
-
-                //Colocar o metodo Atualiza_Vencimento que no C# deixei separado
-
-                    var dadosAtualizaDadosVencimento = _pagamentoPixDAO.GetDadosAtualizaVencimento(Lote);
-
-                if (dadosAtualizaDadosVencimento != null)
-                {
-                    DateTime data1 = dadosAtualizaDadosVencimento.Data1;
-                    DateTime data2 = dadosAtualizaDadosVencimento.Data2;
-                    string strData = "";
-
-                    if (data2 != null)
-                    {
-                        strData = "To_date('" + data2.ToString("dd-MM-yyyy") + "','dd/MM/yyyy') ";
-                    }
-                    else
-                    {
-                        strData = "To_date('" + data1.ToString("dd-MM-yyyy") + "','dd/MM/yyyy') ";
-                    }
-
-
-
-
-                    int countBL_GrIMGE = _pagamentoPixDAO.countBL_GrIMGE(Lote);
-
-                    if (countBL_GrIMGE == 0)
-                    {
-                        strData = null;
-                    }
-
-                    _pagamentoPixDAO.GetUpdateDtFimPeriodo(strData, Lote);
-
-                }
-                else
-                {
-
-                }
-
-
-
-                int? QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, Seq_Gr);
-
-                if (QdeLavagemCtnr == null)
+                if (QdeLavagemCtnr != 0)
                 {
                     _pagamentoPixDAO.atualizaAMRNFCNTRLavagem(Lote, Seq_Gr);
                 }
@@ -1147,18 +1057,6 @@ namespace WsSimuladorCalculoTabelas
                 _pagamentoPixDAO.atualizaPreCalculoGR(Lote);
 
 
-                //PARTE DO BOTÃO RPS
-
-
-                int? IDNotaGr = _pagamentoPixDAO.obtemMaiorIDNotaGR(Seq_Gr);
-
-                //Ver se esse if vai continuar pois somente precisamos da parte de 
-                if (IDNotaGr > 0)
-                {
-                    //não foi necessário colocar ação aqui pois somente ia ser feita a nota individual 
-                }
-                else
-                {
                     //Fazer o metodo de notaIndividual
 
                     #region notaIndividual 
@@ -1168,7 +1066,7 @@ namespace WsSimuladorCalculoTabelas
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "Escolha uma GR"
+                            Mensagem = "Erro na geração da GR "
                         };
                     }
 
@@ -1209,6 +1107,138 @@ namespace WsSimuladorCalculoTabelas
                     }
 
                     var faturaGR = _pagamentoPixDAO.GetDadosFaturaGr(Seq_Gr);
+
+                    /*      If rsGR.Rows.Count > 0 Then
+                     *      
+            Zera_Nota_Emi()
+            Zera_Dados_Cli_Nota()
+                        If NNull(seq_gr, 0) = 0 Then
+            MsgBox("Erro na  geração da GR ", vbCritical)
+                    saida
+        End If
+
+        Serie_NF = Busca_Serie("NFE", NNull(Cod_Empresa, 0), "GR")
+        If NNull(Serie_NF, 1) = "" Then
+             MsgBox("Erro na  SERIE ", vbCritical)
+                    saida
+        End If
+        If Nota_Pendente(Serie_NF, NNull(Cod_Empresa, 0), "GR") = True Then
+             MsgBox("Erro na  SERIE ", vbCritical)
+                    saida
+        End If
+
+        cbMeioPAGAMENTO='PIX';
+  
+        Titulo_Sapiens = cx.obtemTituloSapiens().Rows(0)(0).ToString
+
+            
+                              nota = New FaturaNota
+                              nota.documento = rsGR.Rows(0)("SEQ_GR").ToString
+                              nota.parceiro = rsGR.Rows(0)("PARCEIRO").ToString
+                              nota.lote = Long.Parse(NNull(rsGR.Rows(0)("LOTE").ToString, 0))
+                              nota.substituicao = False
+
+                          sSql = "SELECT DISTINCT SERVICO FROM " & DAO.BancoSgipa & "TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" & seq_gr  & ") "
+                          sSql = sSql & " AND (NVL(VALOR,0) + NVL(ADICIONAL,0) + NVL(DESCONTO,0) ) > 0 "
+                          rsServicos = DAO.Consultar(sSql)
+                          servicos = ""
+                          contaItens = 0
+                          contaFatura = 0
+                          For idS = 0 To rsServicos.Rows.Count - 1
+                              contaItens = contaItens + 1
+                              If tamanhoDescrItens("GR", seq_gr, servicos & IIf(servicos <> "", ",", "") & rsServicos.Rows(idS)(0).ToString) > 2000 Then
+                                  wIdServicos = ""
+                                  sSql = "SELECT AUTONUM FROM " & DAO.BancoSgipa & "TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" & seq_gr & " ) "
+                                  sSql = sSql & " And SERVICO IN(" & servicos & ") "
+                                  rsIdServicos = DAO.Consultar(sSql)
+                                  For ln = 0 To rsIdServicos.Rows.Count - 1
+                                      If wIdServicos <> "" Then wIdServicos = wIdServicos & ","
+                                      wIdServicos = wIdServicos & rsIdServicos.Rows(ln)(0).ToString
+                                  Next
+
+                                  notaAtu = New notasGerar
+                                  notaAtu.idsServFaturados = wIdServicos
+                                  notaAtu.idsServicos = servicos
+                                  listaFatura.Add(notaAtu)
+
+                                  wIdServicos = ""
+                                  contaItens = 0
+                                  servicos = ""
+
+                                  servicos = rsServicos.Rows(idS)(0).ToString
+                              Else
+                                  If servicos <> "" Then servicos = servicos & ","
+                                  servicos = servicos & rsServicos.Rows(idS)(0).ToString
+                              End If
+                          Next
+
+                          If servicos <> "" Then
+                              wIdServicos = ""
+                              sSql = "SELECT AUTONUM FROM " & DAO.BancoSgipa & "TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" & seq_gr & " ) "
+                              sSql = sSql & " And SERVICO IN(" & servicos & ") "
+                              rsIdServicos = DAO.Consultar(sSql)
+                              For ln = 0 To rsIdServicos.Rows.Count - 1
+                                  If wIdServicos <> "" Then wIdServicos = wIdServicos & ","
+                                  wIdServicos = wIdServicos & rsIdServicos.Rows(ln)(0).ToString
+                              Next
+
+                              notaAtu = New notasGerar
+                              notaAtu.idsServFaturados = wIdServicos
+                              notaAtu.idsServicos = servicos
+                              listaFatura.Add(notaAtu)
+
+                              wIdServicos = ""
+                              contaItens = 0
+                              servicos = ""
+                          End If
+                              If Not nota.consistenciaGR() Then
+                                  If nota.retornoConsistencia <> "" Then
+                                      MsgBox(nota.retornoConsistencia, vbInformation, Me.Text)
+                                  End If
+                                  GoTo saida
+                              End If
+
+                              For x = 0 To nota.listaFatura.Count - 1
+                                 
+                                      If NNull(rsGR.Rows(0)("flag_hubport").ToString, 0) = 0 Or Not primeirahub(rsGR.Rows(0)("SEQ_GR").ToString) Then
+                                          Cli_Codcli = NNull(rsGR.Rows(0)("Codcli").ToString, 0)
+                                          Cli_Razao = NNull(rsGR.Rows(0)("Razao").ToString, 1)
+                                          Cli_CGC = NNull(rsGR.Rows(0)("CGC").ToString, 0)
+                                          Cli_Cidade = NNull(rsGR.Rows(0)("Cidade_cli").ToString, 0)
+                                          Cli_Autonum = NNull(rsGR.Rows(0)("autonum_cli").ToString, 0)
+                                      Else
+                                          Cli_Codcli = NNull(rsGR.Rows(0)("Ind_Codcli").ToString, 0)
+                                          Cli_Razao = NNull(rsGR.Rows(0)("Ind_Razao").ToString, 1)
+                                          Cli_CGC = NNull(rsGR.Rows(0)("Ind_CGC").ToString, 0)
+                                          Cli_Cidade = NNull(rsGR.Rows(0)("Ind_Cidade_cli").ToString, 0)
+                                          Cli_Autonum = NNull(rsGR.Rows(0)("Ind_autonum").ToString, 0)
+                                      End If
+                             
+                                  If   NNull(Cli_Codcli, 0) = 0 Then
+                                      MsgBox("Cadatro do cliente não encontrado!", vbInformation, Me.Text)
+                                      GoTo saida
+                                  End If
+                                  sap_cli = Preenche_Cliente("GR")
+                                  If sap_cli.Rows.Count = 0 Then
+                                      Erro_Cad = True
+                                  ElseIf NNull(Cli_Codcli, 0) = 0 Then
+                                      notaGR.atualizaCODCLI(sap_cli.Rows(0)("codcli").ToString, Cli_Autonum)
+                                  End If
+
+                                 
+                                      nota.substituicao = False
+                                      nota.insereFaturanota(Cli_Codcli, Cli_Razao, Cli_CGC, Cli_Cidade, Cli_Autonum, Format(CDate(Now), "dd/MM/yyyy"), Format(CDate(mskDeposito.Text), "dd/MM/yyyy"), nota.listaFatura(x).idsServFaturados, "", "", "PRESTAÇÃO DE SERVIÇOS", "20.01", rsGR.Rows(0)("NUM_DOCUMENTO").ToString, rsGR.Rows(0)("TIPODOC_DESCRICAO").ToString, rsGR.Rows(0)("PATIO").ToString, 0)
+                                      If nota.idNota > 0 Then
+                                          CMD_XML(2) = Monta_Sid_FechaNota(Serie_NF, IIf(Tipo_Nota.ToUpper.Trim = "NFE", IIf(Check1.Checked = False, True, False), False), Titulo_Sapiens, mskDeposito.Text, cbDeposito.SelectedValue, txtVlL.Text, Cod_Pag)
+
+                                          If nota.geraIntegracao(nota.listaFatura(x).idsServFaturados, Cli_CGC, "", Format(CDate(Now), "dd/MM/yyyy"), rsGR.Rows(0)("PATIO").ToString, cbMeio.SelectedValue,  , IIf(Check1.Checked = False, True, False), Titulo_Sapiens, mskDeposito.Text, cbDeposito.SelectedValue, txtVlL.Text, cbMeio.SelectedValue) = false Then
+                                             MsgBox("erro na integração!", vbInformation, Me.Text)
+                                      GoTo saida
+                                          End If
+                                    
+                    FIM DA ROTINA 
+                                  */
+
 
                     int fpParc = faturaGR.FPPARC;
                     int fpGrp = faturaGR.FPGRP;
@@ -1449,7 +1479,7 @@ namespace WsSimuladorCalculoTabelas
                 //Colocar este método por ultimo que o mesmo tem nas duas acoes 
 
                 _pagamentoPixDAO.atualizaBLREGGR(Lote);
-            }
+          
 
             return new Response
             {

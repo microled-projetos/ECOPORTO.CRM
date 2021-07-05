@@ -880,7 +880,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                 foreach (var servicoGeral in servicosGerais)
                                 {
-                                    if (layout.TipoCarga != TipoCarga.CARGA_SOLTA)
+                                    if (layout.TipoCarga  == TipoCarga.CONTEINER) 
                                     {
                                         if (layout.ValorMinimo20 != layout.ValorMinimo40)
                                         {
