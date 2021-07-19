@@ -75,7 +75,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine("  select count(1)  from tb_servicos_faturados ");
+                    sb.AppendLine("  select count(1)  from SGIPA.tb_servicos_faturados ");
                     sb.AppendLine(" WHERE NVL(SEQ_GR,0)=0 ");
                     sb.AppendLine(" AND bl = " + lote);
                     return db.Query<int>(sb.ToString()).FirstOrDefault();
@@ -96,9 +96,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine("  select nvl(max(formapagamento),0) from tb_gr_pre_calculo ");
+                    sb.AppendLine("  select nvl(max(formapagamento),0) from SGIPA.tb_gr_pre_calculo ");
                     sb.AppendLine(" WHERE ");
-                    sb.AppendLine(" AND bl = " + lote);
+                    sb.AppendLine(" bl = " + lote);
+
                     return db.Query<int>(sb.ToString()).FirstOrDefault();
 
                 }
@@ -115,7 +116,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Select count(1) from TB_CNTR_BL a inner join DTE_TB_TIPOS_CONTEINER b on a.tipo=b.code inner join TB_AMR_CNTR_BL c on c.cntr=a.autonum  where  b.flag_temperatura=1 and a.flag_terminal=1 and nvl(a.flag_desligado,0)=0 ");
+                    sb.AppendLine("Select count(1) from SGIPA.TB_CNTR_BL a inner join SGIPA.DTE_TB_TIPOS_CONTEINER b on a.tipo=b.code inner join SGIPA.TB_AMR_CNTR_BL c on c.cntr=a.autonum  where  b.flag_temperatura=1 and a.flag_terminal=1 and nvl(a.flag_desligado,0)=0 ");
                     sb.AppendLine(" AND c.bl = " + lote);
                     return db.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -134,8 +135,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                 using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Select NVL(MAX(FLAG_PRE_CALCULO),0) from TB_BL ");
-                    sb.AppendLine(" WHERE BL = " + lote);
+                    sb.AppendLine("Select NVL(MAX(FLAG_PRE_CALCULO),0) from SGIPA.TB_BL ");
+                    sb.AppendLine(" WHERE AUTONUM  = " + lote);
                     return db.Query<int>(sb.ToString()).FirstOrDefault();
 
                 }
@@ -154,7 +155,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine("INSERT INTO TB_GR_BL ");
+                    sb.AppendLine("INSERT INTO SGIPA.TB_GR_BL ");
                     sb.AppendLine("(AUTONUM, ");
                     sb.AppendLine("BL, ");
                     sb.AppendLine("SEQ_GR, ");
@@ -180,15 +181,15 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("DT_INICIO_CALCULO, ");
                     sb.AppendLine("DT_LIBERACAO ");
                     sb.AppendLine(") ");
-                    sb.AppendLine("select SEQ_GR_BL.NEXTVAL, ");
+                    sb.AppendLine("select SGIPA.SEQ_GR_BL.NEXTVAL, ");
                     sb.AppendLine("A.BL, ");
                     sb.AppendLine(seq_gr + ", ");
                     sb.AppendLine("sysdate,");
                     sb.AppendLine("V.VALORGR,");
-                    sb.AppendLine("'GE', ");
+                    sb.AppendLine("'IM', ");
                     sb.AppendLine("0, ");
                     sb.AppendLine("A.VALIDADE_GR,");
-                    sb.AppendLine("A.Datta_base, ");
+                    sb.AppendLine("A.Data_base, ");
                     sb.AppendLine("A.Data_Reefer,");
                     sb.AppendLine("0, ");
                     sb.AppendLine("A.LISTA,");
@@ -204,12 +205,12 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("0, ");
                     sb.AppendLine("A.DT_INICIO_CALCULO, ");
                     sb.AppendLine("B.DT_LIBERACAO ");
-                    sb.AppendLine("FROM  TB_GR_PRE_CALCULO  A INNER JOIN TB_BL B ON A.BL=B.AUTONUM ");
+                    sb.AppendLine("FROM  SGIPA.TB_GR_PRE_CALCULO  A INNER JOIN SGIPA.TB_BL B ON A.BL=B.AUTONUM ");
                     sb.AppendLine("INNER JOIN (");
-                    sb.AppendLine("select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from tb_servicos_faturados a  ");
-                    sb.AppendLine("left join (select sum(valor_imposto) valori , autonum_servico_faturado from tb_servicos_faturados_impostos ");
+                    sb.AppendLine("select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from SGIPA.tb_servicos_faturados a  ");
+                    sb.AppendLine("left join (select sum(valor_imposto) valori , autonum_servico_faturado from SGIPA.tb_servicos_faturados_impostos ");
                     sb.AppendLine("group by autonum_servico_faturado) b on a.autonum=b.autonum_servico_faturado");
-                    sb.AppendLine("where nvl(seq_gr,0) =0  group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
+                    sb.AppendLine("where nvl(seq_gr,0) ="+ seq_gr +"  group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
  
                     return db.Query<bool>(sb.ToString()).FirstOrDefault();
 
@@ -244,11 +245,11 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public int UsuarioEmProcessoDeCalculo(int Lote)
+        public int? UsuarioEmProcessoDeCalculo(int Lote)
         {
             try
             {
-                using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
 
@@ -257,7 +258,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" SGIPA.TB_BL  ");
                     sb.AppendLine(" WHERE REG_GR>0 AND AUTONUM =  " + Lote);
 
-                    return db.Query<int>(sb.ToString()).FirstOrDefault();
+                    return con.Query<int>(sb.ToString()).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -307,10 +308,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                     StringBuilder sb = new StringBuilder();
 
                     sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" max(DATA_FINAL) As Data_Final  ");
+                    sb.AppendLine(" max(DATA_FINAL) As Data_Final, ");
                     sb.AppendLine(" max(Lista) As Lista ");
                     sb.AppendLine(" FROM ");
-                    sb.AppendLine(" tb_gr_pre_calculo ");
+                    sb.AppendLine(" SGIPA.tb_gr_pre_calculo ");
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine("  bl  =  " + lote);
 
@@ -334,7 +335,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" SELECT  ");
                     sb.AppendLine(" count(1)  ");
                     sb.AppendLine(" FROM   ");
-                    sb.AppendLine(" tb_bl ");
+                    sb.AppendLine(" SGIPA.tb_bl ");
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine(" ULTIMA_SAIDA is null ");
                     sb.AppendLine(" AND  ");
@@ -475,7 +476,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.AppendLine(" UPDATE SGIPA.TB_SERVICOS_FATURADOS SET   ");
                     sb.AppendLine(" SEQ_GR =  " + seqGR + ", ");
-                    sb.AppendLine(" USUARIO =  " + usuario + ",  ");
+                    sb.AppendLine(" USUARIO =  " + usuario + "  ");
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine(" NVL(SEQ_GR, 0) = 0 ");
                     sb.AppendLine(" AND  ");
@@ -517,9 +518,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             {
                 return false;
             }
-        }
-
-       
+        }        
     public bool atualizaGREmCNTR(int lote, int seqGR)
         {
             try
@@ -532,7 +531,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" SEQ_GR = " + seqGR);
                     sb.AppendLine(" WHERE AUTONUM = (select a.autonum from  ");
                     sb.AppendLine(" SGIPA.TB_CNTR_BL A, ");
-                    sb.AppendLine(" SGIPA.TB_AMR_CNTR_BL B, ");
+                    sb.AppendLine(" SGIPA.TB_AMR_CNTR_BL B ");
                     sb.AppendLine(" WHERE ");
                     sb.AppendLine(" B.CNTR = A.AUTONUM ");
                     sb.AppendLine(" AND A.FLAG_TERMINAL = 1 ");
@@ -557,7 +556,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" UPDATE TB_Carga_solta SET ");
+                    sb.AppendLine(" UPDATE SGIPA.TB_Carga_solta SET ");
                     sb.AppendLine(" SEQ_GR =  " + seqGr);
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine(" FLAG_TERMINAL = 1 ");
@@ -727,8 +726,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" select  ");
                     sb.AppendLine(" a.Autonum ");
                     sb.AppendLine(" from   ");
-                    sb.AppendLine(" TB_CNTR_BL A, ");
-                    sb.AppendLine(" TB_AMR_CNTR_BL B ");
+                    sb.AppendLine(" SGIPA.TB_CNTR_BL A, ");
+                    sb.AppendLine(" SGIPA.TB_AMR_CNTR_BL B ");
                     sb.AppendLine(" where  ");
                     sb.AppendLine(" B.CNTR = A.AUTONUM ");
                     sb.AppendLine(" AND A.FLAG_TERMINAL = 1 ");
@@ -918,6 +917,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
+            
                     sb.AppendLine(" SELECT SERIE FROM SGIPA.TB_SERIE  WHERE Cod_Empresa =  " + empresaID);
 
                     if (Tipo == "GR")
@@ -938,14 +938,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         sb.AppendLine(" AND TIPO_REDEX = 1 ");
                     }
 
-                    if (DataEspecifica != "00:00:00")
-                    {
-                        sb.AppendLine(" AND DATA_INI <= TO_DATE('" + DataEspecifica + "', ,'DD/MM/YYYY')) AND  DATA_FIM >= TO_DATE('" + DataEspecifica + "', ,'DD/MM/YYYY')");
-                    }
-                    else
-                    {
-                        sb.AppendLine(" AND DATA_INI <= TO_DATE('" + DateTime.Now + "', ,'DD/MM/YYYY')) AND  DATA_FIM >= TO_DATE('" + DateTime.Now + "', ,'DD/MM/YYYY')");
-                    }
+                    sb.AppendLine(" AND DATA_INI <= TO_DATE('" + DateTime.Now.Date.ToString("dd/MM/yyyy") + "','DD/MM/YYYY') AND  DATA_FIM >= TO_DATE('" + DateTime.Now.Date.ToString("dd/MM/yyyy") + "' ,'DD/MM/YYYY')"); 
 
 
                     string query = con.Query<string>(sb.ToString()).FirstOrDefault();
@@ -968,8 +961,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-
-                    sb.AppendLine(" select EMPRESA from VW_CALCULoweb ab where ab.LOTE = " + lote);
+                   
+                    sb.AppendLine("select pt.cod_empresa  From sgipa.tb_bl bl inner join operador.tb_patios pt on bl.patio = pt.autonum  where bl.autonum =" + lote);
 
                     empresa = con.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -1015,7 +1008,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     if (codCLi > 0)
                     {
-                        sb.AppendLine(" TB_CAD_PARCEIROS ");
+                        sb.AppendLine(" SGIPA.TB_CAD_PARCEIROS ");
                         sb.AppendLine(" where CODCLI_SAP = " + codCLi);
                     }
                     //else
@@ -1056,8 +1049,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" select max(id) from FATURA.FATURANOTA WHERE CANCELADA = 0 AND TIPO = 'GR' ");
-                    sb.AppendLine(" AND ( ID IN(SELECT FATID FROM FATURA.FAT_GR WHERE SEQ_GR in(" + seq_gr + ") OR GR = "+ seq_gr +")   ");
+                    sb.AppendLine(" select nvl(max(id),0) from FATURA.FATURANOTA WHERE CANCELADA = 0 AND TIPO = 'GR' ");
+                    sb.AppendLine(" AND ID IN(SELECT FATID FROM FATURA.FAT_GR WHERE SEQ_GR in(" + seq_gr + ") OR GR = '"+ seq_gr +"')   ");
 
                     id_nota = con.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -1166,130 +1159,321 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
         public string Monta_Insert_Faturanota(
-                int cliente, string dtEmissao, string dtVencimento, 
-                string numero, string numDoc, string TipoDoc,
-                string gr, int tipoFeito, string Desconto, 
-                int patio, int usuario, int codEmpresa ,
-                int lote, int cli_autonum, string valor, 
-                int clienteSapEntrega, int fonteOP, int fonteIpa, 
-                int fonteGrp, int fonteParc, int fonteGR, int fonteRedex, 
-                int cond_manual, int fpLTL,
-                int parceiro, string embarque
-            )
+                string tipo, int gr, string Embarque,
+                string dtEmissao, string dtVencimento, string obs1, 
+                string obs2, string natOper, string codOper, 
+                string numDoc, string tipoDoc, int autonumViagemn, 
+                string Dolar, int patio, int autonumMin, SapCliente sapCli,
+                int notaAC, int autonumCli, int Lote, int Parceiro, 
+                string NFESubstituida, string ClienteSAPEntrega, int fonteOP, 
+                int fonteIpa, int fonteGRP, int fonteParc, int fonteGR, 
+                int codManual, int fonteRedex, int fonteLTL, int CodCli, string valor, 
+                int numero, int codEmpresa, int usuario, string serieNF, string servico, 
+                int idNotaSub)
         {
-            string prestacaoServicos = "PRESTAÇÃO DE SERVIÇOS";
-            string codNatureza = "20.01";
-
+            
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
 
+                    int Tipo_Feito = 1;
+                    double Desconto = 0;
+                    string endereco = "";
+                    string cidade = "";
+                    string cgccli = "";
+                    int tipoPessoa = 0;
+                    string razao_representante = "";
+                    string cgccpf = "";
+                    string TipCli = "";
+                    string CepCli = "";
+                    string CGCRep = "";
+                    int posicao = 0;
+                    string corpo_nota = "";
+
+                    double valor_Nota = Valor_Nota(gr.ToString());
+
+                    if(sapCli.CIDCOB.ToUpper() == "SANTOS" || sapCli.CIDCOB.ToUpper() == "" && sapCli.CIDCLI.ToUpper() =="SANTOS" )
+                    {
+                        Desconto = Valor_Desconto(gr.ToString());
+                    }
+
+                    sb.AppendLine(" Select a.razao_representante_sap as Razao, b.cgc as cgccpf, ");
+                    sb.AppendLine(" CASE WHEN LENGTH(Replace(Replace(Replace(Replace(b.CGC, '.', ''), '-', ''), '/', ''), '_', '')) > 11 THEN 'J' ELSE 'F' END AS TIPCLI from  SGIPA.tb_cad_parceiros a left join ");
+                    sb.AppendLine(" SGIPA.TB_CAD_PARCEIROS b on a.razao_representante_SAP = b.RAZAO where a.autonum = " + autonumCli);
+
+                    var dataCli = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                    razao_representante = dataCli.Razao;
+                    cgccpf = dataCli.CGCCPF.ToString();
+                    TipCli = dataCli.TIPCLI;
+
+                    sb.Clear();
 
                     sb.AppendLine("SELECT SEQ_FATURANOTA.NEXTVAL AS numero  from DUAL");
 
                     int idFat = con.Query<int>(sb.ToString()).FirstOrDefault();
 
+                    sb.Clear();
+
+
+                    sb.AppendLine(" SELECT CODE FROM SGIPA.TB_TIPOS_DOCUMENTOS WHERE DESCR = '" + tipoDoc + "' ");
+
+                    string code = con.Query<string>(sb.ToString()).FirstOrDefault();
 
                     sb.Clear();
 
+                    #region inserir FATURANOTA
+
                     sb.AppendLine(" INSERT INTO  FATURA.FATURANOTA ");
                     sb.AppendLine(" ( ");
-                    sb.AppendLine("     ID, CLIENTE, DT_EMISSAO, DT_VENCIMENTO, NUMERO, ");
-                    sb.AppendLine("     VALOR, EXTENSO, OBS, OBS2, NAT_OPER, COD_OPER, ");
-                    sb.AppendLine("     IMPRESSA, TIPO, GR, ");
-                    sb.AppendLine("     DOCUMENTO_ORIGEM, TIPO_DOCUMENTO, TIPO_FEITO, ");
-                    sb.AppendLine("     VIAGEM, DOLAR, ");
-                    sb.AppendLine("     DESCONTO, FILLAL, ");
-                    sb.AppendLine("     INTEGRADA, IDDOCUMENTO, USUARIO, DATA_INCLUSAO, ");
-                    sb.AppendLine("     AUTONUM_MINUTA, COD_EMPRESA, VERSAO, ");
-                    sb.AppendLine("     CLIENTE_SAP, NOMCLI, ENDCOB, CIDCOB, CGCCPF, ");
-                    sb.AppendLine("     BAICOB, ESTCOB, CEPCOB, INSEST, ");
-                    sb.AppendLine("     NOTA_AC, RAZAO_REPRESENTANTE, ");
-                    sb.AppendLine("     CODIBGE, SERIE, CODCPG, LOTE, PARCEIRO, EMBARQUE, ID_FATURA_SB, ");
-                    sb.AppendLine("     CLIENTE_SAP_ENTREGA, FPOP, FPIPA, FPGRP, FPPARC, FPGR, FPRED, COND_MANUAL, FPLTL  ");
+                    sb.AppendLine("     ID,  ");
+                    sb.AppendLine("     CLIENTE, ");
+                    sb.AppendLine("     DT_EMISSAO,  ");
+                    sb.AppendLine("     DT_VENCIMENTO, ");
+                    sb.AppendLine("     NUMERO, ");
+                    sb.AppendLine("     VALOR,     ");
+                    sb.AppendLine("     EXTENSO,    ");
+                    sb.AppendLine("     OBS,   ");
+                    sb.AppendLine("     OBS2,   ");
+                    sb.AppendLine("     NAT_OPER,   ");
+                    sb.AppendLine("     COD_OPER,   ");
+                    sb.AppendLine("     IMPRESSA,   ");
+                    sb.AppendLine("     TIPO,  ");
+                    sb.AppendLine("     GR,   ");
+                    sb.AppendLine("     DOCUMENTO_ORIGEM,   ");
+                    sb.AppendLine("     TIPO_DOCUMENTO, ");
+                    sb.AppendLine("     TIPO_FEITO,  ");
+                    sb.AppendLine("     VIAGEM, ");
+                    sb.AppendLine("     DOLAR, ");
+                    sb.AppendLine("     DESCONTO,  ");
+                    sb.AppendLine("     FILIAL, ");
+                    sb.AppendLine("     INTEGRADA, ");
+                    sb.AppendLine("     IDDOCUMENTO,   ");
+                    sb.AppendLine("     USUARIO, ");
+                    sb.AppendLine("     DATA_INCLUSAO ,");
+                    sb.AppendLine("     AUTONUM_MINUTA,  ");
+                    sb.AppendLine("     COD_EMPRESA, ");
+                    sb.AppendLine("     VERSAO,  ");
+                    sb.AppendLine("     CLIENTE_SAP,  ");
+                    sb.AppendLine("     NOMCLI,  ");
+                    sb.AppendLine("     ENDCOB, ");
+                    sb.AppendLine("     CIDCOB, ");
+                    sb.AppendLine("     CGCCPF, ");
+                    sb.AppendLine("     BAICOB, ");
+                    sb.AppendLine("     ESTCOB, ");
+                    sb.AppendLine("     CEPCOB, ");
+                    sb.AppendLine("     INSEST, ");
+                    sb.AppendLine("     NOTA_AC, ");
+                    sb.AppendLine("     RAZAO_REPRESENTANTE, ");
+
+                    sb.AppendLine("     CODIBGE,  ");
+                    sb.AppendLine("     SERIE, ");
+                    sb.AppendLine("     CODCPG, ");
+                    sb.AppendLine("     LOTE, ");
+                    sb.AppendLine("     PARCEIRO, ");
+                    sb.AppendLine("     EMBARQUE, ");
+                    sb.AppendLine("     ID_FATURA_SB ");
+
                     sb.AppendLine(" ) VALUES ( ");
 
                     sb.AppendLine(" " + idFat + ",");
-                    sb.AppendLine(" " + cliente + ",   ");
+                    sb.AppendLine(" '" + CodCli + "',   ");
                     sb.AppendLine("  TO_DATE('" + dtEmissao + "', 'DD/MM/YYYY'), ");
                     sb.AppendLine("  TO_DATE('" + dtVencimento + "', 'DD/MM/YYYY'), ");
                     sb.AppendLine(" " + numero + ", ");
                     //valor nota
-                    sb.AppendLine(" '"+ valor +"', ");
+                    sb.AppendLine(" '" + valor_Nota + "', ");
                     //valor nota extenso
-                    sb.AppendLine(" '"+ valor.ToString().Replace(",", ".") +"', ");
+                    sb.AppendLine(" '" + valor_Nota.ToString().Replace(",", ".") + "', ");
 
-                    sb.AppendLine(" '',  ");
-                    sb.AppendLine(" '',  ");
-                    sb.AppendLine(" '" + prestacaoServicos + "', ");
-                    sb.AppendLine(" '" + codNatureza + "', ");
+                    sb.AppendLine(" NULL,  ");
+                    sb.AppendLine(" NULL,  ");
+                    sb.AppendLine(" '" + natOper + "', ");
+                    sb.AppendLine(" '" + codOper + "', ");
                     sb.AppendLine(" 0, ");
                     sb.AppendLine(" 'GR', ");
                     sb.AppendLine(" " + gr + ", ");
                     sb.AppendLine(" '" + numDoc + "', ");
-                    sb.AppendLine(" '" + TipoDoc + "', ");
-                    //Tipo Feito
-                    sb.AppendLine("  ");
+                    sb.AppendLine(" '" + tipoDoc + "', ");
 
-                    sb.AppendLine(" '',  ");
-                    sb.AppendLine(" '',  ");
+                    //Tipo Feitos
+                    sb.AppendLine(" " + Tipo_Feito + ", ");
+
+                    sb.AppendLine(" NULL,  ");
+                    sb.AppendLine(" NULL,  ");
                     //Desconto 
-                    sb.AppendLine("  ");
+                    sb.AppendLine("  " + Desconto + ",  ");
                     sb.AppendLine(" TO_CHAR('00' || " + patio + "),  ");
                     sb.AppendLine(" 1,  ");
                     sb.AppendLine(" 0,  ");
-                    sb.AppendLine(" "+ usuario +",  ");
+                    sb.AppendLine(" " + usuario + ",  ");
                     sb.AppendLine(" TO_DATE('" + DateTime.Now.ToString("dd-MM-yyyy") + "', 'DD/MM/YYYY') , ");
+                    sb.AppendLine(" NULL, ");
                     sb.AppendLine(" " + codEmpresa + ", ");
 
-                    //Versao
-                    sb.AppendLine("  ");
+                    //Versao - Serie NF
+                    sb.AppendLine(" " + serieNF.Substring(0, 1) + ", ");
                     //CLIENTE_SAP, NOMCLI, ENDCOB, CIDCOB, CGCCPF
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
+
+                    if (sapCli.CODCLI.ToString() != "")
+                    {
+                        sb.AppendLine(" 'SAP001', ");
+                    }
+                    else
+                    {
+                        sb.AppendLine(" '" + sapCli.NOMCLI.ToString() + "', ");
+                    }
+
+                    sb.AppendLine("'" + sapCli.NOMCLI + "', ");
+
+
+                    if (sapCli.ENDCOB == "")
+                    {
+                        endereco = sapCli.USU_TIPLOGR + sapCli.ENDCLI + ", " + sapCli.NENCLI + ", " + sapCli.CPLEND;
+                    }
+                    else
+                    {
+                        endereco = sapCli.ENDCOB + ", " + sapCli.NENCOB + ", " + sapCli.CPLCOB;
+                    }
+
+
+                    sb.AppendLine("'" + endereco + "', ");
+
+                    if (sapCli.CIDCOB == "")
+                    {
+                        cidade = sapCli.CIDCLI;
+                    }
+                    else
+                    {
+                        cidade = sapCli.CIDCOB;
+                    }
+                    sb.AppendLine(" '" + cidade + "', ");
+
+                    if (sapCli.TIPCLI.ToUpper() == "J")
+                    {
+                        tipoPessoa = 1;
+                        cgccli = Formata_CGCCPF(  sapCli.CGCCPF,1);
+                    }
+                    else
+                    {
+                        tipoPessoa = 2;
+
+                        cgccli = Formata_CGCCPF(  sapCli.CGCCPF,2);
+                    }
+
+
+                    sb.AppendLine("'" + cgccli + "' ,");
 
                     //BAICOB, ESTCOB, CEPCOB, INSEST,
 
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
+
+                    if (sapCli.BAICOB == "")
+                    {
+                        sb.AppendLine(" '" + sapCli.BAICLI + "', ");
+                    }
+                    else
+                    {
+                        sb.AppendLine(" '" + sapCli.BAICOB + "', ");
+                    }
 
 
+                    if (sapCli.EST_COB == "")
+                    {
+                        sb.AppendLine(" '" + sapCli.SIGUFS + "', ");
+                    }
+                    else 
+                    {
+                        sb.AppendLine("  '" + sapCli.EST_COB + "', ");
+                    }
+                    
+                    
+                    if (sapCli.CEPCOB == "")
+                    {
+                        CepCli = sapCli.CEPCLI;
+                    }
+                    else 
+                    {
+                        CepCli = sapCli.CEPCOB;
+                    }
+                    sb.AppendLine(" '" + CepCli + "', ");
+                    sb.AppendLine(" '" +  sapCli.INSEST + "', ");
                     sb.AppendLine(" 0, ");
 
                     //Razao_Representante 
-                    sb.AppendLine("  ");
+
+                    if (TipCli == "J")
+                    {
+                        CGCRep = Formata_CGCCPF(cgccpf, 1);
+                        CGCRep = razao_representante + "  - C.G.C.: " + CGCRep;
+                    }
+                    else 
+                    {
+                        CGCRep = Formata_CGCCPF(cgccpf, 2);
+                        CGCRep = razao_representante + "  - C.P.F.: " + CGCRep;
+                    }
+                    
+
+                    sb.AppendLine(" '"+ CGCRep +"',  "); ;
 
                     //CODIBGE, SERIE, CODCPG
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
-                    sb.AppendLine(" ");
+                    sb.AppendLine(" " + sapCli.IBGE  + " ");
+                    sb.AppendLine(" '"+ serieNF +"' ");
+                    sb.AppendLine(" 'Pix' ");
 
                     //Lote e parceiro
-                    sb.AppendLine(" " + lote + ", ");
-                    sb.AppendLine(" " + parceiro + ", ");
+                    sb.AppendLine(" " + Lote + ", ");
+                    sb.AppendLine(" " + Parceiro + ", ");
                     //Embarque
-                    sb.AppendLine("  ");
-                    //Cliente SAP Entrega  
-                    sb.AppendLine("  ");
-                    //Campos FPOP para frente
-                    sb.AppendLine(" " + fonteOP + ",  ");
-                    sb.AppendLine(" " + fonteIpa + ", ");
-                    sb.AppendLine(" " + fonteGrp + ", ");
-                    sb.AppendLine(" " + fonteParc + ", ");
-                    sb.AppendLine(" " + fonteGR + " ");
-                    sb.AppendLine(" " + fonteRedex + " ");
-                    sb.AppendLine(" " + cond_manual + "");
-                    sb.AppendLine(" " + fpLTL + " ");
+                    sb.AppendLine(" " + Embarque + ",  ");
+
+                    sb.AppendLine(" " + codManual + ",  ");
+
+                    sb.AppendLine(" " + fonteLTL + " ");
+
+                    sb.AppendLine(" ) ");
+
+                    con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                    #endregion
+
+                    sb.Clear();
+
+                    posicao = Obtem_Id_Nota(gr, numDoc);
 
 
-                    string query = con.Query<string>(sb.ToString()).FirstOrDefault();
+                    if (idNotaSub > 0)
+                    {
+                        updateNotaById(posicao, 90);
+                    }
+
+                    var monta_Itens = Monta_Itens_Nota(gr, servico);
+
+                    int i = 0;
+                    int j = 2; 
+
+                    foreach (var monta_item in monta_Itens)
+                    {
+                        i = i + 1; 
+
+                        corpo_nota = corpo_nota + MontaCorpoNota(i, monta_item.DESCR_SERVICO, monta_item.TOTAL);
+
+                        Monta_Insert_Fatura_Item(posicao, i, monta_item.DESCR_SERVICO, monta_item.TOTAL, monta_item.SERVICO, numDoc, 0, 0, 0, "");
+                    }
+
+                    var monta_Itens_IMP = Monta_Itens_Nota_Imp(gr);
+
+                    foreach (var monta_item_imp in monta_Itens_IMP)
+                    {
+                        i = i + 1;
+
+                        Monta_Insert_Fatura_Item(posicao, i, monta_item_imp.DESCR_SERVICO, monta_item_imp.VALOR_IMPOSTO, 0, numDoc, 1, 0, 0, "");
+
+                        corpo_nota = corpo_nota + MontaCorpoNota(i, servico, valor_Nota);
+                    }
+
+                    string query = "";
 
                     return query;                    
 
@@ -1300,6 +1484,425 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
+        public bool carrega(int seq_gr)
+        {
+            try
+            {
+                var rsServicos = GetServicoIDs(seq_gr);
+                string servico = "";
+                int contaItens = 0;
+                int contaFatura = 0;
+                string wIdServicos = "";
+                string corpoNota = "";
+                int ICount = 0;
+                double total = 0;
+                double Impostos = 0;
+                double totalIMP = 0;
+                double valor = 0;
+
+                contaItens = contaItens + 1;
+
+                for (int i = 0; i < rsServicos.Count(); i++)
+                {
+                    var montaItensNotaIMP = Monta_Itens_Nota_Imp(seq_gr);
+
+                    foreach (var itens in montaItensNotaIMP)
+                    {
+                        servico = itens.DESCR_SERVICO;
+                        valor = itens.VALOR_IMPOSTO;
+
+                        corpoNota = corpoNota + MontaCorpoNota(ICount, servico, valor);
+
+                        ICount = ICount + 1;
+
+                    }
+
+                    var montaItensNota = Monta_Itens_Nota(seq_gr, servico);
+
+
+                    foreach (var itens in montaItensNotaIMP)
+                    {
+                        servico = itens.DESCR_SERVICO;
+                        valor = itens.VALOR_IMPOSTO;
+                        total = itens.TOTAL;
+                        Impostos = itens.IMPOSTOS;
+                        totalIMP = total + Impostos;
+
+                        if (totalIMP > 0)
+                        {
+                            corpoNota = corpoNota + MontaCorpoNota(ICount, servico, valor);
+                            ICount = ICount + 1;
+                        }
+                    }
+
+                    var ret = corpoNota.Length;
+
+                    if (ret + rsServicos.Count() > 2000)
+                    {
+                        var autonumFat = getAutonumServicosFaturados(seq_gr);
+
+                        for (int j = 0; j < autonumFat.Count(); j++)
+                        {
+                            if (wIdServicos != "")
+                            {
+                                wIdServicos = wIdServicos + ",";
+                            }
+                            wIdServicos = wIdServicos + rsServicos.ToList().ToString();
+                        }
+
+                        var notaAtu = new NotasGerar();
+                        notaAtu.idsServFaturados = wIdServicos;
+
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public string geraIntegracao(string servico, int nfeSubst, string dtEmissao, int patioGR, 
+            string cbMeio, bool check, string tituloSap, string dtMov, string conta, string valor, string condicao, 
+            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota, int RPSSubstituida, int gr)
+        {
+            try
+            {
+
+                string estadoCli = sapcliente.EST_COB;
+                string cidadeCli = sapcliente.CIDCOB;
+                string CGC = sapcliente.CGCCPF.ToString();
+                string codOper = "";
+                string Tipo_Emp = sapcliente.TIPMER;
+                string[] CMD_XML = new string[550];
+                string[] CMD_SID = new string[550];
+                int filial = 0;
+                int I = 0;
+                int QTD_I = 0;
+                bool substNF = false;
+                string GeraRPSFAT = "0";
+                string monta_SID_Fecha_Nota = "";
+                string monta_SID_Itens = "";
+                string Retorno = "";                
+                string meioPagamento = "Pix";
+                bool nfeSubstituida = false;
+
+
+
+                monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", false, tituloSap, dtEmissao, conta, valor.ToString(), condicao, nfeSubst.ToString());
+
+
+                var itens = Monta_Itens_Nota(gr, servico);
+
+                int i = 2;
+                int j = 0;
+
+
+                foreach (var itemNF in itens)
+                {
+                    i = i + 1;
+
+                    if (itemNF.TOTAL + itemNF.IMPOSTOS > 0)
+                    {
+                        j = j + 1;
+
+                        monta_SID_Itens = Monta_Sid_Itens("GR", cod_empresa, i, serie, itemNF.SERVICO.ToString(), itemNF.DESCR_SERVICO, Convert.ToDouble(itemNF.TOTAL + itemNF.IMPOSTOS), itemNF.CODSER.ToString());
+
+                        if (monta_SID_Itens == "ERRO")
+                        {
+                            excluiFaturaEItem(id_nota);
+                        }
+                        else
+                        {
+                            CMD_XML[j] = monta_SID_Itens;
+                        }
+                    }
+                }
+
+                for (int z = 0; z < 550; i++)
+                {
+                    CMD_XML[z] = "";
+                }              
+
+
+                if (Tipo_Emp == "E")
+                {
+                    codOper = "7949A";
+                }
+                else
+                {
+                    if (estadoCli == "SP")
+                    {
+                        if (patioGR != 0 || patioGR.ToString() != "")
+                        {
+                            if (cidadeCli.ToUpper() == "SANTOS")
+                            {
+                                codOper = "5949E";
+                            }
+                            else
+                            {
+                                codOper = "5949D";
+                            }
+                        }
+                        else
+                        {
+                            if (cidadeCli.ToUpper() == "SANTOS")
+                            {
+                                codOper = "5949B";
+                            }
+                            else
+                            {
+                                codOper = "5949A";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (patioGR.ToString() != "" || patioGR != 0)
+                        {
+                            if (patioGR == 4 || patioGR == 6)
+                            {
+                                codOper = "6949D";
+                            }
+                            else;
+                            {
+                                codOper = "6949A";
+                            }
+                        }
+                    }
+                }
+
+                string strInstruction = "";
+                string strInstructionSAP = "";
+
+                strInstruction = "<sidxml><param retorno='XML'/><sid acao='SID.SRV.ALTEMPFIL'>";
+                strInstruction = strInstruction + "<param nome='CodEmp' valor='" + cod_empresa + "'/>";
+                strInstruction = strInstruction + "<param nome='CodFil' valor='" + filial + "'/></sid>";
+
+                CMD_XML[550] = strInstruction;
+
+
+
+                strInstruction = "<sid acao='SID.NFV.GRAVAR'>";
+
+                strInstruction = strInstruction + "<param nome='CodSnf' valor='" + serie + "'/>";
+                strInstruction = strInstruction + "<param nome='CodCli' valor='" + sapcliente.CODCLI + "'/>";
+                strInstruction = strInstruction + "<param nome='TNSSER' valor='" + codOper + "'/>";
+
+                strInstruction = strInstruction + "<param nome='CODREP' valor='1'/>";
+                strInstruction = strInstruction + "<param nome='USU_GR' valor='90'/>";
+
+                if (dtEmissao == "")
+                {
+                    strInstruction = strInstruction + "<param nome='DATEMI' valor='" + dtEmissao + "'/>";
+                }
+                else
+                {
+                    strInstruction = strInstruction + "<param nome='DATEMI' valor='" + DateTime.Now.ToString("dd/MM/yyyy") + "'/>";
+                }
+
+                strInstruction = strInstruction + "<param nome='CodCpg' valor='" + meioPagamento + "'/>";
+
+                strInstruction = strInstruction + "<param nome='NumNfv' valor='@numnfe'/>";
+
+                strInstruction = strInstruction + "</sid>";
+
+
+                CMD_XML[549] = strInstruction;
+
+
+                strInstruction = "<sid acao='SID.Nfv.RecalcularParcelas'>";
+
+                strInstruction = strInstruction + "<param nome='CodSnf' valor='" + serie + "'/>";
+
+                strInstruction = strInstruction + "<param nome='NumNfv' valor='@numnfe'/>";
+
+
+                strInstruction = strInstruction + "</sid>";
+                CMD_XML[0] = strInstruction;
+
+                strInstruction = "";
+                strInstruction = CMD_XML[550];
+
+                strInstructionSAP = strInstruction + CMD_XML[549];
+
+                strInstruction = strInstruction + CMD_XML[0];
+
+
+
+
+                for (I = 3; I < 548; I++)
+                {
+                    if (CMD_XML[I] != "")
+                    {
+                        strInstructionSAP = strInstructionSAP + CMD_XML[I];
+                    }
+                    else
+                    {
+                        QTD_I = I - 3;
+                        I = 549;
+                    }
+                }
+
+                strInstruction = strInstruction + CMD_XML[1] + CMD_XML[2];
+
+
+                int rsSer = getServicoByIDFatura(id_nota);
+
+                if (rsSer != QTD_I)
+                {
+                    return "Divergencia entre os Itens da Nota Fiscal, Contate o Suporte";
+                }
+                else
+                {
+                    if (substNF)
+                    {
+                        if (GeraRPSFAT == "1")
+                        {
+                            if (!insereRPSFATProc(id_nota, "", strInstruction, strInstructionSAP, RPSSubstituida))
+                            {
+                                Retorno = "OK";
+
+                                return "Erro ao inserir o registro do RPS";
+                            }
+                        }
+                        else
+                        {
+                            var par = GetDadosParametro(cod_empresa);
+                            var corpoRequest = new WSUnico.SubstituirNFSeRequestBody(id_nota, corpoNota, strInstructionSAP, Convert.ToInt64(RPSSubstituida));
+                            var requisicao = new WSUnico.SubstituirNFSeRequest(corpoRequest);
+                            WSUnico.ServiceSoap meuServico;
+                            //var meuServico = WSUnico.ServiceSoap;
+
+
+                            if (par.WS_NFE != "")
+                            {
+                                meuServico = new WSUnico.ServiceSoapClient("ServiceSoap3", par.WS_NFE);
+                            }
+                            else
+                            {
+                                meuServico = new WSUnico.ServiceSoapClient();
+                            }
+
+                            Retorno = meuServico.SubstituirNFSe(requisicao).Body.SubstituirNFSeResult.ToString();
+
+                        }
+                    }
+                    else
+                    {
+                        if (GeraRPSFAT == "1")
+                        {
+                            if (!insereRPSFATProc(id_nota, "", strInstruction, strInstructionSAP, RPSSubstituida))
+                            {
+                                return "Erro ao inserir o registro do RPS";
+                            }
+                        }
+                        else
+                        {
+                            var par = GetDadosParametro(cod_empresa);
+                            var corpoRequest = new WSUnico.GeraNotaFiscalDeVendaSAPRequestBody(id_nota, strInstruction, corpoNota, strInstructionSAP);
+                            var requisicao = new WSUnico.GeraNotaFiscalDeVendaSAPRequest(corpoRequest);
+                            WSUnico.ServiceSoap meuServico;
+
+                            if (par.WS_NFE != "")
+                            {
+                                meuServico = new WSUnico.ServiceSoapClient("ServiceSoap3", par.WS_NFE);
+                            }
+                            else
+                            {
+                                meuServico = new WSUnico.ServiceSoapClient();
+                            }
+
+                            Retorno = meuServico.GeraNotaFiscalDeVendaSAP(requisicao).Body.GeraNotaFiscalDeVendaSAPResult.ToString();
+                        }
+                    }
+                }
+
+                for (I = 0; I < 550; I++)
+                {
+                    CMD_XML[I] = "";
+                    CMD_SID[I] = "";
+                }
+
+                //string corpoNota = _pagamentoPixDAO.MontaCorpoNota()
+
+
+                if (estadoCli == "")
+                {
+                    estadoCli = sapcliente.SIGUFS;
+                }
+                else
+                {
+                    estadoCli = sapcliente.EST_COB;
+                }
+
+                if (cidadeCli == "")
+                {
+                    cidadeCli = sapcliente.CIDCLI;
+                }
+                else
+                {
+                    cidadeCli = sapcliente.CIDCOB;
+                }               
+
+
+                return "";
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public bool UpdateCodTns(string codOper, int PosFat)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" Update FATURA.faturanota set codtns ='" + codOper + "' where id =" + PosFat);
+
+                    bool statusFat = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return statusFat;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public int getServicoByIDFatura(int pos)
+        {
+            int servico = 0;
+
+            try
+            {                
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" Select servico from SGIPA.fatura_item where imposto = 0 and nvl(valor,0) > 0 and idfatura = " + pos);
+
+                    servico = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    return servico;
+                }
+            }
+            catch (Exception ex)
+            {
+                return servico;
+            }
+        }
+       
         public IntegracaoBaixa GetList_CriaNota(string tipo, string documentos)
         {
             try
@@ -1381,7 +1984,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" PARCEIRO,   ");
                     sb.AppendLine(" SEQ_GR,   ");
                     sb.AppendLine(" LOTE,   ");
-                    sb.AppendLine(" NVL(fpgr,0) as fpgr   ");
+                    sb.AppendLine(" NVL(fpgr,0) as fpgr  , ");
                     sb.AppendLine(" flag_hubport,   ");
                     sb.AppendLine(" Codcli,  ");
                     sb.AppendLine(" Razao,   ");
@@ -1394,7 +1997,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" Ind_Cidade_cli,  ");
                     sb.AppendLine(" num_documento as NUM_DOC,   ");
                     sb.AppendLine(" TIPODOC_DESCRICAO, ");
-                    sb.AppendLine(" PATIO ");
+                    sb.AppendLine(" PATIO ,");
                     sb.AppendLine(" Ind_autonum  ");
                     sb.AppendLine(" FROM  ");
                     sb.AppendLine(" FATURA.FATURA_GR ");
@@ -1453,7 +2056,71 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        
+        public bool insereRPSFATProc(int id, string str, string corpo, string strSAP, int subst)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+
+                    bool retorno = con.Query<bool>("FATURA.PROC_CHRONOS_RPS", new
+                    {
+                        ID_FAT = id,
+                        XML_SID = str,
+                        XML_SAP = corpo,
+                        Corpo = strSAP,
+                        subsT = subst
+
+                    }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+
+                    return retorno;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public bool UpdateFatura(int id)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" UPDATE FATURA.FATURANOTA SET STATUSNFE = 1 WHERE ID = " + id);
+
+                    bool update_Fat = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return update_Fat;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public Empresa GetDadosParametro(int cod_empresa)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.Append(" SELECT ID, NOME_EMPRESA, COD_EMPRESA, JUROS, QTD_DIAS_ALERTA, DIA_FAT, BASE_SAPIENS, DIR_LOG, LETRA_NOTA_GR, LETRA_NOTA_MINUTA, LETRA_NOTA_REDEX, SERIE_IPA, SERIE_OPE, SERIE_REDEX, SERVIDOR_SID, LOGIN_SID, SENHA_SID, WS_NFE, WS_BOLETO_SAP, MSG_EMAIL_NFE, EMAIL_COPIA, EMAIL_RECUSA_IMG, END_EMAIL_ENVIO FROM  SGIPA.PARAMETRO WHERE COD_EMPRESA= " + cod_empresa);
+
+                    var query = con.Query<Empresa>(sb.ToString()).FirstOrDefault();
+
+                    return query;
+                }
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
         public string obtemCodeTipoDoc(string tipoDoc)
         {
             try
@@ -1474,12 +2141,320 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        #endregion
-        #region consistencias GR
-        public int countGRRPS(int seq_gr)
+        public IEnumerable<IntegracaoBaixa> GetServicoIDs(int seq_gr)
         {
-            int count = 0;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
 
+                    sb.AppendLine("  SELECT DISTINCT SERVICO FROM SGIPA.TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" + seq_gr + ")  ");
+                    sb.AppendLine("  AND (NVL(VALOR,0) + NVL(ADICIONAL,0) + NVL(DESCONTO,0) ) > 0 ");
+
+                    var servico = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                    return servico; 
+                }
+            }
+            catch (Exception Ex)
+            {
+                return null;
+            }
+        }
+        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota_Imp(int gr )
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(" SELECT SUM(A.VALOR_IMPOSTO) AS VALOR_IMPOSTO, A.AUTONUM_IMPOSTO , C.DESCRICAO AS DESCR_SERVICO  ");
+                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS A INNER JOIN ");
+                    sb.AppendLine(" (SELECT AUTONUM, SERVICO, SEQ_GR FROM SGIPA.TB_SERVICOS_FATURADOS) B  ON A.AUTONUM_SERVICO_FATURADO = B.AUTONUM ");
+                    sb.AppendLine(" JOIN SGIPA.TB_CAD_IMPOSTOS C ON A.AUTONUM_IMPOSTO = C.AUTONUM ");
+                    sb.AppendLine(" WHERE B.SEQ_GR IN(" + gr + ") ");
+                    sb.AppendLine(" GROUP BY A.AUTONUM_IMPOSTO, C.DESCRICAO ");
+                    sb.AppendLine(" ORDER BY C.DESCRICAO, A.AUTONUM_IMPOSTO ");
+
+
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                    return query;                     
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota(int gr, string servicos)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" SELECT SUM(A.VALOR + A.ADICIONAL + A.DESCONTO) AS TOTAL, SUM(C.IMPOSTO) AS IMPOSTOS, ");
+                    sb.AppendLine("  A.SERVICO, replace(B.DESCR,'''','') AS DESCR_SERVICO, B.CODSER_SAP ");
+                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A JOIN  ");
+                    sb.AppendLine(" SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM LEFT JOIN ");
+                    sb.AppendLine(" (SELECT AUTONUM_SERVICO_FATURADO, SUM(VALOR_IMPOSTO) AS IMPOSTO " );
+                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS ");
+                    sb.AppendLine(" GROUP BY AUTONUM_SERVICO_FATURADO) C   ");
+                    sb.AppendLine(" ON A.AUTONUM = C.AUTONUM_SERVICO_FATURADO ");
+                    sb.AppendLine(" WHERE A.SEQ_GR IN(" + gr + ") ");
+
+                    if (servicos != "")
+                    {
+                        sb.AppendLine(" AND A.SERVICO IN(" + servicos + ") ");
+                    }
+
+                    sb.AppendLine(" GROUP BY A.SERVICO, B.DESCR, B.CODSER_SAP ");
+                
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            { 
+                return null;
+            }
+        }
+        public IEnumerable<IntegracaoBaixa> getAutonumServicosFaturados(int gr )
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" SELECT AUTONUM FROM SGIPA.TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" + gr + ") ");
+                  
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public string obtemTituloSapiens(int codEmpresa)
+        {
+            try
+            {
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT TIT_SAPIENS FROM SGIPA.TB_SERIE WHERE Cod_Empresa =  " + codEmpresa);
+                        sb.AppendLine("  AND TIPO_GR = 1 AND DATA_INI <= TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY') ");
+                        sb.AppendLine("  AND  DATA_FIM >= TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "','DD/MM/YYYY')  ");
+
+                        string titSapiens = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return titSapiens;
+                    }   
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;            
+            }
+        }
+        public int GetParceiroGR(int seq_Gr)
+        {
+            int query = 0;
+
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" SELECT  ");
+                    sb.AppendLine(" PARCEIRO,   ");                    
+                    sb.AppendLine(" WHERE  ");
+                    sb.AppendLine(" SEQ_GR = " + seq_Gr);
+
+                    query = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                return query;
+            }
+        }
+        public string MontaCorpoNota(int item, string servico, double valor)
+        {
+            try
+            {
+                string strS = "";
+
+                strS = "| Item:" + item + " - ";
+                strS = strS + servico.ToUpper() + " - ";
+                strS = strS + "R$ " + valor.ToString().Replace(",", ".");
+
+
+                return strS;
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+        public IntegracaoBaixa ObtemStatusNota(int id)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" SELECT A.NFE, A.STATUSNFE, C.CRITICA, C.RPSNUM ");
+                    sb.AppendLine(" FROM FATURA.FATURANOTA A LEFT JOIN ");
+                    sb.AppendLine(" (SELECT MAX(RPSNUM) AS RPSNUM, FATSEQ ");
+                    sb.AppendLine(" FROM FATURA.RPSFAT GROUP BY FATSEQ) B ON A.ID = B.FATSEQ LEFT JOIN ");
+                    sb.AppendLine(" FATURA.RPSFAT C ON C.RPSNUM = B.RPSNUM AND C.FATSEQ = B.FATSEQ ");
+                    sb.AppendLine(" WHERE  A.ID " + id);
+
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                    return query;
+                }
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+        #endregion
+        #region monta_Sid
+        public string Monta_Sid_FechaNota(string Serie, string Tipo,  bool baixaTitulo, string tituloSap, string dtNow,
+            string conta, string valor, string condicao, string nfeSubstituida)
+        {
+            string strS = "";
+
+            try
+            {
+                strS = "<sid acao='SID.Nfv.Fechar'>";
+                strS = strS + "<param nome='CodSnf' valor='" + Serie + "'/>";
+                strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
+
+                if (baixaTitulo)
+                {
+                    strS = strS + "<sid acao='SID.Tcr.Baixar'>";
+                    strS = strS + "<param nome='NumTit' valor='@NUMNFE" + tituloSap + "'/>";
+                    strS = strS + "<param nome='CodTpt' valor='DUP'/>";
+                    strS = strS + "<param nome='CodTns' valor='90356'/>";
+                    strS = strS + "<param nome='DatMov' valor='" + dtNow + "'/>";
+                    strS = strS + "<param nome='DatPgt' valor='" + dtNow + "'/>";
+                    strS = strS + "<param nome='NumCco' valor='" + conta + "'/>";
+                    strS = strS + "<param nome='VlrMov' valor='" + valor.Replace(".", "").Replace("R$", "").ToUpper() + "'/>";
+                    strS = strS + "<param nome='NumDoc' valor='@NUMNFE'/>";
+                    strS = strS + "<param nome='CodFpg' valor='" + condicao + "'/>";
+                    strS = strS + "<param nome='TnsBxa' valor='90624'/>";
+                    strS = strS + "</sid>";
+                }
+
+                if (nfeSubstituida != "" && nfeSubstituida.Count() > 0)
+                {
+                    strS = strS + "<MOTV_NF>ZSB</MOTV_NF>";
+                    strS = strS + "<NFSE_SUBSTITUIDA>" + nfeSubstituida + "</NFSE_SUBSTITUIDA>";
+                }
+
+                strS = strS + "</sidxml>";
+
+                return strS;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public string Monta_Sid_Itens(string Tipo, int Empresa, int Item, string Serie, string codServico, string Servico, double preco, string CodigoSer)
+        {
+            string strS = "";
+            string SisFin = "SAP";
+            string Monta_Sid_Itens = "";
+
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    strS = "<sid acao='SID.Nfv.GravarServico'>";
+                    strS = strS + "<param nome='CodSnf' valor='" + Serie + "'/>";
+                    strS = strS + "<param nome='SeqIsv' valor='" + Item + "'/>";
+
+                    if (SisFin != "SAP")
+                    {
+                        sb.AppendLine(" SELECT CODSER FROM COSAPIENS.E080SER WHERE USU_SRV_IPA =" + codServico);
+                        sb.AppendLine(" AND codEmp =" + Empresa);
+                        sb.AppendLine(" AND sitser = 'A' ");
+
+                        string retCodSer = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        if (retCodSer != null)
+                        {
+                            strS = strS + "<param nome='CodSer' valor='" + retCodSer + "'/>";
+                        }
+                        else
+                        {
+                            Monta_Sid_Itens = "ERRO: O Serviço " + Servico.ToUpper() + " - [" + codServico + "] não possui codigo de Serviço relacionado ao SAP - Operação Cancelada";
+
+                            return Monta_Sid_Itens;
+                        }
+
+                    }
+                    else
+                    {
+                        if (CodigoSer != "")
+                        {
+
+                            strS = strS + "<param nome='CodSer' valor='" + CodigoSer + "'/>";
+                        }
+                        else
+                        {
+                            Monta_Sid_Itens = "ERRO: O Serviço " + Servico.ToUpper() + " - [" + codServico + "] não possui codigo de Serviço relacionado ao SAP - Operação Cancelada";
+                            return Monta_Sid_Itens;    
+                        }
+                    }
+                    strS = strS + "<param nome='PreUni' valor='" + preco + "'/>";
+                    strS = strS + "<param nome='QtdFat' valor='1'/>";
+                    strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
+
+                    return Monta_Sid_Itens;
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region consistencias GR
+
+        public string consistenciaGR(int seq_gr, int parceiro)
+        {
+            int grRPS = 0;
+            int grDoc = 0;
+            int grZerada = 0;
+            int grEmBranco = 0;            
+            string embarque = "";
+            int docs = 0;
+            string mensagem = "";
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
@@ -1489,99 +2464,55 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN (" + seq_gr + ") AND NVL(RPS, 0) = 1 ");
 
-                    count = con.Query<int>(sb.ToString()).FirstOrDefault();
+                    grRPS = con.Query<int>(sb.ToString()).FirstOrDefault();
 
-                    return count;
-                }
-            }
-            catch (Exception ex)
-            {
-                return count;
-            }
-        }
-        public int countGRDOC(int seq_gr)
-        {
-            int count = 0;
+                    if (grRPS > 0)
+                    {
+                        mensagem = "GR já possui RPS/Faturamento gerado";
+                    }
 
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
+                    sb.Clear();
 
                     sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL WHERE AUTONUM IN (");
                     sb.AppendLine(" select BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + ")");
-                    sb.AppendLine(" ) AND NVL(RPS, 0) = 1 ");
+                    sb.AppendLine("  AND NVL(RPS, 0) = 1) ");
                     sb.AppendLine(" And (NVL(NUM_DOCUMENTO,' ') = ' ' OR NUM_DOCUMENTO = '') ");
 
-                    count = con.Query<int>(sb.ToString()).FirstOrDefault();
+                    grDoc = con.Query<int>(sb.ToString()).FirstOrDefault();
 
-                    return count;
-                }
-            }
-            catch (Exception ex)
-            {
-                return count;
-            }
-        }
-        public int countGRValorZerado(int seq_gr)
-        {
-            int count = 0;
+                    if(grDoc > 0)
+                    {
+                        mensagem = "O Documento da GR [" + seq_gr + "] está em branco"; 
+                    }
 
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
+                    sb.Clear();
 
                     sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN (" + seq_gr + ") AND NVL(VALOR_GR,0) = 0 ");
 
-                    count = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    return count;
-                }
-            }
-            catch (Exception ex)
-            {
-                return count;
-            }
-        }
-        public int countGRDocEmBranco(int seq_gr)
-        {
-            int count = 0;
-
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
+                    grZerada = con.Query<int>(sb.ToString()).FirstOrDefault();
 
 
-                    sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL BL WHERE AUTONUM IN (");
+                    if (grZerada > 0)
+                    {
+                        mensagem = "Uma ou mais GRs com o valor zerado";
+                    }
+
+
+                    sb.Clear();
+
+                    sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL BL ");
                     sb.AppendLine(" INNER JOIN SGIPA.TB_TIPOS_DOCUMENTOS TP ON BL.TIPO_DOCUMENTO = TP.CODE ");
-                    sb.AppendLine(" And (NVL(TP.DESCR,' ') = ' ' OR TP.DESCR = '') ");
                     sb.AppendLine(" WHERE BL.AUTONUM IN(SELECT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + "))  ");
+                    sb.AppendLine(" And (NVL(TP.DESCR,' ') = ' ' OR TP.DESCR = '') ");
 
-                    count = con.Query<int>(sb.ToString()).FirstOrDefault();
+                    grEmBranco = con.Query<int>(sb.ToString()).FirstOrDefault();
 
-                    return count;
-                }
-            }
-            catch (Exception ex)
-            {
-                return count;
-            }
-        }
-        public string obtemEmbarque(int seq_gr, int parceiro)
-        {
-            try
-            {
-                string embarque = "";
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
+                    if (grEmBranco > 0)
+                    {
+                        mensagem = "O Tipo Do Documento da Gr[" + seq_gr + "] esta em branco";
+                    }
+
+                    sb.Clear();
 
                     sb.AppendLine(" SELECT  NVL(DIA_FAT,0) As DIA_FAT FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM =  " + parceiro);
 
@@ -1591,13 +2522,57 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     if (dia_fat > 0)
                     {
+                        IntegracaoBaixa.validaEmbarque = true;
                         sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") ");
 
                         embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-
                     }
-                    return embarque.Substring(0, 9);
+                    else
+                    {
+                        IntegracaoBaixa.validaEmbarque = false;
+                    }
+
+                    if (IntegracaoBaixa.validaEmbarque == true && embarque == "")
+                    {
+                        mensagem = "Não é possível gerar a nota fiscal, BL sem referência Do cliente cadastrado.";
+                    }
+
+                    sb.Clear();
+
+                    sb.AppendLine(" Select COUNT(DISTINCT NUM_DOCUMENTO) FROM SGIPA.TB_BL ");
+                    sb.AppendLine(" WHERE AUTONUM IN (Select BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ")) ");
+
+
+                    docs = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    if (docs > 1)
+                    {
+                        mensagem = "Para agrupar GRs é necessário ser o mesmo documento de origem";
+                    }
+
+
+                    return mensagem;
+                }
+            }
+            catch (Exception ex)
+            {
+                return "Erro ao verificar consistenciasGR";
+            }
+        }
+        #endregion
+        public string GetEmbarque(int seq_gr)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") ");
+
+                    string embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                    return embarque;
                 }
             }
             catch (Exception ex)
@@ -1605,6 +2580,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
+
         public bool atualizaCODCLI(int codCli, int autonum)
         {
             try
@@ -1632,7 +2608,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        #endregion
         #region envio email 
         public IntegracaoBaixa GetDadosUsuarioImagem(int lote)
         {
@@ -2065,6 +3040,177 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
         #endregion
+        
+        public double Valor_Nota(string seq_gr)
+        {
+            double Valor = 0;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("SELECT sum(A.VALOR+A.DESCONTO+A.ADICIONAL) ITEM, sum(B.TOTAL) IMPOSTO ");
+                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A LEFT JOIN ");
+                    sb.AppendLine(" (SELECT SUM(VALOR_IMPOSTO) TOTAL, AUTONUM_SERVICO_FATURADO  ");
+                    sb.AppendLine("       FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS GROUP BY AUTONUM_SERVICO_FATURADO ) B  ");
+                    sb.AppendLine("   ON A.AUTONUM = B.AUTONUM_SERVICO_FATURADO  ");
+                    sb.AppendLine(" WHERE A.SEQ_GR in(" + seq_gr  + ")  ");
+
+                    Valor = con.Query<double>(sb.ToString()).FirstOrDefault();
+
+                    return Valor;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Valor;
+            }
+        }
+        public double Valor_Desconto(string seq_gr )
+        {
+            double valor = 0;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("  Select A.autonum , A.bl , A.seq_gr , nvl(round(((A.valor + A.desconto + A.adicional) * (NL(b.taxa, 0) / 100)), 2), 0) ISS from sgipa.tb_servicos_faturados  A");
+                    sb.AppendLine(" Inner Join ");
+                    sb.AppendLine(" (select seq_gr, nvl(max(case when NVL(B.FLAG_ISENTO_IMPOSTO,0)=1 then 0 else taxa end),0) taxa ");
+                    sb.AppendLine(" From sgipa.tb_GR_BL A  inner Join sgipa.tb_cad_parceiros b on a.importador_gr=b.autonum ");
+                    sb.AppendLine(" inner  Join  sgipa.tb_cad_impostos c on 1=1  where SEQ_GR IN(" + seq_gr + ") And c.iss=1 GROUP BY SEQ_GR ) B ");
+                    sb.AppendLine(" On A.SEQ_GR=B.SEQ_GR ");
+                    sb.AppendLine(" WHERE A.SEQ_GR IN(" + seq_gr + ") ");
+                   
+
+                    valor = con.Query<double>(sb.ToString()).FirstOrDefault();
+
+                    return valor;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return valor;  
+            }
+        }
+        public bool Monta_Insert_Fatura_Item(int posicao, int countI, string descricao_servico, double total, int servico,  string doc, int imposto, double valor, int quantidade, string SD)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" INSERT INTO FATURA.FATURA_ITEM ");
+                    sb.AppendLine(" ( ");
+                    sb.AppendLine(" ID, IDFATURA,ITEM,DESCRICAO,QTDE,VALOR,SERVICO,GRS, IMPOSTO, RATE, SD ");
+                    sb.AppendLine(" ) VALUES ( ");
+                    sb.AppendLine(" SEQ_FATURA_ITEM.NEXTVAL ");
+                    sb.AppendLine(" " + posicao + ", ");
+                    sb.AppendLine(" " + countI + ", ");
+                    sb.AppendLine(" '" + descricao_servico + "', ");
+                    sb.AppendLine(" " + countI + ", ");
+
+                    if (quantidade == 0)
+                    {
+                        sb.AppendLine(" NULL, ");
+                    }
+                    else
+                    {
+                        sb.AppendLine(" " + quantidade + ", ");
+                    }
+
+                    sb.AppendLine(" " + total.ToString().Replace(",", ".") + ", ");
+                    sb.AppendLine(" " + servico + ", ");
+                    sb.AppendLine(" " + doc + ", ");
+                    sb.AppendLine(" " + imposto + " ");
+                    sb.AppendLine(" " + valor.ToString().Replace(",", ".") + " ");
+                    sb.AppendLine(" " + SD + "  ");
+                    sb.AppendLine(" ) ");
+
+
+                    bool ins = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return ins;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public bool excluiFaturaEItem(int pos)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" DELETE FROM FATURA.FATURANOTA WHERE id = " + pos);
+
+                    con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    sb.Clear();
+
+                    sb.AppendLine(" DELETE FROM FATURA.FATURA_ITEM WHERE IDFATURA = " + pos);
+
+                    con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public string Formata_CGCCPF(string doc, int? tipo)
+        {
+            try
+            {
+                string Formata = doc;
+                if (doc == null)
+                {
+                    doc = "1";
+                }
+                if (tipo == null)
+                {
+                    tipo = 0;
+                }
+
+                if (tipo == 1)
+                {
+                    if (doc.Length == 14)
+                    {
+                        Formata = Formata.Substring(doc.Length - 1);
+                        Formata = Formata.Substring(0, 2) + "." + Formata.Substring(2, 3) + "." + Formata.Substring(5, 3) + "/" + Formata.Substring(8, 4) + "-" + Formata.Substring(12, 2);
+                    }
+
+                    return Formata;
+                }
+                else if (tipo == 2)
+                {
+                    if (doc.Length == 11)
+                    {
+                        Formata = Formata.Substring(doc.Length - 1);
+                        Formata = Formata.Substring(0, 3) + "." + Formata.Substring(3, 3) + "." + Formata.Substring(6, 3) + "-" + Formata.Substring(10, 2);
+                    }
+
+                    return Formata;
+                }
+
+                return Formata;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         //Update na tb_bl quando for feito uma cancelamento
         public string CancelaTituloPix(long numero_titulo)
         {
@@ -2098,5 +3244,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return "002-O título não pode ser cancelado"; 
             }
         }
+       
     }
 }

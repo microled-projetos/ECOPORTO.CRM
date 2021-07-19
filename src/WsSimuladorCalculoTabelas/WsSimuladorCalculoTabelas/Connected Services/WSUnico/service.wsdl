@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tecondi.com.br/services/nfe" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tecondi.com.br/services/nfe" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tecondi.com.br/services/nfe">
+      <s:element name="CancelaNotaFiscalDeVenda">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fatId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelaNotaFiscalDeVendaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="CancelaNotaFiscalDeVendaResult" type="tns:StatusNfe" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="StatusNfe">
+        <s:restriction base="s:string">
+          <s:enumeration value="AguardandoProcessamento" />
+          <s:enumeration value="AguardandoEnvioPrefeitura" />
+          <s:enumeration value="AguardandoProcessamentoSAP" />
+          <s:enumeration value="Processado" />
+          <s:enumeration value="ErroProcessamentoPrefeitura" />
+          <s:enumeration value="Cancelada" />
+          <s:enumeration value="AguardandoRetornoPrefeitura" />
+          <s:enumeration value="AguardandoCancelamentoPrefeitura" />
+          <s:enumeration value="AguardandoCancelamentoSapiens" />
+          <s:enumeration value="AguardandoCancelamentoChronos" />
+          <s:enumeration value="AguardandoBaixaTituloSapiens" />
+          <s:enumeration value="AguardandoCancelamentoPorSubstituicao" />
+          <s:enumeration value="NotaFiscalInexistente" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GeraNotaFiscalDeVendaSAP">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fatId" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="xmlSapiens" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="obsNf" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="xmlSAP" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GeraNotaFiscalDeVendaSAPResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GeraNotaFiscalDeVendaSAPResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProcessarFilaDeNotas">
+        <s:complexType />
+      </s:element>
+      <s:element name="GeraNotasDiaria">
+        <s:complexType />
+      </s:element>
+      <s:element name="GeraNotasDiariaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GeraNotasDiariaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SubstituirNFSe">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="fatId" type="s:long" />
+            <s:element minOccurs="0" maxOccurs="1" name="obsNf" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="xmlSAP" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="rpsSubstituido" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SubstituirNFSeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SubstituirNFSeResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="CancelaNotaFiscalDeVendaSoapIn">
+    <wsdl:part name="parameters" element="tns:CancelaNotaFiscalDeVenda" />
+  </wsdl:message>
+  <wsdl:message name="CancelaNotaFiscalDeVendaSoapOut">
+    <wsdl:part name="parameters" element="tns:CancelaNotaFiscalDeVendaResponse" />
+  </wsdl:message>
+  <wsdl:message name="GeraNotaFiscalDeVendaSAPSoapIn">
+    <wsdl:part name="parameters" element="tns:GeraNotaFiscalDeVendaSAP" />
+  </wsdl:message>
+  <wsdl:message name="GeraNotaFiscalDeVendaSAPSoapOut">
+    <wsdl:part name="parameters" element="tns:GeraNotaFiscalDeVendaSAPResponse" />
+  </wsdl:message>
+  <wsdl:message name="ProcessarFilaDeNotasSoapIn">
+    <wsdl:part name="parameters" element="tns:ProcessarFilaDeNotas" />
+  </wsdl:message>
+  <wsdl:message name="GeraNotasDiariaSoapIn">
+    <wsdl:part name="parameters" element="tns:GeraNotasDiaria" />
+  </wsdl:message>
+  <wsdl:message name="GeraNotasDiariaSoapOut">
+    <wsdl:part name="parameters" element="tns:GeraNotasDiariaResponse" />
+  </wsdl:message>
+  <wsdl:message name="SubstituirNFSeSoapIn">
+    <wsdl:part name="parameters" element="tns:SubstituirNFSe" />
+  </wsdl:message>
+  <wsdl:message name="SubstituirNFSeSoapOut">
+    <wsdl:part name="parameters" element="tns:SubstituirNFSeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="CancelaNotaFiscalDeVenda">
+      <wsdl:input message="tns:CancelaNotaFiscalDeVendaSoapIn" />
+      <wsdl:output message="tns:CancelaNotaFiscalDeVendaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GeraNotaFiscalDeVendaSAP">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gera nota fiscal na Prefeitura</wsdl:documentation>
+      <wsdl:input message="tns:GeraNotaFiscalDeVendaSAPSoapIn" />
+      <wsdl:output message="tns:GeraNotaFiscalDeVendaSAPSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ProcessarFilaDeNotas">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Metodo Chamado pelo Robo processa todas as notas que estao na fila</wsdl:documentation>
+      <wsdl:input message="tns:ProcessarFilaDeNotasSoapIn" />
+    </wsdl:operation>
+    <wsdl:operation name="GeraNotasDiaria">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Metodo Interno</wsdl:documentation>
+      <wsdl:input message="tns:GeraNotasDiariaSoapIn" />
+      <wsdl:output message="tns:GeraNotasDiariaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SubstituirNFSe">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gera uma nova nota fiscal e cancela a nota anterior</wsdl:documentation>
+      <wsdl:input message="tns:SubstituirNFSeSoapIn" />
+      <wsdl:output message="tns:SubstituirNFSeSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CancelaNotaFiscalDeVenda">
+      <soap:operation soapAction="http://tecondi.com.br/services/nfe/CancelaNotaFiscalDeVenda" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GeraNotaFiscalDeVendaSAP">
+      <soap:operation soapAction="http://tecondi.com.br/services/nfe/GeraNotaFiscalDeVendaSAP" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessarFilaDeNotas">
+      <soap:operation soapAction="http://tecondi.com.br/services/nfe/ProcessarFilaDeNotas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GeraNotasDiaria">
+      <soap:operation soapAction="http://tecondi.com.br/services/nfe/GeraNotasDiaria" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubstituirNFSe">
+      <soap:operation soapAction="http://tecondi.com.br/services/nfe/SubstituirNFSe" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CancelaNotaFiscalDeVenda">
+      <soap12:operation soapAction="http://tecondi.com.br/services/nfe/CancelaNotaFiscalDeVenda" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GeraNotaFiscalDeVendaSAP">
+      <soap12:operation soapAction="http://tecondi.com.br/services/nfe/GeraNotaFiscalDeVendaSAP" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessarFilaDeNotas">
+      <soap12:operation soapAction="http://tecondi.com.br/services/nfe/ProcessarFilaDeNotas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="GeraNotasDiaria">
+      <soap12:operation soapAction="http://tecondi.com.br/services/nfe/GeraNotasDiaria" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubstituirNFSe">
+      <soap12:operation soapAction="http://tecondi.com.br/services/nfe/SubstituirNFSe" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="http://10.1.50.28:133/service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="http://10.1.50.28:133/service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
