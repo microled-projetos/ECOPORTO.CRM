@@ -29,7 +29,7 @@ namespace WsSimuladorCalculoTabelas.Models
         public DateTime Data { get; set; }
         public int QTDE { get; set; }
         public decimal PESO_BRUTO { get; set; }
-        public int PESO { get; set; }
+        public decimal PESO { get; set; }
         public int id_user { get; set; }
         public string iusnome { get; set; }
         public string iusemail { get; set; }
@@ -106,15 +106,15 @@ namespace WsSimuladorCalculoTabelas.Models
         public int IMPOSTO { get; set; }
         public int AUTONUM_END { get; set; }
         public string TIPODOC_DESCRICAO { get; set; }
-        public int VALOR_IMPOSTO { get; set; }
+        public decimal VALOR_IMPOSTO { get; set; }
         public int AUTONUM_IMPOSTO { get; set; }
         public string DESCR_SERVICO { get; set; }
         public static bool validaEmbarque { get; set; }
         public static bool notaAgrupada { get; set; }       
         public static bool substituicao { get; set; }
         public static List<object> listaFatura { get; set; }     
-        public int TOTAL { get; set; }
-        public int IMPOSTOS { get; set; }
+        public decimal TOTAL { get; set; }
+        public decimal  IMPOSTOS { get; set; }
         public int STATUSNFE { get; set; }
         public int CODSER { get; set; }
         public string CRITICA { get; set; }

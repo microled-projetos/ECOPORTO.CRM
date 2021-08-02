@@ -1032,7 +1032,7 @@ namespace WsSimuladorCalculoTabelas
                     _pagamentoPixDAO.atualizaGREmCNTR(Lote, Seq_Gr);
                     _pagamentoPixDAO.atualizaGREmCS(Lote, Seq_Gr);
 
-                        var insereGr = _pagamentoPixDAO.inseregr_bl(Seq_Gr, Lote, wInicio, wFinal);
+                        var insereGr = _pagamentoPixDAO.inseregr_bl(Seq_Gr, Lote, wInicio, wFinal,NumeroTitulo);
 
                       //  var dadosAtualizaDadosVencimento = _pagamentoPixDAO.GetDadosAtualizaVencimento(Lote);
 
@@ -1165,8 +1165,8 @@ namespace WsSimuladorCalculoTabelas
                         }
                         
                         string nfe = "";
-                        int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(Seq_Gr, nfe);
-                        string dtEmissao = DateTime.Now.ToString("dd/MM/YYYY");
+                       string dtEmissao = DateTime.Now.ToString("dd/MM/yyyy");
+                        string dtVenc = DateTime.Now.ToString("dd/MM/yyyy");
 
                         //_pagamentoPixDAO.updateNotaById(id_nota, Usuario);
 
@@ -1191,6 +1191,8 @@ namespace WsSimuladorCalculoTabelas
                         sapcliente.CGCCPF = sap_cli.CGCCPF;
                         sapcliente.INSEST = sap_cli.INSEST;
                         sapcliente.IBGE = sap_cli.IBGE;
+                        sapcliente.TIPCLI = sap_cli.TIPCLI;
+
 
 
                         //Insere Fatura Nota 
@@ -1222,7 +1224,7 @@ namespace WsSimuladorCalculoTabelas
 
 
                         _pagamentoPixDAO.Monta_Insert_Faturanota(
-                            "GR", seq_gr, Embarque, wInicio, wFinal, "", "",
+                            "GR", seq_gr, Embarque, dtEmissao, dtVenc, "", "",
                             NatOp, CodNat, ndoc, tipoDoc, viagem, Dolar, patioGR,
                             autonumMin, sapcliente, notaAc, cli_autonum,
                             Lote, parceiroID, nfeSubst, clienteSAPEntrega, fpOp,
@@ -1230,6 +1232,7 @@ namespace WsSimuladorCalculoTabelas
                             cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,
                             idNotaSub);
 
+                        int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(Seq_Gr, nfe);
 
                         if (id_nota > 0)    
                         {
@@ -1259,8 +1262,23 @@ namespace WsSimuladorCalculoTabelas
                                     Mensagem = comp_nota,
                                 };
                             }
-                        }
+                            else
+                            {
+                                if (_pagamentoPixDAO.Obtem_RPSNUM(id_nota) != 0)
+                                {
+                                    _pagamentoPixDAO.Atualiza_Doc("GR", dtEmissao, Seq_Gr, false);
+                                }
 
+                            }
+                        }
+                        else
+                        {
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = "Erro na geração da Nota fiscal!",
+                            };
+                        }
                         //FIM                       
 
 

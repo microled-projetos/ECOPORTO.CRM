@@ -147,7 +147,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public bool inseregr_bl(long seq_gr, long lote, string inicio, string fim )
+        public bool inseregr_bl(long seq_gr, long lote, string inicio, string fim,long NumeroTitulo )
         {
             try
             {
@@ -179,7 +179,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("f_qtd_volumes, ");
                     sb.AppendLine("f_peso_cs, ");
                     sb.AppendLine("DT_INICIO_CALCULO, ");
-                    sb.AppendLine("DT_LIBERACAO ");
+                    sb.AppendLine("DT_LIBERACAO , NUM_TITULO_PIX ,DT_IMPRESSAO ,USUARIO_IMP,NUM_CHEQUE,MEIODEPAGAMENTO,BANCO,NUMCONTA");
                     sb.AppendLine(") ");
                     sb.AppendLine("select SGIPA.SEQ_GR_BL.NEXTVAL, ");
                     sb.AppendLine("A.BL, ");
@@ -187,7 +187,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("sysdate,");
                     sb.AppendLine("V.VALORGR,");
                     sb.AppendLine("'IM', ");
-                    sb.AppendLine("0, ");
+                    sb.AppendLine("1, ");
                     sb.AppendLine("A.VALIDADE_GR,");
                     sb.AppendLine("A.Data_base, ");
                     sb.AppendLine("A.Data_Reefer,");
@@ -204,7 +204,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("0, ");
                     sb.AppendLine("0, ");
                     sb.AppendLine("A.DT_INICIO_CALCULO, ");
-                    sb.AppendLine("B.DT_LIBERACAO ");
+                    sb.AppendLine("B.DT_LIBERACAO ,");
+                    sb.AppendLine(NumeroTitulo + " , sysdate, 90,'PIX','GRPX','1','29.136-4'");
                     sb.AppendLine("FROM  SGIPA.TB_GR_PRE_CALCULO  A INNER JOIN SGIPA.TB_BL B ON A.BL=B.AUTONUM ");
                     sb.AppendLine("INNER JOIN (");
                     sb.AppendLine("select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from SGIPA.tb_servicos_faturados a  ");
@@ -883,15 +884,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine("UPDATE SGIPA.TB_BL_GR SET  ");
-                    sb.AppendLine(" DATA_FATURADO = TO_DATE('" + dataEmi + "', 'dd/MM/yyyy'), ");
-                    
-                    
-                    if (baixa)
-                    {
-                        sb.AppendLine(" DATAPAGAMENTO = TO_DATE('" + dataEmi + "', 'dd/MM/yyyy'), ");
-                    }
-
+                    sb.AppendLine("UPDATE SGIPA.TB_GR_BL SET  ");
+                    sb.AppendLine(" DATAFATURADO = TO_DATE('" + dataEmi + "', 'dd/MM/yyyy'), ");
+                    sb.AppendLine(" DATAPAGAMENTO = TO_DATE('" + dataEmi + "', 'dd/MM/yyyy'), ");
+                    sb.AppendLine(" DATADEPOSITO = TO_DATE('" + dataEmi + "', 'dd/MM/yyyy'), ");
                     sb.AppendLine(" RPS =  1, FATURADO = 1 ");
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine(" SEQ_GR IN(" + Doc + ") ");
@@ -1146,7 +1142,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT MAX(RPSNUM) FROM FATURA.rpsfat WHERE where fatseq =  " + idNota);
+                    sb.AppendLine(" SELECT MAX(RPSNUM) FROM FATURA.rpsfat WHERE  fatseq =  " + idNota);
 
                     idRPS = con.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -1192,14 +1188,14 @@ namespace WsSimuladorCalculoTabelas.DAO
                     int posicao = 0;
                     string corpo_nota = "";
 
-                    double valor_Nota = Valor_Nota(gr.ToString());
+                   decimal valor_Nota = Valor_Nota(gr.ToString());
 
                     if(sapCli.CIDCOB.ToUpper() == "SANTOS" || sapCli.CIDCOB.ToUpper() == "" && sapCli.CIDCLI.ToUpper() =="SANTOS" )
                     {
                         Desconto = Valor_Desconto(gr.ToString());
                     }
 
-                    sb.AppendLine(" Select a.razao_representante_sap as Razao, b.cgc as cgccpf, ");
+                    sb.AppendLine(" Select nvl(a.razao_representante_sap,' ') as Razao, nvl(b.cgc,'000.000.000-00') as cgccpf, ");
                     sb.AppendLine(" CASE WHEN LENGTH(Replace(Replace(Replace(Replace(b.CGC, '.', ''), '-', ''), '/', ''), '_', '')) > 11 THEN 'J' ELSE 'F' END AS TIPCLI from  SGIPA.tb_cad_parceiros a left join ");
                     sb.AppendLine(" SGIPA.TB_CAD_PARCEIROS b on a.razao_representante_SAP = b.RAZAO where a.autonum = " + autonumCli);
 
@@ -1211,7 +1207,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.Clear();
 
-                    sb.AppendLine("SELECT SEQ_FATURANOTA.NEXTVAL AS numero  from DUAL");
+                    sb.AppendLine("SELECT FATURA.SEQ_FATURANOTA.NEXTVAL AS numero  from DUAL");
 
                     int idFat = con.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -1248,7 +1244,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("     VIAGEM, ");
                     sb.AppendLine("     DOLAR, ");
                     sb.AppendLine("     DESCONTO,  ");
-                    sb.AppendLine("     FILIAL, ");
+                    sb.AppendLine("     FILLAL, ");
                     sb.AppendLine("     INTEGRADA, ");
                     sb.AppendLine("     IDDOCUMENTO,   ");
                     sb.AppendLine("     USUARIO, ");
@@ -1274,7 +1270,9 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("     LOTE, ");
                     sb.AppendLine("     PARCEIRO, ");
                     sb.AppendLine("     EMBARQUE, ");
-                    sb.AppendLine("     ID_FATURA_SB ");
+                    sb.AppendLine("     ID_FATURA_SB, ");
+                    sb.AppendLine("     COND_MANUAL, ");
+                    sb.AppendLine("    FPLTL ");
 
                     sb.AppendLine(" ) VALUES ( ");
 
@@ -1282,7 +1280,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" '" + CodCli + "',   ");
                     sb.AppendLine("  TO_DATE('" + dtEmissao + "', 'DD/MM/YYYY'), ");
                     sb.AppendLine("  TO_DATE('" + dtVencimento + "', 'DD/MM/YYYY'), ");
-                    sb.AppendLine(" " + numero + ", ");
+                    sb.AppendLine(" " + idFat.ToString("00000000") + ", ");
                     //valor nota
                     sb.AppendLine(" '" + valor_Nota + "', ");
                     //valor nota extenso
@@ -1309,7 +1307,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" 1,  ");
                     sb.AppendLine(" 0,  ");
                     sb.AppendLine(" " + usuario + ",  ");
-                    sb.AppendLine(" TO_DATE('" + DateTime.Now.ToString("dd-MM-yyyy") + "', 'DD/MM/YYYY') , ");
+                    sb.AppendLine(" TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY') , ");
                     sb.AppendLine(" NULL, ");
                     sb.AppendLine(" " + codEmpresa + ", ");
 
@@ -1317,16 +1315,16 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" " + serieNF.Substring(0, 1) + ", ");
                     //CLIENTE_SAP, NOMCLI, ENDCOB, CIDCOB, CGCCPF
 
-                    if (sapCli.CODCLI.ToString() != "")
+                    if (sapCli.CODCLI.ToString() == "")
                     {
-                        sb.AppendLine(" 'SAP001', ");
+                        sb.AppendLine(" '000', ");
                     }
                     else
                     {
-                        sb.AppendLine(" '" + sapCli.NOMCLI.ToString() + "', ");
+                        sb.AppendLine(" '" + sapCli.CODCLI.ToString() + "', ");
                     }
 
-                    sb.AppendLine("'" + sapCli.NOMCLI + "', ");
+                    sb.AppendLine("'" + sapCli.NOMCLI.Replace("'", "") + "', ");
 
 
                     if (sapCli.ENDCOB == "")
@@ -1339,7 +1337,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
 
 
-                    sb.AppendLine("'" + endereco + "', ");
+                    sb.AppendLine("'" + endereco.Replace("'", "") + "', ");
 
                     if (sapCli.CIDCOB == "")
                     {
@@ -1349,7 +1347,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     {
                         cidade = sapCli.CIDCOB;
                     }
-                    sb.AppendLine(" '" + cidade + "', ");
+                    sb.AppendLine(" '" + cidade.Replace("'","") + "', ");
 
                     if (sapCli.TIPCLI.ToUpper() == "J")
                     {
@@ -1371,11 +1369,11 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     if (sapCli.BAICOB == "")
                     {
-                        sb.AppendLine(" '" + sapCli.BAICLI + "', ");
+                        sb.AppendLine(" '" + sapCli.BAICLI.Replace("'", "") + "', ");
                     }
                     else
                     {
-                        sb.AppendLine(" '" + sapCli.BAICOB + "', ");
+                        sb.AppendLine(" '" + sapCli.BAICOB.Replace("'", "") + "', ");
                     }
 
 
@@ -1418,15 +1416,17 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" '"+ CGCRep +"',  "); ;
 
                     //CODIBGE, SERIE, CODCPG
-                    sb.AppendLine(" " + sapCli.IBGE  + " ");
-                    sb.AppendLine(" '"+ serieNF +"' ");
-                    sb.AppendLine(" 'Pix' ");
+                    sb.AppendLine(" " + sapCli.IBGE  + ", ");
+                    sb.AppendLine(" '"+ serieNF +"' ,");
+                    sb.AppendLine(" 'Pix', ");
 
                     //Lote e parceiro
                     sb.AppendLine(" " + Lote + ", ");
                     sb.AppendLine(" " + Parceiro + ", ");
                     //Embarque
-                    sb.AppendLine(" " + Embarque + ",  ");
+                    sb.AppendLine(" '" + Embarque + "',  ");
+                    //ID_FATURA_SB
+                    sb.AppendLine(" 0,  ");
 
                     sb.AppendLine(" " + codManual + ",  ");
 
@@ -1443,11 +1443,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                     posicao = Obtem_Id_Nota(gr, numDoc);
 
 
-                    if (idNotaSub > 0)
-                    {
-                        updateNotaById(posicao, 90);
-                    }
-
                     var monta_Itens = Monta_Itens_Nota(gr, servico);
 
                     int i = 0;
@@ -1459,7 +1454,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                         corpo_nota = corpo_nota + MontaCorpoNota(i, monta_item.DESCR_SERVICO, monta_item.TOTAL);
 
-                        Monta_Insert_Fatura_Item(posicao, i, monta_item.DESCR_SERVICO, monta_item.TOTAL, monta_item.SERVICO, numDoc, 0, 0, 0, "");
+                        Monta_Insert_Fatura_Item(posicao, i, monta_item.DESCR_SERVICO, monta_item.TOTAL, monta_item.SERVICO,  gr.ToString(), 0, 0, 0, "");
                     }
 
                     var monta_Itens_IMP = Monta_Itens_Nota_Imp(gr);
@@ -1468,7 +1463,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     {
                         i = i + 1;
 
-                        Monta_Insert_Fatura_Item(posicao, i, monta_item_imp.DESCR_SERVICO, monta_item_imp.VALOR_IMPOSTO, 0, numDoc, 1, 0, 0, "");
+                        Monta_Insert_Fatura_Item(posicao, i, monta_item_imp.DESCR_SERVICO, monta_item_imp.VALOR_IMPOSTO, 0, gr.ToString(), 1, 0, 0, "");
 
                         corpo_nota = corpo_nota + MontaCorpoNota(i, servico, valor_Nota);
                     }
@@ -1495,10 +1490,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                 string wIdServicos = "";
                 string corpoNota = "";
                 int ICount = 0;
-                double total = 0;
-                double Impostos = 0;
-                double totalIMP = 0;
-                double valor = 0;
+                decimal total = 0;
+                decimal Impostos = 0;
+                decimal totalIMP = 0;
+                decimal valor = 0;
 
                 contaItens = contaItens + 1;
 
@@ -1580,13 +1575,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                 string CGC = sapcliente.CGCCPF.ToString();
                 string codOper = "";
                 string Tipo_Emp = sapcliente.TIPMER;
-                string[] CMD_XML = new string[550];
-                string[] CMD_SID = new string[550];
+                string[] CMD_XML = new string[555];
+                string[] CMD_SID = new string[555];
                 int filial = 0;
                 int I = 0;
                 int QTD_I = 0;
                 bool substNF = false;
-                string GeraRPSFAT = "0";
+                string GeraRPSFAT = "1";
                 string monta_SID_Fecha_Nota = "";
                 string monta_SID_Itens = "";
                 string Retorno = "";                
@@ -1595,7 +1590,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
 
 
-                monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", false, tituloSap, dtEmissao, conta, valor.ToString(), condicao, nfeSubst.ToString());
+                monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", true, tituloSap, dtEmissao, conta, valor.ToString(), condicao, nfeSubst.ToString());
 
 
                 var itens = Monta_Itens_Nota(gr, servico);
@@ -1625,7 +1620,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
                 }
 
-                for (int z = 0; z < 550; i++)
+                for (int z =i+1; z < 550; z++)
                 {
                     CMD_XML[z] = "";
                 }              
@@ -1761,41 +1756,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                 }
                 else
                 {
-                    if (substNF)
-                    {
-                        if (GeraRPSFAT == "1")
-                        {
-                            if (!insereRPSFATProc(id_nota, "", strInstruction, strInstructionSAP, RPSSubstituida))
-                            {
-                                Retorno = "OK";
-
-                                return "Erro ao inserir o registro do RPS";
-                            }
-                        }
-                        else
-                        {
-                            var par = GetDadosParametro(cod_empresa);
-                            var corpoRequest = new WSUnico.SubstituirNFSeRequestBody(id_nota, corpoNota, strInstructionSAP, Convert.ToInt64(RPSSubstituida));
-                            var requisicao = new WSUnico.SubstituirNFSeRequest(corpoRequest);
-                            WSUnico.ServiceSoap meuServico;
-                            //var meuServico = WSUnico.ServiceSoap;
-
-
-                            if (par.WS_NFE != "")
-                            {
-                                meuServico = new WSUnico.ServiceSoapClient("ServiceSoap3", par.WS_NFE);
-                            }
-                            else
-                            {
-                                meuServico = new WSUnico.ServiceSoapClient();
-                            }
-
-                            Retorno = meuServico.SubstituirNFSe(requisicao).Body.SubstituirNFSeResult.ToString();
-
-                        }
-                    }
-                    else
-                    {
                         if (GeraRPSFAT == "1")
                         {
                             if (!insereRPSFATProc(id_nota, "", strInstruction, strInstructionSAP, RPSSubstituida))
@@ -1822,7 +1782,6 @@ namespace WsSimuladorCalculoTabelas.DAO
                             Retorno = meuServico.GeraNotaFiscalDeVendaSAP(requisicao).Body.GeraNotaFiscalDeVendaSAPResult.ToString();
                         }
                     }
-                }
 
                 for (I = 0; I < 550; I++)
                 {
@@ -1830,27 +1789,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     CMD_SID[I] = "";
                 }
 
-                //string corpoNota = _pagamentoPixDAO.MontaCorpoNota()
-
-
-                if (estadoCli == "")
-                {
-                    estadoCli = sapcliente.SIGUFS;
-                }
-                else
-                {
-                    estadoCli = sapcliente.EST_COB;
-                }
-
-                if (cidadeCli == "")
-                {
-                    cidadeCli = sapcliente.CIDCLI;
-                }
-                else
-                {
-                    cidadeCli = sapcliente.CIDCOB;
-                }               
-
+                
 
                 return "";
 
@@ -1890,7 +1829,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" Select servico from SGIPA.fatura_item where imposto = 0 and nvl(valor,0) > 0 and idfatura = " + pos);
+                    sb.AppendLine(" Select count(1) from fatura.fatura_item where imposto = 0 and nvl(valor,0) > 0 and idfatura = " + pos);
 
                     servico = con.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -1996,7 +1935,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" Ind_CGC,  ");
                     sb.AppendLine(" Ind_Cidade_cli,  ");
                     sb.AppendLine(" num_documento as NUM_DOC,   ");
-                    sb.AppendLine(" TIPODOC_DESCRICAO, ");
+                    sb.AppendLine(" TIPO_DOCUMENTO TIPODOC_DESCRICAO, ");
                     sb.AppendLine(" PATIO ,");
                     sb.AppendLine(" Ind_autonum  ");
                     sb.AppendLine(" FROM  ");
@@ -2062,18 +2001,56 @@ namespace WsSimuladorCalculoTabelas.DAO
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
-
-                    bool retorno = con.Query<bool>("FATURA.PROC_CHRONOS_RPS", new
                     {
-                        ID_FAT = id,
-                        XML_SID = str,
-                        XML_SAP = corpo,
-                        Corpo = strSAP,
-                        subsT = subst
+                        using (OracleCommand cmd = new OracleCommand("FATURA.PROC_CHRONOS_RPS", con))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
 
-                    }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                            cmd.Parameters.Add(new OracleParameter
+                            {
+                                OracleDbType = OracleDbType.Long,
+                                Direction = ParameterDirection.Input,
+                                Value = id
+                            });
+                            cmd.Parameters.Add(new OracleParameter
+                            {
+                                OracleDbType = OracleDbType.Clob,
+                                Direction = ParameterDirection.Input,
+                                Value = str
+                            });
+                            cmd.Parameters.Add(new OracleParameter
+                            {
+                                OracleDbType = OracleDbType.Clob,
+                                Direction = ParameterDirection.Input,
+                                Value = corpo
+                            });
+                            cmd.Parameters.Add(new OracleParameter
+                            {
+                                OracleDbType = OracleDbType.Varchar2,
+                                Direction = ParameterDirection.Input,
+                                Value = strSAP
+                            });
+                            cmd.Parameters.Add(new OracleParameter
+                            {
+                                OracleDbType = OracleDbType.Int32,
+                                Direction = ParameterDirection.Input,
+                                Value = subst
+                            });
 
-                    return retorno;
+                            cmd.Parameters.Add(new OracleParameter
+                            {
+                                OracleDbType = OracleDbType.Varchar2,
+                                Direction = ParameterDirection.Output
+                            });
+
+                            con.Open();
+
+                            OracleDataReader retorno = cmd.ExecuteReader();
+
+
+                            return true;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -2204,7 +2181,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS ");
                     sb.AppendLine(" GROUP BY AUTONUM_SERVICO_FATURADO) C   ");
                     sb.AppendLine(" ON A.AUTONUM = C.AUTONUM_SERVICO_FATURADO ");
-                    sb.AppendLine(" WHERE A.SEQ_GR IN(" + gr + ") ");
+                    sb.AppendLine(" WHERE  a.valor>0 and A.SEQ_GR IN(" + gr + ") ");
 
                     if (servicos != "")
                     {
@@ -2292,7 +2269,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return query;
             }
         }
-        public string MontaCorpoNota(int item, string servico, double valor)
+        public string MontaCorpoNota(int item, string servico, decimal valor)
         {
             try
             {
@@ -2323,7 +2300,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" (SELECT MAX(RPSNUM) AS RPSNUM, FATSEQ ");
                     sb.AppendLine(" FROM FATURA.RPSFAT GROUP BY FATSEQ) B ON A.ID = B.FATSEQ LEFT JOIN ");
                     sb.AppendLine(" FATURA.RPSFAT C ON C.RPSNUM = B.RPSNUM AND C.FATSEQ = B.FATSEQ ");
-                    sb.AppendLine(" WHERE  A.ID " + id);
+                    sb.AppendLine(" WHERE  A.ID =" + id);
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
 
@@ -2364,12 +2341,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     strS = strS + "</sid>";
                 }
 
-                if (nfeSubstituida != "" && nfeSubstituida.Count() > 0)
-                {
-                    strS = strS + "<MOTV_NF>ZSB</MOTV_NF>";
-                    strS = strS + "<NFSE_SUBSTITUIDA>" + nfeSubstituida + "</NFSE_SUBSTITUIDA>";
-                }
-
+                
                 strS = strS + "</sidxml>";
 
                 return strS;
@@ -2395,28 +2367,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     strS = strS + "<param nome='CodSnf' valor='" + Serie + "'/>";
                     strS = strS + "<param nome='SeqIsv' valor='" + Item + "'/>";
 
-                    if (SisFin != "SAP")
-                    {
-                        sb.AppendLine(" SELECT CODSER FROM COSAPIENS.E080SER WHERE USU_SRV_IPA =" + codServico);
-                        sb.AppendLine(" AND codEmp =" + Empresa);
-                        sb.AppendLine(" AND sitser = 'A' ");
-
-                        string retCodSer = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-                        if (retCodSer != null)
-                        {
-                            strS = strS + "<param nome='CodSer' valor='" + retCodSer + "'/>";
-                        }
-                        else
-                        {
-                            Monta_Sid_Itens = "ERRO: O Serviço " + Servico.ToUpper() + " - [" + codServico + "] não possui codigo de Serviço relacionado ao SAP - Operação Cancelada";
-
-                            return Monta_Sid_Itens;
-                        }
-
-                    }
-                    else
-                    {
+                    
                         if (CodigoSer != "")
                         {
 
@@ -2427,12 +2378,12 @@ namespace WsSimuladorCalculoTabelas.DAO
                             Monta_Sid_Itens = "ERRO: O Serviço " + Servico.ToUpper() + " - [" + codServico + "] não possui codigo de Serviço relacionado ao SAP - Operação Cancelada";
                             return Monta_Sid_Itens;    
                         }
-                    }
+                   
                     strS = strS + "<param nome='PreUni' valor='" + preco + "'/>";
                     strS = strS + "<param nome='QtdFat' valor='1'/>";
                     strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
 
-                    return Monta_Sid_Itens;
+                    return strS;
                 }
 
                 
@@ -2568,7 +2519,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") ");
+                    sb.AppendLine(" SELECT nvl(max(Embarque),' ') as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ")) ");
 
                     string embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
 
@@ -3041,23 +2992,23 @@ namespace WsSimuladorCalculoTabelas.DAO
         }
         #endregion
         
-        public double Valor_Nota(string seq_gr)
+        public decimal Valor_Nota(string seq_gr)
         {
-            double Valor = 0;
+            decimal Valor = 0;
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine("SELECT sum(A.VALOR+A.DESCONTO+A.ADICIONAL) ITEM, sum(B.TOTAL) IMPOSTO ");
+                    sb.AppendLine("SELECT sum(A.VALOR+A.DESCONTO+A.ADICIONAL) + nvl(sum(B.TOTAL),0) ");
                     sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A LEFT JOIN ");
                     sb.AppendLine(" (SELECT SUM(VALOR_IMPOSTO) TOTAL, AUTONUM_SERVICO_FATURADO  ");
                     sb.AppendLine("       FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS GROUP BY AUTONUM_SERVICO_FATURADO ) B  ");
                     sb.AppendLine("   ON A.AUTONUM = B.AUTONUM_SERVICO_FATURADO  ");
                     sb.AppendLine(" WHERE A.SEQ_GR in(" + seq_gr  + ")  ");
 
-                    Valor = con.Query<double>(sb.ToString()).FirstOrDefault();
+                    Valor = con.Query<decimal>(sb.ToString()).FirstOrDefault();
 
                     return Valor;
                 }
@@ -3096,7 +3047,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return valor;  
             }
         }
-        public bool Monta_Insert_Fatura_Item(int posicao, int countI, string descricao_servico, double total, int servico,  string doc, int imposto, double valor, int quantidade, string SD)
+        public bool Monta_Insert_Fatura_Item(int posicao, int countI, string descricao_servico, decimal total, int servico,  string doc, int imposto, double valor, int quantidade, string SD)
         {
             try
             {
@@ -3108,15 +3059,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" ( ");
                     sb.AppendLine(" ID, IDFATURA,ITEM,DESCRICAO,QTDE,VALOR,SERVICO,GRS, IMPOSTO, RATE, SD ");
                     sb.AppendLine(" ) VALUES ( ");
-                    sb.AppendLine(" SEQ_FATURA_ITEM.NEXTVAL ");
+                    sb.AppendLine(" fatura.SEQ_FATURA_ITEM.NEXTVAL, ");
                     sb.AppendLine(" " + posicao + ", ");
                     sb.AppendLine(" " + countI + ", ");
                     sb.AppendLine(" '" + descricao_servico + "', ");
-                    sb.AppendLine(" " + countI + ", ");
-
                     if (quantidade == 0)
                     {
-                        sb.AppendLine(" NULL, ");
+                        sb.AppendLine(" 0, ");
                     }
                     else
                     {
@@ -3126,9 +3075,9 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" " + total.ToString().Replace(",", ".") + ", ");
                     sb.AppendLine(" " + servico + ", ");
                     sb.AppendLine(" " + doc + ", ");
-                    sb.AppendLine(" " + imposto + " ");
-                    sb.AppendLine(" " + valor.ToString().Replace(",", ".") + " ");
-                    sb.AppendLine(" " + SD + "  ");
+                    sb.AppendLine(" " + imposto + ", ");
+                    sb.AppendLine(" " + valor.ToString().Replace(",", ".") + ", ");
+                    sb.AppendLine(" '" + SD + " ' ");
                     sb.AppendLine(" ) ");
 
 
@@ -3187,7 +3136,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     if (doc.Length == 14)
                     {
-                        Formata = Formata.Substring(doc.Length - 1);
+                     //   Formata = Formata.Substring(doc.Length - 1);
+                        Formata = doc;
                         Formata = Formata.Substring(0, 2) + "." + Formata.Substring(2, 3) + "." + Formata.Substring(5, 3) + "/" + Formata.Substring(8, 4) + "-" + Formata.Substring(12, 2);
                     }
 
@@ -3216,32 +3166,36 @@ namespace WsSimuladorCalculoTabelas.DAO
         {
             try
             {
-                using (OracleConnection con  = new OracleConnection(Configuracoes.StringConexao()))
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
+                    {
+                        StringBuilder sbu = new StringBuilder();
 
-                    int count = 0;
-                   
-                            sb.AppendLine(" SELECT count(1) FROM  SGIPA.TB_GR_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+                        int count = 0;
 
-                            count = con.Query<int>(sb.ToString()).FirstOrDefault();
+                        sb.AppendLine(" SELECT count(1) FROM  SGIPA.TB_GR_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
 
-                            if (count==0)
+                        count = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        if (count == 0)
                         {
-                            sb.AppendLine(" UPDATE SGIPA.TB_BL SET NUM_PIX_PAGAMENTO = 0, NUM_TITULO_PIX = 0 WHERE NUM_TITULO_PIX  =   " + numero_titulo);
-                            con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                            sbu.AppendLine(" UPDATE SGIPA.TB_BL SET  NUM_PAGAMENTO_PIX = 0, NUM_TITULO_PIX = 0 WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+                            con.Query<string>(sbu.ToString()).FirstOrDefault();
                             return "000-Titulo cancelado com sucesso";
-                         }
+                        }
                         else
                         {
                             return "001-O título tem GR impressa";
 
                         }
                     }
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return "002-O título não pode ser cancelado"; 
+                return "002-O título não pode ser cancelado";
             }
         }
        
