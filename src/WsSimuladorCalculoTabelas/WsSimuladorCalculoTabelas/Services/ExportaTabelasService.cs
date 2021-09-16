@@ -227,7 +227,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                             objArmazenagem.ValorAcrescimo = layout.AdicionalIMOGRC;
                                             objArmazenagem.QtdeDias = layout.QtdeDias;
 
-                                            objArmazenagem.QtdeDias = layout.QtdeDias;
+                                  
                                             if (!_tabelaDAO.ExisteServicoAdicional(objArmazenagem))
                                             {
                                                 _tabelaDAO.GravarServicoVariavel(objArmazenagem, 0);
@@ -880,7 +880,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                 foreach (var servicoGeral in servicosGerais)
                                 {
-                                    if (layout.TipoCarga != TipoCarga.CARGA_SOLTA)
+                                    if (layout.TipoCarga != TipoCarga.CARGA_SOLTA && layout.TipoCarga != TipoCarga.CARGA_BBK && layout.TipoCarga != TipoCarga.CARGA_VEICULO)
                                     {
                                         if (layout.ValorMinimo20 != layout.ValorMinimo40)
                                         {

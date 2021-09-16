@@ -1233,6 +1233,7 @@ namespace WsSimuladorCalculoTabelas
 
                         if (id_nota > 0)    
                         {
+                    
                             if (_pagamentoPixDAO.geraIntegracao(servico, nfeSubstituida, dtEmissao, patioGR, "Pix", false, titSapiens, dtEmissao, conta, valor.ToString(), "Pix", sapcliente, id_nota, cod_empresa, serie, corpoNota, nfeSubstituida, seq_gr) != "")
                             {
 

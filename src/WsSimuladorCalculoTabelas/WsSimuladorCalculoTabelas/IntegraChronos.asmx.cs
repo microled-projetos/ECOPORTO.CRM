@@ -805,19 +805,18 @@ namespace WsSimuladorCalculoTabelas
             }
         }
 
+
     
         [WebMethod(Description = "Integrações Baixa GR ")]
         public Response IntregrarBaixaChronos(long NumeroTitulo)
         {
-
+            string merro = "";
             int Lote = 0;
-            int Seq_Gr = 0;
             int BL = 0;
             int Usuario = 90;
             int contar = 0;
             bool blreefer = false;
             string SisFin = "SAP";
-            int diasAdicionais = 0;
             int seq_gr = 0;
             int cod_empresa =0;
             string servico = "";
@@ -831,18 +830,30 @@ namespace WsSimuladorCalculoTabelas
                     return new Response
                     {
                         Sucesso = false,
-                        Mensagem = $"NUmero do Titulo não encontrada"
+                        Mensagem = $"Numero do Titulo não encontrada"
                     };
                 }
 
 
 
+                var countlotes = _pagamentoPixDAO.contBL(NumeroTitulo);
+
+                if (countlotes == 0)
+                {
+                    return new Response
+                    {
+                        Sucesso = false,
+                        Mensagem = $"Numero do Titulo não encontrada"
+                    };
+                }
+
                 var dadosLotes = _pagamentoPixDAO.GetListaBL(NumeroTitulo);
+
 
                 foreach (var item in dadosLotes)
                 {
                     Lote = Convert.ToInt32(item.LOTE);
-                    Seq_Gr = item.SEQ_GR;
+                    seq_gr = item.SEQ_GR;
                     BL = item.AUTONUM;
                     cod_empresa=item.PATIO;
 
@@ -850,30 +861,39 @@ namespace WsSimuladorCalculoTabelas
                         contar= _pagamentoPixDAO.Verificacalculo(Lote);
                         if (contar == 0)
                         {
-                            return new Response
-                            {
-                                Sucesso = false,
-                                Mensagem = " Lote sem cálculo pendente "
+                        merro = " Lote sem cálculo pendente ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem =merro
+                         
                             };
                         }
 
                         contar = _pagamentoPixDAO.Verificaformapagamento(Lote);
                         if (contar != 2)
-                        {
-                            return new Response
+                    {
+                        merro = " Lote não tem a forma de pagamento A vista ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        
+                        return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = " Lote não tem a forma de pagamento A vista "
+                                Mensagem =merro
                             };
                         }
 
                         contar = _pagamentoPixDAO.Verificaliberado(Lote);
                         if (contar != 1)
                         {
-                            return new Response
+                        merro = " Lote não tem liberação de calculo ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
+                        return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = " Lote não tem liberação de calculo "
+                                Mensagem = merro
                             };
                         }
 
@@ -905,20 +925,26 @@ namespace WsSimuladorCalculoTabelas
                     if (blreefer == true)
                         {
                             if (DataReefer == null)
-                            {
-                                return new Response
+                        {
+                            merro = " Gr sem Free-Time Reefer Recalcule a GR";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
+                            return new Response
                                 {
                                     Sucesso = false,
-                                    Mensagem = " Gr sem Free-Time Reefer Recalcule a GR"
+                                    Mensagem =merro
                                 };
                             }
 
                             if (DateTime.Now > DataReefer)
                             {
-                                return new Response
+                            merro = " Data Atual maior que o Free-Time Recalcule a GR";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
+                            return new Response
                                 {
                                     Sucesso = false,
-                                    Mensagem = " Data Atual maior que o Free-Time Recalcule a GR"
+                                    Mensagem = merro
                                 };
                             }
                         }
@@ -931,10 +957,13 @@ namespace WsSimuladorCalculoTabelas
 
                     if (Tbh == null)
                     {
+                        merro = "Calculo Vencido - Favor executar o cálculo novamente";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "Calculo Vencido - Favor executar o cálculo novamente"
+                            Mensagem =merro
                         };
                     }
                     string WdT = Tbh.Data_Final.ToString("dd/MM/yyyy");
@@ -955,10 +984,13 @@ namespace WsSimuladorCalculoTabelas
                     {
                         if (_pagamentoPixDAO.EFeriado(WdT) != null)
                         {
-                                return new Response
+                            merro = "Calculo Vencido - Favor executar o cálculo novamente";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
+                            return new Response
                                 {
                                     Sucesso = false,
-                                    Mensagem = "Calculo Vencido - Favor executar o calculo novamente"
+                                    Mensagem = merro
                                 };
                         }
                     }
@@ -967,48 +999,61 @@ namespace WsSimuladorCalculoTabelas
 
                         if (contar == 0)
                         {
-                            return new Response
+                        merro = "Lote com saída , favor verificar som setor responsável";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
+                        return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = "Lote com saída , favor verificar som setor responsável"
+                                Mensagem = merro
                             };
                         }
 
 
                    if (ValidadeGR == null)
                     {
+                        merro = "Data de validade da GR inválida";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "Data de validade da GR inválida",
+                            Mensagem =merro
                         };
                     }
 
                     if (DataBase == null)
                     {
+                        merro = "Data base do cálculo inválida";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "Data base do cálculo inválida",
+                            Mensagem = merro 
                         };
                     }
 
                     if (ValidadeGR < DataBase)
                     {
+                        merro = "Data de validade menor que a Data Base";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "Data de validade menor que a Data Base",
+                            Mensagem = merro 
                         };
                     }
 
                     if (_pagamentoPixDAO.UsuarioEmProcessoDeCalculo(Lote) >0)
                     {
 
+                        merro = "O usuário em processo de cálculo ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "O usuário em processo de cálculo "
+                            Mensagem = merro
                         };
                     }
 
@@ -1018,6 +1063,17 @@ namespace WsSimuladorCalculoTabelas
                     string wInicio = "";
                     string wFinal = "";
                      int wperiodos = 0;
+                    
+                    if (seq_gr == 0)
+                    {
+                        merro = "Erro na geração da GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
 
                     if (dadosPeriodoGr != null)
                     {
@@ -1025,84 +1081,188 @@ namespace WsSimuladorCalculoTabelas
                         wFinal = dadosPeriodoGr.FINAL.ToString("dd/MM/yyyy");
                         wperiodos = dadosPeriodoGr.PERIODOS;
                     }
-                    Seq_Gr = seq_gr;
-                               
-                    _pagamentoPixDAO.atualizaGREmServico(Lote, Seq_Gr, 90);
-                    _pagamentoPixDAO.atualizaGREmDescricao(Lote, Seq_Gr);
-                    _pagamentoPixDAO.atualizaGREmCNTR(Lote, Seq_Gr);
-                    _pagamentoPixDAO.atualizaGREmCS(Lote, Seq_Gr);
+                    else
+                    {
+                        merro = "Falha ao obter os Periodos da GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                
+                    if (_pagamentoPixDAO.inseregr_bl(seq_gr, Lote, wInicio, wFinal, NumeroTitulo) == false)
+                    {
+                        merro = "Falha ao Criar a GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                    if  (_pagamentoPixDAO.atualizaGREmServico(Lote, seq_gr, 90)==false)
+                        {
+                        merro = "Falha ao atualiuzar os serviços da GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
 
-                        var insereGr = _pagamentoPixDAO.inseregr_bl(Seq_Gr, Lote, wInicio, wFinal,NumeroTitulo);
+                    }
+                    if (_pagamentoPixDAO.atualizaGREmDescricao(Lote, seq_gr)==false)
+                    {
+                        merro = "Falha ao atualiuzar a descricao da GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                    if ( _pagamentoPixDAO.atualizaGREmCNTR(Lote, seq_gr)==false)
+                    {
+                        merro = "Falha ao atualiuzar o conteiner da GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                   if ( _pagamentoPixDAO.atualizaGREmCS(Lote, seq_gr)==false )
+                    {
+                        merro = "Falha ao atualiuzar a carga solta da GR ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
 
-                      //  var dadosAtualizaDadosVencimento = _pagamentoPixDAO.GetDadosAtualizaVencimento(Lote);
+                    
 
-                 
-
-                   var QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, Seq_Gr);
+                   var QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, seq_gr);
 
                     if (QdeLavagemCtnr != 0)
                     {
-                        _pagamentoPixDAO.atualizaAMRNFCNTRLavagem(Lote, Seq_Gr);
+                        _pagamentoPixDAO.atualizaAMRNFCNTRLavagem(Lote, seq_gr);
                     }
 
-                    _pagamentoPixDAO.atualizaServicosFixosGR(Lote, Seq_Gr);
+                    if (_pagamentoPixDAO.atualizaServicosFixosGR(Lote, seq_gr)==false)
+                    {
+                        merro = "Falha ao atualiuzar os serviços adicionais ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
 
 
-                    _pagamentoPixDAO.atualizaPreCalculoGR(Lote);
-
+                    if (_pagamentoPixDAO.atualizaPreCalculoGR(Lote)==false)
+                    {
+                        merro = "Falha ao atualiuzar o pre calculo  ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
                     #region notaIndividual 
                     
 
-                    if (Seq_Gr == 0)
-                    {
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = "Erro na geração da GR "
-                        };
-                    }
+                  
 
                     IntegracaoBaixa.notaAgrupada = false;
 
-                    var parceiro = _pagamentoPixDAO.GetDadosFaturaGr(seq_gr);
-                    int parceiroID = parceiro.PARCEIRO;
-                    string loteID = parceiro.LOTE;
+                    var nota = _pagamentoPixDAO.GetDadosFaturaGr(seq_gr);
 
-                    int empresa = _pagamentoPixDAO.getEmpresa(Lote);
-
-                    string serie = _pagamentoPixDAO.Busca_Serie("NFE", empresa, "GR");
-                    
-
-                    if (serie == "")
+                    if (nota == null)
                     {
+                        merro = "Falha ao ler as informações da GR  ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "Erro na  SERIE"
+                            Mensagem = merro
                         };
                     }
 
+                    int parceiroID = nota.PARCEIRO;
+                    string loteID = nota.LOTE;
+
+                    int empresa = _pagamentoPixDAO.getEmpresa(Lote);
+                    if (empresa == 0)
+                    {
+                        merro = "Falha ao ler as informações da Empresa ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+
+                    string serie = _pagamentoPixDAO.Busca_Serie("NFE", empresa, "GR");
+                    
+                    if (serie == "")
+                    {
+                            merro = "Falha ao ler as informações da Serie ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                    }
 
                     string meioPagamento = "Pix";
                     titSapiens = _pagamentoPixDAO.obtemTituloSapiens(empresa);
 
-                    var nota = _pagamentoPixDAO.GetDadosFaturaGr(seq_gr);
-
+                    if (titSapiens == "")
+                    {
+                        merro = "Falha ao ler as informações do Titulo  ";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                    
                     if (nota != null)
                     {
                         int qtdBLs = 1;
                         int qtdBlsSub = 0;
 
-                        _pagamentoPixDAO.carrega(seq_gr);
-
-                        if (_pagamentoPixDAO.consistenciaGR(seq_gr, parceiroID) != "")
+                       if ( _pagamentoPixDAO.carrega(seq_gr)==false)
+                        {
+                            merro = "Falha ao ler as informações dos serviços da GR  ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+                        merro = _pagamentoPixDAO.consistenciaGR(seq_gr, parceiroID);
+                        if (merro != "")
                         {
                             return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = _pagamentoPixDAO.consistenciaGR(seq_gr, parceiroID),
+                                Mensagem = merro
                             };
                         }
+                        
+                        merro = "";
 
                         int fpParc = nota.FPPARC;
                         int fpGrp = nota.FPGRP;
@@ -1114,8 +1274,17 @@ namespace WsSimuladorCalculoTabelas
 
 
                         int flagHupport = nota.flag_hubport;
-                        bool primeiraHub = _pagamentoPixDAO.primeiraHub(Seq_Gr);
-
+                        bool primeiraHub = _pagamentoPixDAO.primeiraHub(seq_gr);
+                        if (primeiraHub==false)
+                        {
+                            merro = "Falha ao ler as informações do Hub Port  ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
                         int cliente = 0;
                         string razao = "";
                         string cgc = "";
@@ -1141,10 +1310,12 @@ namespace WsSimuladorCalculoTabelas
 
                         if (cli_autonum == 0)
                         {
+                            merro = "Cadastro do cliente não encontrado !";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                             return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = "Cadastro do cliente não encontrado !",
+                                Mensagem = merro
                             };
                         }
 
@@ -1152,16 +1323,28 @@ namespace WsSimuladorCalculoTabelas
 
                         if (sap_cli == null)
                         {
+                            merro = "Cadastro do cliente SAP não encontrado !";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                             return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = "Cadastro de cliente não encontrado !",
+                                Mensagem = merro
                             };
                         }
 
                         if (cliente == 0)
                         {
-                            _pagamentoPixDAO.atualizaCODCLI(cliente, cli_autonum);
+                            if (_pagamentoPixDAO.atualizaCODCLI(cliente, cli_autonum)==false)
+                            {
+                                merro = "Falha na atualização do Cadastro do cliente SAP ";
+                                _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                                return new Response
+                                {
+                                    Sucesso = false,
+                                    Mensagem = merro
+                                };
+                            }
+
                         }
                         
                         string nfe = "";
@@ -1184,6 +1367,7 @@ namespace WsSimuladorCalculoTabelas
                         sapcliente.NENCOB = sap_cli.NENCOB;
                         sapcliente.CPLCOB = sap_cli.CPLCOB;
                         sapcliente.CIDCOB = sap_cli.CIDCOB;
+                        sapcliente.ESTCOB = sap_cli.ESTCOB;
                         sapcliente.BAICOB = sap_cli.BAICOB;
                         sapcliente.CEPCOB = sap_cli.CEPCOB;
                         sapcliente.CODCLI = sap_cli.CODCLI;
@@ -1199,98 +1383,98 @@ namespace WsSimuladorCalculoTabelas
 
                         string NatOp = "PRESTAÇÃO DE SERVIÇOS";
                         string CodNat = "20.01";
-                        int viagem = 0; //campos não usados para o tipo GR mas estão aqui como parametros para o metodo insert 
-                        string Dolar = ""; //campos não usados para o tipo GR mas estão aqui como parametros para o metodo insert  
-                        int autonumMin = 0;
                         int numero = 0;
                         
-                        int notaAc = 0; //campos não usados para o tipo GR mas estão aqui como parametros para o metodo insert  
-                        string nfeSubst = meioPagamento;
-                        string clienteSAPEntrega = "";
-                        int condManual = 0;
-                        int fpRedex = 0;
-                        int fpLTL = 0;
-                        int fpOp = 0;
-                        int idNotaSub = 0;
-                        string conta = "";
-                        string condicao = "";
-                        string monta_SID_Fecha_Nota = "";
-                        string monta_SID_Itens = "";
+                        string clienteSAPEntrega = "";      
+                        string conta = "";        
                         string comp_nota = "GR Número : " + seq_gr;
-                        int nfeSubstituida = 0;
                         string Embarque = _pagamentoPixDAO.GetEmbarque(seq_gr);
                         string corpoNota = "";
 
+                        
 
-
-                        _pagamentoPixDAO.Monta_Insert_Faturanota(
-                            "GR", seq_gr, Embarque, dtEmissao, dtVenc, "", "",
-                            NatOp, CodNat, ndoc, tipoDoc, viagem, Dolar, patioGR,
-                            autonumMin, sapcliente, notaAc, cli_autonum,
-                            Lote, parceiroID, nfeSubst, clienteSAPEntrega, fpOp,
-                            fpIpa, fpGrp, fpParc, fpgr, condManual, fpRedex, fpLTL,
+                            corpoNota =_pagamentoPixDAO.Monta_Insert_Faturanota(
+                            "GR", seq_gr, Embarque, dtEmissao, dtVenc, 
+                            NatOp, CodNat, ndoc, tipoDoc,  
+                            patioGR, sapcliente, cli_autonum,
+                            Lote, parceiroID,  clienteSAPEntrega,
                             cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,
-                            idNotaSub);
+                            NumeroTitulo);
 
-                        int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(Seq_Gr, nfe);
+                        int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(seq_gr, nfe);
 
                         if (id_nota > 0)    
                         {
-                            if (_pagamentoPixDAO.geraIntegracao(servico, nfeSubstituida, dtEmissao, patioGR, "Pix", false, titSapiens, dtEmissao, conta, valor.ToString(), "Pix", sapcliente, id_nota, cod_empresa, serie, corpoNota, nfeSubstituida, seq_gr) != "")
+                            merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "GRDP", false, titSapiens, dtEmissao, conta, valor.ToString(), "Pix", sapcliente, id_nota, cod_empresa, serie, corpoNota, seq_gr);
+                            if (merro!="")
                             {
-
-                                var statusNota = _pagamentoPixDAO.ObtemStatusNota(id_nota);
-
-                                if (statusNota.STATUSNFE != 0 && statusNota.STATUSNFE != 5)
-                                {
-                                    if (statusNota.NFE > 0 && statusNota.RPSNUM > 0)
+                                   return new Response
                                     {
-                                        comp_nota += comp_nota + "  ,Nota Fiscal Número : " + statusNota.NFE + " ," + " RPS Número: " + statusNota.RPSNUM;
-
-                                        _pagamentoPixDAO.Atualiza_Doc("GR", dtEmissao, Seq_Gr, false);
-                                    }
-                                }
-
-                                if (_pagamentoPixDAO.Obtem_RPSNUM(id_nota) != 0)
-                                {
-                                    _pagamentoPixDAO.Atualiza_Doc("GR", dtEmissao, Seq_Gr, false);
-                                }
-
-                                return new Response
-                                {
-                                    Sucesso = false,
-                                    Mensagem = comp_nota,
-                                };
-                            }
+                                        Sucesso = false,
+                                        Mensagem = merro
+                                    };
+                             }
                             else
                             {
-                                if (_pagamentoPixDAO.Obtem_RPSNUM(id_nota) != 0)
+                                if (_pagamentoPixDAO.UpdateFatura(id_nota) == true)
                                 {
-                                    _pagamentoPixDAO.Atualiza_Doc("GR", dtEmissao, Seq_Gr, false);
+
+                                    var statusNota = _pagamentoPixDAO.ObtemStatusNota(id_nota);
+
+                                    if (statusNota.STATUSNFE != 0 && statusNota.STATUSNFE != 5)
+
+                                    {
+                                       if (_pagamentoPixDAO.Atualiza_Doc("GR", dtEmissao, seq_gr, false)==false)
+                                        {
+                                            merro = "Falha na atualização da GR/Fatura";
+                                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                                            return new Response
+                                            {
+                                                Sucesso = false,
+                                                Mensagem = merro
+                                            };
+                                        }
+
+                                    }
+
                                 }
+                                else
+                                {
+                                    merro = "Falha na atualização da Fatura";
+                                    _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                                    return new Response
+                                    {
+                                        Sucesso = false,
+                                        Mensagem = merro
+                                    };
+                                }
+                             
 
                             }
                         }
                         else
                         {
+                            merro = "Erro na geração da Nota fiscal!";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                             return new Response
                             {
                                 Sucesso = false,
-                                Mensagem = "Erro na geração da Nota fiscal!",
+                                Mensagem =merro
                             };
                         }
-                        //FIM                       
-
-
+                                     
 
 
                     }
                     else 
                     {
+                        merro = "GR não localizada";
+                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
                         return new Response
                         {
                             Sucesso = false,
-                            Mensagem = "GR não localizada",
+                            Mensagem =merro
                         };
                     }                     
                     

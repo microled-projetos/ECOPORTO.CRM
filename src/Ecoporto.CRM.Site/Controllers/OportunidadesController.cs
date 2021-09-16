@@ -3383,6 +3383,7 @@ namespace Ecoporto.CRM.Site.Controllers
         public ActionResult CancelarOportunidade(int id, string dataCancelamento)
         {
             var oportunidadeBusca = _oportunidadeRepositorio.ObterOportunidadePorId(id);
+            var detalhesProposta = _oportunidadeRepositorio.ObterDetalhesProposta(id);
 
             if (oportunidadeBusca == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Oportunidade não encontrada");
@@ -3409,6 +3410,8 @@ namespace Ecoporto.CRM.Site.Controllers
             if (!DateTimeHelpers.IsDate(dataCancelamento))
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Data inválida!");
 
+            if (Convert.ToDateTime(dataCancelamento) < Convert.ToDateTime(detalhesProposta.DataInicio))
+                  return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Data Menor que Inicio da Proposta inválida!");
             oportunidadeBusca.DataCancelamento = Convert.ToDateTime(dataCancelamento);
 
             var averbacao = _loteRepositorio.ExisteAverbacao(oportunidadeBusca.Id, oportunidadeBusca.DataCancelamento);

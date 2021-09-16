@@ -833,9 +833,9 @@ where oportunidadeid=:OportunidadeId  and
                                     parametros = new DynamicParameters();
 
                                     parametros.Add(name: "Sequencia", value: sequencia, direction: ParameterDirection.Input);
-                                    parametros.Add(name: "Dia", value: ConverteDiaSemanaIPA.DiaSemana(diaFaturamento), direction: ParameterDirection.Input);
+                                    parametros.Add(name: "Dia", value: diaFaturamento, direction: ParameterDirection.Input);
 
-                                    con.Execute("INSERT INTO SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO (AUTONUM, AUTONUM_FONTE_PAGADORA, DIA) VALUES (SGIPA.SEQ_DADOS_FAT_IPA_DIAS_PGTO.NEXTVAL, :Sequencia, :Dia)", parametros, transaction);
+                                    con.Execute("INSERT INTO SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO(AUTONUM, AUTONUM_FONTE_PAGADORA, DIA) VALUES (SGIPA.SEQ_DADOS_FAT_IPA_DIAS_PGTO.NEXTVAL, :Sequencia, :Dia)", parametros, transaction);
                                 }
                             }
 

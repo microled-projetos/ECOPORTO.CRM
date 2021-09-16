@@ -747,10 +747,17 @@ namespace WsSimuladorCalculoTabelas.DAO
                         if (servicoFixoVariavel.QtdeDias == 1)
                         {
                             TemProrata = con.Query<int>($@" SELECT nvl(max(QTDE_DIAS),0) FROM { _schema}.TB_LISTA_P_S_PERIODO WHERE LISTA = :LISTA AND SERVICO = 52
-                            AND TIPO_CARGA = :TIPO_CARGA AND VARIANTE_LOCAL = :VARIANTE_LOCAL AND N_PERIODO = 1 ", parametros).Single();
-                            if (TemProrata != 1)
+                            AND TIPO_CARGA = :TIPO_CARGA AND VARIANTE_LOCAL = :VARIANTE_LOCAL AND N_PERIODO = 1", parametros).Single();
+                            if (TemProrata > 1)
                             {
-                                parametros.Add(name: "FLAG_PRORATA", value: 1, direction: ParameterDirection.Input);
+                                parametros.Add(name: "FLAG_PRORATA", value: 0, direction: ParameterDirection.Input);
+                                parametros.Add(name: "PRECO_UNITARIO", value: Math.Round(servicoFixoVariavel.PrecoUnitario/TemProrata,5), direction: ParameterDirection.Input);
+                                parametros.Add(name: "QTDE_DIAS", value: servicoFixoVariavel.QtdeDias, direction: ParameterDirection.Input);
+
+                            }
+                            else
+                            {
+                                parametros.Add(name: "FLAG_PRORATA", value: 0, direction: ParameterDirection.Input);
                                 parametros.Add(name: "QTDE_DIAS", value: TemProrata, direction: ParameterDirection.Input);
 
                             }
@@ -1835,7 +1842,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                                         WHERE 
                                             LISTA = :TabelaId 
                                         AND 
-                                            (DATA_INI_VIG is null or DATA_INI_VIG = :InicioVigencia )", parametros);
+                                            (DATA_INI_VIG is null )", parametros);
                     }
 
                     vendedores = con.Query<Vendedor>(@"
@@ -1848,29 +1855,12 @@ namespace WsSimuladorCalculoTabelas.DAO
                         parametros = new DynamicParameters();
 
                         parametros.Add(name: "Id", value: vendedor.Id, direction: ParameterDirection.Input);
-                        parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);                        
-                        parametros.Add(name: "DataInicio", value: tabela.DataInicio?.Date, direction: ParameterDirection.Input);                        
-                        parametros.Add(name: "DataAtual", value: DateTime.Now.Date, direction: ParameterDirection.Input);
-
-                        if (DateTime.Now > dataCancelamentoOportunidade)
-                        {
-                            var dataAtual = DateTime.Now;
-                            var dataTermino = new DateTime(dataAtual.Year, dataAtual.Month, dataAtual.Day);
-                            
-                            parametros.Add(name: "TerminoVigencia", value: dataTermino, direction: ParameterDirection.Input);
-                        }
-                        else
-                        {
-                            var dataCancelamento = dataCancelamentoOportunidade;
-                            var dataTermino = new DateTime(dataCancelamento.Year, dataCancelamento.Month, dataCancelamento.Day);
-                            parametros.Add(name: "TerminoVigencia", value: dataTermino, direction: ParameterDirection.Input);
-                        }
-
+                        parametros.Add(name: "TerminoVigencia", value: dataCancelamentoOportunidade, direction: ParameterDirection.Input);
                         con.Execute(@"UPDATE 
                                         SGIPA.TB_LISTAS_PRECOS_VENDEDORES SET 
                                             DATA_FIM_VIG = :TerminoVigencia
                                         WHERE 
-                                            AUTONUM = :Id", parametros);
+                                            AUTONUM = :Id and DATA_FIM_VIG>:TerminoVigencia", parametros);
                     }
                 }
             }
@@ -5397,6 +5387,9 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
 
+                    con.Execute("UPDATE SGIPA.TB_LISTA_P_S_PERIODO SET flag_prorata = 0 WHERE QTDE_DIAS=1 AND LISTA = :TabelaId", parametros);
+
+
                     var semminimos = con.Query<TabelaSemminimo>(@"SELECT A.AUTONUM,SERVICO, N_PERIODO, 
                                         TIPO_CARGA, BASE_CALCULO, 
                                         VARIANTE_LOCAL, LISTA
@@ -5917,16 +5910,12 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     var parametros = new DynamicParameters();
-
                     parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
                     parametros.Add(name: "Margem", value: margem, direction: ParameterDirection.Input);
-                    LayoutDTO[] valoresCif;
 
-                    var valoresCiF = con.Query<LayoutDTO>($@"
-                        SELECT 
-                            A.AUTONUM As Id, 
-                            A.ValorInicial ValorCif, 
-                            A.ValorFinal, B.N_PERIODO
+                    var carga = con.Query<TabelaSemminimo>($@"
+                                SELECT 
+                                  DISTINCT  B.SERVICO  ,B.TIPO_CARGA  
                         FROM 
                             {_schema}.TB_LISTA_P_S_FAIXASCIF_PER A 
                         INNER JOIN 
@@ -5935,30 +5924,53 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                             {_schema}.TB_LISTAS_PRECOS C ON B.LISTA = C.AUTONUM 
                         WHERE 
                             C.OportunidadeId = :OportunidadeId AND B.VARIANTE_LOCAL = :Margem
-                        ORDER BY 
-                          b.n_periodo,valorinicial", parametros).ToArray();
+                                    ", parametros).ToArray();
 
-                    var count = 0;
-                    foreach (var faixa in valoresCiF)
+                    foreach (var cargacif in carga)
                     {
+                        parametros.Add(name: "tipocarga", value: cargacif.Tipo_Carga, direction: ParameterDirection.Input);
+                        parametros.Add(name: "servico", value: cargacif.Servico, direction: ParameterDirection.Input);
+                        LayoutDTO[] valoresCif;
 
-                        if (count < (valoresCiF.Count() - 1))
+                        var valoresCiF = con.Query<LayoutDTO>($@"
+                        SELECT 
+                            A.AUTONUM As Id, 
+                            A.ValorInicial ValorCif, 
+                            A.ValorFinal, B.N_PERIODO 
+                        FROM 
+                            {_schema}.TB_LISTA_P_S_FAIXASCIF_PER A 
+                        INNER JOIN 
+                            {_schema}.TB_LISTA_P_S_PERIODO B ON A.AUTONUMSV = B.AUTONUM 
+                        INNER JOIN
+                            {_schema}.TB_LISTAS_PRECOS C ON B.LISTA = C.AUTONUM 
+                        WHERE 
+                            C.OportunidadeId = :OportunidadeId AND B.VARIANTE_LOCAL = :Margem
+                            and B.SERVICO = :servico AND B.TIPO_CARGA = :tipocarga
+                        ORDER BY 
+                           B.n_periodo, valorinicial", parametros).ToArray();
+
+                        var count = 0;
+                        foreach (var faixa in valoresCiF)
                         {
-                            if (valoresCiF[count + 1].ValorCif - 0.01M > 0)
+
+                            if (count < (valoresCiF.Count() - 1))
                             {
-                                parametros.Add(name: "ValorFinal", value: valoresCiF[count + 1].ValorCif - 0.01M, direction: ParameterDirection.Input);
-                            }
-                            else
-                            {
-                                parametros.Add(name: "ValorFinal", value: 99999999, direction: ParameterDirection.Input);
+                                if (valoresCiF[count + 1].ValorCif - 0.01M > 0)
+                                {
+                                    parametros.Add(name: "ValorFinal", value: valoresCiF[count + 1].ValorCif - 0.01M, direction: ParameterDirection.Input);
+                                }
+                                else
+                                {
+                                    parametros.Add(name: "ValorFinal", value: 99999999, direction: ParameterDirection.Input);
+                                }
+
+                                parametros.Add(name: "Id", value: valoresCiF[count].Id, direction: ParameterDirection.Input);
+
+                                con.Query($"UPDATE {_schema}.TB_LISTA_P_S_FAIXASCIF_PER SET ValorFinal = :ValorFinal WHERE AUTONUM = :Id", parametros);
                             }
 
-                            parametros.Add(name: "Id", value: valoresCiF[count].Id, direction: ParameterDirection.Input);
-
-                            con.Query($"UPDATE {_schema}.TB_LISTA_P_S_FAIXASCIF_PER SET ValorFinal = :ValorFinal WHERE AUTONUM = :Id", parametros);
+                            count++;
                         }
-
-                        count++;
                     }
                 }
             }
@@ -5966,12 +5978,65 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 
         public void CorrigeFaixasCIFMinimo(int oportunidadeId)
         {
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
+
+            using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+            {
+                var valormin = con.Query<LayoutDTO>($@"SELECT A.AUTONUM AS Id,        
+                                     CASE
+                                        WHEN B.TIPO_CARGA = 'SVAR20' THEN VALORMINIMO20
+                                        WHEN B.TIPO_CARGA = 'SVAR40' THEN VALORMINIMO40
+                                        ELSE VALORMINIMO40
+                                     END
+                                        VALORMINIMO
+                                FROM  {_schema}.TB_LISTA_P_S_FAIXASCIF_PER A
+                                     INNER JOIN  {_schema}.TB_LISTA_P_S_PERIODO B
+                                        ON A.AUTONUMSV = B.AUTONUM
+                                     INNER JOIN  {_schema}.TB_LISTAS_PRECOS C
+                                        ON B.LISTA = C.AUTONUM
+                                     INNER JOIN(SELECT b.margem,
+                                                        B.VALORCIF,
+                                                        a.valorminimo20,
+                                                        a.valorminimo40
+                                                   FROM    CRM.TB_CRM_OPORTUNIDADE_LAYOUT a
+                                                        INNER JOIN
+                                                           CRM.TB_CRM_OPORTUNIDADE_LAYOUT b
+                                                        ON a.linhareferencia = b.linha
+                                                  WHERE a.oportunidadeid =:OportunidadeId
+                                                        AND a.tiporegistro = 22
+                                                        AND b.oportunidadeid =:OportunidadeId
+                                                        AND b.tiporegistro = 21) D
+                                        ON     D.VALORCIF = A.ValorInicial
+                                           AND CASE
+                                                  WHEN D.MARGEM = 1 THEN 'MDIR'
+                                                  WHEN D.MARGEM = 2 THEN 'MESQ'
+                                                  ELSE 'SVAR'
+                                               END = B.VARIANTE_LOCAL
+                               WHERE C.OportunidadeId = :OportunidadeId
+                            ORDER BY b.linha, A.valorinicial", parametros);
+
+                foreach (var valorminreg in valormin)
+                {
+                    parametros.Add(name: "id", value: valorminreg.Id, direction: ParameterDirection.Input);
+                    parametros.Add(name: "vminimo", value: valorminreg.ValorMinimo ,direction: ParameterDirection.Input);
+                    con.Execute($"UPDATE {_schema}.TB_LISTA_P_S_FAIXASCIF_PER SET MINIMO = :vminimo WHERE AUTONUM = :id", parametros);
+                }
+
+            }
+
             var variantes = new List<string>() { "MDIR", "MESQ", "ENTR", "SVAR" };
 
             foreach (var margem in variantes)
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
+                    parametros.Add(name: "Margem", value: margem, direction: ParameterDirection.Input);
+
+                   
+
                     var saida = true;
                     var loop = 0;
                     while (saida)
@@ -5981,11 +6046,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                         {
                             saida = false;
                         }
-                        var parametros = new DynamicParameters();
-
-                        parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
-                        parametros.Add(name: "Margem", value: margem, direction: ParameterDirection.Input);
-
+                
                         var faixasCif = con.Query<FaixaCIF>($@"
                        SELECT 
                             A.AUTONUM As Id, 
@@ -6015,6 +6076,8 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                             parametros.Add(name: "TipoRegistroCif", value: TipoRegistro.ARMAZENAGEM_MINIMO_CIF, direction: ParameterDirection.Input);
                             parametros.Add(name: "Linha", value: count, direction: ParameterDirection.Input);
 
+
+                         
                             LayoutDTO valorCif;
 
                             if (margem != "SVAR")

@@ -88,7 +88,7 @@ namespace WsSimuladorCalculoTabelas.Models
         public string CPLCOB { get; set; }
         public string CIDCOB { get; set; }
         public string BAICOB { get; set; }
-        public string EST_COB { get; set; }
+        public string ESTCOB { get; set; }
         public string CEPCOB { get; set; }
         public string NENCOB { get; set; }
         public string NOMCLI { get; set; }

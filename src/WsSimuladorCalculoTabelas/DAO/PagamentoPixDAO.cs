@@ -1594,11 +1594,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                 bool nfeSubstituida = false;
 
 
+              
 
                 monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", false, tituloSap, dtEmissao, conta, valor.ToString(), condicao, nfeSubst.ToString());
 
-
-                var itens = Monta_Itens_Nota(gr, servico);
+                CMD_XML[2] = monta_SID_Fecha_Nota;
+              
+                    var itens = Monta_Itens_Nota(gr, servico);
 
                 int i = 2;
                 int j = 0;

@@ -32,6 +32,25 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
+        public int contBL(long numeroTitulo)       {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" SELECT count(1)FROM  SGIPA.TB_BL WHERE NUM_TITULO_PIX =  " + numeroTitulo);
+
+                    int bl = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    return bl;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
         public bool atualizaImpressaoGR(string status, int lote, int seqGR)
         {
             try
@@ -206,15 +225,15 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("A.DT_INICIO_CALCULO, ");
                     sb.AppendLine("B.DT_LIBERACAO ,");
                     sb.AppendLine(NumeroTitulo + " , sysdate, 90,'PIX','GRPX','1','29.136-4'");
-                    sb.AppendLine("FROM  SGIPA.TB_GR_PRE_CALCULO  A INNER JOIN SGIPA.TB_BL B ON A.BL=B.AUTONUM ");
-                    sb.AppendLine("INNER JOIN (");
-                    sb.AppendLine("select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from SGIPA.tb_servicos_faturados a  ");
-                    sb.AppendLine("left join (select sum(valor_imposto) valori , autonum_servico_faturado from SGIPA.tb_servicos_faturados_impostos ");
-                    sb.AppendLine("group by autonum_servico_faturado) b on a.autonum=b.autonum_servico_faturado");
-                    sb.AppendLine("where nvl(seq_gr,0) ="+ seq_gr +"  group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
- 
-                    return db.Query<bool>(sb.ToString()).FirstOrDefault();
+                    sb.AppendLine(" FROM  SGIPA.TB_GR_PRE_CALCULO  A INNER JOIN SGIPA.TB_BL B ON A.BL=B.AUTONUM ");
+                    sb.AppendLine(" INNER JOIN (");
+                    sb.AppendLine(" select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from SGIPA.tb_servicos_faturados a  ");
+                    sb.AppendLine(" left join (select sum(valor_imposto) valori , autonum_servico_faturado from SGIPA.tb_servicos_faturados_impostos ");
+                    sb.AppendLine(" group by autonum_servico_faturado) b on a.autonum=b.autonum_servico_faturado");
+                    sb.AppendLine(" where nvl(seq_gr,0) =0 group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
 
+                    var query = db.Query<bool>(sb.ToString()).FirstOrDefault();
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -300,6 +319,357 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
+
+        public string Monta_Extenso(double Valor)
+        {
+            string Inteiro;
+            string Centavos;
+            string ext;
+            try
+            {
+                ext = Extenso(Valor);
+                if (Valor >= 2)
+                    Inteiro = ext + " REAIS ";
+                else
+                    Inteiro = ext + " REAL ";
+                Centavos = Convert.ToString(Valor * 100);
+                Centavos = Centavos.Substring(Centavos.Length - 2, 2);
+                Centavos = Extenso(Convert.ToDouble(Centavos));
+                if (Centavos != "")
+                {
+                    Inteiro = Inteiro + " E " + Centavos + " CENTAVOS ";
+                }
+                return Inteiro;
+            }
+            catch (Exception ex)
+            {
+                return  "";
+            }
+        }
+
+        public string Extenso(double vn)
+        {
+            int j;
+            int k;
+            double n1;
+            double n2;
+            double n3;
+            double m1;
+            double m2;
+            double N;
+            double m3;
+            string ve;
+            try
+            {
+                N = 0;
+
+        n1 = Math.Truncate(vn / 1000000.0);
+        vn = vn - n1 * 1000000.0;
+        n2 = Math.Truncate(vn / 1000.0);
+        n3 = Math.Truncate(vn - n2 * 1000.0);
+
+
+                ve = "";
+                k = 1;
+                while (k < 4)
+                {
+                    switch (k)
+                    {
+                        case 1:
+                            {
+                                N = n1;
+                                break;
+                            }
+
+                        case 2:
+                            {
+                                N = n2;
+                                break;
+                            }
+
+                        case 3:
+                            {
+                                N = n3;
+                                break;
+                            }
+                    }
+                    if ((k == 3) & (n1 * n3 != 0) & (n2 == 0))
+                    {
+                        ve = ve + " E ";
+                    }
+
+                    m1 = Math.Truncate(N / 100);
+                    j = Convert.ToInt32(N - m1 * 100);
+                    m2 = Math.Truncate(j / (double)10);
+                    m3 = j - m2 * 10;
+                    switch (m1)
+                    {
+                        case 9:
+                            {
+                                ve = ve + " NOVECENTOS ";
+                                break;
+                            }
+
+                        case 8:
+                            {
+                                ve = ve + " OITOCENTOS ";
+                                break;
+                            }
+
+                        case 7:
+                            {
+                                ve = ve + " SETECENTOS ";
+                                break;
+                            }
+
+                        case 6:
+                            {
+                                ve = ve + " SEISCENTOS ";
+                                break;
+                            }
+
+                        case 5:
+                            {
+                                ve = ve + " QUINHENTOS ";
+                                break;
+                            }
+
+                        case 4:
+                            {
+                                ve = ve + " QUATROCENTROS ";
+                                break;
+                            }
+
+                        case 3:
+                            {
+                                ve = ve + " TREZENTOS ";
+                                break;
+                            }
+
+                        case 2:
+                            {
+                                ve = ve + " DUZENTOS ";
+                                break;
+                            }
+
+                        case 1:
+                            {
+                                if (N == 100)
+                                    ve = ve + " CEM ";
+                                else
+                                    ve = ve + " CENTO ";
+                                break;
+                            }
+                    }
+                    if (m1 * m2 != 0)
+                        ve = ve + " E ";
+                    switch (m2)
+                    {
+                        case 9:
+                            {
+                                ve = ve + " NOVENTA ";
+                                break;
+                            }
+
+                        case 8:
+                            {
+                                ve = ve + " OITENTA ";
+                                break;
+                            }
+
+                        case 7:
+                            {
+                                ve = ve + " SETENTA ";
+                                break;
+                            }
+
+                        case 6:
+                            {
+                                ve = ve + " SESSENTA ";
+                                break;
+                            }
+
+                        case 5:
+                            {
+                                ve = ve + " CINQUENTA ";
+                                break;
+                            }
+
+                        case 4:
+                            {
+                                ve = ve + " QUARENTA ";
+                                break;
+                            }
+
+                        case 3:
+                            {
+                                ve = ve + " TRINTA ";
+                                break;
+                            }
+
+                        case 2:
+                            {
+                                ve = ve + " VINTE ";
+                                break;
+                            }
+
+                        case 1:
+                            {
+                                switch (m3)
+                                {
+                                    case 9:
+                                        {
+                                            ve = ve + " DEZENOVE ";
+                                            break;
+                                        }
+
+                                    case 8:
+                                        {
+                                            ve = ve + " DEZOITO ";
+                                            break;
+                                        }
+
+                                    case 7:
+                                        {
+                                            ve = ve + " DEZESSETE ";
+                                            break;
+                                        }
+
+                                    case 6:
+                                        {
+                                            ve = ve + " DEZESSEIS ";
+                                            break;
+                                        }
+
+                                    case 5:
+                                        {
+                                            ve = ve + " QUINZE ";
+                                            break;
+                                        }
+
+                                    case 4:
+                                        {
+                                            ve = ve + " QUATORZE ";
+                                            break;
+                                        }
+
+                                    case 3:
+                                        {
+                                            ve = ve + " TREZE ";
+                                            break;
+                                        }
+
+                                    case 2:
+                                        {
+                                            ve = ve + " DOZE ";
+                                            break;
+                                        }
+
+                                    case 1:
+                                        {
+                                            ve = ve + " ONZE ";
+                                            break;
+                                        }
+
+                                    case 0:
+                                        {
+                                            ve = ve + " DEZ ";
+                                            break;
+                                        }
+                                }
+
+                                break;
+                            }
+                    }
+                    if ((m2 != 1) & ((m1 * m3 != 0) | (m2 * m3 != 0)))
+                        ve = ve + " E ";
+                    if (m2 != 1)
+                    {
+                        switch (m3)
+                        {
+                            case 9:
+                                {
+                                    ve = ve + " NOVE ";
+                                    break;
+                                }
+
+                            case 8:
+                                {
+                                    ve = ve + " OITO ";
+                                    break;
+                                }
+
+                            case 7:
+                                {
+                                    ve = ve + " SETE ";
+                                    break;
+                                }
+
+                            case 6:
+                                {
+                                    ve = ve + " SEIS ";
+                                    break;
+                                }
+
+                            case 5:
+                                {
+                                    ve = ve + " CINCO ";
+                                    break;
+                                }
+
+                            case 4:
+                                {
+                                    ve = ve + " QUATRO ";
+                                    break;
+                                }
+
+                            case 3:
+                                {
+                                    ve = ve + " TRES ";
+                                    break;
+                                }
+
+                            case 2:
+                                {
+                                    ve = ve + " DOIS ";
+                                    break;
+                                }
+
+                            case 1:
+                                {
+                                    ve = ve + " UM ";
+                                    break;
+                                }
+                        }
+                    }
+                    if (N != 0)
+                    {
+                        if ((k == 1) & (N != 1))
+                            ve = ve + "MILHOES ";
+                        if ((k == 1) & (N == 1))
+                            ve = ve + " MILHAO ";
+                        if (k == 2)
+                            ve = ve + " MIL ";
+                    }
+                    if ((n1 * n2 != 0) & (k == 1))
+                        ve = ve + " E ";
+                    if ((n2 * n3 != 0) & (k == 2))
+                        ve = ve + " E ";
+                    k = k + 1;
+                }
+                if ((n2 + n3 == 0) & (n1 != 0))
+                    ve = ve + " DE ";
+            }
+            catch (Exception ex)
+            {
+               
+                return  "";
+            }
+            return ve.ToString();
+         
+        }
+
+
         public IntegracaoBaixa obtemMaiorDataFinalGRPre(int lote)
         {
             try
@@ -485,7 +855,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     bool query = db.Query<bool>(sb.ToString()).FirstOrDefault();
 
-                    return query;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -512,7 +882,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     bool query = db.Query<bool>(sb.ToString()).FirstOrDefault();
 
-                    return query;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -541,7 +911,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     bool query = db.Query<bool>(sb.ToString()).FirstOrDefault();
 
-                    return query;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -568,7 +938,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     bool query = db.Query<bool>(sb.ToString()).FirstOrDefault();
 
-                    return query;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -893,8 +1263,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" SEQ_GR IN(" + Doc + ") ");
 
                     query = con.Query<bool>(sb.ToString()).FirstOrDefault();
-                    
-                    return query;
+
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -967,7 +1337,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return empresa;
+                return 0;
             }
         }
         public IntegracaoBaixa Preenche_Cliente(int codCLi)
@@ -1154,18 +1524,73 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return idRPS; 
             }
         }
+
+        public string Gravalogpix ( string numpix, string mensagem)
+        {
+            StringBuilder sb = new StringBuilder();
+            long idpix = 0;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    sb.Clear();
+                    int npix = 0;
+
+                    sb.AppendLine(" SELECT NVL(MAX(num_pagamento_pix),0) FROM  SGIPA.TB_BL  WHERE NUM_TITULO_PIX  =   " + numpix);
+                    npix = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    if (npix > 0)
+                    {
+                        sb.Clear();
+                        sb.AppendLine(" SELECT NVL(MAX(NUM_PIX),0) FROM SGIPA.TB_PIX_BL where num_pix =" + npix);
+                          idpix = con.Query<long>(sb.ToString()).FirstOrDefault();
+
+                            if (idpix == 0)
+                            {
+                                sb.Clear();
+                                sb.AppendLine(" INSERT INTO  SGIPA.TB_PIX_BL ");
+                                sb.AppendLine(" ( ");
+                                sb.AppendLine("     AUTONUM,  ");
+                                sb.AppendLine("     NUM_PIX, ");
+                                sb.AppendLine("     DATA_CADASTRO,  ");
+                                sb.AppendLine("     MENSAGEM )");
+                                sb.AppendLine("     VALUES (");
+                                sb.AppendLine("     SGIPA.SEQ_LOG_PIX.NEXTVAL,  ");
+                                sb.AppendLine("" + npix + ",");
+                                sb.AppendLine(" SYSDATE,");
+                                sb.AppendLine("'" + mensagem + "')");
+                                con.Query<string>(sb.ToString()).FirstOrDefault();
+                            }
+
+                                else
+                                {
+                                    sb.Clear();
+                                    sb.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET ");
+                                    sb.AppendLine("MENSAGEM='" + mensagem + "' where  num_pix =" + npix);
+                                    con.Query<string>(sb.ToString()).FirstOrDefault();
+                                }
+                           }
+            }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
+       
+                            
         public string Monta_Insert_Faturanota(
                 string tipo, int gr, string Embarque,
-                string dtEmissao, string dtVencimento, string obs1, 
-                string obs2, string natOper, string codOper, 
-                string numDoc, string tipoDoc, int autonumViagemn, 
-                string Dolar, int patio, int autonumMin, SapCliente sapCli,
-                int notaAC, int autonumCli, int Lote, int Parceiro, 
-                string NFESubstituida, string ClienteSAPEntrega, int fonteOP, 
-                int fonteIpa, int fonteGRP, int fonteParc, int fonteGR, 
-                int codManual, int fonteRedex, int fonteLTL, int CodCli, string valor, 
+                string dtEmissao, string dtVencimento,  
+               string natOper, string codOper, 
+                string numDoc, string tipoDoc, 
+                int patio,   SapCliente sapCli,
+               int autonumCli, int Lote, int Parceiro, 
+                string ClienteSAPEntrega, int CodCli, string valor, 
                 int numero, int codEmpresa, int usuario, string serieNF, string servico, 
-                int idNotaSub)
+                long numeropix)
         {
             
             try
@@ -1284,8 +1709,14 @@ namespace WsSimuladorCalculoTabelas.DAO
                     //valor nota
                     sb.AppendLine(" '" + valor_Nota + "', ");
                     //valor nota extenso
-                    sb.AppendLine(" '" + valor_Nota.ToString().Replace(",", ".") + "', ");
-
+                    if (valor_Nota > 0)
+                    {
+                        sb.AppendLine("'" + Monta_Extenso(Convert.ToDouble(valor_Nota)) + "', ");
+                    }
+                    else
+                    {
+                        sb.AppendLine("'', ");
+                    }
                     sb.AppendLine(" NULL,  ");
                     sb.AppendLine(" NULL,  ");
                     sb.AppendLine(" '" + natOper + "', ");
@@ -1377,13 +1808,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
 
 
-                    if (sapCli.EST_COB == "")
+                    if (sapCli.ESTCOB == "")
                     {
                         sb.AppendLine(" '" + sapCli.SIGUFS + "', ");
                     }
                     else 
                     {
-                        sb.AppendLine("  '" + sapCli.EST_COB + "', ");
+                        sb.AppendLine("  '" + sapCli.ESTCOB + "', ");
                     }
                     
                     
@@ -1428,9 +1859,9 @@ namespace WsSimuladorCalculoTabelas.DAO
                     //ID_FATURA_SB
                     sb.AppendLine(" 0,  ");
 
-                    sb.AppendLine(" " + codManual + ",  ");
+                    sb.AppendLine(" 0,  ");
 
-                    sb.AppendLine(" " + fonteLTL + " ");
+                    sb.AppendLine(" 0 ");
 
                     sb.AppendLine(" ) ");
 
@@ -1468,15 +1899,14 @@ namespace WsSimuladorCalculoTabelas.DAO
                         corpo_nota = corpo_nota + MontaCorpoNota(i, servico, valor_Nota);
                     }
 
-                    string query = "";
-
-                    return query;                    
+                    return corpo_nota;                    
 
                 }
             }
             catch (Exception ex)
             {
-                return null;
+                Gravalogpix(numeropix.ToString(), ex.Message);
+                return "";
             }
         }
         public bool carrega(int seq_gr)
@@ -1563,40 +1993,38 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public string geraIntegracao(string servico, int nfeSubst, string dtEmissao, int patioGR, 
+        public string geraIntegracao(string servico, string dtEmissao, int patioGR, 
             string cbMeio, bool check, string tituloSap, string dtMov, string conta, string valor, string condicao, 
-            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota, int RPSSubstituida, int gr)
+            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota, int gr)
         {
             try
             {
 
-                string estadoCli = sapcliente.EST_COB;
+                string estadoCli = sapcliente.ESTCOB;
                 string cidadeCli = sapcliente.CIDCOB;
                 string CGC = sapcliente.CGCCPF.ToString();
                 string codOper = "";
                 string Tipo_Emp = sapcliente.TIPMER;
                 string[] CMD_XML = new string[555];
                 string[] CMD_SID = new string[555];
-                int filial = 0;
+                
                 int I = 0;
                 int QTD_I = 0;
-                bool substNF = false;
+             
                 string GeraRPSFAT = "1";
                 string monta_SID_Fecha_Nota = "";
                 string monta_SID_Itens = "";
-                string Retorno = "";                
-                string meioPagamento = "Pix";
-                bool nfeSubstituida = false;
+                string Retorno = "";                         
 
 
 
-                monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", true, tituloSap, dtEmissao, conta, valor.ToString(), condicao, nfeSubst.ToString());
+                monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", true, tituloSap, dtEmissao, conta, valor.ToString(), condicao );
 
 
                 var itens = Monta_Itens_Nota(gr, servico);
 
-                int i = 2;
-                int j = 0;
+                int i = 0;
+                int j = 2;
 
 
                 foreach (var itemNF in itens)
@@ -1620,10 +2048,12 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
                 }
 
-                for (int z =i+1; z < 550; z++)
+                for (int z = j + 1; z < 550; z++)
                 {
                     CMD_XML[z] = "";
-                }              
+                }
+
+                CMD_XML[2] = monta_SID_Fecha_Nota;
 
 
                 if (Tipo_Emp == "E")
@@ -1677,8 +2107,12 @@ namespace WsSimuladorCalculoTabelas.DAO
                 string strInstructionSAP = "";
 
                 strInstruction = "<sidxml><param retorno='XML'/><sid acao='SID.SRV.ALTEMPFIL'>";
-                strInstruction = strInstruction + "<param nome='CodEmp' valor='" + cod_empresa + "'/>";
-                strInstruction = strInstruction + "<param nome='CodFil' valor='" + filial + "'/></sid>";
+                string taux = cod_empresa == 1 ? "2" : "3";
+
+                strInstruction = strInstruction + "<param nome='CodEmp' valor='" + taux + "'/>";
+                                                                                 
+
+                strInstruction = strInstruction + "<param nome='CodFil' valor='1'/></sid>";
 
                 CMD_XML[550] = strInstruction;
 
@@ -1702,8 +2136,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                     strInstruction = strInstruction + "<param nome='DATEMI' valor='" + DateTime.Now.ToString("dd/MM/yyyy") + "'/>";
                 }
 
-                strInstruction = strInstruction + "<param nome='CodCpg' valor='" + meioPagamento + "'/>";
-
+                strInstruction = strInstruction + "<param nome='CodCpg' valor='GRDP'/>";
+                strInstruction = strInstruction + "<param nome='SETATV' valor='RA'/>";
                 strInstruction = strInstruction + "<param nome='NumNfv' valor='@numnfe'/>";
 
                 strInstruction = strInstruction + "</sid>";
@@ -1730,12 +2164,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                 strInstruction = strInstruction + CMD_XML[0];
 
 
-
+                QTD_I = 0;
 
                 for (I = 3; I < 548; I++)
                 {
                     if (CMD_XML[I] != "")
                     {
+                        strInstruction = strInstruction + CMD_XML[I];
                         strInstructionSAP = strInstructionSAP + CMD_XML[I];
                     }
                     else
@@ -1747,6 +2182,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                 strInstruction = strInstruction + CMD_XML[1] + CMD_XML[2];
 
+                strInstructionSAP = strInstructionSAP + CMD_XML[1] + CMD_XML[2];
 
                 int rsSer = getServicoByIDFatura(id_nota);
 
@@ -1758,7 +2194,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                         if (GeraRPSFAT == "1")
                         {
-                            if (!insereRPSFATProc(id_nota, "", strInstruction, strInstructionSAP, RPSSubstituida))
+                            if (insereRPSFATProc(id_nota, corpoNota, strInstruction, strInstructionSAP)==false)
                             {
                                 return "Erro ao inserir o registro do RPS";
                             }
@@ -1796,7 +2232,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return null;
+                return ex.Message;
             }
         }
         public bool UpdateCodTns(string codOper, int PosFat)
@@ -1995,7 +2431,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public bool insereRPSFATProc(int id, string str, string corpo, string strSAP, int subst)
+        public bool insereRPSFATProc(int id, string str, string corpo, string strSAP)
         {
             try
             {
@@ -2016,25 +2452,25 @@ namespace WsSimuladorCalculoTabelas.DAO
                             {
                                 OracleDbType = OracleDbType.Clob,
                                 Direction = ParameterDirection.Input,
-                                Value = str
+                                Value = corpo
                             });
                             cmd.Parameters.Add(new OracleParameter
                             {
                                 OracleDbType = OracleDbType.Clob,
                                 Direction = ParameterDirection.Input,
-                                Value = corpo
+                                Value = strSAP
                             });
                             cmd.Parameters.Add(new OracleParameter
                             {
                                 OracleDbType = OracleDbType.Varchar2,
                                 Direction = ParameterDirection.Input,
-                                Value = strSAP
+                                Value =str
                             });
                             cmd.Parameters.Add(new OracleParameter
                             {
                                 OracleDbType = OracleDbType.Int32,
                                 Direction = ParameterDirection.Input,
-                                Value = subst
+                                Value = 0
                             });
 
                             cmd.Parameters.Add(new OracleParameter
@@ -2044,7 +2480,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                             });
 
                             con.Open();
-
+                                
+           
                             OracleDataReader retorno = cmd.ExecuteReader();
 
 
@@ -2070,7 +2507,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     bool update_Fat = con.Query<bool>(sb.ToString()).FirstOrDefault();
 
-                    return update_Fat;
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -2150,7 +2587,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS A INNER JOIN ");
                     sb.AppendLine(" (SELECT AUTONUM, SERVICO, SEQ_GR FROM SGIPA.TB_SERVICOS_FATURADOS) B  ON A.AUTONUM_SERVICO_FATURADO = B.AUTONUM ");
                     sb.AppendLine(" JOIN SGIPA.TB_CAD_IMPOSTOS C ON A.AUTONUM_IMPOSTO = C.AUTONUM ");
-                    sb.AppendLine(" WHERE B.SEQ_GR IN(" + gr + ") ");
+                    sb.AppendLine(" WHERE A.VALOR_IMPOSTO >0 AND B.SEQ_GR IN(" + gr + ") ");
                     sb.AppendLine(" GROUP BY A.AUTONUM_IMPOSTO, C.DESCRICAO ");
                     sb.AppendLine(" ORDER BY C.DESCRICAO, A.AUTONUM_IMPOSTO ");
 
@@ -2174,7 +2611,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     StringBuilder sb = new StringBuilder();
 
                     sb.AppendLine(" SELECT SUM(A.VALOR + A.ADICIONAL + A.DESCONTO) AS TOTAL, SUM(C.IMPOSTO) AS IMPOSTOS, ");
-                    sb.AppendLine("  A.SERVICO, replace(B.DESCR,'''','') AS DESCR_SERVICO, B.CODSER_SAP ");
+                    sb.AppendLine("  A.SERVICO, replace(B.DESCR,'''','') AS DESCR_SERVICO, B.CODSER_SAP CODSER ");
                     sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A JOIN  ");
                     sb.AppendLine(" SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM LEFT JOIN ");
                     sb.AppendLine(" (SELECT AUTONUM_SERVICO_FATURADO, SUM(VALOR_IMPOSTO) AS IMPOSTO " );
@@ -2241,7 +2678,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return null;            
+                return "";            
             }
         }
         public int GetParceiroGR(int seq_Gr)
@@ -2315,7 +2752,7 @@ namespace WsSimuladorCalculoTabelas.DAO
         #endregion
         #region monta_Sid
         public string Monta_Sid_FechaNota(string Serie, string Tipo,  bool baixaTitulo, string tituloSap, string dtNow,
-            string conta, string valor, string condicao, string nfeSubstituida)
+            string conta, string valor, string condicao)
         {
             string strS = "";
 
@@ -2336,7 +2773,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     strS = strS + "<param nome='NumCco' valor='" + conta + "'/>";
                     strS = strS + "<param nome='VlrMov' valor='" + valor.Replace(".", "").Replace("R$", "").ToUpper() + "'/>";
                     strS = strS + "<param nome='NumDoc' valor='@NUMNFE'/>";
-                    strS = strS + "<param nome='CodFpg' valor='" + condicao + "'/>";
+                    strS = strS + "<param nome='CodFpg' valor='GRDP'/>";
                     strS = strS + "<param nome='TnsBxa' valor='90624'/>";
                     strS = strS + "</sid>";
                 }
@@ -2528,7 +2965,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return null;
+                return "";
             }
         }
 
@@ -3181,9 +3618,25 @@ namespace WsSimuladorCalculoTabelas.DAO
                         if (count == 0)
                         {
 
+                            
+                            int npix = 0;
+                            sb.Clear();
+                            sb.AppendLine(" SELECT num_pagamento_pix FROM  SGIPA.TB_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+
+                            npix  = con.Query<int>(sb.ToString()).FirstOrDefault();
                             sbu.AppendLine(" UPDATE SGIPA.TB_BL SET  NUM_PAGAMENTO_PIX = 0, NUM_TITULO_PIX = 0 WHERE NUM_TITULO_PIX  =   " + numero_titulo);
                             con.Query<string>(sbu.ToString()).FirstOrDefault();
-                            return "000-Titulo cancelado com sucesso";
+                            if (npix > 0)
+                            {
+                                sbu.Clear();
+                                sbu.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET  CANCELADO=1  , DATA_CANCELADO=SYSDATE  WHERE NUM_PIX  =   " + npix);
+                                con.Query<string>(sbu.ToString()).FirstOrDefault();
+                                return "000-Titulo cancelado com sucesso";
+                            }
+                            else
+                            {
+                                return "000-Titulo cancelado com sucesso";
+                            }
                         }
                         else
                         {
