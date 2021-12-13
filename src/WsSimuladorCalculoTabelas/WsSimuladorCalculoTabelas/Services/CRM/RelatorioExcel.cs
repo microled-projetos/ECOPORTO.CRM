@@ -142,7 +142,7 @@ namespace WsSimuladorCalculoTabelas.Services
                 if (modeloBusca == null)
                     throw new Exception("A Oportunidade não possui um Modelo de Proposta vínculado");
 
-                var taxaImposto = _impostoDAO.ObterTaxaImposto();
+                var taxaImposto = _impostoDAO.ObterTaxaImposto(oportunidadeBusca.ImpostoId);
 
                 var validade = $"{oportunidadeBusca.Validade} {oportunidadeBusca.TipoValidade}";
 
@@ -197,10 +197,20 @@ namespace WsSimuladorCalculoTabelas.Services
                     GravaCelula(new ExcelCelulaParametros("Metro (m3):", true, 12.75, true, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                     GravaCelula(new ExcelCelulaParametros(parametrosSimulador.VolumeM3.ToString(), true, true, corPadrao), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Numero);
 
-                    GravaCelula(new ExcelCelulaParametros("", false, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
-                    GravaCelula(new ExcelCelulaParametros("", false, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                    var valoresMinimoCobranca = _servicoDAO.ObterValorMinimoCobranca(oportunidadeBusca.Id);
 
-                    excelWorksheet.Cells[linha, 5, linha, 6].Merge = true;
+                    if (valoresMinimoCobranca.Any())
+                    {
+                        GravaCelula(new ExcelCelulaParametros("N. BL", false, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                        GravaCelula(new ExcelCelulaParametros("3", false, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                    }
+                    else
+                    {
+                        GravaCelula(new ExcelCelulaParametros("", false, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                        GravaCelula(new ExcelCelulaParametros("", false, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+
+                        excelWorksheet.Cells[linha, 5, linha, 6].Merge = true;
+                    }
 
                     GravaCelula(new ExcelCelulaParametros("Períodos:", true, false, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                     GravaCelula(new ExcelCelulaParametros(parametrosSimulador.Periodos.ToString(), true, true, corPadrao), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Inteiro);
@@ -317,6 +327,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                 var valorper = precoUnitarioMD * dadosSimulador.ValorCifCargaSolta;
 
+
                                 var valorMinimoMD = _servicoDAO.ObterValorMinimo(valoresArmazenagemMD.ServicoFixoVariavelId, "SVAR40", valoresArmazenagemMD.LimiteBls);
 
                                 if (valorMinimoMD == null)
@@ -358,10 +369,19 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                     GravaCelula(new ExcelCelulaParametros(String.Format("{0:N2}", valorper), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
                                     excelWorksheet.Cells[linha, coluna - 1].Formula = $"=C{linha}*B6";
+                                    if (valoresMinimoCobranca.Any())
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
 
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
+                                    }
+                                    else
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    }
                                     //GravaCelula(new ExcelCelulaParametros(valoresArmazenagemMD.Periodo.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Inteiro);
                                     //GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
 
@@ -376,9 +396,20 @@ namespace WsSimuladorCalculoTabelas.Services
                                     GravaCelula(new ExcelCelulaParametros(valoresArmazenagemMD.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
                                     GravaCelula(new ExcelCelulaParametros(valoresArmazenagemME.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
                                     GravaCelula(new ExcelCelulaParametros(String.Format("{0:N2}", 0), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    if (valoresMinimoCobranca.Any())
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
 
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
+
+                                    }
+                                    else
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    }
                                     //GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
 
                                     GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
@@ -460,10 +491,21 @@ namespace WsSimuladorCalculoTabelas.Services
                                     GravaCelula(new ExcelCelulaParametros(String.Format("{0:N2}", valorper), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
                                     excelWorksheet.Cells[linha, coluna - 1].Formula = $"=C{linha}*B6";
 
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    if (valoresMinimoCobranca.Any())
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
 
-                                    //GravaCelula(new ExcelCelulaParametros(valoresArmazenagemMD.Periodo.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Inteiro);
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
+                                    }
+                                    else
+                                    {
+
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+
+                                    }                                    //GravaCelula(new ExcelCelulaParametros(valoresArmazenagemMD.Periodo.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Inteiro);
                                     //GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
 
                                     GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
@@ -477,9 +519,21 @@ namespace WsSimuladorCalculoTabelas.Services
                                     GravaCelula(new ExcelCelulaParametros(valoresArmazenagemMD.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
                                     GravaCelula(new ExcelCelulaParametros(valoresArmazenagemME.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
                                     GravaCelula(new ExcelCelulaParametros(String.Format("{0:N2}", 0), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    if (valoresMinimoCobranca.Any())
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
 
+                                        GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(F3>2,M6,M7)";
+                                    }
+                                    else
+                                    {
+
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoMD.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        GravaCelula(new ExcelCelulaParametros(valorMinimoME.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+
+                                    }
                                     //GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
 
                                     GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
@@ -691,9 +745,25 @@ namespace WsSimuladorCalculoTabelas.Services
                         {
                             valorImposto_MDIR = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR");
                             valorImposto_MESQ = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ");
+                            decimal valorPorcentagem_MDIR = 0;
+                            decimal valorPorcentagem_MESQ = 0;
+                            if (subTotal_MD > 0)
+                            {
+                                valorPorcentagem_MDIR = Math.Round(valorImposto_MDIR / subTotal_MD, 6);
+                            }
+                            if (subTotal_ME > 0)
+                            {
+                             valorPorcentagem_MESQ = Math.Round(valorImposto_MESQ / subTotal_ME, 6);
+                            }
+                            if (valorPorcentagem_MDIR == 0)
+                            {
+                                valorPorcentagem_MDIR = (1 / taxaImposto) - 1;
+                            }
 
-                            var valorPorcentagem_MDIR = Math.Round(valorImposto_MDIR / subTotal_MD, 6);
-                            var valorPorcentagem_MESQ = Math.Round(valorImposto_MESQ / subTotal_ME, 6);
+                            if (valorPorcentagem_MESQ == 0)
+                            {
+                                valorPorcentagem_MESQ = (1 / taxaImposto) - 1;
+                            }
 
                             GravaCelula(new ExcelCelulaParametros(valorPorcentagem_MDIR.ToString(), true, 12.75, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
                             impostoCalculoTicket = valorPorcentagem_MDIR;
@@ -1000,8 +1070,6 @@ namespace WsSimuladorCalculoTabelas.Services
                     excelWorksheet.Cells[linha, 1, linha, totalColunas].Style.Border.Bottom.Style = ExcelBorderStyle.None;
                     excelWorksheet.Cells[linha, 1, linha, totalColunas].Style.Border.Left.Style = ExcelBorderStyle.None;
                     excelWorksheet.Cells[linha, 1, linha, totalColunas].Style.Border.Right.Style = ExcelBorderStyle.None;
-
-                    var valoresMinimoCobranca = _servicoDAO.ObterValorMinimoCobranca(oportunidadeBusca.Id);
 
                     if (valoresMinimoCobranca.Any())
                     {
@@ -1439,7 +1507,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     PularLinhaResetaColuna(ref linha, ref coluna);
 
-                    taxaImposto = _impostoDAO.ObterTaxaImposto();
+                    taxaImposto = _impostoDAO.ObterTaxaImposto(oportunidadeBusca.ImpostoId);
 
                     taxaImposto = 1 - taxaImposto;
 
@@ -1657,7 +1725,10 @@ namespace WsSimuladorCalculoTabelas.Services
                             valorImpostoFCL = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR", "SVAR20");
 
                             var valorPorcentagemFCL = valorImpostoFCL / (subTotalMD_20 == 0 ? 1 : subTotalMD_20);
-
+                            if ( valorPorcentagemFCL == 0)
+                            {
+                                valorPorcentagemFCL = (1 / taxaImposto) - 1;
+                            }
                             GravaCelula(new ExcelCelulaParametros(string.Format("{0:P2}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
                         }
 
@@ -1993,7 +2064,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 if (parametrosSimulador.Regime == Regime.FCL)
                 {
-                    valorTotalTicket = valorTotalTicketMdir + valorTotalImpostoMdir + valorTotalTicketMesq + valorTotalImpostoMesq;
+                    //    valorTotalTicket = valorTotalTicketMdir + valorTotalImpostoMdir + valorTotalTicketMesq + valorTotalImpostoMesq;
+                    valorTotalTicket = valorTotalTicketMdir + valorTotalImpostoMdir ;
                 }
                 else
                 {

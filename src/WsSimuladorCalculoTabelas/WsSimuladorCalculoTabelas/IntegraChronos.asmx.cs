@@ -847,6 +847,21 @@ namespace WsSimuladorCalculoTabelas
                     };
                 }
 
+                var vllotes = _pagamentoPixDAO.contvalor(NumeroTitulo );
+
+                if (vllotes == 0)
+                {
+                    var vlerro = _pagamentoPixDAO.contvalorerro(NumeroTitulo);
+                    merro = "Valor do PIX  diferente do Valor de Calculo" + vlerro;
+                    _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                    return new Response
+                    {
+                        Sucesso = false,
+                        Mensagem = merro
+
+                    };
+                }
+
                 var dadosLotes = _pagamentoPixDAO.GetListaBL(NumeroTitulo);
 
 
@@ -1155,7 +1170,7 @@ namespace WsSimuladorCalculoTabelas
 
                     if (_pagamentoPixDAO.atualizaServicosFixosGR(Lote, seq_gr)==false)
                     {
-                        merro = "Falha ao atualiuzar os serviços adicionais ";
+                        merro = "Falha ao atualizar os serviços adicionais ";
                         _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                         return new Response
                         {
@@ -1167,7 +1182,7 @@ namespace WsSimuladorCalculoTabelas
 
                     if (_pagamentoPixDAO.atualizaPreCalculoGR(Lote)==false)
                     {
-                        merro = "Falha ao atualiuzar o pre calculo  ";
+                        merro = "Falha ao atualizar o pre calculo  ";
                         _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
                         return new Response
                         {

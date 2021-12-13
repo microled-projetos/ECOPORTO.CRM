@@ -6070,7 +6070,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 
                         foreach (var faixa in faixasCif)
                         {
-                            parametros = new DynamicParameters();
+                      
 
                             parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
                             parametros.Add(name: "TipoRegistroCif", value: TipoRegistro.ARMAZENAGEM_MINIMO_CIF, direction: ParameterDirection.Input);
@@ -6084,15 +6084,15 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                             {
                                 if (margem == "MDIR")
                                 {
-                                    parametros.Add(name: "Margem", value: Margem.DIREITA, direction: ParameterDirection.Input);
+                                    parametros.Add(name: "Margemcrm", value: Margem.DIREITA, direction: ParameterDirection.Input);
                                 }
                                 else if (margem == "MESQ")
                                 {
-                                    parametros.Add(name: "Margem", value: Margem.ESQUERDA, direction: ParameterDirection.Input);
+                                    parametros.Add(name: "Margemcrm", value: Margem.ESQUERDA, direction: ParameterDirection.Input);
                                 }
                                 else
                                 {
-                                    parametros.Add(name: "Margem", value: Margem.ENTRE, direction: ParameterDirection.Input);
+                                    parametros.Add(name: "Margemcrm", value: Margem.ENTRE, direction: ParameterDirection.Input);
                                 }
 
                                 valorCif = con.Query<LayoutDTO>($@"
@@ -6107,7 +6107,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
                                                  ON A.OportunidadeId =B.OportunidadeId 
                                                  AND B.TIPOREGISTRO=7                                           
                                             WHERE 
-                                                A.OportunidadeId = :OportunidadeId AND A.Margem = :Margem AND A.TipoRegistro = :TipoRegistroCif ORDER BY B.LINHA,A.ValorCif
+                                                A.OportunidadeId = :OportunidadeId AND A.Margem = :Margemcrm AND A.TipoRegistro = :TipoRegistroCif ORDER BY B.LINHA,A.ValorCif
                                         ) 
                                 ) WHERE Linha = :Linha", parametros).FirstOrDefault();
                             }
@@ -6132,7 +6132,7 @@ AND AUTONUM NOT IN(SELECT AUTONUMSV FROM SGIPA.TB_LISTA_P_S_FAIXASCIF_PER)
 
                             if (valorCif != null)
                             {
-                                parametros = new DynamicParameters();
+                            
 
                                 if (faixa.TipoCarga == "SVAR20")
                                 {

@@ -2457,54 +2457,59 @@ namespace Ecoporto.CRM.Site.Controllers
             {
                 var fontePagadoraId = fichaFaturamentoBusca.FontePagadoraId;
 
-                var spcBusca = _analiseCreditoRepositorio.ObterConsultaSpc(fontePagadoraId);
+                var spcexterno = _analiseCreditoRepositorio.ObterExterno(fontePagadoraId);
 
-                if (spcBusca == null)
+                if (spcexterno.Id == 0)
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Fonte Pagadora não possui análise de crédito ou análise pendente aprovação.");
-                }
-                else
-                {
-                    if (spcBusca.Validade < DateTime.Now)
+                    var spcBusca = _analiseCreditoRepositorio.ObterConsultaSpc(fontePagadoraId);
+
+                    if (spcBusca == null)
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Análise de Crédito vencida para a Fonte Pagadora");
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Fonte Pagadora não possui análise de crédito ou análise pendente aprovação.");
                     }
-
-
-                    if (spcBusca.InadimplenteEcoporto || spcBusca.InadimplenteSpc)
+                    else
                     {
-                        if (spcBusca.StatusAnaliseDeCredito != StatusAnaliseDeCredito.APROVADO)
+                        if (spcBusca.Validade < DateTime.Now)
                         {
-                            return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Fonte Pagadora conta como inadimplente. Análise de Crédito não possui aprovação.");
+                            return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Análise de Crédito vencida para a Fonte Pagadora");
                         }
+
+
+                        if (spcBusca.InadimplenteEcoporto || spcBusca.InadimplenteSpc)
+                        {
+                            if (spcBusca.StatusAnaliseDeCredito != StatusAnaliseDeCredito.APROVADO)
+                            {
+                                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Fonte Pagadora conta como inadimplente. Análise de Crédito não possui aprovação.");
+                            }
+                        }
+
+                        var limitesDeCreditom = _analiseCreditoRepositorio.ObterSolicitacoesLimiteDeCredito(fontePagadoraId);
+
+                        if (_oportunidadeRepositorio.ObterStatusCondPgtoNew(fontePagadoraId, fichaFaturamentoBusca.CondicaoPagamentoFaturamentoId) != 3)
+                        {
+                            return new HttpStatusCodeResult(HttpStatusCode.BadRequest, $"Condição de Pagamento sem aprovação ");
+
+                        }
+                        var fatFCL = oportunidadeBusca.FaturamentoMensalFCL;
+                        var fatLCL = oportunidadeBusca.FaturamentoMensalLCL;
+
+                        //var valorLiteCreditoBase = (fatLCL / (fatFCL == 0 ? 1 : fatLCL)) * 12;
+
+                        //if (valorLiteCreditoBase > 200_000)
+                        //{
+                        //    var limitesDeCredito = _analiseCreditoRepositorio.ObterSolicitacoesLimiteDeCredito(fontePagadoraId);
+
+                        //    if (limitesDeCredito.Any())
+                        //    {
+                        //        var limitesDeCreditoSemAprovacao = limitesDeCredito.Where(c => c.StatusLimiteCredito != StatusLimiteCredito.APROVADO).Any();
+
+                        //        if (limitesDeCreditoSemAprovacao)
+                        //        {
+                        //            return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "A Análise de Crédito possui limites de crédito sem aprovação");
+                        //        }
+                        //    }
+                        //}
                     }
-
-                    var limitesDeCreditom = _analiseCreditoRepositorio.ObterSolicitacoesLimiteDeCredito(fontePagadoraId);
-
-                    if (_oportunidadeRepositorio.ObterStatusCondPgtoNew(fontePagadoraId, fichaFaturamentoBusca.CondicaoPagamentoFaturamentoId) != 3)
-                    {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest, $"Condição de Pagamento sem aprovação ");
-
-                    }
-                    var fatFCL = oportunidadeBusca.FaturamentoMensalFCL;
-                    var fatLCL = oportunidadeBusca.FaturamentoMensalLCL;
-
-                    //var valorLiteCreditoBase = (fatLCL / (fatFCL == 0 ? 1 : fatLCL)) * 12;
-
-                    //if (valorLiteCreditoBase > 200_000)
-                    //{
-                    //    var limitesDeCredito = _analiseCreditoRepositorio.ObterSolicitacoesLimiteDeCredito(fontePagadoraId);
-
-                    //    if (limitesDeCredito.Any())
-                    //    {
-                    //        var limitesDeCreditoSemAprovacao = limitesDeCredito.Where(c => c.StatusLimiteCredito != StatusLimiteCredito.APROVADO).Any();
-
-                    //        if (limitesDeCreditoSemAprovacao)
-                    //        {
-                    //            return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "A Análise de Crédito possui limites de crédito sem aprovação");
-                    //        }
-                    //    }
-                    //}
                 }
             }
             var adendos = _oportunidadeRepositorio.ObterAdendos(oportunidadeBusca.Id);

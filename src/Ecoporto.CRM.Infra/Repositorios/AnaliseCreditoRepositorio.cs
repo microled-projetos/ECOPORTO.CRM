@@ -61,8 +61,23 @@ namespace Ecoporto.CRM.Infra.Repositorios
 			}
 		}
 
-		
-		public void GravarConsultaSpc(ConsultaSpcDTO consultaSpc, IEnumerable<Conta> contas)
+
+		public ConsultaSpcDTO ObterExterno(int contaId)
+		{
+			using (OracleConnection con = new OracleConnection(Config.StringConexao()))
+			{
+				var parametros = new DynamicParameters();
+		parametros.Add(name: "ContaId", value: contaId, direction: ParameterDirection.Input);
+
+				return con.Query<ConsultaSpcDTO>(@"
+					SELECT
+						nvl(max(ID) ,0) ID FROM CRM.TB_CRM_CONTAS WHERE classificacaofiscal=3 and ID=:ContaId", parametros).FirstOrDefault();
+					}
+				}
+
+
+
+public void GravarConsultaSpc(ConsultaSpcDTO consultaSpc, IEnumerable<Conta> contas)
         {
             using (OracleConnection con = new OracleConnection(Config.StringConexao()))
             {
@@ -674,7 +689,8 @@ namespace Ecoporto.CRM.Infra.Repositorios
             }
         }
 
-        public IEnumerable<DetalhesSpcDTO> ObterDetalhesSpc(int consultaId)
+
+public IEnumerable<DetalhesSpcDTO> ObterDetalhesSpc(int consultaId)
         {
             using (OracleConnection con = new OracleConnection(Config.StringConexao()))
             {
@@ -1090,7 +1106,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
 
 
 				return con.Query<int>(@"
-					SELECT COUNT(1) FROM CRM.TB_CRM_CONTAS WHERE segmento = 7 AND ClassificacaoFiscal = 3 AND ID=:ContaId  ", parametros).Single();
+					SELECT COUNT(1) FROM CRM.TB_CRM_CONTAS WHERE   ClassificacaoFiscal = 3 AND ID=:ContaId  ", parametros).Single();
 			}
 		}
     }

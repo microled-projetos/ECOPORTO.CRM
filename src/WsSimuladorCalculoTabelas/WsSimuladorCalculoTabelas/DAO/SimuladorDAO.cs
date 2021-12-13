@@ -1015,7 +1015,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametros.Add(name: "SimuladorId", value: simuladorId, direction: ParameterDirection.Input);
                     parametros.Add(name: "TabelaId", value: tabelaId, direction: ParameterDirection.Input);
                     parametros.Add(name: "Margem", value: margem, direction: ParameterDirection.Input);
-
+                 
                     string filtroSQL = string.Empty;
 
                     if (!string.IsNullOrWhiteSpace(tipoCarga))
@@ -1023,7 +1023,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         filtroSQL = " AND A.TIPO_CARGA = '" + tipoCarga + "' ";
                     }
 
-                    return con.Query<decimal>($@"SELECT ROUND(NVL(SUM(A.VALOR_FINAL),0) / 0.8575 - NVL(SUM(A.VALOR_FINAL),0),6) TOTAL  
+                    return con.Query<decimal>($@"SELECT ROUND(NVL(SUM(A.VALOR_FINAL),0) / :ValorImposto - NVL(SUM(A.VALOR_FINAL),0),6) TOTAL  
                                 FROM SGIPA.TB_SIMULADOR_SERVICOS_CALC A INNER JOIN SGIPA.TB_SIMULADOR_SERVICOS B ON A.AUTONUM_SERVICO_CALCULO = B.AUTONUM 
                                     WHERE B.AUTONUM_CALCULO = :SimuladorId AND A.LISTA = :TabelaId AND A.Margem = :Margem {filtroSQL}", parametros).Single();
                 }

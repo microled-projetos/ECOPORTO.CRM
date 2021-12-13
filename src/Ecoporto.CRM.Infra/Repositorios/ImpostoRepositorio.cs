@@ -20,7 +20,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
             {
                 using (OracleConnection con = new OracleConnection(Config.StringConexao()))
                 {
-                    impostos = con.Query<Imposto>(@"SELECT Id, Descricao FROM CRM.TB_CRM_IMPOSTOS WHERE Id IN (1, 2, 3) ORDER BY Id");
+                    impostos = con.Query<Imposto>(@"SELECT Id, Descricao FROM CRM.TB_CRM_IMPOSTOS  ORDER BY Id");
                 }
 
                 cache["Imposto.ObterImpostos"] = impostos;

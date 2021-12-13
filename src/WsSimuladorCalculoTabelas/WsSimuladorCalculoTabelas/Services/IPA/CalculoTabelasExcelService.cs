@@ -455,7 +455,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 GravaCelula(new ExcelCelulaParametros("IMPOSTOS", 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
 
-                var taxaImposto = _impostoDAO.ObterTaxaImposto();
+                var taxaImposto = _impostoDAO.ObterTaxaImposto(1);
 
                 taxaImposto = 1 - taxaImposto;
 
@@ -1223,7 +1223,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 GravaCelulaCol(new ExcelCelulaParametros("IMPOSTOS", 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
 
-                var taxaImposto = _impostoDAO.ObterTaxaImposto();
+                var taxaImposto = _impostoDAO.ObterTaxaImposto(1);
 
                 taxaImposto = 1 - taxaImposto;
 

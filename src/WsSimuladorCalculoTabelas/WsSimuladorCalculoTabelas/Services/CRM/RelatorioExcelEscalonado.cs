@@ -143,7 +143,7 @@ namespace WsSimuladorCalculoTabelas.Services
                 if (modeloBusca == null)
                     throw new Exception("A Oportunidade não possui um Modelo de Proposta vínculado");
 
-                var taxaImposto = _impostoDAO.ObterTaxaImposto();
+                var taxaImposto = _impostoDAO.ObterTaxaImposto(oportunidadeBusca.ImpostoId);
 
                 var validade = $"{oportunidadeBusca.Validade} {oportunidadeBusca.TipoValidade}";
 
@@ -1829,7 +1829,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     PularLinhaResetaColuna(ref linha, ref coluna);
 
-                    taxaImposto = _impostoDAO.ObterTaxaImposto();
+                    taxaImposto = _impostoDAO.ObterTaxaImposto(oportunidadeBusca.ImpostoId);
 
                     taxaImposto = 1 - taxaImposto;
 

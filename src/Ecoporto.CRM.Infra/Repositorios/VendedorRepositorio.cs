@@ -16,19 +16,15 @@ namespace Ecoporto.CRM.Infra.Repositorios
         {
             MemoryCache cache = MemoryCache.Default;
 
-            var vendedores = cache["Vendedor.ObterVendedores"] as IEnumerable<Vendedor>;
-
-            if (vendedores == null)
-            {
+           
                 using (OracleConnection con = new OracleConnection(Config.StringConexao()))
                 {
-                    vendedores = con.Query<Vendedor>(@"SELECT A.Id, A.Nome, A.Login FROM CRM.TB_CRM_USUARIOS A INNER JOIN CRM.TB_CRM_USUARIOS_CARGOS B ON A.CargoId = B.Id WHERE B.Vendedor = 1 AND A.Ativo = 1 ORDER BY A.Nome");
-                }
-
-                cache["Vendedor.ObterVendedores"] = vendedores;
+              var vendedores = con.Query<Vendedor>(@"SELECT A.Id, A.Nome, A.Login FROM CRM.TB_CRM_USUARIOS A INNER JOIN CRM.TB_CRM_USUARIOS_CARGOS B ON A.CargoId = B.Id WHERE B.Vendedor = 1 AND A.Ativo = 1 ORDER BY A.Nome");
+                return vendedores;
             }
 
-            return vendedores;
+                
+          
         }
 
         public Vendedor ObterVendedorPorId(int id)

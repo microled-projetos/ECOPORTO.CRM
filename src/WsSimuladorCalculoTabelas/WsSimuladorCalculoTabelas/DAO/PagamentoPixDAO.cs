@@ -51,6 +51,53 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return 0;
             }
         }
+
+        public int contvalor(long numeroTitulo   )
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+ 
+                        sb.AppendLine(" SELECT count(1) FROM  SGIPA.vw_valor_pix  WHERE valor_pix=valor_gr and NUM_TITULO_PIX =  " + numeroTitulo);
+
+                        int vl = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        return vl;               
+                    
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+        public string contvalorerro(long numeroTitulo)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+                                      
+
+                        sb.AppendLine(" SELECT ' N.PIX  " + numeroTitulo + " ==> Vl. Pix  : '|| nvl(to_char(max(valor_pix)),'') || ' Vl. GR : ' || nvl(to_char(max(valor_gr)),'')  FROM  SGIPA.vw_valor_pix  WHERE  NUM_TITULO_PIX =  " + numeroTitulo);
+
+                        string vl = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return vl;
+                 
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
         public bool atualizaImpressaoGR(string status, int lote, int seqGR)
         {
             try

@@ -10,6 +10,7 @@ namespace Ecoporto.CRM.Business.Interfaces.Repositorios
         IEnumerable<PendenciaFinanceiraDTO> GravarPendenciasFinanceiras(string documento);
         void GravarConsultaSpc(ConsultaSpcDTO consultaSpc, IEnumerable<Conta> contas);
         ConsultaSpcDTO ObterConsultaSpc(int contaId);
+        ConsultaSpcDTO ObterExterno(int contaId);      
         IEnumerable<DetalhesSpcDTO> ObterDetalhesSpc(int consultaId);
         IEnumerable<DetalhesPendenciaFinanceiraDTO> ObterDetalhesPendenciasFinanceiras(int consultaId);
         IEnumerable<DetalhesChequeLojistaDTO> ObterDetalhesChequesLojistas(int consultaId);
