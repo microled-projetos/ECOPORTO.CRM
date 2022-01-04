@@ -167,13 +167,13 @@ namespace WsSimuladorCalculoTabelas.Services
                             {
                                 if (valoresArmazenagem.BaseCalculo == "CIF" || valoresArmazenagem.BaseCalculo == "CIF0" || valoresArmazenagem.BaseCalculo == "CIFM")
                                 {
-                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario/100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda );
-                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario/100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda );
+                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario / 100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario / 100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                                 }
                                 else
                                 {
-                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:C2}", valoresArmazenagem.PrecoUnitario), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda );
-                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:C2}", valoresArmazenagem.PrecoUnitario), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda );
+                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:C2}", valoresArmazenagem.PrecoUnitario), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:C2}", valoresArmazenagem.PrecoUnitario), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                                 }
 
                                 if (periodo == 1)
@@ -208,8 +208,8 @@ namespace WsSimuladorCalculoTabelas.Services
                             {
                                 if (valoresArmazenagem.BaseCalculo == "CIF" || valoresArmazenagem.BaseCalculo == "CIF0" || valoresArmazenagem.BaseCalculo == "CIFM")
                                 {
-                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario/100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
-                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario/100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario / 100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                                    GravaCelula(new ExcelCelulaParametros(String.Format("{0:P2}", valoresArmazenagem.PrecoUnitario / 100), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                                 }
                                 else
                                 {
@@ -338,7 +338,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     GravaCelula(new ExcelCelulaParametros("Até 02 B/L por CC 20' (por lote)", 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                                     cab = true;
                                 }
-                                
+
                                 GravaCelula(new ExcelCelulaParametros(string.Format("{0:C2}", minimoPorFaixa.ValorMinimo), true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                                 GravaCelula(new ExcelCelulaParametros(string.Format("{0:C2}", minimoPorFaixa.ValorMinimo), true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                             }
@@ -382,7 +382,7 @@ namespace WsSimuladorCalculoTabelas.Services
                         PularLinhaResetaColuna(ref linha, ref coluna);
                     }
 
-                    cab = false;                    
+                    cab = false;
 
                     GravaCelula(new ExcelCelulaParametros(string.Empty, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
 
@@ -435,8 +435,17 @@ namespace WsSimuladorCalculoTabelas.Services
                 }
 
                 PularLinhaResetaColuna(ref linha, ref coluna);
+                int tregime = 0;
+                if (dadosSimulador.Regime == "FCL")
+                {
+                     tregime = 2;
+                }
 
-                var servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId);
+                if (dadosSimulador.Regime == "LCL")
+                {
+                    tregime = 1;
+                }
+                var servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId, tregime);
 
                 foreach (var servico in servicosSimulador)
                 {
@@ -1204,9 +1213,20 @@ namespace WsSimuladorCalculoTabelas.Services
                 //}
 
                 PularColunaResetaLinha(ref linha, ref coluna);
+                int tregime = 0;
+                if (dadosSimulador.Regime == "FCL")
+                {
+                    tregime = 2;
+                }
 
-                var servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId);
+                if (dadosSimulador.Regime == "LCL")
+                {
+                    tregime = 1;
+                }
+                var servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId, tregime);
 
+
+      
                 foreach (var servico in servicosSimulador)
                 {
                     GravaCelulaCol(new ExcelCelulaParametros(servico.Descricao, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);

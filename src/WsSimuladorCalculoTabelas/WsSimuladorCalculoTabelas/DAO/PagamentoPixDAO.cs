@@ -947,7 +947,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.AppendLine(" UPDATE SGIPA.TB_CNTR_BL SET ");
                     sb.AppendLine(" SEQ_GR = " + seqGR);
-                    sb.AppendLine(" WHERE AUTONUM = (select a.autonum from  ");
+                    sb.AppendLine(" WHERE AUTONUM in (select a.autonum from  ");
                     sb.AppendLine(" SGIPA.TB_CNTR_BL A, ");
                     sb.AppendLine(" SGIPA.TB_AMR_CNTR_BL B ");
                     sb.AppendLine(" WHERE ");
@@ -1612,8 +1612,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                                 else
                                 {
                                     sb.Clear();
-                                    sb.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET ");
-                                    sb.AppendLine("MENSAGEM='" + mensagem + "' where  num_pix =" + npix);
+                                    sb.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET DATA_CRITICA=SYSDATE,");
+                                    sb.AppendLine("MENSAGEM=MENSAGEM || '  /  " + mensagem + "' where  num_pix =" + npix);
                                     con.Query<string>(sb.ToString()).FirstOrDefault();
                                 }
                            }

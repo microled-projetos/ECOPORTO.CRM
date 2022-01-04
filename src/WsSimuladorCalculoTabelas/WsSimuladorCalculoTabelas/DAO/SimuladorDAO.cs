@@ -891,7 +891,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public IEnumerable<ServicoFixoVariavel> ObterServicosSimulador(int simuladorId)
+        public IEnumerable<ServicoFixoVariavel> ObterServicosSimulador(int simuladorId, int tipo)
         {
             if (Configuracoes.BancoEmUso() == "ORACLE")
             {
@@ -899,8 +899,9 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     var parametros = new DynamicParameters();
                     parametros.Add(name: "SimuladorId", value: simuladorId, direction: ParameterDirection.Input);
-
-                    return con.Query<ServicoFixoVariavel>($@"
+                    if (tipo == 1)
+                    {
+                        return con.Query<ServicoFixoVariavel>($@"
                         SELECT * FROM
                         (
                             SELECT
@@ -918,7 +919,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                             INNER JOIN
                                 SGIPA.TB_SIMULADOR_SERVICOS_CALC C ON A.AUTONUM = C.AUTONUM_SERVICO_CALCULO
                             WHERE
-                                A.AUTONUM_CALCULO = :SimuladorId
+                                A.AUTONUM_CALCULO = :SimuladorId and c.tipo_carga='CRGST'
                             GROUP BY
                                     B.AUTONUM,
                                     B.DESCR,
@@ -932,7 +933,46 @@ namespace WsSimuladorCalculoTabelas.DAO
                         )
                         ORDER BY
                             Descricao", parametros);
+                    }
+                   else
+                    {
+
+                        return con.Query<ServicoFixoVariavel>($@"
+                        SELECT * FROM
+                        (
+                            SELECT
+                                DISTINCT
+                                B.AUTONUM As ServicoId,
+                                B.DESCR As Descricao,
+                                C.DESCR_BASE_CALC As BaseCalculo,
+                                MAX(C.PRECO_MINIMO) As PrecoMinimo,
+                                C.MARGEM,
+                                C.TIPO_SERVICO As TipoServico
+                            FROM
+                                SGIPA.TB_SIMULADOR_SERVICOS A
+                            INNER JOIN
+                                SGIPA.TB_SERVICOS_IPA B ON A.AUTONUM_SERVICO = B.AUTONUM
+                            INNER JOIN
+                                SGIPA.TB_SIMULADOR_SERVICOS_CALC C ON A.AUTONUM = C.AUTONUM_SERVICO_CALCULO
+                            WHERE
+                                A.AUTONUM_CALCULO = :SimuladorId and c.tipo_carga in('SVAR','SVAR20','SVAR40')
+                            GROUP BY
+                                    B.AUTONUM,
+                                    B.DESCR,
+                                    C.DESCR_BASE_CALC,        
+                                    C.MARGEM,
+                                    C.TIPO_SERVICO
+                        )    
+                        PIVOT
+                        (
+                            Sum(PrecoMinimo) FOR Margem IN ('MDIR' PrecoMinimoMDir, 'MESQ' PrecoMinimoMEsq)
+                        )
+                        ORDER BY
+                            Descricao", parametros);
+
+                    }
                 }
+
             }
             else
             {

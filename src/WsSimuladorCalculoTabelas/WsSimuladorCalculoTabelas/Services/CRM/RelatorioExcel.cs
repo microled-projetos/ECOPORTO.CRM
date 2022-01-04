@@ -562,7 +562,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     taxaImposto = 1 - taxaImposto;
 
-                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId);
+                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId,1);
 
                     foreach (var servico in servicosSimulador)
                     {
@@ -1081,6 +1081,7 @@ namespace WsSimuladorCalculoTabelas.Services
                         if (valorMinimoSemTamanho)
                         {
                             GravaCelula(new ExcelCelulaParametros("", false, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                            GravaCelula(new ExcelCelulaParametros("", true, true, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
                             GravaCelula(new ExcelCelulaParametros("Valor", true, true, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
 
                             linhaCifEscalonado++;
@@ -1089,6 +1090,7 @@ namespace WsSimuladorCalculoTabelas.Services
                             foreach (var minimo in valoresMinimoCobranca)
                             {
                                 GravaCelula(new ExcelCelulaParametros(minimo.Descricao, false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                                GravaCelula(new ExcelCelulaParametros("", false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
                                 GravaCelula(new ExcelCelulaParametros(minimo.ValorMinimo.ToString(), false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
 
                                 linhaCifEscalonado++;
@@ -1511,7 +1513,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     taxaImposto = 1 - taxaImposto;
 
-                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId);
+                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId,2);
 
                     if (servicosSimulador.Count() == 0)
                         PularLinhaResetaColuna(ref linha, ref coluna);

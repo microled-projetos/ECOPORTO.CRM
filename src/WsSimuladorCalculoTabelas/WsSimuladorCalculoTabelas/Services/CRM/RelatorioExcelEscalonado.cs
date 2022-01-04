@@ -797,7 +797,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     taxaImposto = 1 - taxaImposto;
 
-                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId);
+                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId,1);
 
                     foreach (var servico in servicosSimulador)
                     {
@@ -1833,7 +1833,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     taxaImposto = 1 - taxaImposto;
 
-                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId);
+                    servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId,2);
 
                     if (servicosSimulador.Count() == 0)
                         PularLinhaResetaColuna(ref linha, ref coluna);
