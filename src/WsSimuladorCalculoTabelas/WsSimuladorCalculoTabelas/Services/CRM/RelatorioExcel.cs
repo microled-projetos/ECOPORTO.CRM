@@ -575,8 +575,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
                         foreach (var tabela in tabelas)
                         {
-                            var valorMDir = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MDIR");
-                            var valorMEsq = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MESQ");
+                            var valorMDir = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MDIR","CRGST");
+                            var valorMEsq = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MESQ","CRGST");
 
                             string descricaoBaseCalculo = string.Empty;
 
@@ -743,8 +743,8 @@ namespace WsSimuladorCalculoTabelas.Services
                     {
                         foreach (var tabela in tabelas)
                         {
-                            valorImposto_MDIR = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR");
-                            valorImposto_MESQ = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ");
+                            valorImposto_MDIR = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR","CRGST");
+                            valorImposto_MESQ = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ","CRGST");
                             decimal valorPorcentagem_MDIR = 0;
                             decimal valorPorcentagem_MESQ = 0;
                             if (subTotal_MD > 0)

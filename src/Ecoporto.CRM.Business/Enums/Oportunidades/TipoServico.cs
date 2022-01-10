@@ -15,6 +15,8 @@ namespace Ecoporto.CRM.Business.Enums
         [Display(Name = "Transporte")]
         TRANSPORTE,
         [Display(Name = "Carga Mista")]
-        CARGA_MISTA
+        CARGA_MISTA,
+        [Display(Name = "Veículo")]
+        VEICULO
     }
 }

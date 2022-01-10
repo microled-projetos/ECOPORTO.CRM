@@ -17,6 +17,8 @@ namespace Ecoporto.CRM.Business.Enums
         [Display(Name = "BL")]
         BL,
         [Display(Name = "VOLP")]
-        VOLP
+        VOLP,
+        [Display(Name = "VOL")]
+        VOL
     }
 }

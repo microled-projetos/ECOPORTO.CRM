@@ -436,14 +436,17 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 PularLinhaResetaColuna(ref linha, ref coluna);
                 int tregime = 0;
+                String tcarga = "";
                 if (dadosSimulador.Regime == "FCL")
                 {
-                     tregime = 2;
+                    tregime = 2;
+                    tcarga = "SVAR20";
                 }
 
                 if (dadosSimulador.Regime == "LCL")
                 {
                     tregime = 1;
+                    tcarga = "CRGST";
                 }
                 var servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId, tregime);
 
@@ -470,10 +473,10 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 foreach (var tabela in tabelas)
                 {
-                    var valorImposto = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR");
+                    var valorImposto = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR",tcarga);
 
                     GravaCelula(new ExcelCelulaParametros(string.Format("{0:C2}", valorImposto), true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
-                    var valorImpostoE = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ");
+                    var valorImpostoE = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ",tcarga);
                     GravaCelula(new ExcelCelulaParametros(string.Format("{0:C2}", valorImpostoE), true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                 }
 
@@ -1214,14 +1217,17 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 PularColunaResetaLinha(ref linha, ref coluna);
                 int tregime = 0;
+                String tcarga = "";
                 if (dadosSimulador.Regime == "FCL")
                 {
                     tregime = 2;
+                    tcarga = "SVAR20";
                 }
 
                 if (dadosSimulador.Regime == "LCL")
                 {
                     tregime = 1;
+                    tcarga = "CRGST";
                 }
                 var servicosSimulador = _simuladorDAO.ObterServicosSimulador(dadosSimulador.SimuladorId, tregime);
 
@@ -1253,7 +1259,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                 foreach (var tabela in tabelas)
                 {
-                    var valorImposto = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR");
+                    var valorImposto = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR",tcarga);
 
                     GravaCelulaCol(new ExcelCelulaParametros(string.Format("{0:C2}", valorImposto), true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
                  }

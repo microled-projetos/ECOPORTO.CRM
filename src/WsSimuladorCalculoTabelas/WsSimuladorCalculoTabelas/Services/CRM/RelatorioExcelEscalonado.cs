@@ -810,15 +810,22 @@ namespace WsSimuladorCalculoTabelas.Services
 
                         foreach (var tabela in tabelas)
                         {
-                            var valorMDir = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MDIR");
-                            var valorMEsq = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MESQ");
+                            var valorMDir = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MDIR", "CRGST");
+                            var valorMEsq = _servicoDAO.ObterValoresServicoSimuladorPorTabelaId(dadosSimulador.SimuladorId, tabela.TabelaId, servico.ServicoId, "MESQ", "CRGST");
 
                             string descricaoBaseCalculo = string.Empty;
+                            descricaoBaseCalculo = $"{valorMDir.BaseCalculo} com mín de:";
 
-                            if (servico.BaseCalculo != "BL")
-                                descricaoBaseCalculo = $"{valorMDir.BaseCalculo} com mín de:";
-                            else
+                            if (servico.BaseCalculo == "BL")
                                 descricaoBaseCalculo = "por lote";
+
+                            if (servico.BaseCalculo == "CIF")
+                                descricaoBaseCalculo = "Sobre o CIF com mín de:";
+
+                            if (servico.BaseCalculo == "VOLUME M3")
+                                descricaoBaseCalculo = "TON/M3 com mín de:";
+
+ 
 
                             if (servico.ServicoId != 52)
                             {
@@ -832,8 +839,16 @@ namespace WsSimuladorCalculoTabelas.Services
                                 }
                                 else
                                 {
-                                    GravaCelula(new ExcelCelulaParametros(valorMDir.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    GravaCelula(new ExcelCelulaParametros(valorMEsq.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    if (servico.BaseCalculo == "BL")
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros("", false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                                        GravaCelula(new ExcelCelulaParametros("", false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
+                                    }
+                                    else
+                                    {
+                                        GravaCelula(new ExcelCelulaParametros(valorMDir.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                        GravaCelula(new ExcelCelulaParametros(valorMEsq.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    }
                                 }
                             }
                             else
@@ -854,8 +869,16 @@ namespace WsSimuladorCalculoTabelas.Services
                             }
                             else
                             {
-                                GravaCelula(new ExcelCelulaParametros(servico.PrecoMinimoMDir.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                GravaCelula(new ExcelCelulaParametros(servico.PrecoMinimoMEsq.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                if (servico.BaseCalculo == "BL")
+                                {
+                                    GravaCelula(new ExcelCelulaParametros(valorMDir.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    GravaCelula(new ExcelCelulaParametros(valorMEsq.PrecoUnitario.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                }
+                                else
+                                {
+                                    GravaCelula(new ExcelCelulaParametros(servico.PrecoMinimoMDir.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                    GravaCelula(new ExcelCelulaParametros(servico.PrecoMinimoMEsq.ToString(), false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                }
                             }
 
                             GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
@@ -886,14 +909,13 @@ namespace WsSimuladorCalculoTabelas.Services
                                         excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(B{linha}*B6>E{linha},B{linha}*B6,E{linha})*H3";
 
                                         GravaCelula(new ExcelCelulaParametros(valorMEsq.ValorFinal.ToString(), true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(C{linha}*B6>E{linha},C{linha}*B6,F{linha})*H3";
+                                        excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(C{linha}*B6>F{linha},C{linha}*B6,F{linha})*H3";
                                     }
                                 }
                             }
                             else
                             {
                                 //vol IF(D3>B3,D3,B3)
-
                                 if (servico.BaseCalculo == "VOLUME" || servico.BaseCalculo == "VOLUME M3")
                                 {
                                     GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
@@ -905,10 +927,10 @@ namespace WsSimuladorCalculoTabelas.Services
                                 else if (servico.BaseCalculo == "BL")
                                 {
                                     GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(B{linha}*F3>E{linha},B{linha}*F3,E{linha})";
+                                    excelWorksheet.Cells[linha, coluna - 1].Formula = $"=E{linha}";
 
                                     GravaCelula(new ExcelCelulaParametros(string.Empty, false, true, 12.75), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
-                                    excelWorksheet.Cells[linha, coluna - 1].Formula = $"IF(C{linha}*F3>F{linha},C{linha}*F3,F{linha})";
+                                    excelWorksheet.Cells[linha, coluna - 1].Formula = $"=F{linha}";
                                 }
                                 else if (servico.BaseCalculo == "TON")
                                 {
@@ -958,8 +980,8 @@ namespace WsSimuladorCalculoTabelas.Services
                     {
                         foreach (var tabela in tabelas)
                         {
-                            valorImposto_MDIR = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR");
-                            valorImposto_MESQ = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ");
+                            valorImposto_MDIR = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR","CRGST");
+                            valorImposto_MESQ = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MESQ","CRGST");
 
                             var valorPorcentagem_MDIR = Math.Round(valorImposto_MDIR / subTotal_MD, 6);
                             var valorPorcentagem_MESQ = Math.Round(valorImposto_MESQ / subTotal_ME, 6);
