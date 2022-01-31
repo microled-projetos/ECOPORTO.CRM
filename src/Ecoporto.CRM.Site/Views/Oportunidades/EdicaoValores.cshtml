@@ -268,67 +268,69 @@
 
                     if (imprimeCabecalho)
                     {
-                        <tr class="cabecalho">
-                            <th class="text-left numeroLinha">&nbsp;</th>
-                            <th class="text-left"></th>
-                            <th class="text-center">Tipo Carga</th>
+        <tr class="cabecalho">
+            <th class="text-left numeroLinha">&nbsp;</th>
+            <th class="text-left"></th>
+            <th class="text-center">Tipo Carga</th>
+            <th class="text-center">Base de Calculo</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                            {
-                                <th class="text-center">Valor Mín CS</th>
-                                <th class="text-center">Valor Mín 20'</th>
-                                <th class="text-center">Valor Mín 40'</th>
-                                <th class="text-center">Limite BL's</th>
-                            }
-                            else
-                            {
-                                <th class="text-center">Valor Mín 20'</th>
-                                <th class="text-center">Valor Mín 40'</th>
-                            }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <th class="text-center">Valor Mín CS</th>
+                <th class="text-center">Valor Mín 20'</th>
+                <th class="text-center">Valor Mín 40'</th>
+                <th class="text-center">Limite BL's</th>
+            }
+            else
+            {
+                <th class="text-center">Valor Mín 20'</th>
+                <th class="text-center">Valor Mín 40'</th>
+            }
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                            {
-                                <th class="text-center" colspan="8">Descrição Valor</th>
-                            }
-                            else
-                            {
-                                <th class="text-center" colspan="10">Descrição Valor</th>
-                            }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <th class="text-center" colspan="8">Descrição Valor</th>
+            }
+            else
+            {
+                <th class="text-center" colspan="10">Descrição Valor</th>
+            }
 
-                        </tr>
+        </tr>
 
                         imprimeCabecalho = false;
                     }
 
-                    <tr id="armazenagem-minimo-@linha.Linha" data-id="@linha.Linha">
+        <tr id="armazenagem-minimo-@linha.Linha" data-id="@linha.Linha">
 
-                        <td class="numeroLinha">@linha.Linha</td>
-                        <td id="armmin-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
-                        <td id="armmin-" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "armmin-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimo(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+            <td class="numeroLinha">@linha.Linha</td>
+            <td id="armmin-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="true" tabIndex="-1" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+            <td id="armmin-" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "armmin-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimo(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+            <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "armmin-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarArmazenagemMinimo(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                        {
-                            <td id="armmin-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
-                            <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
-                            <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
-                            <td id="armmin-limiteBls-@linha.Linha" class="pt-3-half" contenteditable="false" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.LimiteBls)</td>
-                        }
-                        else
-                        {
-                            <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
-                            <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
-                        }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <td id="armmin-valorMinimo-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+                <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+                <td id="armmin-limiteBls-@linha.Linha" class="pt-3-half" contenteditable="false" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.LimiteBls)</td>
+            }
+            else
+            {
+                <td id="armmin-valorMinimo20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                <td id="armmin-valorMinimo40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+            }
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                        {
-                            <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="8">@Html.Raw(@linha.DescricaoValor)</td>
-                        }
-                        else
-                        {
-                            <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="10">@Html.Raw(@linha.DescricaoValor)</td>
-                        }
-                        @*<td id="armmin-btnFaixasBL-@linha.Linha" class="pt-3-half pr-1" contenteditable="false"><button onclick="abrirFaixasBL(@linha.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;&nbsp;Faixas BL</button></td>*@
-                    </tr>
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="8">@Html.Raw(@linha.DescricaoValor)</td>
+            }
+            else
+            {
+                <td id="armmin-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarArmazenagemMinimo(@linha.Linha, @linha.OportunidadeId)" colspan="10">@Html.Raw(@linha.DescricaoValor)</td>
+            }
+            @*<td id="armmin-btnFaixasBL-@linha.Linha" class="pt-3-half pr-1" contenteditable="false"><button onclick="abrirFaixasBL(@linha.OportunidadeId)" type="button" class="btn btn-secondary btn-sm btn-block btn-as-block"><i class="fa fa-edit"></i>&nbsp;&nbsp;Faixas BL</button></td>*@
+        </tr>
                 }
 
                 if (linha.TipoRegistro == TipoRegistro.ARMAZENAGEM_MINIMO_CIF)
@@ -818,44 +820,46 @@
 
                     if (imprimeCabecalho)
                     {
-                        <tr class="cabecalho">
-                            <th class="text-left numeroLinha">&nbsp;</th>
-                            <th class="text-left"></th>
-                            <th class="text-left">Tipo Carga</th>
+        <tr class="cabecalho">
+            <th class="text-left numeroLinha">&nbsp;</th>
+            <th class="text-left"></th>
+            <th class="text-left">Tipo Carga</th>
+            <th class="text-left">Base de Calculo</th>
 
-                            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                            {
-                                <th colspan="2" class="text-center">Valor Min</th>
-                            }
-                            else
-                            {
-                                <th class="text-center">Valor Min 20'</th>
-                                <th class="text-center">Valor Min 40'</th>
-                            }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <th colspan="2" class="text-center">Valor Min</th>
+            }
+            else
+            {
+                <th class="text-center">Valor Min 20'</th>
+                <th class="text-center">Valor Min 40'</th>
+            }
 
-                            <th class="text-center" colspan="10">Descrição Valor</th>
-                        </tr>
+            <th class="text-center" colspan="10">Descrição Valor</th>
+        </tr>
 
                         imprimeCabecalho = false;
                     }
 
-                    <tr id="minimo-geral-@linha.Linha" data-id="@linha.Linha">
-                        <td class="numeroLinha">@linha.Linha</td>
-                        <td id="servMinGeral-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
-                        <td id="" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMinGeral-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarMinimoGeral(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+        <tr id="minimo-geral-@linha.Linha" data-id="@linha.Linha">
+            <td class="numeroLinha">@linha.Linha</td>
+            <td id="servMinGeral-descricao-@linha.Linha" class="pt-3-half text-left descricoes" contenteditable="false" tabIndex="-1" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.Descricao)</td>
+            <td id="" class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaTipoCarga, new SelectList(linha.ListaTipoCarga, "Key", "Value", linha.TipoCarga.ToValue()), new { id = "servMinGeral-tipoCarga-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarMinimoGeral(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
+            <td class="pt-3-half celula-select-grid-editavel"> @Html.DropDownListFor(c => linha.ListaBaseCalculo, new SelectList(linha.ListaBaseCalculo, "Key", "Value", linha.BaseCalculo.ToValue()), new { id = "servMinGeral-baseCalculo-" + linha.Linha, @class = "form-control form-control-sm select-grid-editavel", onblur = "AtualizarMinimoGeral(" + linha.Linha + "," + linha.OportunidadeId + ")", @disabled = "disabled" })</td>
 
-                        @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
-                        {
-                            <td id="servMinGeral-valorMin-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
-                        }
-                        else
-                        {
-                            <td id="servMinGeral-valorMin20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
-                            <td id="servMinGeral-valorMin40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
-                        }
+            @if (linha.TipoCarga == TipoCarga.CARGA_SOLTA || linha.TipoCarga == TipoCarga.CARGA_BBK || linha.TipoCarga == TipoCarga.CARGA_VEICULO)
+            {
+                <td id="servMinGeral-valorMin-@linha.Linha" colspan="2" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo)</td>
+            }
+            else
+            {
+                <td id="servMinGeral-valorMin20-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo20)</td>
+                <td id="servMinGeral-valorMin40-@linha.Linha" class="pt-3-half" contenteditable="true" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.ValorMinimo40)</td>
+            }
 
-                        <td id="servMinGeral-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="10" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
-                    </tr>
+            <td id="servMinGeral-descricaoValor-@linha.Linha" class="pt-3-half" contenteditable="true" colspan="10" onblur="AtualizarMinimoGeral(@linha.Linha, @linha.OportunidadeId)">@Html.Raw(@linha.DescricaoValor)</td>
+        </tr>
                 }
 
                 if (linha.TipoRegistro == TipoRegistro.PERIODO_PADRAO)
@@ -2206,7 +2210,7 @@
                     var valorMin20 = document.getElementById('servMinGeral-valorMin20-' + linha);
                     var valorMin40 = document.getElementById('servMinGeral-valorMin40-' + linha);
                     var descricaoValor = document.getElementById('servMinGeral-descricaoValor-' + linha);
-
+                  
                     var obj = {
                         linha: linha,
                         oportunidadeId: oportunidadeId,

@@ -180,6 +180,11 @@ namespace Ecoporto.CRM.Site.Models
         public BaseCalculo BaseCalculoServGerais { get; set; }
 
         [Display(Name = "B. Cálc.")]
+        public BaseCalculo BaseCalculoMinimoGerais { get; set; }
+
+        [Display(Name = "B. Cálc.")]
+        public BaseCalculo BaseCalculoArmazenagemMinimo { get; set; }
+        [Display(Name = "B. Cálc.")]
         public BaseCalculo BaseCalculoPeriodoPadrao { get; set; }
 
         #endregion

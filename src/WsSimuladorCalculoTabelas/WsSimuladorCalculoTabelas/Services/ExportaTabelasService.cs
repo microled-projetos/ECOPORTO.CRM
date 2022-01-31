@@ -459,11 +459,11 @@ namespace WsSimuladorCalculoTabelas.Services
                                     {
                                         if (tipoCarga == "SVAR20")
                                         {
-                                            _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo20, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, tipoCarga, layout.OportunidadeId, VarianteLocal);
+                                            _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo20, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, tipoCarga, layout.BaseCalculo.ToName().ToUpper() ,layout.OportunidadeId, VarianteLocal);
                                         }
                                         else if (tipoCarga == "SVAR40")
                                         {
-                                            _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo40, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, tipoCarga, layout.OportunidadeId, VarianteLocal);
+                                            _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo40, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, tipoCarga, layout.BaseCalculo.ToName().ToUpper(),layout.OportunidadeId, VarianteLocal);
                                         }
                                     }
                                 }
@@ -485,7 +485,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     }
                                     else
                                     {
-                                        _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo20, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "CPIER", layout.OportunidadeId, VarianteLocal);
+                                        _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo20, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "CPIER", layout.BaseCalculo.ToName().ToUpper(), layout.OportunidadeId, VarianteLocal);
                                     }
                                 }
 
@@ -518,15 +518,15 @@ namespace WsSimuladorCalculoTabelas.Services
                                     {
                                             if (layout.TipoCarga == TipoCarga.CARGA_SOLTA)
                                             {
-                                                _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "CRGST", layout.OportunidadeId, VarianteLocal);
+                                                _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "CRGST", layout.BaseCalculo.ToName().ToUpper(),layout.OportunidadeId, VarianteLocal);
                                             }
                                             if (layout.TipoCarga == TipoCarga.CARGA_BBK)
                                             {
-                                                _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "BBK", layout.OportunidadeId, VarianteLocal);
+                                                _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "BBK", layout.BaseCalculo.ToName().ToUpper(),layout.OportunidadeId, VarianteLocal);
                                             }
                                             if (layout.TipoCarga == TipoCarga.CARGA_VEICULO)
                                             {
-                                                _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "VEIC", layout.OportunidadeId, VarianteLocal);
+                                                _tabelaDAO.AtualizarPrecoMinimo(layout.ValorMinimo, layout.LimiteBls, arm_minimo.ServicoFixoVariavelId, "VEIC", layout.BaseCalculo.ToName().ToUpper(),layout.OportunidadeId, VarianteLocal);
                                             }
 
                                     }
@@ -632,15 +632,15 @@ namespace WsSimuladorCalculoTabelas.Services
                             {
                                 if (servicoMargem.VarianteLocal == "MDIR")
                                 {
-                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimoMargemDireita, servicoMargem.ServicoFixoVariavelId);
+                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimoMargemDireita, servicoMargem.ServicoFixoVariavelId,"");
                                 }
                                 else if (servicoMargem.VarianteLocal == "MESQ")
                                 {
-                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimoMargemEsquerda, servicoMargem.ServicoFixoVariavelId);
+                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimoMargemEsquerda, servicoMargem.ServicoFixoVariavelId,"");
                                 }
                                 else
                                 {
-                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimoEntreMargens, servicoMargem.ServicoFixoVariavelId);
+                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimoEntreMargens, servicoMargem.ServicoFixoVariavelId,"");
                                 }
                             }
                         }
@@ -686,7 +686,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     var servicosMecManualn = _tabelaDAO.ObterServicoFixoPorLinha(layout.LinhaReferencia, layout.OportunidadeId, "CRGST");
                                     foreach (var servicoMecManual in servicosMecManualn)
                                     {
-                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId);
+                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId,"");
                                     }
                                 }
                                 if (layout.TipoCarga == TipoCarga.CARGA_BBK)
@@ -694,7 +694,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     var servicosMecManuabbk = _tabelaDAO.ObterServicoFixoPorLinha(layout.LinhaReferencia, layout.OportunidadeId, "BBK");
                                     foreach (var servicoMecManual in servicosMecManuabbk)
                                     {
-                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId);
+                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId,"");
                                     }
                                 }
                                 if (layout.TipoCarga == TipoCarga.CARGA_VEICULO)
@@ -702,7 +702,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                     var servicosMecManuaveic = _tabelaDAO.ObterServicoFixoPorLinha(layout.LinhaReferencia, layout.OportunidadeId, "VEIC");
                                     foreach (var servicoMecManual in servicosMecManuaveic)
                                     {
-                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId);
+                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId,"");
                                     }
                                 }
 
@@ -716,7 +716,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                         var servicosMecManualn = _tabelaDAO.ObterServicoFixoPorLinha(layout.LinhaReferencia, layout.OportunidadeId, "SVAR20");
                                         foreach (var servicoMecManual in servicosMecManualn)
                                         {
-                                            _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId);
+                                            _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoMecManual.ServicoFixoVariavelId,"");
                                         }
                                     }
                                     else if (tipoCarga == "SVAR40")
@@ -724,7 +724,7 @@ namespace WsSimuladorCalculoTabelas.Services
                                         var servicosMecManualn = _tabelaDAO.ObterServicoFixoPorLinha(layout.LinhaReferencia, layout.OportunidadeId, "SVAR40");
                                         foreach (var servicoMecManual in servicosMecManualn)
                                         {
-                                            _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo40, servicoMecManual.ServicoFixoVariavelId);
+                                            _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo40, servicoMecManual.ServicoFixoVariavelId,"");
                                         }
 
                                     }
@@ -890,22 +890,22 @@ namespace WsSimuladorCalculoTabelas.Services
                                             {
                                                 if (tipoCarga == "SVAR20")
                                                 {
-                                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoGeral.ServicoFixoVariavelId);
+                                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoGeral.ServicoFixoVariavelId, layout.BaseCalculo.ToName().ToUpper());
                                                 }
                                                 else if (tipoCarga == "SVAR40")
                                                 {
-                                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo40, servicoGeral.ServicoFixoVariavelId);
+                                                    _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo40, servicoGeral.ServicoFixoVariavelId, layout.BaseCalculo.ToName().ToUpper());
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoGeral.ServicoFixoVariavelId);
+                                            _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo20, servicoGeral.ServicoFixoVariavelId, layout.BaseCalculo.ToName().ToUpper());
                                         }
                                     }
                                     else
                                     {
-                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo, servicoGeral.ServicoFixoVariavelId);
+                                        _tabelaDAO.AtualizarPrecoMinimoFixo(layout.ValorMinimo, servicoGeral.ServicoFixoVariavelId,  layout.BaseCalculo.ToName().ToUpper());
                                     }
                                 }
                             }

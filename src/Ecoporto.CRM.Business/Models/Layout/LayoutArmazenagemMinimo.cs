@@ -10,7 +10,9 @@ namespace Ecoporto.CRM.Business.Models
         public Cabecalho Cabecalho { get; set; }
         
         public int ServicoId { get; set; }
-        
+
+        public BaseCalculo BaseCalculo { get; set; }
+
         public ValorCargaMinimo ValorCarga { get; set; }
 
         public int LinhaReferencia { get; set; }
@@ -31,6 +33,7 @@ namespace Ecoporto.CRM.Business.Models
         public LayoutArmazenagemMinimo(
             Cabecalho cabecalho, 
             int servicoId,
+            BaseCalculo baseCalculo,
             ValorCargaMinimo valorCarga, 
             Margem margem,
             int linhaReferencia, 
@@ -39,6 +42,7 @@ namespace Ecoporto.CRM.Business.Models
         {
             Cabecalho = cabecalho;
             ServicoId = servicoId;
+            BaseCalculo = baseCalculo;
             ValorCarga = valorCarga;
             Margem = margem;
             LinhaReferencia = linhaReferencia;

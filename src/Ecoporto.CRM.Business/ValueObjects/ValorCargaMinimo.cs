@@ -14,14 +14,15 @@ namespace Ecoporto.CRM.Business.ValueObjects
             Validar();
         }
 
-        public ValorCargaMinimo(decimal valorMinimo, decimal valorMinimo20, decimal valorMinimo40, TipoCarga tipoCarga)
+        public ValorCargaMinimo(decimal valorMinimo, decimal valorMinimo20, decimal valorMinimo40, TipoCarga tipoCarga, BaseCalculo baseCalculo)
         {
             ValorMinimo = valorMinimo;
             ValorMinimo20 = valorMinimo20;
             ValorMinimo40 = valorMinimo40;
             TipoCarga = tipoCarga;
+            BaseCalculo = baseCalculo;
 
-            Validar();
+       Validar();
         }
 
         public decimal ValorMinimo { get; set; }
@@ -31,7 +32,7 @@ namespace Ecoporto.CRM.Business.ValueObjects
         public decimal ValorMinimo40 { get; set; }
 
         public TipoCarga TipoCarga { get; set; }
-
+        public BaseCalculo  BaseCalculo { get; set; }
         public override void Validar()
         {
             ValidationResult = Validate(this);

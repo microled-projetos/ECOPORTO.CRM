@@ -1,10 +1,13 @@
-﻿using Ecoporto.CRM.Business.ValueObjects;
+﻿using Ecoporto.CRM.Business.Enums;
+using Ecoporto.CRM.Business.ValueObjects;
 
 namespace Ecoporto.CRM.Business.Models
 {
     public class LayoutMinimoGeral : Entidade<LayoutMinimoGeral>
     {
         public Cabecalho Cabecalho { get; set; }
+
+        public BaseCalculo BaseCalculo { get; set; }
 
         public ValorCargaMinimo ValorCarga { get; set; }
 
@@ -19,11 +22,13 @@ namespace Ecoporto.CRM.Business.Models
 
         public LayoutMinimoGeral(
             Cabecalho cabecalho,
+            BaseCalculo baseCalculo,
             ValorCargaMinimo valorCarga,
             int linhaReferencia,
             string descricaoValor)
         {
             Cabecalho = cabecalho;
+            BaseCalculo = baseCalculo;
             ValorCarga = valorCarga;
             LinhaReferencia = linhaReferencia;
             DescricaoValor = descricaoValor;            

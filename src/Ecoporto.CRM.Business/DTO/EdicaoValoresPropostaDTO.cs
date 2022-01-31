@@ -121,7 +121,8 @@ namespace Ecoporto.CRM.Business.DTO
             {4, "CIFM"},
             {5, "CIF0"},
             {6, "BL"},
-            {7, "VOLP"}
+            {7, "VOLP"},
+            {8, "VOL"}
         };
 
         public Dictionary<int, string> ListaMoeda => new Dictionary<int, string>()

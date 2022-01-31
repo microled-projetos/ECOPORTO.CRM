@@ -278,6 +278,7 @@ namespace Ecoporto.CRM.Site.Controllers
                             viewModel.ValorMinimo20ArmazenagemMin,
                             viewModel.ValorMinimo40ArmazenagemMin,
                             viewModel.TipoCargaArmazenagemMinimo,
+                            viewModel.BaseCalculoArmazenagemMinimo,
                             viewModel.MargemArmazenagemMinimo,
                             viewModel.ServicoId,
                             viewModel.LinhaReferenciaArmazenagemMin,
@@ -561,6 +562,7 @@ namespace Ecoporto.CRM.Site.Controllers
                             viewModel.ValorMinimo20Geral,
                             viewModel.ValorMinimo40Geral,
                             viewModel.TipoCargaMinimoGerais,
+                            viewModel.BaseCalculoMinimoGerais,
                             viewModel.LinhaReferenciaMinimoGeral,
                             viewModel.DescricaoValorMinGerais,
                             viewModel.Ocultar);
@@ -746,6 +748,7 @@ namespace Ecoporto.CRM.Site.Controllers
                         DescricaoValorArmazenagemMin = layout.DescricaoValor,
                         LimiteBls = layout.LimiteBls,
                         TipoCargaArmazenagemMinimo = layout.TipoCarga,
+                        BaseCalculoArmazenagemMinimo= layout.BaseCalculo,
                         MargemArmazenagemMinimo = layout.Margem,
                         OportunidadeId = oportunidadeId
                     };
@@ -941,6 +944,7 @@ namespace Ecoporto.CRM.Site.Controllers
 
                     viewModel = new LayoutViewModel
                     {
+                        BaseCalculoMinimoGerais = layout.BaseCalculo,
                         ValorMinimoGeral = layout.ValorMinimo,
                         ValorMinimo20Geral = layout.ValorMinimo20,
                         ValorMinimo40Geral = layout.ValorMinimo40,
@@ -1254,6 +1258,7 @@ namespace Ecoporto.CRM.Site.Controllers
                         viewModel.ValorMinimo20ArmazenagemMin,
                         viewModel.ValorMinimo40ArmazenagemMin,
                         viewModel.TipoCargaArmazenagemMinimo,
+                        viewModel.BaseCalculoArmazenagemMinimo,
                         viewModel.MargemArmazenagemMinimo,
                         viewModel.ServicoId,
                         viewModel.LinhaReferenciaArmazenagemMin,
@@ -1557,6 +1562,7 @@ namespace Ecoporto.CRM.Site.Controllers
                         viewModel.ValorMinimo20Geral,
                         viewModel.ValorMinimo40Geral,
                         viewModel.TipoCargaMinimoGerais,
+                        viewModel.BaseCalculoMinimoGerais,
                         viewModel.LinhaReferenciaMinimoGeral,
                         viewModel.DescricaoValorMinGerais,
                         viewModel.Ocultar);

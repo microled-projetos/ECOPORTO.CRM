@@ -368,7 +368,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public void AtualizarPrecoMinimo(decimal precoMinimo, int limiteBls, int id, string tipoCarga, int oportunidadeId, string margem)
+        public void AtualizarPrecoMinimo(decimal precoMinimo, int limiteBls, int id, string tipoCarga, string basecalculo, int oportunidadeId, string margem)
         {
             if (Configuracoes.BancoEmUso() == "ORACLE")
             {
@@ -380,10 +380,11 @@ namespace WsSimuladorCalculoTabelas.DAO
                     parametros.Add(name: "LimiteBls", value: limiteBls, direction: ParameterDirection.Input);
                     parametros.Add(name: "Id", value: id, direction: ParameterDirection.Input);
                     parametros.Add(name: "TipoCarga", value: tipoCarga, direction: ParameterDirection.Input);
+                    parametros.Add(name: "Basecalculo", value: basecalculo, direction: ParameterDirection.Input);
                     parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
                     parametros.Add(name: "Variante_local", value: margem, direction: ParameterDirection.Input);
 
-                    con.Execute($@"UPDATE {_schema}.TB_LISTA_P_S_PERIODO SET PRECO_MINIMO = :PrecoMinimo, LIMITE_BLS = :LimiteBls WHERE Servico = 52 AND TIPO_CARGA = :TipoCarga AND OportunidadeId = :OportunidadeId and Variante_local=:Variante_local and AUTONUM >= :Id", parametros);
+                    con.Execute($@"UPDATE {_schema}.TB_LISTA_P_S_PERIODO SET  base_calculo_min= :Basecalculo,PRECO_MINIMO = :PrecoMinimo, LIMITE_BLS = :LimiteBls WHERE Servico = 52 AND TIPO_CARGA = :TipoCarga AND OportunidadeId = :OportunidadeId and Variante_local=:Variante_local and AUTONUM >= :Id", parametros);
                 }
             }
             else
@@ -475,7 +476,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public void AtualizarPrecoMinimoFixo(decimal precoMinimo, int id)
+        public void AtualizarPrecoMinimoFixo(decimal precoMinimo, int id,string baseCalculo )
         {
             if (Configuracoes.BancoEmUso() == "ORACLE")
             {
@@ -485,8 +486,9 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     parametros.Add(name: "ServicoFixoVariavelId", value: id, direction: ParameterDirection.Input);
                     parametros.Add(name: "PrecoMinimo", value: precoMinimo, direction: ParameterDirection.Input);
+                    parametros.Add(name: "BASE_CALCULO", value: baseCalculo, direction: ParameterDirection.Input);
 
-                    con.Execute($@"UPDATE {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS SET PRECO_MINIMO = :PrecoMinimo WHERE AUTONUM = :ServicoFixoVariavelId", parametros);
+                    con.Execute($@"UPDATE {_schema}.TB_LISTA_PRECO_SERVICOS_FIXOS SET PRECO_MINIMO = :PrecoMinimo ,Base_Calculo_Min =:BASE_CALCULO WHERE AUTONUM = :ServicoFixoVariavelId", parametros);
                 }
             }
             else

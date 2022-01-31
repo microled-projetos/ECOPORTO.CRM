@@ -42,6 +42,7 @@ namespace Ecoporto.CRM.Business.Factory
             decimal valor20Geral,
             decimal valor40Geral,
             TipoCarga tipoCarga,
+            BaseCalculo baseCalculo,
             int linhaReferencia,
             string descricaoValor,
             bool ocultar)
@@ -52,10 +53,12 @@ namespace Ecoporto.CRM.Business.Factory
                 valor,
                 valor20Geral,
                 valor40Geral,
-                tipoCarga);
+                tipoCarga,
+                baseCalculo);
 
             var layoutMinimoGeral = new LayoutMinimoGeral(
                 cabecalho,
+                baseCalculo,
                 valorCarga,
                 linhaReferencia,
                 descricaoValor);
@@ -382,6 +385,7 @@ namespace Ecoporto.CRM.Business.Factory
             decimal valor20,
             decimal valor40,
             TipoCarga tipoCarga,
+            BaseCalculo baseCalculo,
             Margem margem,
             int servicoId,
             int linhaReferencia,
@@ -395,11 +399,13 @@ namespace Ecoporto.CRM.Business.Factory
                 valor,
                 valor20,
                 valor40,
-                tipoCarga);
+                tipoCarga,
+                baseCalculo);
 
             var layoutArmazenagemMinimo = new LayoutArmazenagemMinimo(
                 cabecalho,
                 servicoId,
+                baseCalculo,
                 valorCarga,
                 margem,
                 linhaReferencia,
@@ -430,7 +436,7 @@ namespace Ecoporto.CRM.Business.Factory
                 valor,
                 valor20,
                 valor40,
-                tipoCarga);
+                tipoCarga,0);
 
             var layoutArmazenagemMinimoCIF = new LayoutArmazenagemMinimoCIF(
                 cabecalho,

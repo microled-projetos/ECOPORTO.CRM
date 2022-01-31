@@ -524,6 +524,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "ModeloId", value: layout.Cabecalho.ModeloId, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoRegistro", value: layout.Cabecalho.TipoRegistro, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoCarga", value: layout.ValorCarga.TipoCarga, direction: ParameterDirection.Input);
+                parametros.Add(name: "BaseCalculo", value: layout.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "Linha", value: layout.Cabecalho.Linha, direction: ParameterDirection.Input);
                 parametros.Add(name: "Descricao", value: layout.Cabecalho.Descricao, direction: ParameterDirection.Input);
                 parametros.Add(name: "ServicoId", value: layout.ServicoId, direction: ParameterDirection.Input);
@@ -538,8 +539,9 @@ namespace Ecoporto.CRM.Infra.Repositorios
 
                 parametros.Add(name: "Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                con.Execute(@"INSERT INTO CRM.TB_CRM_LAYOUT (Id, ModeloId, TipoRegistro, TipoCarga, Linha, Descricao, ServicoId, ValorMinimo, ValorMinimo20, ValorMinimo40, LinhaReferencia, DescricaoValor, LimiteBls, Margem, Ocultar) 
-                                VALUES (CRM.SEQ_CRM_LAYOUT.NEXTVAL, :ModeloId, :TipoRegistro, :TipoCarga, :Linha, :Descricao, :ServicoId, :ValorMinimo, :ValorMinimo20, :ValorMinimo40, :LinhaReferencia, :DescricaoValor, :LimiteBls, :Margem, :Ocultar) RETURNING Id INTO :Id", parametros);
+                con.Execute(@"INSERT INTO CRM.TB_CRM_LAYOUT (Id, ModeloId, TipoRegistro, TipoCarga, Linha, Descricao, ServicoId, ValorMinimo, ValorMinimo20, ValorMinimo40, LinhaReferencia, DescricaoValor, LimiteBls, Margem, Ocultar,BaseCalculo
+          )
+                                VALUES (CRM.SEQ_CRM_LAYOUT.NEXTVAL, :ModeloId, :TipoRegistro, :TipoCarga, :Linha, :Descricao, :ServicoId, :ValorMinimo, :ValorMinimo20, :ValorMinimo40, :LinhaReferencia, :DescricaoValor, :LimiteBls, :Margem, :Ocultar,:BaseCalculo) RETURNING Id INTO :Id", parametros);
 
                 return parametros.Get<int>("Id");
             }
@@ -586,6 +588,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "TipoCarga", value: layout.ValorCarga.TipoCarga, direction: ParameterDirection.Input);
                 parametros.Add(name: "Linha", value: layout.Cabecalho.Linha, direction: ParameterDirection.Input);
                 parametros.Add(name: "Descricao", value: layout.Cabecalho.Descricao, direction: ParameterDirection.Input);
+                parametros.Add(name: "BaseCalculo", value: layout.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "ServicoId", value: layout.ServicoId, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo", value: layout.ValorCarga.ValorMinimo, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo20", value: layout.ValorCarga.ValorMinimo20, direction: ParameterDirection.Input);
@@ -605,6 +608,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                                     Linha = :Linha, 
                                     Descricao = :Descricao, 
                                     ServicoId = :ServicoId, 
+                                    BaseCalculo=:BaseCalculo,
                                     ValorMinimo = :ValorMinimo, 
                                     ValorMinimo20 = :ValorMinimo20, 
                                     ValorMinimo40 = :ValorMinimo40, 
@@ -1291,6 +1295,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "ModeloId", value: layout.Cabecalho.ModeloId, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoRegistro", value: layout.Cabecalho.TipoRegistro, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoCarga", value: layout.ValorCarga.TipoCarga, direction: ParameterDirection.Input);
+                parametros.Add(name: "BaseCalculo", value: layout.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "Linha", value: layout.Cabecalho.Linha, direction: ParameterDirection.Input);
                 parametros.Add(name: "Descricao", value: layout.Cabecalho.Descricao, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo", value: layout.ValorCarga.ValorMinimo, direction: ParameterDirection.Input);
@@ -1300,8 +1305,8 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "DescricaoValor", value: layout.DescricaoValor, direction: ParameterDirection.Input);
                 parametros.Add(name: "Ocultar", value: layout.Cabecalho.Ocultar.ToInt(), direction: ParameterDirection.Input);
 
-                con.Execute(@"INSERT INTO CRM.TB_CRM_LAYOUT (Id, ModeloId, TipoRegistro, TipoCarga, Linha, Descricao, ValorMinimo, ValorMinimo20, ValorMinimo40, LinhaReferencia, DescricaoValor, Ocultar) 
-                                VALUES (CRM.SEQ_CRM_LAYOUT.NEXTVAL, :ModeloId, :TipoRegistro, :TipoCarga, :Linha, :Descricao, :ValorMinimo, :ValorMinimo20, :ValorMinimo40, :LinhaReferencia, :DescricaoValor, :Ocultar)", parametros);
+                con.Execute(@"INSERT INTO CRM.TB_CRM_LAYOUT (Id, ModeloId, TipoRegistro, TipoCarga, Linha, Descricao, ValorMinimo, ValorMinimo20, ValorMinimo40, LinhaReferencia, DescricaoValor, Ocultar, BaseCalculo) 
+                                VALUES (CRM.SEQ_CRM_LAYOUT.NEXTVAL, :ModeloId, :TipoRegistro, :TipoCarga, :Linha, :Descricao, :ValorMinimo, :ValorMinimo20, :ValorMinimo40, :LinhaReferencia, :DescricaoValor, :Ocultar,:BaseCalculo)", parametros);
             }
         }
 
@@ -1313,6 +1318,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
 
                 parametros.Add(name: "ModeloId", value: layout.Cabecalho.ModeloId, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoRegistro", value: layout.Cabecalho.TipoRegistro, direction: ParameterDirection.Input);
+                parametros.Add(name: "BaseCalculo", value: layout.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoCarga", value: layout.ValorCarga.TipoCarga, direction: ParameterDirection.Input);
                 parametros.Add(name: "Linha", value: layout.Cabecalho.Linha, direction: ParameterDirection.Input);
                 parametros.Add(name: "Descricao", value: layout.Cabecalho.Descricao, direction: ParameterDirection.Input);
@@ -1330,6 +1336,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                                     TipoRegistro = :TipoRegistro, 
                                     TipoCarga = :TipoCarga, 
                                     Linha = :Linha, 
+                                    BaseCalculo = :BaseCalculo, 
                                     Descricao = :Descricao, 
                                     ValorMinimo = :ValorMinimo, 
                                     ValorMinimo20 = :ValorMinimo20, 
@@ -2055,6 +2062,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "Linha", value: linha, direction: ParameterDirection.Input);
                 parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoCarga", value: layout.ValorCarga.TipoCarga, direction: ParameterDirection.Input);
+                parametros.Add(name: "BaseCalculo", value: layout.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "Descricao", value: layout.Cabecalho.Descricao, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo", value: layout.ValorCarga.ValorMinimo, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo20", value: layout.ValorCarga.ValorMinimo20, direction: ParameterDirection.Input);
@@ -2070,6 +2078,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                                     ValorMinimo20 = :ValorMinimo20, 
                                     ValorMinimo40 = :ValorMinimo40, 
                                     LimiteBls = :LimiteBls,
+                                    BaseCalculo=:BaseCalculo.
                                     DescricaoValor = :DescricaoValor
                                 WHERE
                                     Linha = :Linha AND TipoRegistro = 8 AND OportunidadeId = :OportunidadeId", parametros);
