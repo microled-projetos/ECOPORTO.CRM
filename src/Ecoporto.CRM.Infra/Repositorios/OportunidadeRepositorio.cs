@@ -2329,7 +2329,8 @@ SELECT NVL (
                         CRM.TB_CRM_CONTAS C ON A.SubClienteId = C.Id 
                     LEFT JOIN 
                         CRM.TB_CRM_OPORTUNIDADE_CLIENTES D ON D.ContaId = A.SubClienteId 
-                    WHERE 
+                        AND  d.oportunidadeid=b.oportunidadeid                    
+                        WHERE 
                         A.AdendoId = :AdendoId
                     AND 
                         A.ACAO = 2", parametros);

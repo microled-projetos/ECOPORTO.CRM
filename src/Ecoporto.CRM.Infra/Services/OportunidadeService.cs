@@ -761,6 +761,7 @@ namespace Ecoporto.CRM.Infra.Services
                                     ANVISAGRC,
                                     ADICIONALIMOGRC,
                                     OCULTAR,
+                                    VALORCIF,
                                     EXERCITO
                                 )
                         SELECT        
@@ -819,6 +820,7 @@ namespace Ecoporto.CRM.Infra.Services
                             ANVISAGRC,
                             ADICIONALIMOGRC,
                             OCULTAR,
+                            VALORCIF,
                             EXERCITO
                         FROM
                             TB_CRM_OPORTUNIDADE_LAYOUT
