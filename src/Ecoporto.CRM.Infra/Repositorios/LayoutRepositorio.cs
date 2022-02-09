@@ -2062,7 +2062,6 @@ namespace Ecoporto.CRM.Infra.Repositorios
                 parametros.Add(name: "Linha", value: linha, direction: ParameterDirection.Input);
                 parametros.Add(name: "OportunidadeId", value: oportunidadeId, direction: ParameterDirection.Input);
                 parametros.Add(name: "TipoCarga", value: layout.ValorCarga.TipoCarga, direction: ParameterDirection.Input);
-                parametros.Add(name: "BaseCalculo", value: layout.BaseCalculo, direction: ParameterDirection.Input);
                 parametros.Add(name: "Descricao", value: layout.Cabecalho.Descricao, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo", value: layout.ValorCarga.ValorMinimo, direction: ParameterDirection.Input);
                 parametros.Add(name: "ValorMinimo20", value: layout.ValorCarga.ValorMinimo20, direction: ParameterDirection.Input);
@@ -2078,7 +2077,6 @@ namespace Ecoporto.CRM.Infra.Repositorios
                                     ValorMinimo20 = :ValorMinimo20, 
                                     ValorMinimo40 = :ValorMinimo40, 
                                     LimiteBls = :LimiteBls,
-                                    BaseCalculo=:BaseCalculo.
                                     DescricaoValor = :DescricaoValor
                                 WHERE
                                     Linha = :Linha AND TipoRegistro = 8 AND OportunidadeId = :OportunidadeId", parametros);

@@ -1825,6 +1825,7 @@
 
                     var descricao = document.getElementById('armmin-descricao-' + linha);
                     var tipoCarga = document.getElementById('armmin-tipoCarga-' + linha);
+                    var baseCalculo = document.getElementById('armmin-baseCalculo-' + linha);
                     var valorMinimo = document.getElementById('armmin-valorMinimo-' + linha);
                     var valorMinimo20 = document.getElementById('armmin-valorMinimo20-' + linha);
                     var valorMinimo40 = document.getElementById('armmin-valorMinimo40-' + linha);
@@ -1837,6 +1838,7 @@
                         oportunidadeId: oportunidadeId,
                         descricao: isNull(descricao),
                         tipoCarga: tipoCarga.value,
+                        baseCalculo: baseCalculo.value,
                         valorMinimo: isNull(valorMinimo),
                         valorMinimo20: isNull(valorMinimo20),
                         valorMinimo40: isNull(valorMinimo40),
@@ -2206,7 +2208,8 @@
 
                     var descricao = document.getElementById('servMinGeral-descricao-' + linha);
                     var tipoCarga = document.getElementById('servMinGeral-tipoCarga-' + linha);
-                    var valorMin = document.getElementById('servMinGeral-valorMin-' + linha);
+                    var baseCalculo = document.getElementById('servMinGeral-baseCalculo-' + linha);
+                     var valorMin = document.getElementById('servMinGeral-valorMin-' + linha);
                     var valorMin20 = document.getElementById('servMinGeral-valorMin20-' + linha);
                     var valorMin40 = document.getElementById('servMinGeral-valorMin40-' + linha);
                     var descricaoValor = document.getElementById('servMinGeral-descricaoValor-' + linha);
@@ -2216,6 +2219,7 @@
                         oportunidadeId: oportunidadeId,
                         descricao: isNull(descricao),
                         tipoCarga: tipoCarga.value,
+                        baseCalculo: baseCalculo.value,
                         valorMin: isNull(valorMin),
                         valorMin20: isNull(valorMin20),
                         valorMin40: isNull(valorMin40),
