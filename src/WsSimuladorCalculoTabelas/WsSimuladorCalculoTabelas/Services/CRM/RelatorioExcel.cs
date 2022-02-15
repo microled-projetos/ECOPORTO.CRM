@@ -2102,19 +2102,23 @@ namespace WsSimuladorCalculoTabelas.Services
                     {
                         if (anexo.Arquivo.ToLower().StartsWith("simulador_") && anexo.Id != arquivoId)
                         {
-                            var fileId = Converters.RawToGuid(anexo.IdArquivo);
-
-                            var token = UploadService.Autenticar();
-
-                            if (token == null)
-                                throw new Exception("Não foi possível se autenticar no serviço de Anexos");
-
-                            var retornoUpload = new UploadService(token)
-                                .ExcluirArquivo(fileId);
-
-                            if (retornoUpload.success)
+                            if (anexo.Arquivo.IndexOf(parametrosSimulador.Regime.ToString() )>1  && nomeArquivo.IndexOf(parametrosSimulador.Regime.ToString())>1)
                             {
-                                _anexosDAO.Excluir(anexo.Id);
+
+                                var fileId = Converters.RawToGuid(anexo.IdArquivo);
+
+                                var token = UploadService.Autenticar();
+
+                                if (token == null)
+                                    throw new Exception("Não foi possível se autenticar no serviço de Anexos");
+
+                                var retornoUpload = new UploadService(token)
+                                    .ExcluirArquivo(fileId);
+
+                                if (retornoUpload.success)
+                                {
+                                    _anexosDAO.Excluir(anexo.Id);
+                                }
                             }
                         }
                     }

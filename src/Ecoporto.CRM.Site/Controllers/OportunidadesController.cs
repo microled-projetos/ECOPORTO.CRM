@@ -899,9 +899,9 @@ namespace Ecoporto.CRM.Site.Controllers
             };
 
             var oportunidadeBusca = _oportunidadeRepositorio.ObterOportunidadePorId(id.Value);
-
             if (oportunidadeBusca == null)
                 RegistroNaoEncontrado();
+             
 
             if (!User.IsInRole("OportunidadesIniciais:Atualizar"))
             {
@@ -950,6 +950,26 @@ namespace Ecoporto.CRM.Site.Controllers
 
             // Solicitação Jéssica - 03/12/2018 
             // Poderia fazer uma tratativa para não fazer estas validações (aba informação inicial e proposta) caso o status da oportunidade for igual Ativa/ Vencida/ Cancelada/ Revisada?
+
+            var revisaoId = oportunidade.RevisaoId ?? 0; 
+            
+            if (revisaoId > 0)
+            {
+                var oportunidadeRevisada = _oportunidadeRepositorio.ObterOportunidadePorId(revisaoId);
+
+                if (oportunidadeRevisada.OportunidadeProposta.Acordo == false)
+                {
+                    var oportunidadesRevisadas = _oportunidadeRepositorio
+                        .ObterOportunidadePorRevisaoId(revisaoId)
+                        .Where(c => c.Id != oportunidadeBusca.Id);
+
+                    if (oportunidadesRevisadas.Where(c => c.SucessoNegociacao != SucessoNegociacao.PERDIDO).Any())
+                    {
+                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Já existe uma revisão para a oportunidade revisada que é :"+ string.Join(",", oportunidadesRevisadas.Select(c => c.Identificacao)));
+                    }
+                }
+            }
+
 
             if (oportunidadeBusca.StatusOportunidade != StatusOportunidade.ATIVA
               && oportunidadeBusca.StatusOportunidade != StatusOportunidade.VENCIDO
@@ -1609,11 +1629,11 @@ namespace Ecoporto.CRM.Site.Controllers
                 {
                     var parametrosSimulador = _simuladorPropostaRepositorio
                         .ObterParametrosSimulador(oportunidadeBusca.Id)
-                        .FirstOrDefault();
+                        .ToList();
 
                     if (parametrosSimulador == null)
                     {
-                        parametrosSimulador = new OportunidadeParametrosSimuladorDTO();
+                        var parametrosSimuladornew = new OportunidadeParametrosSimuladorDTO();
 
                         var modelosSimulador = _modeloRepositorio
                             .ObterModelosSimuladorVinculados(oportunidadeBusca.OportunidadeProposta.ModeloId)
@@ -1639,22 +1659,34 @@ namespace Ecoporto.CRM.Site.Controllers
                                 oportunidadeBusca.CIFMedio,
                                 User.ObterId());
 
-                            parametrosSimulador.Id = _simuladorPropostaRepositorio.CadastrarParametrosSimulador(parametro);
-                            parametrosSimulador.ModeloId = modeloSimulador.ModeloSimuladorId;
+                            parametrosSimuladornew.Id = _simuladorPropostaRepositorio.CadastrarParametrosSimulador(parametro);
+                            parametrosSimuladornew.ModeloId = modeloSimulador.ModeloSimuladorId;
+                            if (parametrosSimuladornew.Id > 0)
+                            {
+                                using (var wsSimulador = new WsSimulador.SimuladorCalculo())
+                                {
+                                    wsSimulador.Timeout = 900000;
+
+                                    wsSimulador.SimuladorOportunidade(oportunidadeBusca.Id, parametrosSimuladornew.Id, parametrosSimuladornew.ModeloId, User.ObterId());
+                                }
+                            }
                         }
                     }
-
-                    if (parametrosSimulador.Id > 0)
+                    else
                     {
-                        using (var wsSimulador = new WsSimulador.SimuladorCalculo())
-                        {
-                            wsSimulador.Timeout = 900000;
+                        foreach ( var parametrosSimu in parametrosSimulador)
 
-                            wsSimulador.SimuladorOportunidade(oportunidadeBusca.Id, parametrosSimulador.Id, parametrosSimulador.ModeloId, User.ObterId());
+                            if (parametrosSimu.Id > 0)
+                        {
+                            using (var wsSimulador = new WsSimulador.SimuladorCalculo())
+                            {
+                                wsSimulador.Timeout = 900000;
+
+                                wsSimulador.SimuladorOportunidade(oportunidadeBusca.Id, parametrosSimu.Id, parametrosSimu.ModeloId, User.ObterId());
+                            }
                         }
                     }
                 }
-
                 return Json(new
                 {
                     Existe = false,

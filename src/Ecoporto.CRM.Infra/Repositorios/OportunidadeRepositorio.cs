@@ -724,7 +724,8 @@ namespace Ecoporto.CRM.Infra.Repositorios
                         ContaId,
                         EmpresaId,
                         Aprovada,
-                        Descricao
+                        Descricao,
+                        StatusOportunidade
                     FROM 
                         CRM.TB_CRM_OPORTUNIDADES
                     WHERE 

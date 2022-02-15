@@ -128,7 +128,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
 
                 return con.Query<OportunidadeParametrosSimuladorDTO>(@"
                     SELECT
-                        A.Id,
+                        max(A.ID) AS ID,
                         E.Id As OportunidadeId,
                         A.ModeloSimuladorId As ModeloId,
                         C.Descricao As ModeloDescricao,
@@ -159,7 +159,25 @@ namespace Ecoporto.CRM.Infra.Repositorios
                     INNER JOIN
                         CRM.TB_CRM_OPORTUNIDADES E ON A.OportunidadeId = E.Id
                     WHERE
-                        A.OportunidadeId = :OportunidadeId", parametros);
+                        A.OportunidadeId = :OportunidadeId 
+                        GROUP BY
+                        E.Id  ,
+                        A.ModeloSimuladorId,  
+                        C.Descricao,  
+                        A.Regime,
+                        B.DESCR  ,
+                        A.DocumentoId,
+                        A.GrupoAtracacaoId,
+                        D.DESCRICAO  ,
+                        A.Margem,
+                        A.Periodos,
+                        A.VolumeM3,
+                        A.Peso,
+                        A.NumeroLotes,
+                        A.Qtde20,
+                        A.Qtde40,
+                        A.ValorCif  ,
+                        A.Observacoes             ", parametros);
             }
         }
 
