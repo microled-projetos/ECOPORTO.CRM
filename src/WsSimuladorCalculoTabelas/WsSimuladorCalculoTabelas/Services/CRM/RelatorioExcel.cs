@@ -1731,7 +1731,7 @@ namespace WsSimuladorCalculoTabelas.Services
                             {
                                 valorPorcentagemFCL = (1 / taxaImposto) - 1;
                             }
-                            GravaCelula(new ExcelCelulaParametros(string.Format("{0:P2}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                            GravaCelula(new ExcelCelulaParametros(string.Format("{0:P4}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
                         }
 
                         for (int i = 1; i <= 8; i++)
@@ -2232,7 +2232,7 @@ namespace WsSimuladorCalculoTabelas.Services
             if (tipoCelulaExcel == TipoCelulaExcel.Percentual)
             {
                 if (string.IsNullOrEmpty(mascara))
-                    celula.Style.Numberformat.Format = "#0.00####%";
+                    celula.Style.Numberformat.Format = "#0.0000%";
                 else
                     celula.Style.Numberformat.Format = mascara;
 

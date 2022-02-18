@@ -83,6 +83,7 @@
             @Html.LabelFor(model => model.RevisaoId) &nbsp; <small id="lnkRevisaoProposta" class="text-danger label"><a href="@Url.Action("Atualizar", new { id= Model.RevisaoId })" target="_blank">@Model.RevisaoProposta</a>  </small>
             @Html.FullControlDropDownListFor(c => c.RevisaoId, new MultiSelectList(Model.Revisoes, "Id", "Descricao"), "form-control form-control-sm")
         </div>
+       
         <div class="form-group col-md-2">
             <label for="btnPesquisarOportunidades">&nbsp;</label>
             @if (User.IsInRole("OportunidadesIniciais:PesquisarOportunidades") || User.IsInRole("OportunidadesIniciais:PesquisarOportunidades_Full"))

@@ -2023,7 +2023,7 @@ namespace WsSimuladorCalculoTabelas.Services
 
                             var valorPorcentagemFCL = valorImpostoFCL / (subTotalMD_20 == 0 ? 1 : subTotalMD_20);
 
-                            GravaCelula(new ExcelCelulaParametros(string.Format("{0:P2}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                            GravaCelula(new ExcelCelulaParametros(string.Format("{0:P4}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
                         }
 
                         for (int i = 1; i < 15; i++)
@@ -2431,8 +2431,12 @@ namespace WsSimuladorCalculoTabelas.Services
                     foreach (var anexo in anexosOportunidade)
                     {
                         if (anexo.Arquivo.ToLower().StartsWith("simulador_") && anexo.Id != arquivoId)
+
                         {
-                            var fileId = Converters.RawToGuid(anexo.IdArquivo);
+                            if (anexo.Arquivo.IndexOf(parametrosSimulador.Regime.ToString()) > 1 && nomeArquivo.IndexOf(parametrosSimulador.Regime.ToString()) > 1)
+                            {
+
+                                var fileId = Converters.RawToGuid(anexo.IdArquivo);
 
                             var token = UploadService.Autenticar();
 
@@ -2448,7 +2452,8 @@ namespace WsSimuladorCalculoTabelas.Services
                             }
                         }
                     }
-                }
+                    }
+                     }
 
                 return new Response
                 {
@@ -2575,7 +2580,7 @@ namespace WsSimuladorCalculoTabelas.Services
             if (tipoCelulaExcel == TipoCelulaExcel.Percentual)
             {
                 if (string.IsNullOrEmpty(mascara))
-                    celula.Style.Numberformat.Format = "#0.00%";
+                    celula.Style.Numberformat.Format = "#0.0000%";
                 else
                     celula.Style.Numberformat.Format = mascara;
 
