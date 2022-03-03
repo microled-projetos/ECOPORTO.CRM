@@ -7,18 +7,18 @@ namespace Ecoporto.CRM.Service
     {
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
+//            ServiceBase[] ServicesToRun;
 
-            ServicesToRun = new ServiceBase[]
-            {
-               new Workflow()
-            };
+  //          ServicesToRun = new ServiceBase[]
+    //        {
+      //         new Workflow()
+        //    };
 
-            ServiceBase.Run(ServicesToRun);
+          //  ServiceBase.Run(ServicesToRun);
 
-         //   Workflow workflow = new Workflow();
-          //  workflow.Iniciar();
-          //  Console.WriteLine("");
+            Workflow workflow = new Workflow();
+            workflow.Iniciar();
+            Console.WriteLine("");
         }
     }
 }
