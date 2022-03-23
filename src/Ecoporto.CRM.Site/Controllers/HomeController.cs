@@ -18,6 +18,7 @@ using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Text.RegularExpressions;
 
 namespace Ecoporto.CRM.Site.Controllers
 {
@@ -157,7 +158,11 @@ namespace Ecoporto.CRM.Site.Controllers
                     }
 
                     try
+
                     {
+
+                        
+                       
                         ValidarUsuarioDominio(viewModel, usuario);
                     }
                     catch (Exception ex)

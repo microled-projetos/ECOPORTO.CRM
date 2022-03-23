@@ -94,10 +94,21 @@ namespace Ecoporto.CRM.Business.Utils
 
         public static bool EmailValido(string email)
         {
-            if (!string.IsNullOrEmpty(email))
-                return new Regex("^[_A-Za-z0-9](([_.-]?[_a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)([.][A-Za-z]{2,4})$").Match(email.Trim()).Success;
+            try
+            {
+                if (!string.IsNullOrEmpty(email))
+                {
+                    var addr = new System.Net.Mail.MailAddress(email);
+                    return addr.Address == email;
+                }
+                //return new Regex("^[_A-Za-z0-9](([_.-]?[_a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([.-]?[a-zA-Z0-9]+)*)([.][A-Za-z]{2,4})$").Match(email.Trim()).Success;
 
-            return false;
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static IEnumerable<ValidationFailure> ValidarListaDeEmails(string entrada)

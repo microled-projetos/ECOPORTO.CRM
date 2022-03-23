@@ -986,7 +986,7 @@ namespace WsSimuladorCalculoTabelas.Services
                             var valorPorcentagem_MDIR = Math.Round(valorImposto_MDIR / subTotal_MD, 6);
                             var valorPorcentagem_MESQ = Math.Round(valorImposto_MESQ / subTotal_ME, 6);
 
-                            GravaCelula(new ExcelCelulaParametros(valorPorcentagem_MDIR.ToString(), true, 12.75, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
+                            GravaCelula(new ExcelCelulaParametros(valorPorcentagem_MDIR.ToString(), true, 12.75, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual4Casas);
 
                             for (int i = 1; i <= 5; i++)
                                 GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda);
@@ -2022,8 +2022,9 @@ namespace WsSimuladorCalculoTabelas.Services
                             valorImpostoFCL = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR", "SVAR20");
 
                             var valorPorcentagemFCL = valorImpostoFCL / (subTotalMD_20 == 0 ? 1 : subTotalMD_20);
+                            valorPorcentagemFCL = Math.Round(valorPorcentagemFCL, 6);
 
-                            GravaCelula(new ExcelCelulaParametros(string.Format("{0:P4}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                            GravaCelula(new ExcelCelulaParametros(valorPorcentagemFCL.ToString(), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual4Casas);
                         }
 
                         for (int i = 1; i < 15; i++)
@@ -2325,9 +2326,13 @@ namespace WsSimuladorCalculoTabelas.Services
                         if (faixa.Percentual > 0)
                             percentualEscalonado = faixa.Percentual / 100;
 
+                        colunaCifEscalonado = 22;
                         GravaCelula(new ExcelCelulaParametros(faixa.ValorInicial.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
+                        colunaCifEscalonado = 23;
                         GravaCelula(new ExcelCelulaParametros(faixa.ValorFinal.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
+                        colunaCifEscalonado = 24;
                         GravaCelula(new ExcelCelulaParametros(percentualEscalonado.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Percentual);
+                        colunaCifEscalonado = 25;
                         GravaCelula(new ExcelCelulaParametros(faixa.Minimo.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
 
                         linhaCifEscalonado++;
@@ -2345,11 +2350,15 @@ namespace WsSimuladorCalculoTabelas.Services
                     excelWorksheetFCL.Cells[linhaCifEscalonado, colunaCifEscalonado - 1, linhaCifEscalonado, colunaCifEscalonado + 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
                     linhaCifEscalonado++;
-                    colunaCifEscalonado = 22;
+                  
 
+                    colunaCifEscalonado = 22;
                     GravaCelula(new ExcelCelulaParametros("De", true, true, true), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                    colunaCifEscalonado = 23;
                     GravaCelula(new ExcelCelulaParametros("Até", true, true, true), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                    colunaCifEscalonado = 24;
                     GravaCelula(new ExcelCelulaParametros("Percentual", true, true, true), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                    colunaCifEscalonado = 25;
                     GravaCelula(new ExcelCelulaParametros("Mínimo", true, true, true), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
 
                     linhaCifEscalonado++;
@@ -2362,9 +2371,13 @@ namespace WsSimuladorCalculoTabelas.Services
                         if (faixa.Percentual > 0)
                             percentualEscalonado = faixa.Percentual / 100;
 
+                        colunaCifEscalonado = 22;
                         GravaCelula(new ExcelCelulaParametros(faixa.ValorInicial.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
+                        colunaCifEscalonado = 23;
                         GravaCelula(new ExcelCelulaParametros(faixa.ValorFinal.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
+                        colunaCifEscalonado = 24;
                         GravaCelula(new ExcelCelulaParametros(percentualEscalonado.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Percentual);
+                        colunaCifEscalonado = 25;
                         GravaCelula(new ExcelCelulaParametros(faixa.Minimo.ToString(), false, false, false), ref excelWorksheetFCL, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
 
                         linhaCifEscalonado++;
@@ -2576,8 +2589,21 @@ namespace WsSimuladorCalculoTabelas.Services
             coluna = coluna == 0 ? 1 : coluna;
 
             celula = ws.Cells[linha, coluna];
+           
 
             if (tipoCelulaExcel == TipoCelulaExcel.Percentual)
+            {
+                if (string.IsNullOrEmpty(mascara))
+                    celula.Style.Numberformat.Format = "#0.00%";
+                else
+                    celula.Style.Numberformat.Format = mascara;
+
+                if (string.IsNullOrEmpty(parametros.Valor))
+                    celula.Value = 0;
+                else
+                    celula.Value = Convert.ToDecimal(parametros.Valor);
+            }
+            if (tipoCelulaExcel == TipoCelulaExcel.Percentual4Casas)
             {
                 if (string.IsNullOrEmpty(mascara))
                     celula.Style.Numberformat.Format = "#0.0000%";

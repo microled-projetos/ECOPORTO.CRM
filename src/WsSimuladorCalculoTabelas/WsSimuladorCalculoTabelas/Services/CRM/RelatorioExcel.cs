@@ -764,8 +764,9 @@ namespace WsSimuladorCalculoTabelas.Services
                             {
                                 valorPorcentagem_MESQ = (1 / taxaImposto) - 1;
                             }
-
-                            GravaCelula(new ExcelCelulaParametros(valorPorcentagem_MDIR.ToString(), true, 12.75, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
+                            valorPorcentagem_MESQ = System.Math.Round(valorPorcentagem_MESQ,6);
+                            valorPorcentagem_MDIR = System.Math.Round(valorPorcentagem_MDIR,6);
+                            GravaCelula(new ExcelCelulaParametros(valorPorcentagem_MDIR.ToString(), true, 12.75, false), ref excelWorksheet, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual4Casas);
                             impostoCalculoTicket = valorPorcentagem_MDIR;
 
                             for (int i = 1; i <= 4; i++)
@@ -1080,8 +1081,11 @@ namespace WsSimuladorCalculoTabelas.Services
 
                         if (valorMinimoSemTamanho)
                         {
+                            colunaCifEscalonado = 11;
                             GravaCelula(new ExcelCelulaParametros("", false, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                            colunaCifEscalonado = 12;
                             GravaCelula(new ExcelCelulaParametros("", true, true, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                            colunaCifEscalonado = 13;
                             GravaCelula(new ExcelCelulaParametros("Valor", true, true, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
 
                             linhaCifEscalonado++;
@@ -1089,8 +1093,11 @@ namespace WsSimuladorCalculoTabelas.Services
 
                             foreach (var minimo in valoresMinimoCobranca)
                             {
+                                colunaCifEscalonado = 11;
                                 GravaCelula(new ExcelCelulaParametros(minimo.Descricao, false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                                colunaCifEscalonado = 12;
                                 GravaCelula(new ExcelCelulaParametros("", false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                                colunaCifEscalonado = 13;
                                 GravaCelula(new ExcelCelulaParametros(minimo.ValorMinimo.ToString(), false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
 
                                 linhaCifEscalonado++;
@@ -1099,8 +1106,11 @@ namespace WsSimuladorCalculoTabelas.Services
                         }
                         else
                         {
+                            colunaCifEscalonado = 11;
                             GravaCelula(new ExcelCelulaParametros("", false, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                            colunaCifEscalonado = 12;
                             GravaCelula(new ExcelCelulaParametros("20", true, true, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                            colunaCifEscalonado = 13;
                             GravaCelula(new ExcelCelulaParametros("40", true, true, true, corPadrao), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
 
                             linhaCifEscalonado++;
@@ -1108,8 +1118,11 @@ namespace WsSimuladorCalculoTabelas.Services
 
                             foreach (var minimo in valoresMinimoCobranca)
                             {
+                                colunaCifEscalonado = 11;
                                 GravaCelula(new ExcelCelulaParametros(minimo.Descricao, false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda);
+                                colunaCifEscalonado = 12;
                                 GravaCelula(new ExcelCelulaParametros(minimo.ValorMinimo20.ToString(), false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
+                                colunaCifEscalonado = 13;
                                 GravaCelula(new ExcelCelulaParametros(minimo.ValorMinimo40.ToString(), false, false, false), ref excelWorksheet, ref celula, ref linhaCifEscalonado, ref colunaCifEscalonado, ref borda, TipoCelulaExcel.Moeda);
 
                                 linhaCifEscalonado++;
@@ -1725,14 +1738,17 @@ namespace WsSimuladorCalculoTabelas.Services
                         foreach (var tabela in tabelas)
                         {
                             valorImpostoFCL = _simuladorDAO.ObterValorImposto(taxaImposto, dadosSimulador.SimuladorId, tabela.TabelaId, "MDIR", "SVAR20");
+                           
 
                             var valorPorcentagemFCL = valorImpostoFCL / (subTotalMD_20 == 0 ? 1 : subTotalMD_20);
                             if ( valorPorcentagemFCL == 0)
                             {
                                 valorPorcentagemFCL = (1 / taxaImposto) - 1;
                             }
-                            GravaCelula(new ExcelCelulaParametros(string.Format("{0:P4}", valorPorcentagemFCL), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
-                        }
+                            valorPorcentagemFCL = System.Math.Round(valorPorcentagemFCL, 6);
+                            GravaCelula(new ExcelCelulaParametros(valorPorcentagemFCL.ToString(), true, 12.75, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual4Casas);
+
+                         }
 
                         for (int i = 1; i <= 8; i++)
                             GravaCelula(new ExcelCelulaParametros(string.Empty, false), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
@@ -2232,7 +2248,7 @@ namespace WsSimuladorCalculoTabelas.Services
             if (tipoCelulaExcel == TipoCelulaExcel.Percentual)
             {
                 if (string.IsNullOrEmpty(mascara))
-                    celula.Style.Numberformat.Format = "#0.0000%";
+                    celula.Style.Numberformat.Format = "#0.00%";
                 else
                     celula.Style.Numberformat.Format = mascara;
 
@@ -2241,7 +2257,7 @@ namespace WsSimuladorCalculoTabelas.Services
                 else
                     celula.Value = Convert.ToDecimal(parametros.Valor);
             }
-
+            
             if (tipoCelulaExcel == TipoCelulaExcel.Percentual4Casas)
             {
                 if (string.IsNullOrEmpty(mascara))
