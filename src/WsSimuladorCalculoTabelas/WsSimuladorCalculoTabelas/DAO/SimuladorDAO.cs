@@ -1042,6 +1042,33 @@ namespace WsSimuladorCalculoTabelas.DAO
                             C.Tipo_CARGA = :TipoCarga", parametros).FirstOrDefault();
             }
         }
+        public decimal ObterMinimoServicos(int simuladorId, int servicoId, int tamanho)
+        {
+            using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add(name: "SimuladorId", value: simuladorId, direction: ParameterDirection.Input);
+                parametros.Add(name: "ServicoId", value: servicoId, direction: ParameterDirection.Input);
+                parametros.Add(name: "TipoCarga", value: tamanho == 20 ? "SVAR20" : "SVAR40", direction: ParameterDirection.Input);
+
+                return con.Query<decimal>($@"
+                        SELECT
+                            NVL(MIN(C.Preco_Minimo),0) 
+                        FROM
+                            SGIPA.TB_SIMULADOR_SERVICOS A
+                        INNER JOIN
+                            SGIPA.TB_SERVICOS_IPA B ON A.AUTONUM_SERVICO = B.AUTONUM
+                        INNER JOIN
+                            SGIPA.TB_SIMULADOR_SERVICOS_CALC C ON A.AUTONUM = C.AUTONUM_SERVICO_CALCULO
+                        WHERE
+                            A.AUTONUM_CALCULO = :SimuladorId 
+                        AND 
+                            B.AUTONUM = :ServicoId 
+                        AND 
+                            C.Tipo_CARGA = :TipoCarga", parametros).FirstOrDefault();
+            }
+        }
 
         public decimal ObterValorImposto(decimal valorImposto, int simuladorId, int tabelaId, string margem, string tipoCarga = "")
         {

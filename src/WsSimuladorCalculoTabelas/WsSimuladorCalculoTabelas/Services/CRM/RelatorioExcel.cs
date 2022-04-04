@@ -1555,11 +1555,19 @@ namespace WsSimuladorCalculoTabelas.Services
                                 GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
 
                                 var perc20 = _simuladorDAO.ObterPercentualServicos(dadosSimulador.SimuladorId, 45, 20);
-
+                                var Min20 = _simuladorDAO.ObterMinimoServicos(dadosSimulador.SimuladorId, 45, 20);
+                               
                                 GravaCelula(new ExcelCelulaParametros(perc20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
+                                GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                                GravaCelula(new ExcelCelulaParametros(Min20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna , ref borda, TipoCelulaExcel.Moeda);
 
-                                for (int i = 1; i <= 6; i++)
-                                    GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                                GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                                GravaCelula(new ExcelCelulaParametros(perc20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
+                                GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
+                                GravaCelula(new ExcelCelulaParametros(Min20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+
+                              //  for (int i = 1; i <= 4; i++)
+                                //    GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
                             }
                             else if (servico.ServicoId == 295)
                             {
@@ -1650,9 +1658,9 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                             if (servico.ServicoId == 45)
                                             {
-                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"D{linha}*B6";
+                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})";
 
-                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"D{linha}*B6";
+                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})";
                                             }
                                         }
                                         else if (descricaoBaseCalculo == "UNIDADE")
