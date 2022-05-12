@@ -309,7 +309,7 @@ namespace Ecoporto.CRM.Service
             if (idProcesso == 4)
             {
                 var adendoBusca = ObterAdendoPorId(id);
-
+              
                 // Aprovada
                 if (status == 2)
                 {
@@ -321,7 +321,7 @@ namespace Ecoporto.CRM.Service
                     {
                         oportunidadeId = adendoBusca.OportunidadeId;
 
-                        if (adendoBusca.TipoAdendo == 2 || adendoBusca.TipoAdendo == 3) 
+                        if (adendoBusca.TipoAdendo == 2 || adendoBusca.TipoAdendo == 3)
                         {
                             if (adendoBusca.TipoAdendo == 2)
                             {
@@ -335,7 +335,15 @@ namespace Ecoporto.CRM.Service
 
                             if (adendoBusca.TipoAdendo == 3)
                             {
-                                SQLFichas = "UPDATE TB_CRM_OPORTUNIDADE_FICHA_FAT SET StatusFichaFaturamento = 3 WHERE OportunidadeId = :OportunidadeId AND StatusFichaFaturamento = 2";
+                                var temficha = TemFichaFFaturamento(adendoBusca.Id, oportunidadeId);
+                                if (temficha > 0)
+                                {
+                                    SQLFichas = "UPDATE TB_CRM_OPORTUNIDADE_FICHA_FAT SET StatusFichaFaturamento = 3 WHERE OportunidadeId = :OportunidadeId AND StatusFichaFaturamento = 2";
+                                }
+                                else
+                                {
+                                    SQLFichas = "";
+                                }
                             }
                         }
                     }                    
@@ -365,7 +373,15 @@ namespace Ecoporto.CRM.Service
                             
                             if (adendoBusca.TipoAdendo == 3)
                             {
-                                SQLFichas = "UPDATE TB_CRM_OPORTUNIDADE_FICHA_FAT SET StatusFichaFaturamento = 4 WHERE OportunidadeId = :OportunidadeId AND StatusFichaFaturamento = 2";
+                                var temficha = TemFichaFFaturamento(adendoBusca.Id, oportunidadeId);
+                                if (temficha > 0)
+                                {
+                                    SQLFichas = "UPDATE TB_CRM_OPORTUNIDADE_FICHA_FAT SET StatusFichaFaturamento = 4 WHERE OportunidadeId = :OportunidadeId AND StatusFichaFaturamento = 2";
+                                }
+                                else
+                                {
+                                    SQLFichas = "";
+                                }
                             }
                         }
                     }
@@ -484,6 +500,31 @@ namespace Ecoporto.CRM.Service
 
                 return con.Query<FormaPagamentoAdendo>("SELECT FormaPagamento FROM CRM.TB_CRM_ADENDO_FORMA_PAGAMENTO WHERE AdendoId = :AdendoId", parametros).FirstOrDefault();
             }
+        }
+
+            public FormaPagamentoAdendo TemFichaFFaturamento(int adendoId , int  Id)
+            {
+                using (OracleConnection con = new OracleConnection(stringConexao))
+                {
+                    var parametros = new DynamicParameters();
+                    parametros.Add(name: "AdendoId", value: adendoId, direction: ParameterDirection.Input);
+                    parametros.Add(name: "OportunidadeId", value: Id, direction: ParameterDirection.Input);
+ 
+                return con.Query<FormaPagamentoAdendo>(@"SELECT count(1) contar
+
+                        FROM
+                            CRM.TB_CRM_ADENDO_SUB_CLIENTE A
+                        INNER JOIN
+                            CRM.TB_CRM_OPORTUNIDADE_ADENDOS B ON A.AdendoId = B.Id
+                        INNER JOIN
+                            CRM.TB_CRM_CONTAS C ON A.SubClienteId = C.Id
+                        INNER JOIN
+                            CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT D ON D.CONTAID = C.ID AND  D.OportunidadeId = :OportunidadeId 
+                        WHERE
+                           A.Acao = 1 and   B.OportunidadeId = :OportunidadeId AND 
+                            AdendoId = :AdendoId", parametros).FirstOrDefault();
+                }
+
         }
 
         public bool OportunidadeExistente(string id, int idProcesso)

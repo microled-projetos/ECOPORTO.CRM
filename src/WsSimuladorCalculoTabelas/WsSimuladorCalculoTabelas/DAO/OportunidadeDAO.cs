@@ -869,10 +869,10 @@ where oportunidadeid=:OportunidadeId  and
 
                     try
                     {
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId", parametros, transaction);
+                   //     con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
+                    //    con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
+                     //   con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
+                      //  con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId", parametros, transaction);
 
                         // === Ficha revisada
 
