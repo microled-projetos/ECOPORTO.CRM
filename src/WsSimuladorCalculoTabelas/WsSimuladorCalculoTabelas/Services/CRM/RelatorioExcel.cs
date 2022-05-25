@@ -1658,9 +1658,9 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                             if (servico.ServicoId == 45)
                                             {
-                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})";
+                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})*H3";
 
-                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})";
+                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})*H3";
                                             }
                                         }
                                         else if (descricaoBaseCalculo == "UNIDADE")
