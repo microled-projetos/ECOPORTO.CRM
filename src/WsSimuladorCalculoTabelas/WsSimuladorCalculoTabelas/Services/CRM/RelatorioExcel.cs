@@ -1556,15 +1556,24 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                 var perc20 = _simuladorDAO.ObterPercentualServicos(dadosSimulador.SimuladorId, 45, 20);
                                 var Min20 = _simuladorDAO.ObterMinimoServicos(dadosSimulador.SimuladorId, 45, 20);
-                               
+
+                                var perc40 = _simuladorDAO.ObterPercentualServicos(dadosSimulador.SimuladorId, 45, 40);
+                                var Min40 = _simuladorDAO.ObterMinimoServicos(dadosSimulador.SimuladorId, 45, 40);
+
+                                if (perc40==0)
+                                {
+                                    perc40 = perc20;
+                                    Min40 = Min20;
+                                }
+
                                 GravaCelula(new ExcelCelulaParametros(perc20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
                                 GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
                                 GravaCelula(new ExcelCelulaParametros(Min20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna , ref borda, TipoCelulaExcel.Moeda);
 
                                 GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
-                                GravaCelula(new ExcelCelulaParametros(perc20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
+                                GravaCelula(new ExcelCelulaParametros(perc40.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Percentual);
                                 GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
-                                GravaCelula(new ExcelCelulaParametros(Min20.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
+                                GravaCelula(new ExcelCelulaParametros(Min40.ToString(), true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda, TipoCelulaExcel.Moeda);
 
                               //  for (int i = 1; i <= 4; i++)
                                 //    GravaCelula(new ExcelCelulaParametros(string.Empty, true, 12.75), ref excelWorksheetFCL, ref celula, ref linha, ref coluna, ref borda);
@@ -1658,9 +1667,14 @@ namespace WsSimuladorCalculoTabelas.Services
 
                                             if (servico.ServicoId == 45)
                                             {
-                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})*H3";
-
-                                                excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})*H3";
+                                                if (tipoCarga.ToString() == "SVAR20")
+                                                {
+                                                    excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((D{linha}*B6)>F{linha},(D{linha}*B6),F{linha})*H3";
+                                                }
+                                                if (tipoCarga.ToString() == "SVAR40")
+                                                {
+                                                    excelWorksheetFCL.Cells[linha, coluna - 1].Formula = $"IF((H{linha}*B6)>J{linha},(H{linha}*B6),J{linha})*H3";
+                                                }
                                             }
                                         }
                                         else if (descricaoBaseCalculo == "UNIDADE")
