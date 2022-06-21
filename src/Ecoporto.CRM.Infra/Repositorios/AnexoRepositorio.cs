@@ -107,42 +107,41 @@ namespace Ecoporto.CRM.Infra.Repositorios
                         Versao, 
                         RAWTOHEX(IdFile) IdFile 
                     FROM 
-                        CRM.TB_CRM_ANEXOS, 
-                        (
-                            SELECT 
-                                COUNT(1) CONTAR 
-                            FROM 
-                                CRM.TB_CRM_ANEXOS 
-                            WHERE   
-                                IdProcesso = :IdProcesso 
-                            AND 
-                                (UPPER(ANEXO) LIKE '%.DOC') AND  TipoDocto = 1) B  
-                    WHERE 
-                        IdProcesso = :IdProcesso 
-                    AND 
-                        ((UPPER(ANEXO) LIKE '%.DOC' AND B.CONTAR > 0) OR (UPPER(ANEXO) LIKE '%.PDF' AND B.CONTAR = 0))
-                    AND 
-                        TipoDocto = 1       
+                        CRM.TB_CRM_ANEXOS where IdProcesso = :IdProcesso
+//                    AND TIPOANEXO in(4,7)", parametros);
 
-
-                    UNION ALL
-
-                    SELECT 
-                        Id, 
-                        IdProcesso, 
-                        Anexo, 
-                        DataCadastro, 
-                        TipoAnexo, 
-                        Versao, 
-                        RAWTOHEX(IdFile) IdFile 
-                    FROM 
-                        TB_CRM_ANEXOS 
-                    WHERE 
-                        IdProcesso = :IdProcesso
-                    AND 
-                        (UPPER(ANEXO) NOT LIKE '%FICHA%' AND UPPER(ANEXO) NOT LIKE '%FATURA%' AND UPPER(ANEXO) like '%.XLS%')
-                    AND 
-                        TipoDocto = 1", parametros);
+//                        ,(
+//                            SELECT 
+//                                COUNT(1) CONTAR 
+//                            FROM 
+//                                CRM.TB_CRM_ANEXOS 
+//                            WHERE   
+//                                IdProcesso = :IdProcesso 
+//                            AND 
+//                                (UPPER(ANEXO) LIKE '%.DOC') AND  TipoDocto = 1) B  
+//                    WHERE 
+//                        IdProcesso = :IdProcesso 
+//                    AND 
+//                        ((UPPER(ANEXO) LIKE '%.DOC' AND B.CONTAR > 0) OR (UPPER(ANEXO) LIKE '%.PDF' AND B.CONTAR = 0))
+//                    AND 
+//                        TipoDocto = 1       
+//                    UNION ALL
+//                    SELECT 
+//                        Id, 
+//                        IdProcesso, 
+//                        Anexo, 
+//                        DataCadastro, 
+//                        TipoAnexo, 
+//                       Versao, 
+//                       RAWTOHEX(IdFile) IdFile 
+//                    FROM 
+//                        TB_CRM_ANEXOS 
+//                    WHERE 
+//                       IdProcesso = :IdProcesso
+//                    AND 
+//                        (UPPER(ANEXO) NOT LIKE '%FICHA%' AND UPPER(ANEXO) NOT LIKE '%FATURA%' AND UPPER(ANEXO) like '%.XLS%')
+//                    AND 
+//                        TipoDocto = 1", parametros); 
             }
         }
     }

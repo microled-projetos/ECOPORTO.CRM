@@ -887,7 +887,7 @@ namespace WsSimuladorCalculoTabelas
                         }
 
                         contar = _pagamentoPixDAO.Verificaformapagamento(Lote);
-                        if (contar != 2)
+                        if (contar != 99)
                     {
                         merro = " Lote não tem a forma de pagamento A vista ";
                         _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
@@ -1012,7 +1012,7 @@ namespace WsSimuladorCalculoTabelas
 
                         contar= _pagamentoPixDAO.verificaBLSemSaida(Lote);
 
-                        if (contar == 0)
+                        if (contar == 99)
                         {
                         merro = "Lote com saída , favor verificar som setor responsável";
                         _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
@@ -1071,25 +1071,12 @@ namespace WsSimuladorCalculoTabelas
                             Mensagem = merro
                         };
                     }
-
-                   seq_gr= _pagamentoPixDAO.obtemProximoNumGR();
+                    
 
                     var dadosPeriodoGr = _pagamentoPixDAO.obtemDadosPeriodoGR(Lote);
                     string wInicio = "";
                     string wFinal = "";
                      int wperiodos = 0;
-                    
-                    if (seq_gr == 0)
-                    {
-                        merro = "Erro na geração da GR ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
-
                     if (dadosPeriodoGr != null)
                     {
                         wInicio = dadosPeriodoGr.INICIO.ToString("dd/MM/yyyy");
@@ -1106,90 +1093,108 @@ namespace WsSimuladorCalculoTabelas
                             Mensagem = merro
                         };
                     }
-                
-                    if (_pagamentoPixDAO.inseregr_bl(seq_gr, Lote, wInicio, wFinal, NumeroTitulo) == false)
-                    {
-                        merro = "Falha ao Criar a GR ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
-                    if  (_pagamentoPixDAO.atualizaGREmServico(Lote, seq_gr, 90)==false)
-                        {
-                        merro = "Falha ao atualiuzar os serviços da GR ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
 
-                    }
-                    if (_pagamentoPixDAO.atualizaGREmDescricao(Lote, seq_gr)==false)
+                    if (seq_gr == 0)
                     {
-                        merro = "Falha ao atualiuzar a descricao da GR ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
-                    if ( _pagamentoPixDAO.atualizaGREmCNTR(Lote, seq_gr)==false)
-                    {
-                        merro = "Falha ao atualiuzar o conteiner da GR ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
-                   if ( _pagamentoPixDAO.atualizaGREmCS(Lote, seq_gr)==false )
-                    {
-                        merro = "Falha ao atualiuzar a carga solta da GR ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
+                        seq_gr = _pagamentoPixDAO.obtemProximoNumGR();
 
+                        if (seq_gr == 0)
+                        {
+                            merro = "Erro na geração da GR ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+                        if (_pagamentoPixDAO.inseregr_bl(seq_gr, Lote, wInicio, wFinal, NumeroTitulo) == false)
+                        {
+                            merro = "Falha ao Criar a GR ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+
+                        if (_pagamentoPixDAO.atualizaGREmServico(Lote, seq_gr, 90) == false)
+                        {
+                            merro = "Falha ao atualizar os serviços da GR ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+
+                        }
+                        if (_pagamentoPixDAO.atualizaGREmDescricao(Lote, seq_gr) == false)
+                        {
+                            merro = "Falha ao atualiuzar a descricao da GR ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+                        if (_pagamentoPixDAO.atualizaGREmCNTR(Lote, seq_gr) == false)
+                        {
+                            merro = "Falha ao atualiuzar o conteiner da GR ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+                        if (_pagamentoPixDAO.atualizaGREmCS(Lote, seq_gr) == false)
+                        {
+                            merro = "Falha ao atualiuzar a carga solta da GR ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+
+
+
+                        var QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, seq_gr);
+
+                        if (QdeLavagemCtnr != 0)
+                        {
+                            _pagamentoPixDAO.atualizaAMRNFCNTRLavagem(Lote, seq_gr);
+                        }
+
+                        if (_pagamentoPixDAO.atualizaServicosFixosGR(Lote, seq_gr) == false)
+                        {
+                            merro = "Falha ao atualizar os serviços adicionais ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+
+
+                        if (_pagamentoPixDAO.atualizaPreCalculoGR(Lote) == false)
+                        {
+                            merro = "Falha ao atualizar o pre calculo  ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            return new Response
+                            {
+                                Sucesso = false,
+                                Mensagem = merro
+                            };
+                        }
+                    }
                     
-
-                   var QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, seq_gr);
-
-                    if (QdeLavagemCtnr != 0)
-                    {
-                        _pagamentoPixDAO.atualizaAMRNFCNTRLavagem(Lote, seq_gr);
-                    }
-
-                    if (_pagamentoPixDAO.atualizaServicosFixosGR(Lote, seq_gr)==false)
-                    {
-                        merro = "Falha ao atualizar os serviços adicionais ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
-
-
-                    if (_pagamentoPixDAO.atualizaPreCalculoGR(Lote)==false)
-                    {
-                        merro = "Falha ao atualizar o pre calculo  ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        return new Response
-                        {
-                            Sucesso = false,
-                            Mensagem = merro
-                        };
-                    }
+                   
                     #region notaIndividual 
                     
 

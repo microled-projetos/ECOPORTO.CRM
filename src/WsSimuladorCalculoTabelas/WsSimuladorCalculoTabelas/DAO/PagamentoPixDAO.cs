@@ -20,7 +20,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT AUTONUM LOTE, SEQ_GR, AUTONUM , CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM SGIPA.TB_BL WHERE NUM_TITULO_PIX =  " + numeroTitulo);
+                    sb.AppendLine("SELECT BL.AUTONUM LOTE, GR.SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM SGIPA.TB_BL BL    LEFT JOIN SGIPA.TB_GR_BL GR  ON BL.AUTONUM = GR.BL  AND   NVL(GR.STATUS_GR, 'GE') IN('GE', 'IM') AND     GR.DATAPAGAMENTO IS NULL   AND  NVL(GR.FATURADO, 0) = 0 WHERE BL.NUM_TITULO_PIX = SELECT AUTONUM LOTE, GR.SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM SGIPA.TB_BL BL LEFT JOIN TB_GR_BL GR  ON BL.AUTONUM=GR.BL  AND   NVL(STATUS_GR,'GE') IN('GE','IM') AND  GR.DATAPAGAMENTO IS NULL   AND  NVL(GR.FATURADO,0)=0 WHERE NUM_TITULO_PIX = " + numeroTitulo);
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
 

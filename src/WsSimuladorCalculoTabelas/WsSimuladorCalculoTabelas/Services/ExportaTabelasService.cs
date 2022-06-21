@@ -33,13 +33,15 @@ namespace WsSimuladorCalculoTabelas.Services
         { 
           bool _temgrc;
           bool _temminimo;
-
+            int _qtdedias;
 
             _tabelaDAO.DeletarServicosFixosVariaveis(_oportunidadeId);
             
             var linhas = _oportunidadeDAO.ObterLayoutProposta(_oportunidadeId);
                _temgrc = false;
             _temminimo = false;
+            _qtdedias = 0;
+
             foreach (var layout in linhas)
             {
                 var servicosIPA = _oportunidadeDAO.ObterServicosIPA(layout.ServicoId);
@@ -208,10 +210,11 @@ namespace WsSimuladorCalculoTabelas.Services
                                         objArmazenagem.ValorAcrescimo = layout.AdicionalIMO;
                                         objArmazenagem.Exercito = layout.Exercito;
                                         objArmazenagem.ValorAnvisa = layout.ValorANVISA;
+                                        _qtdedias = layout.QtdeDias;
                                     }
                                     else
                                     {
-                                        if ((_temgrc == true) || (layout.Periodo == 1))
+                                        if ((_temgrc == true) || (layout.Periodo == 1) || (_qtdedias != layout.QtdeDias) )
                                         {
                                             //verifica pelo servico, tabela, periodo
                                             objArmazenagem.Linha = 0;
@@ -228,8 +231,9 @@ namespace WsSimuladorCalculoTabelas.Services
                                             objArmazenagem.ValorAnvisa = layout.ANVISAGRC;
                                             objArmazenagem.ValorAcrescimo = layout.AdicionalIMOGRC;
                                             objArmazenagem.QtdeDias = layout.QtdeDias;
+                                            _qtdedias = layout.QtdeDias;
 
-                                  
+
                                             if (!_tabelaDAO.ExisteServicoAdicional(objArmazenagem))
                                             {
                                                 _tabelaDAO.GravarServicoVariavel(objArmazenagem, 0);
