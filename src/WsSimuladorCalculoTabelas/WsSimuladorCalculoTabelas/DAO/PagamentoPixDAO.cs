@@ -20,7 +20,24 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine("SELECT BL.AUTONUM LOTE, GR.SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM SGIPA.TB_BL BL    LEFT JOIN SGIPA.TB_GR_BL GR  ON BL.AUTONUM = GR.BL  AND   NVL(GR.STATUS_GR, 'GE') IN('GE', 'IM') AND     GR.DATAPAGAMENTO IS NULL   AND  NVL(GR.FATURADO, 0) = 0 WHERE BL.NUM_TITULO_PIX = SELECT AUTONUM LOTE, GR.SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM SGIPA.TB_BL BL LEFT JOIN TB_GR_BL GR  ON BL.AUTONUM=GR.BL  AND   NVL(STATUS_GR,'GE') IN('GE','IM') AND  GR.DATAPAGAMENTO IS NULL   AND  NVL(GR.FATURADO,0)=0 WHERE NUM_TITULO_PIX = " + numeroTitulo);
+                    sb.AppendLine(" SELECT BL.AUTONUM LOTE, nvl(GR.SEQ_GR,0) SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM         SGIPA.TB_BL BL");
+                    sb.AppendLine(" INNER JOIN sgipa.TB_PIX_BL pix   ON bl.num_pagamento_pix = pix.num_pix  INNER JOIN sgipa.VW_gr_PIX gr");
+                    sb.AppendLine(" ON BL.AUTONUM = GR.BL AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX  and  gr.datapagamento is null");
+                    sb.AppendLine(" WHERE     bl.flag_ativo = 1   AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL) ");
+                    sb.AppendLine(" AND bl.num_pagamento_pix > 0   AND NVL(pix.cancelado, 0) = 0");
+                    sb.AppendLine(" AND BL.NUM_TITULO_PIX =  " + numeroTitulo + " UNION ALL");
+                    sb.AppendLine("   SELECT BL.AUTONUM LOTE, 0 SEQ_GR, CASE WHEN PATIO = 5 THEN 2 ELSE 1 END PATIO  FROM");
+                    sb.AppendLine(" SGIPA.TB_BL BL             INNER JOIN sgipa.TB_PIX_BL pix          ON bl.num_pagamento_pix = pix.num_pix");
+                    sb.AppendLine("   LEFT JOIN sgipa.VW_gr_PIX gr");
+                    sb.AppendLine("   ON BL.AUTONUM = GR.BL AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX        and  gr.datapagamento is null");
+                    sb.AppendLine("  INNER JOIN SGIPA.VW_CALCULO_SEMGR c");
+                    sb.AppendLine("   ON c.lote = bl.autonum");
+                    sb.AppendLine("   WHERE     bl.flag_ativo = 1   AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL)");
+                    sb.AppendLine("         AND bl.num_pagamento_pix > 0");
+                    sb.AppendLine("     AND NVL(pix.cancelado, 0) = 0");
+                    sb.AppendLine("  AND  PIX.VALOR_PIX > NVL(GR.VALOR_GR, 0)");
+                   sb.AppendLine("    AND BL.NUM_TITULO_PIX = " + numeroTitulo);
+
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
 
@@ -133,17 +150,26 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public int Verificacalculo(long lote)
+        public int Verificacalculo(long lote, long seq_gr )
         {
             try
             {
                 using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
+                    if (seq_gr == 0)
+                    {
+                        sb.AppendLine("  select count(1)  from SGIPA.tb_servicos_faturados ");
+                        sb.AppendLine(" WHERE NVL(SEQ_GR,0)=0 ");
+                        sb.AppendLine(" AND bl = " + lote);
+                    }
+                   else
+                    {
+                        sb.AppendLine("  select count(1)  from SGIPA.tb_gr_bl  ");
+                        sb.AppendLine(" WHERE faturado=0 and NVL(SEQ_GR,0)= " +seq_gr );
+                        sb.AppendLine(" AND bl = " + lote);
+                    }
 
-                    sb.AppendLine("  select count(1)  from SGIPA.tb_servicos_faturados ");
-                    sb.AppendLine(" WHERE NVL(SEQ_GR,0)=0 ");
-                    sb.AppendLine(" AND bl = " + lote);
                     return db.Query<int>(sb.ToString()).FirstOrDefault();
 
                 }
@@ -278,6 +304,37 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" left join (select sum(valor_imposto) valori , autonum_servico_faturado from SGIPA.tb_servicos_faturados_impostos ");
                     sb.AppendLine(" group by autonum_servico_faturado) b on a.autonum=b.autonum_servico_faturado");
                     sb.AppendLine(" where nvl(seq_gr,0) =0 group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
+
+                    var query = db.Query<bool>(sb.ToString()).FirstOrDefault();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool atualiza_gr(long lote ,long seq_gr, long NumeroTitulo)
+        {
+            try
+            {
+                using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("UPDATE SGIPA.TB_GR_BL SET ");
+                    sb.AppendLine("STATUS_GR='IM', ");
+                    sb.AppendLine("FLAG_GR_PAGA=1, ");
+                    sb.AppendLine("NUM_TITULO_PIX="+ NumeroTitulo+ ", ");
+                    sb.AppendLine("DT_IMPRESSAO=SYSDATE ,");
+                    sb.AppendLine("USUARIO_IMP=90,");
+                    sb.AppendLine("NUM_CHEQUE='PIX',");
+                    sb.AppendLine("MEIODEPAGAMENTO='GRPX',");
+                    sb.AppendLine("BANCO='1',");
+                    sb.AppendLine("NUMCONTA='29.136-4'");
+                    
+                    sb.AppendLine(" where nvl(seq_gr,0) =" + seq_gr +" and BL=" + lote);
 
                     var query = db.Query<bool>(sb.ToString()).FirstOrDefault();
                     return true;
@@ -767,7 +824,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return 1;
             }
         }
-        public IntegracaoBaixa obtemDadosPeriodoGR(int lote)
+        public IntegracaoBaixa obtemDadosPeriodoGR(int lote, int seq_gr)
         {
             try
             {
@@ -780,10 +837,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" FROM ");
                     sb.AppendLine(" SGIPA.TB_SERVICOS_FATURADOS ");
                     sb.AppendLine(" WHERE  ");
-                    sb.AppendLine(" NVL(SEQ_GR, 0)  = 0 ");
-                    sb.AppendLine(" AND  ");
-                    sb.AppendLine(" PERIODOS > 0 ");
-                    sb.AppendLine(" AND  ");
+                    sb.AppendLine(" NVL(SEQ_GR, 0)  =" + seq_gr);
+                    sb.AppendLine(" AND  ");               
                     sb.AppendLine(" BL =  " + lote);
                     sb.AppendLine(" ORDER BY SERVICO ");
 

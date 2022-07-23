@@ -218,8 +218,11 @@ namespace WsSimuladorCalculoTabelas.Services
                                         {
                                             //verifica pelo servico, tabela, periodo
                                             objArmazenagem.Linha = 0;
-                                            
-                                            
+                                            if (layout.Periodo != 1)
+                                            {
+                                                objArmazenagem.TipoCarga = "SVAR";
+                                                objArmazenagem.VarianteLocal = "SVAR";
+                                            }
                                             objArmazenagem.ServicoId = 45;
                                             objArmazenagem.PrecoUnitario = 0;
                                             objArmazenagem.PrecoMinimo = layout.MinimoGRC;
@@ -249,6 +252,8 @@ namespace WsSimuladorCalculoTabelas.Services
                                             objArmazenagem.ValorAcrescimo = layout.AdicionalIMO;
                                             objArmazenagem.Exercito = layout.Exercito;
                                             objArmazenagem.ValorAnvisa = layout.ValorANVISA;
+                                            objArmazenagem.TipoCarga = tipoCarga; 
+                                            objArmazenagem.VarianteLocal = ConverteMargemIPA.MargemIPA(layout.Margem);
                                         }
                                     }
                                 }

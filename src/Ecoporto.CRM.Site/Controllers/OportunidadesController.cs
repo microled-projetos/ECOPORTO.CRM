@@ -1511,105 +1511,9 @@ namespace Ecoporto.CRM.Site.Controllers
                 if (oportunidadeBusca.Cancelado && oportunidadeBusca.StatusOportunidade != StatusOportunidade.CANCELADA)
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Já existe uma aprovação de cancelamento pendente para esta Oportunidade");
 
+                
+                
                 var oportunidadeDetalhes = _oportunidadeRepositorio.ObterDetalhesOportunidade(id);
-
-                var anexosOportunidade = _anexoRepositorio
-                    .ObterAnexosPorOportunidade(oportunidadeBusca.Id).Select(c => c.IdFile);
-
-                var campos = new
-                {
-                    oportunidadeId = oportunidadeDetalhes.Id,
-                    oportunidadeDetalhes.Descricao,
-                    oportunidadeDetalhes.Identificacao,
-                    ContaId = oportunidadeDetalhes.Conta,
-                    ContaCnpj = oportunidadeDetalhes.ContaDocumento,
-                    ContatoId = oportunidadeDetalhes.Contato,
-                    MercadoriaId = oportunidadeDetalhes.Mercadoria,
-                    oportunidadeDetalhes.Aprovada,
-                    oportunidadeDetalhes.DataFechamento,
-                    oportunidadeDetalhes.TabelaId,
-                    oportunidadeDetalhes.Probabilidade,
-                    oportunidadeDetalhes.SucessoNegociacao,
-                    oportunidadeDetalhes.ClassificacaoCliente,
-                    oportunidadeDetalhes.Segmento,
-                    oportunidadeDetalhes.EstagioNegociacao,
-                    oportunidadeDetalhes.StatusOportunidade,
-                    oportunidadeDetalhes.MotivoPerda,
-                    oportunidadeDetalhes.TipoDeProposta,
-                    oportunidadeDetalhes.TipoServico,
-                    oportunidadeDetalhes.TipoNegocio,
-                    oportunidadeDetalhes.TipoOperacaoOportunidade,
-                    oportunidadeDetalhes.RevisaoId,
-                    oportunidadeDetalhes.Observacao,
-                    oportunidadeDetalhes.FaturamentoMensalLCL,
-                    oportunidadeDetalhes.FaturamentoMensalFCL,
-                    oportunidadeDetalhes.VolumeMensal,
-                    oportunidadeDetalhes.CIFMedio,
-                    oportunidadeDetalhes.PremioParceria,
-                    oportunidadeDetalhes.CriadoPor,
-                    oportunidadeDetalhes.TipoOperacao,
-                    oportunidadeDetalhes.Vendedor,
-                    oportunidadeDetalhes.FormaPagamento,
-                    oportunidadeDetalhes.Modelo,
-                    DataInicio = oportunidadeDetalhes.DataInicio.DataFormatada(),
-                    DataTermino = oportunidadeDetalhes.DataTermino.DataFormatada(),
-                    IdFile = string.Join(",", anexosOportunidade)
-                };
-
-                Processo processo = oportunidadeBusca.StatusOportunidade != StatusOportunidade.CANCELADA
-                    ? Processo.OPORTUNIDADE
-                    : Processo.CANCELAMENTO_OPORTUNIDADE;
-
-                var token = Autenticador.Autenticar();
-
-                if (token == null)
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Não foi possível se autenticar no serviço de Workflow");
-
-                var workflow = new WorkflowService(token);
-
-                var retornoWorkflow = workflow.EnviarParaAprovacao(
-                    new CadastroWorkflow(
-                        processo,
-                        oportunidadeBusca.EmpresaId,
-                        oportunidadeBusca.Id,
-                        User.ObterLogin(),
-                        User.ObterNome(),
-                        User.ObterEmail(),
-                        JsonConvert.SerializeObject(campos)));
-
-                if (retornoWorkflow == null)
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Nenhuma resposta do serviço de Workflow");
-
-                if (retornoWorkflow.sucesso == false)
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, retornoWorkflow.mensagem);
-
-                var workFlowId = _workflowRepositorio.IncluirEnvioAprovacao(
-                    new EnvioWorkflow(
-                        oportunidadeBusca.Id,
-                        Processo.OPORTUNIDADE,
-                        retornoWorkflow.protocolo,
-                        retornoWorkflow.mensagem,
-                        User.ObterId()));
-
-                if (oportunidadeBusca.StatusOportunidade != StatusOportunidade.CANCELADA)
-                {
-                    _oportunidadeRepositorio.AtualizarStatusOportunidade(StatusOportunidade.ENVIADO_PARA_APROVACAO, oportunidadeBusca.Id);
-
-                    var fichasFaturamento = _oportunidadeRepositorio.ObterFichasFaturamento(oportunidadeBusca.Id);
-
-                    foreach (var ficha in fichasFaturamento)
-                    {
-                        if (ficha.StatusFichaFaturamento == StatusFichaFaturamento.EM_ANDAMENTO || ficha.StatusFichaFaturamento == StatusFichaFaturamento.REJEITADO)
-                        {
-                            _oportunidadeRepositorio.AtualizarStatusFichaFaturamento(StatusFichaFaturamento.EM_APROVACAO, ficha.Id);
-                        }
-                    }
-                }
-
-                if (oportunidadeBusca.StatusOportunidade == StatusOportunidade.CANCELADA)
-                {
-                    _oportunidadeRepositorio.PermiteAlterarDataCancelamento(oportunidadeBusca.Id, false);
-                }
 
                 if (parametros.GerarPdfProposta)
                 {
@@ -1674,19 +1578,136 @@ namespace Ecoporto.CRM.Site.Controllers
                     }
                     else
                     {
-                        foreach ( var parametrosSimu in parametrosSimulador)
+                        foreach (var parametrosSimu in parametrosSimulador)
 
                             if (parametrosSimu.Id > 0)
-                        {
-                            using (var wsSimulador = new WsSimulador.SimuladorCalculo())
                             {
-                                wsSimulador.Timeout = 900000;
+                                using (var wsSimulador = new WsSimulador.SimuladorCalculo())
+                                {
+                                    wsSimulador.Timeout = 900000;
 
-                                wsSimulador.SimuladorOportunidade(oportunidadeBusca.Id, parametrosSimu.Id, parametrosSimu.ModeloId, User.ObterId());
+                                    wsSimulador.SimuladorOportunidade(oportunidadeBusca.Id, parametrosSimu.Id, parametrosSimu.ModeloId, User.ObterId());
+                                }
                             }
+                    }
+                }
+
+                var anexosOportunidade = _anexoRepositorio
+                    .ObterAnexosPorOportunidade(oportunidadeBusca.Id);
+                var idanexo="";
+
+                foreach (var anexo in anexosOportunidade)
+                {
+                    if (idanexo == "")
+                    {
+                        idanexo +=  anexo.IdFile;
+                    }
+                    else
+                    {
+                        idanexo += "," + anexo.IdFile;
+
+                    }
+                }
+
+                var campos = new
+                {
+                    oportunidadeId = oportunidadeDetalhes.Id,
+                    oportunidadeDetalhes.Descricao,
+                    oportunidadeDetalhes.Identificacao,
+                    ContaId = oportunidadeDetalhes.Conta,
+                    ContaCnpj = oportunidadeDetalhes.ContaDocumento,
+                    ContatoId = oportunidadeDetalhes.Contato,
+                    MercadoriaId = oportunidadeDetalhes.Mercadoria,
+                    oportunidadeDetalhes.Aprovada,
+                    oportunidadeDetalhes.DataFechamento,
+                    oportunidadeDetalhes.TabelaId,
+                    oportunidadeDetalhes.Probabilidade,
+                    oportunidadeDetalhes.SucessoNegociacao,
+                    oportunidadeDetalhes.ClassificacaoCliente,
+                    oportunidadeDetalhes.Segmento,
+                    oportunidadeDetalhes.EstagioNegociacao,
+                    oportunidadeDetalhes.StatusOportunidade,
+                    oportunidadeDetalhes.MotivoPerda,
+                    oportunidadeDetalhes.TipoDeProposta,
+                    oportunidadeDetalhes.TipoServico,
+                    oportunidadeDetalhes.TipoNegocio,
+                    oportunidadeDetalhes.TipoOperacaoOportunidade,
+                    oportunidadeDetalhes.RevisaoId,
+                    oportunidadeDetalhes.Observacao,
+                    oportunidadeDetalhes.FaturamentoMensalLCL,
+                    oportunidadeDetalhes.FaturamentoMensalFCL,
+                    oportunidadeDetalhes.VolumeMensal,
+                    oportunidadeDetalhes.CIFMedio,
+                    oportunidadeDetalhes.PremioParceria,
+                    oportunidadeDetalhes.CriadoPor,
+                    oportunidadeDetalhes.TipoOperacao,
+                    oportunidadeDetalhes.Vendedor,
+                    oportunidadeDetalhes.FormaPagamento,
+                    oportunidadeDetalhes.Modelo,
+                    DataInicio = oportunidadeDetalhes.DataInicio.DataFormatada(),
+                    DataTermino = oportunidadeDetalhes.DataTermino.DataFormatada(),
+                    IdFile = idanexo
+                };
+
+                Processo processo = oportunidadeBusca.StatusOportunidade != StatusOportunidade.CANCELADA
+                    ? Processo.OPORTUNIDADE
+                    : Processo.CANCELAMENTO_OPORTUNIDADE;
+
+                var token = Autenticador.Autenticar();
+
+                if (token == null)
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Não foi possível se autenticar no serviço de Workflow");
+
+                var workflow = new WorkflowService(token);
+
+                var retornoWorkflow = workflow.EnviarParaAprovacao(
+                    new CadastroWorkflow(
+                        processo,
+                        oportunidadeBusca.EmpresaId,
+                        oportunidadeBusca.Id,
+                        User.ObterLogin(),
+                        User.ObterNome(),
+                        User.ObterEmail(),
+                        JsonConvert.SerializeObject(campos)));
+
+                if (retornoWorkflow == null)
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Nenhuma resposta do serviço de Workflow");
+
+                if (retornoWorkflow.sucesso == false)
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, retornoWorkflow.mensagem);
+
+                var workFlowId = _workflowRepositorio.IncluirEnvioAprovacao(
+                    new EnvioWorkflow(
+                        oportunidadeBusca.Id,
+                        Processo.OPORTUNIDADE,
+                        retornoWorkflow.protocolo,
+                        retornoWorkflow.mensagem,
+                        User.ObterId()));
+
+                if (oportunidadeBusca.StatusOportunidade != StatusOportunidade.CANCELADA)
+                {
+                    _oportunidadeRepositorio.AtualizarStatusOportunidade(StatusOportunidade.ENVIADO_PARA_APROVACAO, oportunidadeBusca.Id);
+
+                    var fichasFaturamento = _oportunidadeRepositorio.ObterFichasFaturamento(oportunidadeBusca.Id);
+
+                    foreach (var ficha in fichasFaturamento)
+                    {
+                        if (ficha.StatusFichaFaturamento == StatusFichaFaturamento.EM_ANDAMENTO || ficha.StatusFichaFaturamento == StatusFichaFaturamento.REJEITADO)
+                        {
+                            _oportunidadeRepositorio.AtualizarStatusFichaFaturamento(StatusFichaFaturamento.EM_APROVACAO, ficha.Id);
                         }
                     }
                 }
+
+                if (oportunidadeBusca.StatusOportunidade == StatusOportunidade.CANCELADA)
+                {
+                    _oportunidadeRepositorio.PermiteAlterarDataCancelamento(oportunidadeBusca.Id, false);
+                }
+
+                
+
+
+
                 return Json(new
                 {
                     Existe = false,

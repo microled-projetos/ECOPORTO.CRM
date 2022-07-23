@@ -163,7 +163,7 @@ namespace Ecoporto.CRM.Site.Controllers
 
                         
                        
-                        ValidarUsuarioDominio(viewModel, usuario);
+                       ValidarUsuarioDominio(viewModel, usuario);
                     }
                     catch (Exception ex)
                     {

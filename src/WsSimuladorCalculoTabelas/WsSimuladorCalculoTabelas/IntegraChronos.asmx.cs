@@ -873,7 +873,7 @@ namespace WsSimuladorCalculoTabelas
                     cod_empresa=item.PATIO;
 
 
-                        contar= _pagamentoPixDAO.Verificacalculo(Lote);
+                        contar= _pagamentoPixDAO.Verificacalculo(Lote,seq_gr);
                         if (contar == 0)
                         {
                         merro = " Lote sem cálculo pendente ";
@@ -885,19 +885,21 @@ namespace WsSimuladorCalculoTabelas
                          
                             };
                         }
-
-                        contar = _pagamentoPixDAO.Verificaformapagamento(Lote);
-                        if (contar != 99)
+                    if (seq_gr == 0)
                     {
-                        merro = " Lote não tem a forma de pagamento A vista ";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
-                        
-                        return new Response
+                        contar = _pagamentoPixDAO.Verificaformapagamento(Lote);
+                        if (contar != 2)
+                        {
+                            merro = " Lote não tem a forma de pagamento A vista ";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+
+                            return new Response
                             {
                                 Sucesso = false,
-                                Mensagem =merro
+                                Mensagem = merro
                             };
                         }
+                    }
 
                         contar = _pagamentoPixDAO.Verificaliberado(Lote);
                         if (contar != 1)
@@ -1009,22 +1011,25 @@ namespace WsSimuladorCalculoTabelas
                                 };
                         }
                     }
+                    if (seq_gr == 0)
+                    {
 
-                        contar= _pagamentoPixDAO.verificaBLSemSaida(Lote);
+                        contar = _pagamentoPixDAO.verificaBLSemSaida(Lote);
 
-                        if (contar == 99)
+                        if (contar == 0)
                         {
-                        merro = "Lote com saída , favor verificar som setor responsável";
-                        _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
+                            merro = "Lote com saída , favor verificar som setor responsável";
+                            _pagamentoPixDAO.Gravalogpix(NumeroTitulo.ToString(), merro);
 
-                        return new Response
+                            return new Response
                             {
                                 Sucesso = false,
                                 Mensagem = merro
                             };
                         }
 
-
+                    }
+             
                    if (ValidadeGR == null)
                     {
                         merro = "Data de validade da GR inválida";
@@ -1073,7 +1078,7 @@ namespace WsSimuladorCalculoTabelas
                     }
                     
 
-                    var dadosPeriodoGr = _pagamentoPixDAO.obtemDadosPeriodoGR(Lote);
+                    var dadosPeriodoGr = _pagamentoPixDAO.obtemDadosPeriodoGR(Lote, seq_gr);
                     string wInicio = "";
                     string wFinal = "";
                      int wperiodos = 0;
@@ -1160,7 +1165,7 @@ namespace WsSimuladorCalculoTabelas
                                 Mensagem = merro
                             };
                         }
-
+                        
 
 
                         var QdeLavagemCtnr = _pagamentoPixDAO.obtemQtdLavagemCNTR(Lote, seq_gr);
@@ -1192,13 +1197,18 @@ namespace WsSimuladorCalculoTabelas
                                 Mensagem = merro
                             };
                         }
-                    }
-                    
-                   
-                    #region notaIndividual 
-                    
+                  }
 
-                  
+                    else
+                    {
+
+                        _pagamentoPixDAO.atualiza_gr(Lote, seq_gr, NumeroTitulo);
+                    }
+
+                    #region notaIndividual 
+
+
+
 
                     IntegracaoBaixa.notaAgrupada = false;
 

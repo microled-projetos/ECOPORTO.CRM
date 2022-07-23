@@ -108,7 +108,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                         RAWTOHEX(IdFile) IdFile 
                     FROM 
                         CRM.TB_CRM_ANEXOS where IdProcesso = :IdProcesso
-//                    AND TIPOANEXO in(4,7)", parametros);
+                    AND TIPOANEXO in(4,7)", parametros);
 
 //                        ,(
 //                            SELECT 

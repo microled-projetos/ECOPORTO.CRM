@@ -759,6 +759,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                             }
                             else
                             {
+                                if (TemProrata==0)
+                                {
+                                    TemProrata = 1;
+                                }
                                 parametros.Add(name: "FLAG_PRORATA", value: 0, direction: ParameterDirection.Input);
                                 parametros.Add(name: "QTDE_DIAS", value: TemProrata, direction: ParameterDirection.Input);
 

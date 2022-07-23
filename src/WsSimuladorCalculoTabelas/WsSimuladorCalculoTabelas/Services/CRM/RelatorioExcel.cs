@@ -1297,7 +1297,32 @@ namespace WsSimuladorCalculoTabelas.Services
                             }
 
                             if (valoresArmazenagem20 == null)
-                                continue;
+                            {
+                                if (periodo == 3)
+                                {
+                                    valoresArmazenagem20 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 2, ehConteiner, "SVAR20");
+
+                                    if (valoresArmazenagem20 == null)
+                                    {
+                                        valoresArmazenagem20 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 2, ehConteiner, "SVAR");
+                                    }
+
+                                }
+                            }
+
+                            if (valoresArmazenagem20 == null)
+                            {
+                                if (periodo == 2)
+                                {
+                                    valoresArmazenagem20 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 1, ehConteiner, "SVAR20");
+
+                                    if (valoresArmazenagem20 == null)
+                                    {
+                                        valoresArmazenagem20 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 1, ehConteiner, "SVAR");
+                                    }
+
+                                }
+                            }
 
                             if (coluna == 0)
                             {
@@ -1351,6 +1376,31 @@ namespace WsSimuladorCalculoTabelas.Services
                             if (valoresArmazenagem40 == null)
                             {
                                 valoresArmazenagem40 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, periodo, ehConteiner, "SVAR");
+                            }
+
+                            if (valoresArmazenagem40 == null)
+                            {
+                                if (periodo == 3)
+                                {
+                                     valoresArmazenagem40 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId,2, ehConteiner, "SVAR40");
+
+                                    if (valoresArmazenagem40 == null)
+                                    {
+                                        valoresArmazenagem40 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 2, ehConteiner, "SVAR");
+                                    }
+                                }
+                            }
+                            if (valoresArmazenagem40 == null)
+                            {
+                                if (periodo == 2)
+                                {
+                                    valoresArmazenagem40 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 1, ehConteiner, "SVAR40");
+
+                                    if (valoresArmazenagem40 == null)
+                                    {
+                                        valoresArmazenagem40 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, 1 , ehConteiner, "SVAR");
+                                    }
+                                }
                             }
                             var precoUnitario40 = 0.0M;
                             if (valoresArmazenagem40.BaseCalculo == "CIF" || valoresArmazenagem40.BaseCalculo == "CIF0" || valoresArmazenagem40.BaseCalculo == "CIFM")
@@ -1406,12 +1456,12 @@ namespace WsSimuladorCalculoTabelas.Services
 
                     foreach (var tabela in tabelas)
                     {
-                        for (int periodo = 3; periodo >= 1; periodo += -1)
+                        for (int periodo = 4; periodo >= 1; periodo += -1)
                         {
                             var valoresArmazenagem20 = _servicoDAO.ObterValoresServicoArmazenagem(tabela.TabelaId, periodo, ehConteiner, "SVAR20");
-
                             if (valoresArmazenagem20 != null)
                             {
+                            
                                 var precoUnitario20 = 0.0M;
 
                                 if (valoresArmazenagem20.BaseCalculo == "CIF" || valoresArmazenagem20.BaseCalculo == "CIF0" || valoresArmazenagem20.BaseCalculo == "CIFM")
