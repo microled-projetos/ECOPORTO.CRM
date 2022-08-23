@@ -879,7 +879,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                     WHERE 
                         (UPPER(A.Descricao) LIKE :CriterioDescricao OR A.Identificacao LIKE :CriterioIdentificacao OR B.Documento = :CriterioDocumento) {filtroSQL}
                     AND 
-                        ROWNUM < 10", parametros).ToList();
+                        ROWNUM < 30", parametros).ToList();
             }
         }
 
@@ -1240,7 +1240,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                     WHERE
                         (A.Descricao LIKE :Criterio OR A.Documento LIKE :Criterio) {filtroSQL}
                     AND 
-                        ROWNUM < 100", parametros);
+                        ROWNUM < 300", parametros);
             }
         }
 
@@ -1278,7 +1278,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                     WHERE
                         (A.Descricao LIKE :Criterio OR A.Documento LIKE :Criterio) {filtroSQL}
                     AND 
-                        ROWNUM < 100", parametros);
+                        ROWNUM < 300", parametros);
             }
         }
 
@@ -2382,7 +2382,7 @@ SELECT NVL (
                     WHERE
                         ((E.Descricao LIKE :Criterio OR E.Documento LIKE :Criterio) OR (F.Descricao LIKE :Criterio OR F.Documento LIKE :Criterio)) {filtroSQL}
                     AND 
-                        ROWNUM < 100", parametros);
+                        ROWNUM < 300", parametros);
             }
         }
 

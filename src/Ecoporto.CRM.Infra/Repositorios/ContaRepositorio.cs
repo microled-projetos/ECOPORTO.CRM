@@ -269,7 +269,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                     AND
                         A.SituacaoCadastral = 1
                     AND 
-                        ROWNUM < 25", parametros);
+                        ROWNUM < 50", parametros);
             }
         }
 

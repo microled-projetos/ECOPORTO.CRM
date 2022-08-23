@@ -650,7 +650,7 @@ namespace Ecoporto.CRM.Site.Controllers
             PopularCondicoesPagamento(viewModelFichaFaturamento);
             PopularClientesDaProposta(viewModelFichaFaturamento);
             PopularFichasFaturamento(viewModelFichaFaturamento);
-
+            Session["FontePagadoraId"] = viewModelFichaFaturamento.ClienteSelecionadoId;
             var viewModelAnexos = new OportunidadesAnexosViewModel
             {
                 AnexoOportunidadeId = oportunidade.Id,

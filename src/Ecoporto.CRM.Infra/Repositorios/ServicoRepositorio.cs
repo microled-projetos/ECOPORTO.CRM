@@ -157,7 +157,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
 
             using (OracleConnection con = new OracleConnection(Config.StringConexao()))
             {
-                return con.Query<Servico>("SELECT * FROM CRM.TB_CRM_SERVICOS WHERE UPPER(Descricao) LIKE :criterio AND ROWNUM < 100", new { criterio });
+                return con.Query<Servico>("SELECT * FROM CRM.TB_CRM_SERVICOS WHERE UPPER(Descricao) LIKE :criterio AND ROWNUM < 300", new { criterio });
             }
         }
     }

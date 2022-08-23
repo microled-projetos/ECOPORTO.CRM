@@ -72,7 +72,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
 
             using (OracleConnection con = new OracleConnection(Config.StringConexao()))
             {
-                return con.Query<Mercadoria>($@"SELECT * FROM CRM.TB_CRM_MERCADORIAS WHERE Status = 1 AND UPPER(Descricao) LIKE :criterio AND ROWNUM < 100", new { criterio });
+                return con.Query<Mercadoria>($@"SELECT * FROM CRM.TB_CRM_MERCADORIAS WHERE Status = 1 AND UPPER(Descricao) LIKE :criterio AND ROWNUM < 300", new { criterio });
             }
         }
     }

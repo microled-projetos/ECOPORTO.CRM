@@ -22,7 +22,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.AppendLine(" SELECT BL.AUTONUM LOTE, nvl(GR.SEQ_GR,0) SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM         SGIPA.TB_BL BL");
                     sb.AppendLine(" INNER JOIN sgipa.TB_PIX_BL pix   ON bl.num_pagamento_pix = pix.num_pix  INNER JOIN sgipa.VW_gr_PIX gr");
-                    sb.AppendLine(" ON BL.AUTONUM = GR.BL AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX  and  gr.datapagamento is null");
+                    sb.AppendLine(" ON BL.AUTONUM = GR.BL AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX  and  gr.datapagamento is null  AND GR.VALOR_GR=PIX.VALOR_PIX ");
                     sb.AppendLine(" WHERE     bl.flag_ativo = 1   AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL) ");
                     sb.AppendLine(" AND bl.num_pagamento_pix > 0   AND NVL(pix.cancelado, 0) = 0");
                     sb.AppendLine(" AND BL.NUM_TITULO_PIX =  " + numeroTitulo + " UNION ALL");
@@ -3013,7 +3013,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     if (dia_fat > 0)
                     {
                         IntegracaoBaixa.validaEmbarque = true;
-                        sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") ");
+                        sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") )");
 
                         embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
                     }

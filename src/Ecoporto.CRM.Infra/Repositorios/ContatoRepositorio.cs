@@ -155,7 +155,7 @@ namespace Ecoporto.CRM.Infra.Repositorios
                     WHERE 
                         (UPPER(NOME) || ' ' || UPPER(SOBRENOME) LIKE :Criterio) {filtroSQL}
                     AND 
-                        ROWNUM < 100", parametros);
+                        ROWNUM < 300", parametros);
             }
         }
 
