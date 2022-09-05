@@ -45,7 +45,7 @@ namespace WsSimuladorCalculoTabelas.Models
         public DateTime HORA_INI { get; set; }
         public int USUARIO { get; set; }
         public string LOTE { get; set; }
-        public int SEQ_GR { get; set; }
+        public string SEQ_GR { get; set; }
         public int FPPARC { get; set; }
         public int FPGRP { get; set; }
         public int FPIPA { get; set; }

@@ -20,23 +20,41 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                    sb.AppendLine(" SELECT BL.AUTONUM LOTE, nvl(GR.SEQ_GR,0) SEQ_GR ,  CASE WHEN PATIO=5 THEN 2 ELSE 1 END PATIO  FROM         SGIPA.TB_BL BL");
-                    sb.AppendLine(" INNER JOIN sgipa.TB_PIX_BL pix   ON bl.num_pagamento_pix = pix.num_pix  INNER JOIN sgipa.VW_gr_PIX gr");
-                    sb.AppendLine(" ON BL.AUTONUM = GR.BL AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX  and  gr.datapagamento is null  AND GR.VALOR_GR=PIX.VALOR_PIX ");
-                    sb.AppendLine(" WHERE     bl.flag_ativo = 1   AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL) ");
-                    sb.AppendLine(" AND bl.num_pagamento_pix > 0   AND NVL(pix.cancelado, 0) = 0");
-                    sb.AppendLine(" AND BL.NUM_TITULO_PIX =  " + numeroTitulo + " UNION ALL");
-                    sb.AppendLine("   SELECT BL.AUTONUM LOTE, 0 SEQ_GR, CASE WHEN PATIO = 5 THEN 2 ELSE 1 END PATIO  FROM");
-                    sb.AppendLine(" SGIPA.TB_BL BL             INNER JOIN sgipa.TB_PIX_BL pix          ON bl.num_pagamento_pix = pix.num_pix");
-                    sb.AppendLine("   LEFT JOIN sgipa.VW_gr_PIX gr");
-                    sb.AppendLine("   ON BL.AUTONUM = GR.BL AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX        and  gr.datapagamento is null");
-                    sb.AppendLine("  INNER JOIN SGIPA.VW_CALCULO_SEMGR c");
-                    sb.AppendLine("   ON c.lote = bl.autonum");
-                    sb.AppendLine("   WHERE     bl.flag_ativo = 1   AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL)");
-                    sb.AppendLine("         AND bl.num_pagamento_pix > 0");
-                    sb.AppendLine("     AND NVL(pix.cancelado, 0) = 0");
-                    sb.AppendLine("  AND  PIX.VALOR_PIX > NVL(GR.VALOR_GR, 0)");
-                   sb.AppendLine("    AND BL.NUM_TITULO_PIX = " + numeroTitulo);
+               
+                    sb.AppendLine("SELECT BL.AUTONUM LOTE, ");
+                    sb.AppendLine("       NVL (GR.SEQ_GR, 0) SEQ_GR, ");
+                    sb.AppendLine("       CASE WHEN PATIO = 5 THEN 2 ELSE 1 END PATIO ");
+                    sb.AppendLine("  FROM SGIPA.TB_BL BL ");
+                    sb.AppendLine("       INNER JOIN sgipa.TB_PIX_BL pix ");
+                    sb.AppendLine("          ON bl.num_pagamento_pix = pix.num_pix ");
+                    sb.AppendLine("       INNER JOIN sgipa.VW_gr_PIX gr ");
+                    sb.AppendLine("          ON     BL.AUTONUM = GR.BL ");
+                    sb.AppendLine("             AND BL.NUM_TITULO_PIX = GR.NUM_TITULO_PIX ");
+                    sb.AppendLine("             AND gr.datapagamento IS NULL and nvl(GR.seq_gr,0)<>0 ");
+                    sb.AppendLine("       INNER JOIN (select sum(valor_gr) valor ,  NUM_TITULO_PIX from sgipa.VW_gr_PIX  ");
+                    sb.AppendLine("       WHERE               datapagamento IS NULL and nvl(seq_gr,0)<>0 group by  NUM_TITULO_PIX) sgr ");
+                    sb.AppendLine("          ON      ");
+                    sb.AppendLine("               BL.NUM_TITULO_PIX = SGR.NUM_TITULO_PIX ");
+                    sb.AppendLine("             AND SGR.VALOR = PIX.VALOR_PIX ");
+                    sb.AppendLine(" WHERE     bl.flag_ativo = 1 ");
+                    sb.AppendLine("       AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL) ");
+                    sb.AppendLine("       AND bl.num_pagamento_pix > 0 ");
+                    sb.AppendLine("       AND NVL (pix.cancelado, 0) = 0 ");
+                    sb.AppendLine("       AND BL.NUM_TITULO_PIX = " + numeroTitulo + " ");
+                    sb.AppendLine("UNION ALL ");
+                    sb.AppendLine("SELECT BL.AUTONUM LOTE, 0 SEQ_GR, CASE WHEN PATIO = 5 THEN 2 ELSE 1 END PATIO ");
+                    sb.AppendLine("  FROM SGIPA.TB_BL BL ");
+                    sb.AppendLine("       INNER JOIN sgipa.TB_PIX_BL pix ");
+                    sb.AppendLine("          ON bl.num_pagamento_pix = pix.num_pix ");
+                    sb.AppendLine("       INNER JOIN SGIPA.VW_CALCULO_SEMGR c ");
+                    sb.AppendLine("          ON c.lote = bl.autonum ");
+                     sb.AppendLine(" WHERE     bl.flag_ativo = 1 ");
+                    sb.AppendLine("       AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL) ");
+                    sb.AppendLine("       AND bl.num_pagamento_pix > 0 ");
+                    sb.AppendLine("       AND NVL (pix.cancelado, 0) = 0  ");
+                    sb.AppendLine("       AND BL.NUM_TITULO_PIX = " + numeroTitulo + "");
+
+                    
 
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
@@ -49,6 +67,58 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
+        public IEnumerable<IntegracaoBaixa> GetListaBLAgp(long numeroTitulo)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+
+                    sb.AppendLine("SELECT DISTINCT A.BL LOTE, ");
+                    sb.AppendLine("       CASE WHEN B.PATIO = 5 THEN 2 ELSE 1 END PATIO ");
+                    sb.AppendLine("  FROM SGIPA.TB_GR_BL A  ");
+                    sb.AppendLine("       INNER JOIN sgipa.TB_BL B ");
+                    sb.AppendLine("          ON A.BL = B.AUTONUM ");
+                    sb.AppendLine("       WHERE  A.NUM_TITULO_PIX = " + numeroTitulo + "");
+
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<IntegracaoBaixa> GetListaGRAgp(long numeroTitulo , long Lote)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+
+                    sb.AppendLine("SELECT DISTINCT A.BL LOTE,A.SEQ_GR SEQ_GR ");
+                    sb.AppendLine("  FROM SGIPA.TB_GR_BL A  ");
+                    sb.AppendLine("       WHERE  A.NUM_TITULO_PIX = " + numeroTitulo + "");
+                    sb.AppendLine("       AND  A.BL = " + Lote + "");
+
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public int contBL(long numeroTitulo)       {
             try
             {
@@ -150,14 +220,14 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public int Verificacalculo(long lote, long seq_gr )
+        public int Verificacalculo(long lote, string seq_gr )
         {
             try
             {
                 using (OracleConnection db = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
-                    if (seq_gr == 0)
+                    if (seq_gr == "0")
                     {
                         sb.AppendLine("  select count(1)  from SGIPA.tb_servicos_faturados ");
                         sb.AppendLine(" WHERE NVL(SEQ_GR,0)=0 ");
@@ -239,7 +309,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public bool inseregr_bl(long seq_gr, long lote, string inicio, string fim,long NumeroTitulo )
+        public bool inseregr_bl(string seq_gr, long lote, string inicio, string fim,long NumeroTitulo )
         {
             try
             {
@@ -315,7 +385,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public bool atualiza_gr(long lote ,long seq_gr, long NumeroTitulo)
+        public bool atualiza_gr(long lote ,string seq_gr, long NumeroTitulo)
         {
             try
             {
@@ -824,7 +894,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return 1;
             }
         }
-        public IntegracaoBaixa obtemDadosPeriodoGR(int lote, int seq_gr)
+        public IntegracaoBaixa obtemDadosPeriodoGR(int lote, string seq_gr)
         {
             try
             {
@@ -852,9 +922,9 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public int obtemProximoNumGR()
+        public string obtemProximoNumGR()
         {
-            int count = 0;
+            string count = "0";
 
             try
             {
@@ -864,14 +934,14 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.Append(" SELECT SGIPA.SEQ_GR.NEXTVAL FROM DUAL ");
 
-                    count = db.Query<int>(sb.ToString()).FirstOrDefault();
+                    count = db.Query<string>(sb.ToString()).FirstOrDefault();
 
                     return count;
                 }
             }
             catch (Exception ex)
             {
-                return 0;
+                return "0";
             }
         }
         public IntegracaoBaixa obtemQTDCntrBL(int lote)
@@ -939,7 +1009,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public bool atualizaGREmServico(int lote, int seqGR, int usuario)
+        public bool atualizaGREmServico(int lote, string seqGR, int usuario)
         {
             try
             {
@@ -965,7 +1035,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public bool atualizaGREmDescricao(int lote, int seqGR)
+        public bool atualizaGREmDescricao(int lote, string seqGR)
         {
             try
             {
@@ -992,7 +1062,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }        
-    public bool atualizaGREmCNTR(int lote, int seqGR)
+    public bool atualizaGREmCNTR(int lote, string seqGR)
         {
             try
             {
@@ -1021,7 +1091,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public bool atualizaGREmCS(int lote, int seqGr)
+        public bool atualizaGREmCS(int lote, string seqGr)
         {
             try
             {
@@ -1164,7 +1234,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public int obtemQtdLavagemCNTR(int Lote, int seqGR)
+        public int obtemQtdLavagemCNTR(int Lote, string seqGR)
         {
             int count = 0;
             try
@@ -1184,7 +1254,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return 0;
             }
         }
-        public bool atualizaAMRNFCNTRLavagem(int Lote, int seqGR)
+        public bool atualizaAMRNFCNTRLavagem(int Lote, string seqGR)
         {
             try
             {
@@ -1217,7 +1287,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public bool atualizaServicosFixosGR(int Lote, int seqGR)
+        public bool atualizaServicosFixosGR(int Lote, string seqGR)
         {
             try
             {
@@ -1347,7 +1417,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return max;
             }
         }
-        public bool Atualiza_Doc(string Tipo, string dataEmi, int Doc, bool baixa)
+        public bool Atualiza_Doc(string Tipo, string dataEmi, string Doc, bool baixa)
         {
             bool query = false;
             try
@@ -1508,7 +1578,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public int Obtem_Id_Nota(int seq_gr, string nfe)
+        public int Obtem_Id_Nota(string seq_gr, string nfe)
         {
             int id_nota = 0;
             try
@@ -1681,10 +1751,40 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-       
-                            
+        public string Gravalogfat(string seq_gr, string mensagem)
+        {
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    sb.Clear();
+
+                    sb.Clear();
+                    sb.AppendLine(" INSERT INTO  SGIPA.TB_LOG_FAT ");
+                    sb.AppendLine(" ( ");
+                    sb.AppendLine("     AUTONUM,  ");
+                    sb.AppendLine("     SEQ_GR, ");
+                    sb.AppendLine("     DATA_CADASTRO,  ");
+                    sb.AppendLine("     MENSAGEM )");
+                    sb.AppendLine("     VALUES (");
+                    sb.AppendLine("     SGIPA.SEQ_LOG_PIX.NEXTVAL,  ");
+                    sb.AppendLine("'" + seq_gr + "',");
+                    sb.AppendLine(" SYSDATE,");
+                    sb.AppendLine("'" + mensagem + "')");
+                    con.Query<string>(sb.ToString()).FirstOrDefault();
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
+
         public string Monta_Insert_Faturanota(
-                string tipo, int gr, string Embarque,
+                string tipo, string gr, string Embarque,
                 string dtEmissao, string dtVencimento,  
                string natOper, string codOper, 
                 string numDoc, string tipoDoc, 
@@ -1825,7 +1925,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" '" + codOper + "', ");
                     sb.AppendLine(" 0, ");
                     sb.AppendLine(" 'GR', ");
-                    sb.AppendLine(" " + gr + ", ");
+                    sb.AppendLine(" '" + gr + "', ");
                     sb.AppendLine(" '" + numDoc + "', ");
                     sb.AppendLine(" '" + tipoDoc + "', ");
 
@@ -2011,7 +2111,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return "";
             }
         }
-        public bool carrega(int seq_gr)
+        public bool carrega(string seq_gr)
         {
             try
             {
@@ -2097,7 +2197,7 @@ namespace WsSimuladorCalculoTabelas.DAO
         }
         public string geraIntegracao(string servico, string dtEmissao, int patioGR, 
             string cbMeio, bool check, string tituloSap, string dtMov, string conta, string valor, string condicao, 
-            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota, int gr)
+            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota,string gr)
         {
             try
             {
@@ -2446,7 +2546,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public IntegracaoBaixa GetDadosFaturaGr(int seq_Gr)
+        public IntegracaoBaixa GetDadosFaturaGr(string seq_Gr)
         {
             try
             {
@@ -2479,7 +2579,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" FROM  ");
                     sb.AppendLine(" FATURA.FATURA_GR ");
                     sb.AppendLine(" WHERE  ");
-                    sb.AppendLine(" SEQ_GR = " + seq_Gr);
+                    sb.AppendLine(" SEQ_GR in( " + seq_Gr +")");
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
 
@@ -2491,7 +2591,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public bool primeiraHub(int seq_gr)
+        public bool primeiraHub(string seq_gr)
         {
             try
             {
@@ -2657,7 +2757,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public IEnumerable<IntegracaoBaixa> GetServicoIDs(int seq_gr)
+        public IEnumerable<IntegracaoBaixa> GetServicoIDs(string seq_gr)
         {
             try
             {
@@ -2678,7 +2778,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota_Imp(int gr )
+        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota_Imp(string gr )
         {
             try
             {
@@ -2704,7 +2804,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota(int gr, string servicos)
+        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota(string gr, string servicos)
         {
             try
             {
@@ -2739,7 +2839,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return null;
             }
         }
-        public IEnumerable<IntegracaoBaixa> getAutonumServicosFaturados(int gr )
+        public IEnumerable<IntegracaoBaixa> getAutonumServicosFaturados(string gr )
         {
             try
             {
@@ -2936,7 +3036,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
         #region consistencias GR
 
-        public string consistenciaGR(int seq_gr, int parceiro)
+        public string consistenciaGR(string seq_gr, int parceiro)
         {
             int grRPS = 0;
             int grDoc = 0;
@@ -3050,7 +3150,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
         #endregion
-        public string GetEmbarque(int seq_gr)
+        public string GetEmbarque(string seq_gr)
         {
             try
             {
@@ -3613,7 +3713,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     sb.AppendLine(" " + total.ToString().Replace(",", ".") + ", ");
                     sb.AppendLine(" " + servico + ", ");
-                    sb.AppendLine(" " + doc + ", ");
+                    sb.AppendLine(" '" + doc + "', ");
                     sb.AppendLine(" " + imposto + ", ");
                     sb.AppendLine(" " + valor.ToString().Replace(",", ".") + ", ");
                     sb.AppendLine(" '" + SD + " ' ");
@@ -3728,11 +3828,14 @@ namespace WsSimuladorCalculoTabelas.DAO
                             npix  = con.Query<int>(sb.ToString()).FirstOrDefault();
                             sbu.AppendLine(" UPDATE SGIPA.TB_BL SET  NUM_PAGAMENTO_PIX = 0, NUM_TITULO_PIX = 0 WHERE NUM_TITULO_PIX  =   " + numero_titulo);
                             con.Query<string>(sbu.ToString()).FirstOrDefault();
+                            sbu.Clear();
+                            sbu.AppendLine(" UPDATE SGIPA.TB_GR_BL SET NUM_TITULO_PIX = 0  WHERE NUM_TITULO_PIX  =   " + npix);
+                            con.Query<string>(sbu.ToString()).FirstOrDefault();
                             if (npix > 0)
                             {
                                 sbu.Clear();
                                 sbu.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET  CANCELADO=1  , DATA_CANCELADO=SYSDATE  WHERE NUM_PIX  =   " + npix);
-                                con.Query<string>(sbu.ToString()).FirstOrDefault();
+                                con.Query<string>(sbu.ToString()).FirstOrDefault();                       
                                 return "000-Titulo cancelado com sucesso";
                             }
                             else
