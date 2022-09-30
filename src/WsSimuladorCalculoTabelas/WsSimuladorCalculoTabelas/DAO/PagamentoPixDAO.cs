@@ -1444,6 +1444,57 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
+        public bool Atualiza_GR(string Doc)
+        {
+            bool query = false;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("UPDATE SGIPA.TB_GR_BL SET  ");
+                    sb.AppendLine(" RPS =  1, FATURADO = 1 ");
+                    sb.AppendLine(" WHERE  ");
+                    sb.AppendLine(" SEQ_GR IN(" + Doc + ") ");
+
+                    query = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool Atualiza_Log_Gr(string Doc)
+        {
+            bool query = false;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("UPDATE SGIPA.TB_GR_BL SET  ");
+                    sb.AppendLine(" DATAFATURADO = null,DT_IMPRESSAO = NULL,USUARIO_IMP = 0,");
+                    sb.AppendLine(" DATAPAGAMENTO = null, DATADEPOSITO = null, ");
+                    sb.AppendLine(" RPS =  0, FATURADO = 0 , STATUS_GR='GE' ");
+                    sb.AppendLine(" WHERE  ");
+                    sb.AppendLine(" SEQ_GR IN(" + Doc + ") ");
+                    query = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
 
         public string Busca_Serie(string Modelo, int empresaID, string Tipo)
@@ -1511,7 +1562,32 @@ namespace WsSimuladorCalculoTabelas.DAO
             {
                 return 0;
             }
+      
         }
+
+        public int getEmpresapatio(int patio)
+        {
+            int empresa = 0;
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+
+                    sb.AppendLine("select pt.cod_empresa  From operador.tb_patios pt where pt.autonum = " + patio);
+
+                    empresa = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    return empresa;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
         public IntegracaoBaixa Preenche_Cliente(int codCLi)
         {
             try
@@ -1761,18 +1837,19 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.Clear();
 
                     sb.Clear();
-                    sb.AppendLine(" INSERT INTO  SGIPA.TB_LOG_FAT ");
+                    sb.AppendLine(" INSERT INTO  SGIPA.TB_LOG_FATURA_AUTO ");
                     sb.AppendLine(" ( ");
                     sb.AppendLine("     AUTONUM,  ");
                     sb.AppendLine("     SEQ_GR, ");
                     sb.AppendLine("     DATA_CADASTRO,  ");
                     sb.AppendLine("     MENSAGEM )");
                     sb.AppendLine("     VALUES (");
-                    sb.AppendLine("     SGIPA.SEQ_LOG_PIX.NEXTVAL,  ");
+                    sb.AppendLine("     SGIPA.SEQ_LOG_FATURA_AUTO.NEXTVAL,  ");
                     sb.AppendLine("'" + seq_gr + "',");
                     sb.AppendLine(" SYSDATE,");
                     sb.AppendLine("'" + mensagem + "')");
                     con.Query<string>(sb.ToString()).FirstOrDefault();
+                    Atualiza_Log_Gr(seq_gr);
                 }
                 return "";
             }
@@ -1781,7 +1858,310 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return "";
             }
         }
+        public string obtemDadosCond(long fpParc, long fpGrp, long fpIpa, long fpGR, long fpLTL)
+        {
+      
+            String sSql="";
+            String cond = "";
 
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    if (fpLTL != 0)
+                    {
+                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
+                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP ";
+                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
+                        sSql = sSql + " WHERE FP.AUTONUM = " + fpLTL;
+                    }
+                    if (fpGR != 0)
+                    {
+                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
+                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP ";
+                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
+                        sSql = sSql + " WHERE FP.AUTONUM = " + fpGR;
+                    }
+                    if (fpParc != 0)
+                    {
+                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
+                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP ";
+                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
+                        sSql = sSql + " WHERE FP.AUTONUM = " + fpParc;
+                    }
+                    if (fpGrp > 0)
+                    {
+                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
+                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP ";
+                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
+                        sSql = sSql + " WHERE FP.AUTONUM = " + fpGrp;
+                    }
+                    if (fpIpa > 0)
+                    {
+                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
+                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP ";
+                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
+                        sSql = sSql + " WHERE FP.AUTONUM = " + fpIpa;
+                    }
+                    if (sSql != "")
+                      {
+                        cond=con.Query<string>(sSql.ToString()).FirstOrDefault();
+                        return cond;
+                    }
+                    return "";
+                }
+              
+             catch (Exception ex)
+            {
+                return "";
+            }
+
+        }
+
+     
+
+    public int obtemDiasCond(string condpag)
+        {
+
+            String sSql = "";
+           int dias = 0;
+
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    sSql = " Select max(nvl(przmed,0)) from  Fatura.TB_COND_PGTO  where codcpg=' " + condpag + "'";
+                    dias = con.Query<int>(sSql.ToString()).FirstOrDefault();
+                    return dias;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+        }
+        public string obtemvencimento(string condpag)
+        {
+
+            string diaori = "";
+            string ssql = "";
+            DateTime dataserv;
+            DateTime datafat;
+            DateTime datacalculada;
+            string diassemana = "";
+            DateTime datavenc = "";
+            int qtddias = "";
+         Try
+               {
+
+                diaori = "";
+                datavenc = "";
+                qtddias = obtemDiasCond(condpag);
+                datavenc = DateTime.Now.Date.AddDays(qtddias);
+                diaori = datavenc.ToString("dd/mm/yyyy");
+                dataserv = datavenc;
+
+                  If dadosFP.RsDiasSemana.Rows.Count > 0 Then
+
+                      With dadosFP.RsDiasSemana
+                          For ln = 0 To.Rows.Count - 1
+
+                              diasSemana = diasSemana & "[" & Integer.Parse(.Rows(ln)("DIA").ToString) + 1 & "]"
+
+                          Next
+                      End With
+                      dataFat = dataServ
+
+
+validaSemana:
+
+                      Do While InStr(" " & diasSemana, "[" & Weekday(dataFat) & "]") = 0
+                            dataFat = CDate(dataFat).AddDays(1)
+                        Loop
+
+                        If dadosFP.UltimoDiaSemana = 1 Then ' Or (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+                            DataCalculada = dataFat
+                            dataFat = DIAVALIDO(dataFat)
+                            If DataCalculada<> dataFat Then GoTo validaSemana
+                            'ElseIf (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+                            'DataCalculada = dataFat
+                            'dataFat = DIAVALIDO(dataFat)
+                        End If
+                        dataFat = DIAVALIDO(dataFat)
+                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
+                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
+
+                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        Else
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+                        End If
+                        sSql = sSql & " Order By PRZMED "
+
+                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        'sSql = sSql & " Order By PRZMED "
+                        rsAux = DAO.Consultar(sSql)
+                        If rsAux.Rows.Count > 0 Then
+                            Cod_Pag = rsAux.Rows(0)(0).ToString
+                            dcCond.SelectedValue = Cod_Pag
+                            selecAuto = False
+                        Else
+                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+                            Cod_Pag = ""
+                            dcCond.SelectedIndex = -1
+                        End If
+
+                    End If
+
+                    'VENCIMENTO POR DIA ESPECIFICO
+                    If dadosFP.RsDias.Rows.Count > 0 Then
+                        With dadosFP.RsDias
+                            For ln = 0 To.Rows.Count - 1
+                                diasSemana = diasSemana & "[" & Integer.Parse(.Rows(ln)("DIA").ToString) & "]"
+                            Next
+                        End With
+
+                        dataFat = dataServ
+                        If dadosFP.UltimoDiaMes = 1 Then  'Or (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+                            Do While InStr(" " & diasSemana, "[" & CDate(dataFat).Day & "]") = 0 Or Not diaUtil(dataFat)
+                                dataFat = CDate(dataFat).AddDays(1)
+                            Loop
+                        Else
+                            Do While InStr(" " & diasSemana, "[" & CDate(dataFat).Day & "]") = 0
+                                dataFat = CDate(dataFat).AddDays(1)
+                            Loop
+                            'If (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+                            '    DataCalculada = dataFat
+                            '    dataFat = DIAVALIDO(dataFat)
+                            'End If
+                        End If
+
+                        dataFat = DIAVALIDO(dataFat)
+                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
+                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
+
+                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        Else
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+                        End If
+                        sSql = sSql & " Order By PRZMED "
+
+                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        'sSql = sSql & " Order By PRZMED "
+                        rsAux = DAO.Consultar(sSql)
+
+                        If rsAux.Rows.Count > 0 Then
+                            Cod_Pag = rsAux.Rows(0)(0).ToString
+                            dcCond.SelectedValue = Cod_Pag
+                            selecAuto = False
+                        Else
+                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+                            Cod_Pag = ""
+                            dcCond.SelectedIndex = -1
+                        End If
+
+                    End If
+
+                    'VENCIMENTO NO ULTIMO DIA DO MES
+                    If NNull(dadosFP.UltimoDiaMesVcto, 0) > 0 Then
+                        dataFat = dataServ
+
+                        Do While dataFat.Month = dataServ.Month
+                            dataFat = CDate(dataFat).AddDays(1)
+                        Loop
+                        dataFat = CDate(dataFat).AddDays(-1)
+
+                        dataFat = DIAVALIDO(dataFat)
+                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
+                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
+
+                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        Else
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+                        End If
+                        sSql = sSql & " Order By PRZMED "
+
+                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        'sSql = sSql & " Order By PRZMED "
+                        rsAux = DAO.Consultar(sSql)
+                        If rsAux.Rows.Count > 0 Then
+                            Cod_Pag = rsAux.Rows(0)(0).ToString
+                            dcCond.SelectedValue = Cod_Pag
+                            selecAuto = False
+                        Else
+                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+                            Cod_Pag = ""
+                            dcCond.SelectedIndex = -1
+                        End If
+
+
+                    End If
+
+
+                    If dadosFP.RsDiasSemana.Rows.Count <= 0 And dadosFP.RsDias.Rows.Count <= 0 And NNull(dadosFP.UltimoDiaMesVcto, 0) <= 0 Then
+                        If dataVenc = "" Then dataVenc = dataServ
+                        'diaOri = dataVenc
+                        dataVenc = DIAVALIDO(dataVenc)
+                        mskVencimento.Text = Format(CDate(dataVenc), "dd/MM/yyyy")
+
+                        If diaOri<> dataVenc Then
+                            txtQtdDias.Text = NNull(txtQtdDias.Text, 0) + DateDiff(DateInterval.Day, CDate(diaOri), CDate(dataVenc))
+                        End If
+                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+                        Else
+                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+                        End If
+                        sSql = sSql & " Order By PRZMED "
+                        rsAux = DAO.Consultar(sSql)
+                        If rsAux.Rows.Count > 0 Then
+                            Cod_Pag = rsAux.Rows(0)(0).ToString
+                            dcCond.SelectedValue = Cod_Pag
+                            selecAuto = False
+                        Else
+                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+                            Cod_Pag = ""
+                            dcCond.SelectedIndex = -1
+                        End If
+
+
+                    End If
+                End If
+            End If
+
+           
+
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+
+    End Sub
 
         public string Monta_Insert_Faturanota(
                 string tipo, string gr, string Embarque,
@@ -1791,8 +2171,9 @@ namespace WsSimuladorCalculoTabelas.DAO
                 int patio,   SapCliente sapCli,
                int autonumCli, int Lote, int Parceiro, 
                 string ClienteSAPEntrega, int CodCli, string valor, 
-                int numero, int codEmpresa, int usuario, string serieNF, string servico, 
-                long numeropix)
+                int numero, int codEmpresa, int usuario, string serieNF, string servico,
+                 string clienteSapEntrega , int fonteOP , int fonteIpa, int fonteGrp, int fonteParc, int fonteGR, int fonteRedex,  
+                 long numeropix)
         {
             
             try
@@ -1831,6 +2212,29 @@ namespace WsSimuladorCalculoTabelas.DAO
                     razao_representante = dataCli.Razao;
                     cgccpf = dataCli.CGCCPF.ToString();
                     TipCli = dataCli.TIPCLI;
+
+                       dadosFP = New FontePagadora()
+                        dadosFP.obtemDadosFPIpa(NNull(dgvPrincipal.Rows(G).Cells("FPPARC").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPGRP").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPIPA").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPGR").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPLTL").Value.ToString, 0))
+
+                        If dcCond.SelectedIndex = -1 And dadosFP.Autonum > 0 Then
+                            selecAuto = False
+                            defineCondicao()
+                            Cod_Pag = dcCond.SelectedValue
+                        Else
+                            If dcCond.SelectedIndex = -1 Then
+                                If NNull(condPadrao, 1) <> "" Then
+                                    Cod_Pag = condPadrao
+                                Else
+                                    dcCond.SelectedIndex = -1
+                                    MsgBox("Condição de Pagamento não vinculada à fonte pagadora!" & vbCrLf & "GR nº " & dgvPrincipal.Rows(G).Cells("SEQ_GR").Value.ToString, vbInformation, Me.Text)
+                                    GoTo Proxima
+                                End If
+                            Else
+                                Cod_Pag = dcCond.SelectedValue
+                            End If
+                        End If
+
+
 
                     sb.Clear();
 
@@ -1899,9 +2303,12 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("     EMBARQUE, ");
                     sb.AppendLine("     ID_FATURA_SB, ");
                     sb.AppendLine("     COND_MANUAL, ");
-                    sb.AppendLine("    FPLTL ");
+                    sb.AppendLine("     FPLTL, ");
+                    sb.AppendLine("     CLIENTE_SAP_ENTREGA, FPOP, FPIPA, FPGRP, FPPARC, FPGR, FPRED, ");
 
-                    sb.AppendLine(" ) VALUES ( ");
+
+
+                   sb.AppendLine(" ) VALUES ( ");
 
                     sb.AppendLine(" " + idFat + ",");
                     sb.AppendLine(" '" + CodCli + "',   ");
@@ -2051,8 +2458,15 @@ namespace WsSimuladorCalculoTabelas.DAO
                     //CODIBGE, SERIE, CODCPG
                     sb.AppendLine(" " + sapCli.IBGE  + ", ");
                     sb.AppendLine(" '"+ serieNF +"' ,");
-                    sb.AppendLine(" 'Pix', ");
+                    if (numeropix == 0)
+                        {
+                        sb.AppendLine(" '', ");
+                    }
+                    else
+                    {
+                        sb.AppendLine(" 'Pix', ");
 
+                    }
                     //Lote e parceiro
                     sb.AppendLine(" " + Lote + ", ");
                     sb.AppendLine(" " + Parceiro + ", ");
@@ -2064,6 +2478,8 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" 0,  ");
 
                     sb.AppendLine(" 0 ");
+
+                    sb.AppendLine(" , '" & clienteSapEntrega & "'," & fonteOP & "," & fonteIpa & "," & fonteGrp & "," & fonteParc & "," & fonteGR & " , " & fonteRedex & " , ");
 
                     sb.AppendLine(" ) ");
 
@@ -2197,7 +2613,7 @@ namespace WsSimuladorCalculoTabelas.DAO
         }
         public string geraIntegracao(string servico, string dtEmissao, int patioGR, 
             string cbMeio, bool check, string tituloSap, string dtMov, string conta, string valor, string condicao, 
-            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota,string gr)
+            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota,string gr, long numeropix)
         {
             try
             {
@@ -2216,12 +2632,14 @@ namespace WsSimuladorCalculoTabelas.DAO
                 string GeraRPSFAT = "1";
                 string monta_SID_Fecha_Nota = "";
                 string monta_SID_Itens = "";
-                string Retorno = "";                         
+                string Retorno = "";
 
 
 
-                monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", true, tituloSap, dtEmissao, conta, valor.ToString(), condicao );
-
+                if (numeropix != 0)
+                {
+                    monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", true, tituloSap, dtEmissao, conta, valor.ToString(), condicao);
+                }
 
                 var itens = Monta_Itens_Nota(gr, servico);
 
@@ -2337,8 +2755,15 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     strInstruction = strInstruction + "<param nome='DATEMI' valor='" + DateTime.Now.ToString("dd/MM/yyyy") + "'/>";
                 }
+                if (numeropix != 0)
+                {
+                    strInstruction = strInstruction + "<param nome='CodCpg' valor='GRDP'/>";
+                }
+                else
+                {
+                    strInstruction = strInstruction + "<param nome='CodCpg' valor=''/>";
+                }
 
-                strInstruction = strInstruction + "<param nome='CodCpg' valor='GRDP'/>";
                 strInstruction = strInstruction + "<param nome='SETATV' valor='RA'/>";
                 strInstruction = strInstruction + "<param nome='NumNfv' valor='@numnfe'/>";
 
@@ -3858,4 +4283,401 @@ namespace WsSimuladorCalculoTabelas.DAO
         }
        
     }
+
+    Public Class FontePagadora
+
+    Private _condPagto As String
+    Private _idClienteNota As Long
+    Private _idCliNFFM0 As Long
+    Private _idCliNFFM1 As Long
+    Private _idClienteEntrega As Long
+    Private _codcliEntrega As String
+    Private _autonum As Long
+    Private _ultimoDiaSemana As Integer
+    Private _ultimoDiaMes As Integer
+    Private _ultimoDiaMesCorte As Integer
+    Private _ultimoDiaMesVcto As Integer
+    Private _rsDiasSemana As New DataTable
+    Private _rsDias As New DataTable
+
+    Public Property codcliEntrega As String
+        Get
+            Return _codcliEntrega
+        End Get
+        Set(value As String)
+            _codcliEntrega = value
+        End Set
+    End Property
+
+    Public Property condPagto As String
+        Get
+            Return _condPagto
+        End Get
+        Set(value As String)
+            _condPagto = value
+        End Set
+    End Property
+
+    Public Property idClienteNota As Long
+        Get
+            Return _idClienteNota
+        End Get
+        Set(value As Long)
+            _idClienteNota = value
+        End Set
+    End Property
+
+    Public Property idClienteEntrega As Long
+        Get
+            Return _idClienteEntrega
+        End Get
+        Set(value As Long)
+            _idClienteEntrega = value
+        End Set
+    End Property
+
+    Public Property Autonum As Long
+        Get
+            Return _autonum
+        End Get
+        Set(value As Long)
+            _autonum = value
+        End Set
+    End Property
+
+    Public Property UltimoDiaSemana As Integer
+        Get
+            Return _ultimoDiaSemana
+        End Get
+        Set(value As Integer)
+            _ultimoDiaSemana = value
+        End Set
+    End Property
+
+    Public Property UltimoDiaMes As Integer
+        Get
+            Return _ultimoDiaMes
+        End Get
+        Set(value As Integer)
+            _ultimoDiaMes = value
+        End Set
+    End Property
+
+    Public Property UltimoDiaMesCorte As Integer
+        Get
+            Return _ultimoDiaMesCorte
+        End Get
+        Set(value As Integer)
+            _ultimoDiaMesCorte = value
+        End Set
+    End Property
+
+    Public Property RsDiasSemana As DataTable
+        Get
+            Return _rsDiasSemana
+        End Get
+        Set(value As DataTable)
+            _rsDiasSemana = value
+        End Set
+    End Property
+
+    Public Property RsDias As DataTable
+        Get
+            Return _rsDias
+        End Get
+        Set(value As DataTable)
+            _rsDias = value
+        End Set
+    End Property
+
+    Public Property UltimoDiaMesVcto As Integer
+        Get
+            Return _ultimoDiaMesVcto
+        End Get
+        Set(value As Integer)
+            _ultimoDiaMesVcto = value
+        End Set
+    End Property
+
+    Public Property IdCliNFFM0 As Long
+        Get
+            Return _idCliNFFM0
+        End Get
+        Set(value As Long)
+            _idCliNFFM0 = value
+        End Set
+    End Property
+
+    Public Property IdCliNFFM1 As Long
+        Get
+            Return _idCliNFFM1
+        End Get
+        Set(value As Long)
+            _idCliNFFM1 = value
+        End Set
+    End Property
+
+    Public Function obtemDiasSemana(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
+        Dim sSql As String = ""
+        Try
+            'TB_DADOS_FAT_PAR_COND_PG_DIAS
+            If fpLTL > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpLTL
+                sSql = sSql & " ORDER BY DIA "
+
+            ElseIf fpGR > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpParc > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_SEMANA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpGrp > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpIpa > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+                sSql = sSql & " ORDER BY DIA "
+            End If
+            If sSql<> "" Then
+                RsDiasSemana = DAO.Consultar(sSql)
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+    End Function
+
+    Public Function obtemDias(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
+        Dim sSql As String = ""
+        Try
+
+            'TB_DADOS_FAT_PAR_DIAS_PGTO
+            If fpLTL > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+                sSql = sSql & " ORDER BY DIA "
+
+            ElseIf fpGR > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpParc > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpGrp > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpIpa > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+                sSql = sSql & " ORDER BY DIA "
+            End If
+            If sSql<> "" Then
+                RsDias = DAO.Consultar(sSql)
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+    End Function
+
+    Public Function obtemDiasSemanaRed(Optional fpRed As Long = 0) As DataTable
+        Dim sSql As String = ""
+        Try
+            'TB_DADOS_FAT_PAR_COND_PG_DIAS
+            If fpRed > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
+                sSql = sSql & " FROM REDEX.TB_DADOS_FAT_RED_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpRed
+                sSql = sSql & " ORDER BY DIA "
+            End If
+            If sSql<> "" Then
+                RsDiasSemana = DAO.Consultar(sSql)
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+    End Function
+
+
+    Public Function obtemDiasRed(Optional fpRed As Long = 0) As DataTable
+        Dim sSql As String = ""
+        Try
+
+            'TB_DADOS_FAT_PAR_DIAS_PGTO
+            If fpRed > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM REDEX.TB_DADOS_FAT_RED_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpRed
+                sSql = sSql & " ORDER BY DIA "
+            End If
+            If sSql<> "" Then
+                RsDias = DAO.Consultar(sSql)
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+    End Function
+
+
+    Public Sub obtemDadosFPIpa(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0)
+        Dim rsDados As New DataTable
+        Dim sSql As String = ""
+        Try
+
+            If fpLTL > 0 Then
+                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP "
+                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpLTL
+            ElseIf fpGR > 0 Then
+                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP "
+                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpGR
+            ElseIf fpParc > 0 Then
+                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP "
+                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpParc
+            ElseIf fpGrp > 0 Then
+                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP "
+                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpGrp
+            ElseIf fpIpa > 0 Then
+                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES , FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP "
+                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpIpa
+            End If
+            If sSql<> "" Then
+               rsDados = DAO.Consultar(sSql)
+                If Not rsDados.Rows.Count <= 0 Then
+                    Me.Autonum = NNull(rsDados.Rows(0)("AUTONUM").ToString, 1)
+                    Me.condPagto = NNull(rsDados.Rows(0)("AUTONUM_FORMA_PAGAMENTO").ToString, 1)
+                    Me.idClienteNota = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_NOTA").ToString, 0)
+                    Me.idClienteEntrega = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_ENVIO_NOTA").ToString, 0)
+                    'Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DA_SEMANA").ToString, 0)
+                    'Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES").ToString, 0)
+                    Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
+                    Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
+                    Me.UltimoDiaMesVcto = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_VCTO").ToString, 0)
+                    Me.UltimoDiaMesCorte = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_CORTE").ToString, 0)
+                    Me.codcliEntrega = NNull(rsDados.Rows(0)("CODCLI_SAP").ToString, 1)
+                    If fpLTL > 0 Then
+                        IdCliNFFM0 = NNull(rsDados.Rows(0)("AUTONUM_CLI_NF_FM0").ToString, 0)
+                        IdCliNFFM1 = NNull(rsDados.Rows(0)("AUTONUM_CLI_NF_FM1").ToString, 0)
+
+                    Else
+                        IdCliNFFM0 = 0
+                        IdCliNFFM1 = 0
+
+                    End If
+
+                    obtemDias(fpParc, fpGrp, fpIpa, fpGR)
+                    obtemDiasSemana(fpParc, fpGrp, fpIpa, fpGR)
+                End If
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+
+
+
+    End Sub
+
+    Public Sub obtemDadosFPRedex(Optional fpRed As Long = 0)
+        Dim rsDados As New DataTable
+        Dim sSql As String = ""
+        Try
+            If fpRed > 0 Then
+                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES , FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
+                sSql = sSql & " FROM REDEX.TB_DADOS_FATURAMENTO_RED FP "
+                sSql = sSql & " LEFT JOIN REDEX.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpRed
+            End If
+            If sSql<> "" Then
+               rsDados = DAO.Consultar(sSql)
+                If Not rsDados.Rows.Count <= 0 Then
+                    Me.Autonum = NNull(rsDados.Rows(0)("AUTONUM").ToString, 1)
+                    Me.condPagto = NNull(rsDados.Rows(0)("AUTONUM_FORMA_PAGAMENTO").ToString, 1)
+                    Me.idClienteNota = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_NOTA").ToString, 0)
+                    Me.idClienteEntrega = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_ENVIO_NOTA").ToString, 0)
+                    'Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DA_SEMANA").ToString, 0)
+                    'Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES").ToString, 0)
+                    Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
+                    Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
+                    Me.UltimoDiaMesVcto = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_VCTO").ToString, 0)
+                    Me.UltimoDiaMesCorte = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_CORTE").ToString, 0)
+                    Me.codcliEntrega = NNull(rsDados.Rows(0)("CODCLI_SAP").ToString, 1)
+                    obtemDiasRed(fpRed)
+                    obtemDiasSemanaRed(fpRed)
+                End If
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+
+
+
+    End Sub
+
+
+    Public Sub obtemDadosFPOpe(Optional fpParc As Long = 0, Optional fpOp As Long = 0)
+        Dim rsDados As New DataTable
+        Dim sSql As String = ""
+        Try
+            If fpParc > 0 Then
+                sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP "
+                sSql = sSql & " FROM OPERADOR.TB_DADOS_FATURAMENTO_CLIENTE FP "
+                sSql = sSql & " LEFT JOIN OPERADOR.TB_CAD_CLIENTES ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpParc
+            ElseIf fpOp > 0 Then
+                sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP "
+                sSql = sSql & " FROM OPERADOR.TB_DADOS_FATURAMENTO_OP FP "
+                sSql = sSql & " LEFT JOIN OPERADOR.TB_CAD_CLIENTES ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
+                sSql = sSql & " WHERE FP.AUTONUM = " & fpOp
+            End If
+            If sSql<> "" Then
+               rsDados = DAO.Consultar(sSql)
+                If Not rsDados.Rows.Count <= 0 Then
+                    Me.condPagto = NNull(rsDados.Rows(0)("AUTONUM_FORMA_PAGAMENTO").ToString, 1)
+                    Me.idClienteNota = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_NOTA").ToString, 0)
+                    Me.idClienteEntrega = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_ENVIO_NOTA").ToString, 0)
+                    Me.codcliEntrega = NNull(rsDados.Rows(0)("CODCLI_SAP").ToString, 1)
+                End If
+            End If
+
+
+        Catch ex As Exception
+
+        End Try
+
+
+
+    End Sub
+
+End Class
+
+
 }

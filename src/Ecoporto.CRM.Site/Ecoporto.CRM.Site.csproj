@@ -907,10 +907,10 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>Ecoporto_CRM_Site_WsSimulador_SimuladorCalculo</CachedSettingsPropName>
     </WebReferenceUrl>
-    <WebReferenceUrl Include="http://srv0019:2530/Calcular.asmx">
+    <WebReferenceUrl Include="http://localhost:25693/Calcular.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\WsCalculo\</RelPath>
-      <UpdateFromURL>http://srv0019:2530/Calcular.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost:25693/Calcular.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

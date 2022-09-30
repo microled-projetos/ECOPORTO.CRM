@@ -133,6 +133,7 @@
     <Compile Include="Models\DadosArquivoUpload.cs" />
     <Compile Include="Models\Empresa.cs" />
     <Compile Include="Models\FaixaCIF.cs" />
+    <Compile Include="Models\Fontepagadora.cs" />
     <Compile Include="Models\IntegracaoBaixa.cs" />
     <Compile Include="Models\LayoutDTO.cs" />
     <Compile Include="Models\Modelo.cs" />

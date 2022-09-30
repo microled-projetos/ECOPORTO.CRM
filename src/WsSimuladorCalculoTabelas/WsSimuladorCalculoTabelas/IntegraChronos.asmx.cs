@@ -1447,7 +1447,7 @@ namespace WsSimuladorCalculoTabelas
 
                         if (id_nota > 0)    
                         {
-                            merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "GRDP", false, titSapiens, dtEmissao, conta, valor.ToString(), "Pix", sapcliente, id_nota, cod_empresa, serie, corpoNota, seq_gr);
+                            merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "GRDP", false, titSapiens, dtEmissao, conta, valor.ToString(), "Pix", sapcliente, id_nota, cod_empresa, serie, corpoNota, seq_gr, NumeroTitulo);
                             if (merro!="")
                             {
                                    return new Response
@@ -1577,9 +1577,9 @@ namespace WsSimuladorCalculoTabelas
                     }
 
                     int parceiroID = nota.PARCEIRO;
-                    string loteID = nota.LOTE;
+                   
 
-                    int empresa = _pagamentoPixDAO.getEmpresa(Lote);
+                    int empresa = _pagamentoPixDAO.getEmpresapatio(nota.PATIO);
                     if (empresa == 0)
                     {
                         merro = "Falha ao ler as informações da Empresa ";
@@ -1649,7 +1649,8 @@ namespace WsSimuladorCalculoTabelas
                         int fpGrp = nota.FPGRP;
                         int fpIpa = nota.FPIPA;
                         int fpgr = nota.fpgr;
-                        string ndoc = nota.NUM_DOC;
+                    int flag_hubport = nota.flag_hubport;
+                         string ndoc = nota.NUM_DOC;
                         string tipoDoc = nota.TIPODOC_DESCRICAO;
                         int patioGR = nota.PATIO;
 
@@ -1672,6 +1673,7 @@ namespace WsSimuladorCalculoTabelas
                         string cidade = "";
                         int cli_autonum = 0;
 
+                             
                         if (flagHupport == 0 || primeiraHub)
                         {
                             cliente = nota.CODCLI;
@@ -1780,13 +1782,13 @@ namespace WsSimuladorCalculoTabelas
                             patioGR, sapcliente, cli_autonum,
                             Lote, parceiroID, clienteSAPEntrega,
                             cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,
-                            0);
+                            clienteSAPEntrega, 0, fpIpa, fpGrp , fpParc, fpgr, 0 , 0);
 
                         int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(seq_gr, nfe);
 
                         if (id_nota > 0)
                         {
-                            merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "GRDP", false, titSapiens, dtEmissao, conta, valor.ToString(), "Pix", sapcliente, id_nota, cod_empresa, serie, corpoNota, seq_gr);
+                            merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "", false, titSapiens, dtEmissao, conta, valor.ToString(), "", sapcliente, id_nota, cod_empresa, serie, corpoNota, seq_gr,0);
                             if (merro != "")
                             {
                                 return new Response
@@ -1805,7 +1807,7 @@ namespace WsSimuladorCalculoTabelas
                                     if (statusNota.STATUSNFE != 0 && statusNota.STATUSNFE != 5)
 
                                     {
-                                        if (_pagamentoPixDAO.Atualiza_Doc("GR", dtEmissao, seq_gr, false) == false)
+                                        if (_pagamentoPixDAO.Atualiza_GR(seq_gr) == false)
                                         {
                                             merro = "Falha na atualização da GR/Fatura";
                                         _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
