@@ -1647,8 +1647,9 @@ namespace WsSimuladorCalculoTabelas
 
                         int fpParc = nota.FPPARC;
                         int fpGrp = nota.FPGRP;
-                        int fpIpa = nota.FPIPA;
-                        int fpgr = nota.fpgr;
+                    int fpgr = nota.fpgr;
+                    int fpIpa = nota.FPIPA;
+                        int fpltl = nota.Fpltl ;
                     int flag_hubport = nota.flag_hubport;
                          string ndoc = nota.NUM_DOC;
                         string tipoDoc = nota.TIPODOC_DESCRICAO;
@@ -1782,7 +1783,7 @@ namespace WsSimuladorCalculoTabelas
                             patioGR, sapcliente, cli_autonum,
                             Lote, parceiroID, clienteSAPEntrega,
                             cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,
-                            clienteSAPEntrega, 0, fpIpa, fpGrp , fpParc, fpgr, 0 , 0);
+                            clienteSAPEntrega, 0, fpIpa, fpGrp , fpParc, fpgr, 0 , fpltl);
 
                         int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(seq_gr, nfe);
 

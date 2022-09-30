@@ -1905,7 +1905,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     }
                     if (sSql != "")
                       {
-                        cond=con.Query<Fontepagodora>(sSql.ToString()).FirstOrDefault();
+                        cond=con.Query<Fontepagadora>(sSql.ToString()).FirstOrDefault();
                     
                         return cond;
                     }
@@ -1942,7 +1942,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
 
         }
-        public string obtemvencimento(string condpag)
+        public string obtemvencimento ()
         {
 
             string diaori = "";
@@ -1958,7 +1958,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                 diaori = "";
                 datavenc = "";
-                qtddias = obtemDiasCond(condpag);
+                qtddias = obtemDiasCond(fontepagora.condpag);
                 datavenc = DateTime.Now.Date.AddDays(qtddias);
                 diaori = datavenc.ToString("dd/mm/yyyy");
                 dataserv = datavenc;
@@ -1981,13 +1981,11 @@ validaSemana:
                             dataFat = CDate(dataFat).AddDays(1)
                         Loop
 
-                        If dadosFP.UltimoDiaSemana = 1 Then ' Or (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+                        If dadosFP.UltimoDiaSemana = 1 Then 
                             DataCalculada = dataFat
                             dataFat = DIAVALIDO(dataFat)
                             If DataCalculada<> dataFat Then GoTo validaSemana
-                            'ElseIf (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
-                            'DataCalculada = dataFat
-                            'dataFat = DIAVALIDO(dataFat)
+                 
                         End If
                         dataFat = DIAVALIDO(dataFat)
                         txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
@@ -2165,6 +2163,8 @@ validaSemana:
     End Sub
 
 
+
+
                     Public Function obtemDias(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
         Dim sSql As String = ""
         Try
@@ -2204,6 +2204,7 @@ validaSemana:
             Err.Clear()
         End Try
     End Function
+
                       Public Function obtemDiasSemana(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
         Dim sSql As String = ""
         Try
@@ -2296,14 +2297,16 @@ validaSemana:
                     cgccpf = dataCli.CGCCPF.ToString();
                     TipCli = dataCli.TIPCLI;
 
-                         dadosFP = New FontePagadora()
-                         obtemDadosFP(fonteIpa, fonteGrp, FonteParc, fonteGR, Fonteltl);
-                            obtemDias(fonteIpa, fonteGrp, FonteParc, fonteGR, Fonteltl);
-                            obtemDiasSemana(fonteIpa, fonteGrp, FonteParc, fonteGR, Fonteltl);
-                            defineCondicao(condpag)
-                         Cod_Pag =
-                                datavenc =
-                                clienteSapEntrega
+
+                            dadosFP= obtemDadosFP(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
+                            dadosFP.RsDias=obtemDias(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
+                            dadosFP.RsDiasSemana=obtemDiasSemana(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
+
+                           
+
+                         Cond_Pag = FP.AUTONUM_FORMA_PAGAMENTO
+                                datavenc = obtemvencimento;
+                            clienteSapEntrega = CODCLI_SAP
 
 
 
