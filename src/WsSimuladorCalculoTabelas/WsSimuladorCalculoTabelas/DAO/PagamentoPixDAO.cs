@@ -1858,7 +1858,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return "";
             }
         }
-        public string obtemDadosCond(long fpParc, long fpGrp, long fpIpa, long fpGR, long fpLTL)
+        public string obtemDadosfp(long fpParc, long fpGrp, long fpIpa, long fpGR, long fpLTL)
         {
       
             String sSql="";
@@ -1870,42 +1870,43 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     if (fpLTL != 0)
                     {
-                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
-                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP ";
+                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
+                 sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP ";
                         sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
                         sSql = sSql + " WHERE FP.AUTONUM = " + fpLTL;
                     }
                     if (fpGR != 0)
                     {
-                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
-                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP ";
+                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
+                sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP ";
                         sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
                         sSql = sSql + " WHERE FP.AUTONUM = " + fpGR;
                     }
                     if (fpParc != 0)
                     {
-                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
-                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP ";
+                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
+                   sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP ";
                         sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
                         sSql = sSql + " WHERE FP.AUTONUM = " + fpParc;
                     }
                     if (fpGrp > 0)
                     {
-                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
-                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP ";
+                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
+           sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP ";
                         sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
                         sSql = sSql + " WHERE FP.AUTONUM = " + fpGrp;
                     }
                     if (fpIpa > 0)
                     {
-                        sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO ";
-                        sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP ";
+                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
+             sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP ";
                         sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
                         sSql = sSql + " WHERE FP.AUTONUM = " + fpIpa;
                     }
                     if (sSql != "")
                       {
-                        cond=con.Query<string>(sSql.ToString()).FirstOrDefault();
+                        cond=con.Query<Fontepagodora>(sSql.ToString()).FirstOrDefault();
+                    
                         return cond;
                     }
                     return "";
@@ -2163,6 +2164,88 @@ validaSemana:
 
     End Sub
 
+
+                    Public Function obtemDias(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
+        Dim sSql As String = ""
+        Try
+
+            'TB_DADOS_FAT_PAR_DIAS_PGTO
+            If fpLTL > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+                sSql = sSql & " ORDER BY DIA "
+
+            ElseIf fpGR > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpParc > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpGrp > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpIpa > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+                sSql = sSql & " ORDER BY DIA "
+            End If
+            If sSql<> "" Then
+               RsDias = DAO.Consultar(sSql)
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+    End Function
+                      Public Function obtemDiasSemana(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
+        Dim sSql As String = ""
+        Try
+            'TB_DADOS_FAT_PAR_COND_PG_DIAS
+            If fpLTL > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpLTL
+                sSql = sSql & " ORDER BY DIA "
+
+            ElseIf fpGR > 0 Then
+                sSql = "SELECT DIA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpParc > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_SEMANA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpGrp > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
+                sSql = sSql & " ORDER BY DIA "
+            ElseIf fpIpa > 0 Then
+                sSql = "SELECT DIA "
+                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
+                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS "
+                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+                sSql = sSql & " ORDER BY DIA "
+            End If
+            If sSql<> "" Then
+               RsDiasSemana = DAO.Consultar(sSql)
+            End If
+        Catch ex As Exception
+            Err.Clear()
+        End Try
+    End Function
+
         public string Monta_Insert_Faturanota(
                 string tipo, string gr, string Embarque,
                 string dtEmissao, string dtVencimento,  
@@ -2172,7 +2255,7 @@ validaSemana:
                int autonumCli, int Lote, int Parceiro, 
                 string ClienteSAPEntrega, int CodCli, string valor, 
                 int numero, int codEmpresa, int usuario, string serieNF, string servico,
-                 string clienteSapEntrega , int fonteOP , int fonteIpa, int fonteGrp, int fonteParc, int fonteGR, int fonteRedex,  
+                 string clienteSapEntrega , int fonteOP , int fonteIpa, int fonteGrp, int fonteParc, int fonteGR, int fonteRedex,  int Fonteltl,
                  long numeropix)
         {
             
@@ -2213,26 +2296,16 @@ validaSemana:
                     cgccpf = dataCli.CGCCPF.ToString();
                     TipCli = dataCli.TIPCLI;
 
-                       dadosFP = New FontePagadora()
-                        dadosFP.obtemDadosFPIpa(NNull(dgvPrincipal.Rows(G).Cells("FPPARC").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPGRP").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPIPA").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPGR").Value.ToString, 0), NNull(dgvPrincipal.Rows(G).Cells("FPLTL").Value.ToString, 0))
+                         dadosFP = New FontePagadora()
+                         obtemDadosFP(fonteIpa, fonteGrp, FonteParc, fonteGR, Fonteltl);
+                            obtemDias(fonteIpa, fonteGrp, FonteParc, fonteGR, Fonteltl);
+                            obtemDiasSemana(fonteIpa, fonteGrp, FonteParc, fonteGR, Fonteltl);
+                            defineCondicao(condpag)
+                         Cod_Pag =
+                                datavenc =
+                                clienteSapEntrega
 
-                        If dcCond.SelectedIndex = -1 And dadosFP.Autonum > 0 Then
-                            selecAuto = False
-                            defineCondicao()
-                            Cod_Pag = dcCond.SelectedValue
-                        Else
-                            If dcCond.SelectedIndex = -1 Then
-                                If NNull(condPadrao, 1) <> "" Then
-                                    Cod_Pag = condPadrao
-                                Else
-                                    dcCond.SelectedIndex = -1
-                                    MsgBox("Condição de Pagamento não vinculada à fonte pagadora!" & vbCrLf & "GR nº " & dgvPrincipal.Rows(G).Cells("SEQ_GR").Value.ToString, vbInformation, Me.Text)
-                                    GoTo Proxima
-                                End If
-                            Else
-                                Cod_Pag = dcCond.SelectedValue
-                            End If
-                        End If
+
 
 
 
