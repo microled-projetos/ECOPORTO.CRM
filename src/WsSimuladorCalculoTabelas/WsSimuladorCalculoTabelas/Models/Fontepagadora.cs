@@ -20,8 +20,24 @@ namespace WsSimuladorCalculoTabelas.Models
         public int ultimoDiaMesCorte { get; set; }
         public int ultimoDiaMesVcto { get; set; }
 
-        public DataTable rsDiasSemana { get; set; }
+        public int AUTONUM { get; set; }
+        public string AUTONUM_FORMA_PAGAMENTO { get; set; }
+        public int AUTONUM_PAGAMENTO { get; set; }
+        public int AUTONUM_CLIENTE_NOTA { get; set; }
+        public int AUTONUM_CLI_NF_FM0 { get; set; }
+        public int AUTONUM_CLI_NF_FM1 { get; set; }
+        public int AUTONUM_CLIENTE_ENVIO_NOTA { get; set; }
+        public int CODCLI_SAP { get; set; }
+        public int FLAG_ULTIMO_DIA_DA_SEMANA { get; set; }
+        public int FLAG_ULTIMO_DIA_DO_MES { get; set; }
+        public int FLAG_ULTIMO_DIA_DO_MES_CORTE { get; set; }
+        public int FLAG_VENCIMENTO_DIA_UTIL { get; set; }
+        public int FLAG_ULTIMO_DIA_DO_MES_VCTO { get; set; }
 
-        public DataTable  rsDias { get; set; }
+        public IEnumerable<DiasSemana> rsDiasSemana { get; set; }
+
+        public IEnumerable<DiasSemana> rsDias { get; set; }
+
+
     }
 }

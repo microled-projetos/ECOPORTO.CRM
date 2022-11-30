@@ -20,7 +20,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-               
+
                     sb.AppendLine("SELECT BL.AUTONUM LOTE, ");
                     sb.AppendLine("       NVL (GR.SEQ_GR, 0) SEQ_GR, ");
                     sb.AppendLine("       CASE WHEN PATIO = 5 THEN 2 ELSE 1 END PATIO ");
@@ -48,13 +48,13 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("          ON bl.num_pagamento_pix = pix.num_pix ");
                     sb.AppendLine("       INNER JOIN SGIPA.VW_CALCULO_SEMGR c ");
                     sb.AppendLine("          ON c.lote = bl.autonum ");
-                     sb.AppendLine(" WHERE     bl.flag_ativo = 1 ");
+                    sb.AppendLine(" WHERE     bl.flag_ativo = 1 ");
                     sb.AppendLine("       AND (BL.ULTIMA_SAIDA > SYSDATE - 180 OR BL.ULTIMA_SAIDA IS NULL) ");
                     sb.AppendLine("       AND bl.num_pagamento_pix > 0 ");
                     sb.AppendLine("       AND NVL (pix.cancelado, 0) = 0  ");
                     sb.AppendLine("       AND BL.NUM_TITULO_PIX = " + numeroTitulo + "");
 
-                    
+
 
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
@@ -94,7 +94,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public IEnumerable<IntegracaoBaixa> GetListaGRAgp(long numeroTitulo , long Lote)
+        public IEnumerable<IntegracaoBaixa> GetListaGRAgp(long numeroTitulo, long Lote)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public int contBL(long numeroTitulo)       {
+        public int contBL(long numeroTitulo) {
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
@@ -139,20 +139,20 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public int contvalor(long numeroTitulo   )
+        public int contvalor(long numeroTitulo)
         {
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
- 
-                        sb.AppendLine(" SELECT count(1) FROM  SGIPA.vw_valor_pix  WHERE valor_pix=valor_gr and NUM_TITULO_PIX =  " + numeroTitulo);
 
-                        int vl = con.Query<int>(sb.ToString()).FirstOrDefault();
+                    sb.AppendLine(" SELECT count(1) FROM  SGIPA.vw_valor_pix  WHERE valor_pix=valor_gr and NUM_TITULO_PIX =  " + numeroTitulo);
 
-                        return vl;               
-                    
+                    int vl = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                    return vl;
+
 
                 }
             }
@@ -168,14 +168,14 @@ namespace WsSimuladorCalculoTabelas.DAO
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
-                                      
 
-                        sb.AppendLine(" SELECT ' N.PIX  " + numeroTitulo + " ==> Vl. Pix  : '|| nvl(to_char(max(valor_pix)),'') || ' Vl. GR : ' || nvl(to_char(max(valor_gr)),'')  FROM  SGIPA.vw_valor_pix  WHERE  NUM_TITULO_PIX =  " + numeroTitulo);
 
-                        string vl = con.Query<string>(sb.ToString()).FirstOrDefault();
+                    sb.AppendLine(" SELECT ' N.PIX  " + numeroTitulo + " ==> Vl. Pix  : '|| nvl(to_char(max(valor_pix)),'') || ' Vl. GR : ' || nvl(to_char(max(valor_gr)),'')  FROM  SGIPA.vw_valor_pix  WHERE  NUM_TITULO_PIX =  " + numeroTitulo);
 
-                        return vl;
-                 
+                    string vl = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                    return vl;
+
 
                 }
             }
@@ -220,7 +220,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public int Verificacalculo(long lote, string seq_gr )
+        public int Verificacalculo(long lote, string seq_gr)
         {
             try
             {
@@ -233,10 +233,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                         sb.AppendLine(" WHERE NVL(SEQ_GR,0)=0 ");
                         sb.AppendLine(" AND bl = " + lote);
                     }
-                   else
+                    else
                     {
                         sb.AppendLine("  select count(1)  from SGIPA.tb_gr_bl  ");
-                        sb.AppendLine(" WHERE faturado=0 and NVL(SEQ_GR,0)= " +seq_gr );
+                        sb.AppendLine(" WHERE faturado=0 and NVL(SEQ_GR,0)= " + seq_gr);
                         sb.AppendLine(" AND bl = " + lote);
                     }
 
@@ -309,7 +309,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public bool inseregr_bl(string seq_gr, long lote, string inicio, string fim,long NumeroTitulo )
+        public bool inseregr_bl(string seq_gr, long lote, string inicio, string fim, long NumeroTitulo)
         {
             try
             {
@@ -373,7 +373,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" select bl, sum(valor+desconto+adicional)+sum(nvl(b.valori,0))  valorgr from SGIPA.tb_servicos_faturados a  ");
                     sb.AppendLine(" left join (select sum(valor_imposto) valori , autonum_servico_faturado from SGIPA.tb_servicos_faturados_impostos ");
                     sb.AppendLine(" group by autonum_servico_faturado) b on a.autonum=b.autonum_servico_faturado");
-                    sb.AppendLine(" where nvl(seq_gr,0) =0 group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote );
+                    sb.AppendLine(" where nvl(seq_gr,0) =0 group by bl) V ON A.BL=V.BL WHERE A.BL=" + lote);
 
                     var query = db.Query<bool>(sb.ToString()).FirstOrDefault();
                     return true;
@@ -385,7 +385,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
         }
 
-        public bool atualiza_gr(long lote ,string seq_gr, long NumeroTitulo)
+        public bool atualiza_gr(long lote, string seq_gr, long NumeroTitulo)
         {
             try
             {
@@ -396,15 +396,15 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine("UPDATE SGIPA.TB_GR_BL SET ");
                     sb.AppendLine("STATUS_GR='IM', ");
                     sb.AppendLine("FLAG_GR_PAGA=1, ");
-                    sb.AppendLine("NUM_TITULO_PIX="+ NumeroTitulo+ ", ");
+                    sb.AppendLine("NUM_TITULO_PIX=" + NumeroTitulo + ", ");
                     sb.AppendLine("DT_IMPRESSAO=SYSDATE ,");
                     sb.AppendLine("USUARIO_IMP=90,");
                     sb.AppendLine("NUM_CHEQUE='PIX',");
                     sb.AppendLine("MEIODEPAGAMENTO='GRPX',");
                     sb.AppendLine("BANCO='1',");
                     sb.AppendLine("NUMCONTA='29.136-4'");
-                    
-                    sb.AppendLine(" where nvl(seq_gr,0) =" + seq_gr +" and BL=" + lote);
+
+                    sb.AppendLine(" where nvl(seq_gr,0) =" + seq_gr + " and BL=" + lote);
 
                     var query = db.Query<bool>(sb.ToString()).FirstOrDefault();
                     return true;
@@ -517,7 +517,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return  "";
+                return "";
             }
         }
 
@@ -537,10 +537,10 @@ namespace WsSimuladorCalculoTabelas.DAO
             {
                 N = 0;
 
-        n1 = Math.Truncate(vn / 1000000.0);
-        vn = vn - n1 * 1000000.0;
-        n2 = Math.Truncate(vn / 1000.0);
-        n3 = Math.Truncate(vn - n2 * 1000.0);
+                n1 = Math.Truncate(vn / 1000000.0);
+                vn = vn - n1 * 1000000.0;
+                n2 = Math.Truncate(vn / 1000.0);
+                n3 = Math.Truncate(vn - n2 * 1000.0);
 
 
                 ve = "";
@@ -836,11 +836,11 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-               
-                return  "";
+
+                return "";
             }
             return ve.ToString();
-         
+
         }
 
 
@@ -908,7 +908,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     sb.AppendLine(" SGIPA.TB_SERVICOS_FATURADOS ");
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine(" NVL(SEQ_GR, 0)  =" + seq_gr);
-                    sb.AppendLine(" AND  ");               
+                    sb.AppendLine(" AND  ");
                     sb.AppendLine(" BL =  " + lote);
                     sb.AppendLine(" ORDER BY SERVICO ");
 
@@ -1061,8 +1061,8 @@ namespace WsSimuladorCalculoTabelas.DAO
             {
                 return false;
             }
-        }        
-    public bool atualizaGREmCNTR(int lote, string seqGR)
+        }
+        public bool atualizaGREmCNTR(int lote, string seqGR)
         {
             try
             {
@@ -1336,6 +1336,28 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
+        public bool atualizavenc(int id, DateTime venc)
+        {
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine(" UPDATE Fatura.faturanota set dt_vencimento =TO_DATE('" + venc.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY') ");
+                    sb.AppendLine("  WHERE id = " + id);
+
+                    con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool atualizaBLREGGR(int Lote)
         {
             try
@@ -1444,7 +1466,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return false;
             }
         }
-        public bool Atualiza_GR(string Doc)
+        public bool Atualiza_GR(string Doc, string dataEmi)
         {
             bool query = false;
             try
@@ -1454,10 +1476,10 @@ namespace WsSimuladorCalculoTabelas.DAO
                     StringBuilder sb = new StringBuilder();
 
                     sb.AppendLine("UPDATE SGIPA.TB_GR_BL SET  ");
-                    sb.AppendLine(" RPS =  1, FATURADO = 1 ");
+                    sb.AppendLine(" RPS =  1, FATURADO = 1 , ");
+                    sb.AppendLine(" DATAFATURADO = TO_DATE('" + dataEmi + "', 'dd/MM/yyyy') ");
                     sb.AppendLine(" WHERE  ");
                     sb.AppendLine(" SEQ_GR IN(" + Doc + ") ");
-
                     query = con.Query<bool>(sb.ToString()).FirstOrDefault();
 
                     return true;
@@ -1506,7 +1528,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-            
+
                     sb.AppendLine(" SELECT SERIE FROM SGIPA.TB_SERIE  WHERE Cod_Empresa =  " + empresaID);
 
                     if (Tipo == "GR")
@@ -1527,7 +1549,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                         sb.AppendLine(" AND TIPO_REDEX = 1 ");
                     }
 
-                    sb.AppendLine(" AND DATA_INI <= TO_DATE('" + DateTime.Now.Date.ToString("dd/MM/yyyy") + "','DD/MM/YYYY') AND  DATA_FIM >= TO_DATE('" + DateTime.Now.Date.ToString("dd/MM/yyyy") + "' ,'DD/MM/YYYY')"); 
+                    sb.AppendLine(" AND DATA_INI <= TO_DATE('" + DateTime.Now.Date.ToString("dd/MM/yyyy") + "','DD/MM/YYYY') AND  DATA_FIM >= TO_DATE('" + DateTime.Now.Date.ToString("dd/MM/yyyy") + "' ,'DD/MM/YYYY')");
 
 
                     string query = con.Query<string>(sb.ToString()).FirstOrDefault();
@@ -1550,7 +1572,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                 {
                     StringBuilder sb = new StringBuilder();
 
-                   
+
                     sb.AppendLine("select pt.cod_empresa  From sgipa.tb_bl bl inner join operador.tb_patios pt on bl.patio = pt.autonum  where bl.autonum =" + lote);
 
                     empresa = con.Query<int>(sb.ToString()).FirstOrDefault();
@@ -1562,7 +1584,7 @@ namespace WsSimuladorCalculoTabelas.DAO
             {
                 return 0;
             }
-      
+
         }
 
         public int getEmpresapatio(int patio)
@@ -1642,7 +1664,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     //    }
 
                     //}
-                    
+
 
                     var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
 
@@ -1664,7 +1686,7 @@ namespace WsSimuladorCalculoTabelas.DAO
                     StringBuilder sb = new StringBuilder();
 
                     sb.AppendLine(" select nvl(max(id),0) from FATURA.FATURANOTA WHERE CANCELADA = 0 AND TIPO = 'GR' ");
-                    sb.AppendLine(" AND ID IN(SELECT FATID FROM FATURA.FAT_GR WHERE SEQ_GR in(" + seq_gr + ") OR GR = '"+ seq_gr +"')   ");
+                    sb.AppendLine(" AND ID IN(SELECT FATID FROM FATURA.FAT_GR WHERE SEQ_GR in(" + seq_gr + ") OR GR = '" + seq_gr + "')   ");
 
                     id_nota = con.Query<int>(sb.ToString()).FirstOrDefault();
 
@@ -1718,7 +1740,7 @@ namespace WsSimuladorCalculoTabelas.DAO
 
                     string valorNota = con.Query<string>(sb.ToString()).FirstOrDefault();
 
-                    return valorNota;                    
+                    return valorNota;
                 }
             }
             catch (Exception ex)
@@ -1769,11 +1791,11 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
             catch (Exception ex)
             {
-                return idRPS; 
+                return idRPS;
             }
         }
 
-        public string Gravalogpix ( string numpix, string mensagem)
+        public string Gravalogpix(string numpix, string mensagem)
         {
             StringBuilder sb = new StringBuilder();
             long idpix = 0;
@@ -1791,34 +1813,34 @@ namespace WsSimuladorCalculoTabelas.DAO
                     {
                         sb.Clear();
                         sb.AppendLine(" SELECT NVL(MAX(NUM_PIX),0) FROM SGIPA.TB_PIX_BL where num_pix =" + npix);
-                          idpix = con.Query<long>(sb.ToString()).FirstOrDefault();
+                        idpix = con.Query<long>(sb.ToString()).FirstOrDefault();
 
-                            if (idpix == 0)
-                            {
-                                sb.Clear();
-                                sb.AppendLine(" INSERT INTO  SGIPA.TB_PIX_BL ");
-                                sb.AppendLine(" ( ");
-                                sb.AppendLine("     AUTONUM,  ");
-                                sb.AppendLine("     NUM_PIX, ");
-                                sb.AppendLine("     DATA_CADASTRO,  ");
-                                sb.AppendLine("     MENSAGEM )");
-                                sb.AppendLine("     VALUES (");
-                                sb.AppendLine("     SGIPA.SEQ_LOG_PIX.NEXTVAL,  ");
-                                sb.AppendLine("" + npix + ",");
-                                sb.AppendLine(" SYSDATE,");
-                                sb.AppendLine("'" + mensagem + "')");
-                                con.Query<string>(sb.ToString()).FirstOrDefault();
-                            }
+                        if (idpix == 0)
+                        {
+                            sb.Clear();
+                            sb.AppendLine(" INSERT INTO  SGIPA.TB_PIX_BL ");
+                            sb.AppendLine(" ( ");
+                            sb.AppendLine("     AUTONUM,  ");
+                            sb.AppendLine("     NUM_PIX, ");
+                            sb.AppendLine("     DATA_CADASTRO,  ");
+                            sb.AppendLine("     MENSAGEM )");
+                            sb.AppendLine("     VALUES (");
+                            sb.AppendLine("     SGIPA.SEQ_LOG_PIX.NEXTVAL,  ");
+                            sb.AppendLine("" + npix + ",");
+                            sb.AppendLine(" SYSDATE,");
+                            sb.AppendLine("'" + mensagem + "')");
+                            con.Query<string>(sb.ToString()).FirstOrDefault();
+                        }
 
-                                else
-                                {
-                                    sb.Clear();
-                                    sb.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET DATA_CRITICA=SYSDATE,");
-                                    sb.AppendLine("MENSAGEM=MENSAGEM || '  /  " + mensagem + "' where  num_pix =" + npix);
-                                    con.Query<string>(sb.ToString()).FirstOrDefault();
-                                }
-                           }
-            }
+                        else
+                        {
+                            sb.Clear();
+                            sb.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET DATA_CRITICA=SYSDATE,");
+                            sb.AppendLine("MENSAGEM=MENSAGEM || '  /  " + mensagem + "' where  num_pix =" + npix);
+                            con.Query<string>(sb.ToString()).FirstOrDefault();
+                        }
+                    }
+                }
                 return "";
             }
             catch (Exception ex)
@@ -1858,80 +1880,74 @@ namespace WsSimuladorCalculoTabelas.DAO
                 return "";
             }
         }
-        public string obtemDadosfp(long fpParc, long fpGrp, long fpIpa, long fpGR, long fpLTL)
+        public FontePagadora obtemDadosfp(long fpParc, long fpGrp, long fpIpa, long fpGR, long fpLTL)
         {
-      
-            String sSql="";
-            String cond = "";
-
             try
             {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                using (var con = new OracleConnection(Configuracoes.StringConexao()))
                 {
+                    var sb = new StringBuilder();
+
                     if (fpLTL != 0)
                     {
-                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
-                 sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP ";
-                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
-                        sSql = sSql + " WHERE FP.AUTONUM = " + fpLTL;
+                        sb.AppendLine(" SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP ");
+                        sb.AppendLine(" LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ");
+                        sb.AppendLine(" WHERE FP.AUTONUM = " + fpLTL);
                     }
                     if (fpGR != 0)
                     {
-                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
-                sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP ";
-                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
-                        sSql = sSql + " WHERE FP.AUTONUM = " + fpGR;
+                        sb.AppendLine(" SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA,   FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP ");
+                        sb.AppendLine(" LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ");
+                        sb.AppendLine(" WHERE FP.AUTONUM = " + fpGR);
                     }
                     if (fpParc != 0)
                     {
-                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
-                   sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP ";
-                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
-                        sSql = sSql + " WHERE FP.AUTONUM = " + fpParc;
+                        sb.AppendLine(" SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA,   FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP ");
+                        sb.AppendLine(" LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM ");
+                        sb.AppendLine(" WHERE FP.AUTONUM = " + fpParc);
                     }
                     if (fpGrp > 0)
                     {
-                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
-           sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP ";
-                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
-                        sSql = sSql + " WHERE FP.AUTONUM = " + fpGrp;
+                        sb.AppendLine(" SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA,   FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP ");
+                        sb.AppendLine(" LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ");
+                        sb.AppendLine(" WHERE FP.AUTONUM = " + fpGrp);
                     }
                     if (fpIpa > 0)
                     {
-                        sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ";
-             sSql = sSql + " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP ";
-                        sSql = sSql + " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ";
-                        sSql = sSql + " WHERE FP.AUTONUM = " + fpIpa;
+                        sb.AppendLine(" SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA,   FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP ");
+                        sb.AppendLine(" LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  ");
+                        sb.AppendLine(" WHERE FP.AUTONUM = " + fpIpa);
                     }
-                    if (sSql != "")
-                      {
-                        cond=con.Query<Fontepagadora>(sSql.ToString()).FirstOrDefault();
-                    
-                        return cond;
-                    }
-                    return "";
-                }
-              
-             catch (Exception ex)
-            {
-                return "";
-            }
 
+                    var query = con.Query<FontePagadora>(sb.ToString()).FirstOrDefault();
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-     
 
-    public int obtemDiasCond(string condpag)
+
+        public int obtemDiasCond(string condpag)
         {
 
             String sSql = "";
-           int dias = 0;
+            int dias = 0;
 
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
-                    sSql = " Select max(nvl(przmed,0)) from  Fatura.TB_COND_PGTO  where codcpg=' " + condpag + "'";
+                    sSql = " Select max(nvl(przmed,0)) from  Fatura.TB_COND_PGTO  where codcpg='" + condpag + "'";
                     dias = con.Query<int>(sSql.ToString()).FirstOrDefault();
                     return dias;
                 }
@@ -1942,324 +1958,708 @@ namespace WsSimuladorCalculoTabelas.DAO
             }
 
         }
-        public string obtemvencimento ()
+        public DateTime obtemvencimento(FontePagadora fontePagadora, int fonteIpa, int fonteGrp, int fonteParc, int fonteGR, int Fonteltl)
         {
-
-            string diaori = "";
-            string ssql = "";
             DateTime dataserv;
             DateTime datafat;
             DateTime datacalculada;
-            string diassemana = "";
-            DateTime datavenc = "";
-            int qtddias = "";
-         Try
-               {
+            string diasSemanas = string.Empty;
+            string diaori = string.Empty;
+            string diasSemana = string.Empty;
+            DateTime datavenc;
+            int qtddias = 0;
+            int QtdDias = 0;
+            string condicao = string.Empty;
 
+
+            try
+            {
                 diaori = "";
-                datavenc = "";
-                qtddias = obtemDiasCond(fontepagora.condpag);
+                qtddias = obtemDiasCond(fontePagadora.condPag);
+
                 datavenc = DateTime.Now.Date.AddDays(qtddias);
                 diaori = datavenc.ToString("dd/mm/yyyy");
                 dataserv = datavenc;
 
-                  If dadosFP.RsDiasSemana.Rows.Count > 0 Then
+                var query = ObtemDiasSemana(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
 
-                      With dadosFP.RsDiasSemana
-                          For ln = 0 To.Rows.Count - 1
-
-                              diasSemana = diasSemana & "[" & Integer.Parse(.Rows(ln)("DIA").ToString) + 1 & "]"
-
-                          Next
-                      End With
-                      dataFat = dataServ
+                datafat = dataserv;
 
 
-validaSemana:
+                if (query.Count() > 0)
+                {
+                    //VENCIMENTO POR DIA DA SEMANA 
+                    foreach (var item in query)
+                    {
+                        diasSemana = diasSemana + "[" + Convert.ToInt32(item.Dia) + "]";
+                    }
+                    diasSemana = " " + diasSemana;
+                    while (diasSemana.IndexOf("[" + (int)datafat.DayOfWeek + "]", 0) == -1)
+                    {
+                        datafat = Convert.ToDateTime(datafat).AddDays(1);
+                    }
+                    if (fontePagadora.ultimoDiaSemana == 1)
+                    {
+                        foreach (var item in query)
+                        {
+                            diasSemana = "[" + Convert.ToInt32(item.Dia) + "]";
+                        }
+                        diasSemana = " " + diasSemana;
+                        while (diasSemana.IndexOf("[" + (int)datafat.DayOfWeek + "]", 0, diasSemana.Length) == -1)
+                        {
+                            datafat = Convert.ToDateTime(datafat).AddDays(1);
+                        }
+                        datafat = Convert.ToDateTime(DIAVALIDO(Convert.ToDateTime(datafat)));
+                       
+                        return datafat;
+                    }
 
-                      Do While InStr(" " & diasSemana, "[" & Weekday(dataFat) & "]") = 0
-                            dataFat = CDate(dataFat).AddDays(1)
-                        Loop
+                }
+                var querydia = obtemDias(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
 
-                        If dadosFP.UltimoDiaSemana = 1 Then 
-                            DataCalculada = dataFat
-                            dataFat = DIAVALIDO(dataFat)
-                            If DataCalculada<> dataFat Then GoTo validaSemana
-                 
-                        End If
-                        dataFat = DIAVALIDO(dataFat)
-                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
-                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
-
-                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
-                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        Else
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
-                        End If
-                        sSql = sSql & " Order By PRZMED "
-
-                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        'sSql = sSql & " Order By PRZMED "
-                        rsAux = DAO.Consultar(sSql)
-                        If rsAux.Rows.Count > 0 Then
-                            Cod_Pag = rsAux.Rows(0)(0).ToString
-                            dcCond.SelectedValue = Cod_Pag
-                            selecAuto = False
-                        Else
-                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
-                            Cod_Pag = ""
-                            dcCond.SelectedIndex = -1
-                        End If
-
-                    End If
-
-                    'VENCIMENTO POR DIA ESPECIFICO
-                    If dadosFP.RsDias.Rows.Count > 0 Then
-                        With dadosFP.RsDias
-                            For ln = 0 To.Rows.Count - 1
-                                diasSemana = diasSemana & "[" & Integer.Parse(.Rows(ln)("DIA").ToString) & "]"
-                            Next
-                        End With
-
-                        dataFat = dataServ
-                        If dadosFP.UltimoDiaMes = 1 Then  'Or (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
-                            Do While InStr(" " & diasSemana, "[" & CDate(dataFat).Day & "]") = 0 Or Not diaUtil(dataFat)
-                                dataFat = CDate(dataFat).AddDays(1)
-                            Loop
-                        Else
-                            Do While InStr(" " & diasSemana, "[" & CDate(dataFat).Day & "]") = 0
-                                dataFat = CDate(dataFat).AddDays(1)
-                            Loop
-                            'If (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
-                            '    DataCalculada = dataFat
-                            '    dataFat = DIAVALIDO(dataFat)
-                            'End If
-                        End If
-
-                        dataFat = DIAVALIDO(dataFat)
-                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
-                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
-
-                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
-                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        Else
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
-                        End If
-                        sSql = sSql & " Order By PRZMED "
-
-                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        'sSql = sSql & " Order By PRZMED "
-                        rsAux = DAO.Consultar(sSql)
-
-                        If rsAux.Rows.Count > 0 Then
-                            Cod_Pag = rsAux.Rows(0)(0).ToString
-                            dcCond.SelectedValue = Cod_Pag
-                            selecAuto = False
-                        Else
-                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
-                            Cod_Pag = ""
-                            dcCond.SelectedIndex = -1
-                        End If
-
-                    End If
-
-                    'VENCIMENTO NO ULTIMO DIA DO MES
-                    If NNull(dadosFP.UltimoDiaMesVcto, 0) > 0 Then
-                        dataFat = dataServ
-
-                        Do While dataFat.Month = dataServ.Month
-                            dataFat = CDate(dataFat).AddDays(1)
-                        Loop
-                        dataFat = CDate(dataFat).AddDays(-1)
-
-                        dataFat = DIAVALIDO(dataFat)
-                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
-                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
-
-                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
-                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        Else
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
-                        End If
-                        sSql = sSql & " Order By PRZMED "
-
-                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        'sSql = sSql & " Order By PRZMED "
-                        rsAux = DAO.Consultar(sSql)
-                        If rsAux.Rows.Count > 0 Then
-                            Cod_Pag = rsAux.Rows(0)(0).ToString
-                            dcCond.SelectedValue = Cod_Pag
-                            selecAuto = False
-                        Else
-                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
-                            Cod_Pag = ""
-                            dcCond.SelectedIndex = -1
-                        End If
+                if (querydia.Count() > 0)
+                {
+                    diasSemana = "";
+                    foreach (var item in querydia)
+                    {
+                        diasSemana = diasSemana + "[" + Convert.ToInt32(item.Dia) + "]";
+                    }
+                    if (fontePagadora.ultimoDiaMes == 1)
+                    {
+                        foreach (var item in querydia)
+                        {
+                            diasSemana = "[" + Convert.ToInt32(item.Dia) + "]";
+                        }
+                    }
+                    datafat = dataserv;
+                    diasSemana = " " + diasSemana;
+                    while (diasSemana.IndexOf("[" + datafat.Day + "]", 0) == -1)
+                    {
+                        datafat = Convert.ToDateTime(datafat).AddDays(1);
+                    }
 
 
-                    End If
+                    datafat = Convert.ToDateTime(DIAVALIDO(Convert.ToDateTime(datafat)));
+                   
+                    return datafat;
+                }
+
+                //VENCIMENTO NO ULTIMO DIA DO MES
+                if (fontePagadora.ultimoDiaMesVcto > 0)
+                {
+                    datafat = dataserv;
+                    while (Convert.ToDateTime(datafat).Month == Convert.ToDateTime(dataserv).Month)
+                    {
+                        datafat = Convert.ToDateTime(datafat).AddDays(1);
+                    }
+                    datafat = Convert.ToDateTime(datafat).AddDays(-1);
+                    datafat = Convert.ToDateTime(DIAVALIDO(Convert.ToDateTime(datafat)));
+          
+                    return datafat;
+                }
+                datafat = Convert.ToDateTime(DIAVALIDO(Convert.ToDateTime(datafat)));
+       
+                return datafat;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public String obtemcondicao(DateTime datafat)
+        {
+            int QtdDias = 0;
+            string condicao = string.Empty;
 
 
-                    If dadosFP.RsDiasSemana.Rows.Count <= 0 And dadosFP.RsDias.Rows.Count <= 0 And NNull(dadosFP.UltimoDiaMesVcto, 0) <= 0 Then
-                        If dataVenc = "" Then dataVenc = dataServ
-                        'diaOri = dataVenc
-                        dataVenc = DIAVALIDO(dataVenc)
-                        mskVencimento.Text = Format(CDate(dataVenc), "dd/MM/yyyy")
+            try
+            {
+                        QtdDias = (Convert.ToDateTime(datafat) - DateTime.Now).Days+1;
+                        var getCondicaod = GetCondicao(QtdDias);
+                        condicao = string.Empty;
+                        if (getCondicaod.Count() > 0)
+                        {
+                            foreach (var itemCond in getCondicaod)
+                            {
+                                if (condicao == string.Empty)
+                                {
+                                    condicao = itemCond.CODCPG;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            condicao = "";
+                        }
+                        return condicao;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return "";
+            }
+        }
+        public IEnumerable<DiasSemana> ObtemDiasSemana(long fpIpa, long fpGrp, long fpParc, long fpGR, long fpLTL)
+        {
 
-                        If diaOri<> dataVenc Then
-                            txtQtdDias.Text = NNull(txtQtdDias.Text, 0) + DateDiff(DateInterval.Day, CDate(diaOri), CDate(dataVenc))
-                        End If
-                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
-                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
-                        Else
-                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
-                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
-                        End If
-                        sSql = sSql & " Order By PRZMED "
-                        rsAux = DAO.Consultar(sSql)
-                        If rsAux.Rows.Count > 0 Then
-                            Cod_Pag = rsAux.Rows(0)(0).ToString
-                            dcCond.SelectedValue = Cod_Pag
-                            selecAuto = False
-                        Else
-                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
-                            Cod_Pag = ""
-                            dcCond.SelectedIndex = -1
-                        End If
-
-
-                    End If
-                End If
-            End If
-
-           
-
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-
-    End Sub
+            try
+            {
+                using (var con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    var sb = new StringBuilder();
 
 
 
 
-                    Public Function obtemDias(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
-        Dim sSql As String = ""
-        Try
+                    if (fpLTL > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_LTL_COND_PG_DIAS ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpLTL);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
 
-            'TB_DADOS_FAT_PAR_DIAS_PGTO
-            If fpLTL > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
-                sSql = sSql & " ORDER BY DIA "
 
-            ElseIf fpGR > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpParc > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpGrp > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpIpa > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
-                sSql = sSql & " ORDER BY DIA "
-            End If
-            If sSql<> "" Then
-               RsDias = DAO.Consultar(sSql)
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-    End Function
+                    if (fpGR > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine("  FROM SGIPA.TB_DADOS_FAT_GR_COND_PG_DIAS ");
+                        sb.AppendLine("  WHERE AUTONUM_FONTE_PAGADORA = " + fpGR);
+                        sb.AppendLine("  ORDER BY DIA ");
+                    }
 
-                      Public Function obtemDiasSemana(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
-        Dim sSql As String = ""
-        Try
-            'TB_DADOS_FAT_PAR_COND_PG_DIAS
-            If fpLTL > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpLTL
-                sSql = sSql & " ORDER BY DIA "
+                    if (fpParc > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_PAR_COND_PG_DIAS ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpParc);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
 
-            ElseIf fpGR > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpParc > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_SEMANA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpGrp > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpIpa > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
-                sSql = sSql & " ORDER BY DIA "
-            End If
-            If sSql<> "" Then
-               RsDiasSemana = DAO.Consultar(sSql)
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-    End Function
+                    if (fpGrp > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpGrp);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
+
+                    if (fpIpa > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine("  FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS ");
+                        sb.AppendLine("  WHERE AUTONUM_FONTE_PAGADORA = " + fpIpa);
+                        sb.AppendLine("  ORDER BY DIA ");
+                    }
+
+                    var query = con.Query<DiasSemana>(sb.ToString()).AsEnumerable();
+
+                    //Vencimento por dia da semana 
+
+
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<DiasSemana> GetCondicao(int dias)
+        {
+            try
+            {
+                using (var con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine(" Select CODCPG From FATURA.TB_COND_PGTO ");
+                    sb.AppendLine(" Where PRZMED = " + dias);
+                    sb.AppendLine(" Order By PRZMED ");
+
+                    var codigo = con.Query<DiasSemana>(sb.ToString()).AsEnumerable();
+
+                    return codigo;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DateTime? DIAVALIDO(DateTime date)
+        {
+            try
+            {
+                DateTime? DIAVALIDO = null;
+                int WDIAVALIDO = 0;
+                DateTime venc = date;
+
+                using (var con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    while (WDIAVALIDO == 0)
+                    {
+                        int vencAno = venc.Year;
+                        int vencMes = venc.Month;
+
+                        var sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT nvl(max(DIAS),' ') FROm FATURA.CALENDARIO WHERE ANOMES = '" + vencAno.ToString() + vencMes.ToString() + "' ");
+
+                        var query = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        int diasVenc = venc.Day;
+
+                        if (query != " ")
+                        {
+                            for (int i = diasVenc; i <= 31; i++)
+                            {
+                                if (query.ToUpper().Substring(i - 1, 1) == "U")
+                                {
+                                    WDIAVALIDO = 1;
+                                    return venc;
+
+                                }
+
+                                if (query.ToUpper().Substring(i - 1, 1) == "F")
+                                {
+                                    venc = venc.AddDays(1);
+                                }
+
+                                if (query.ToUpper().Substring(i - 1, 1) == "S" || query.ToUpper().Substring(i - 1, 1) == "D")
+                                {
+                                    venc = venc.AddDays(1);
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            return venc;
+                        }
+
+                    }
+                    DIAVALIDO = venc;
+
+                    return Convert.ToDateTime(DIAVALIDO);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool diaUtil(DateTime VENC)
+        {
+            try
+            {
+                DateTime vencimento = VENC;
+                bool diaUtil = false;
+                using (var con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    var sb = new StringBuilder();
+                    sb.AppendLine(" SELECT nvl(max(DIAS),' ')  FROM FATURA.CALENDARIO WHERE ANOMES =  '" + vencimento.ToString().Substring(6, 4) + vencimento.ToString().Substring(3, 2) + "' ");
+
+                    var query = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                    if (query != " ")
+
+                    {
+
+                        var dias = query.Substring(vencimento.Day - 1, 1);
+
+                        if (dias == "U")
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IEnumerable<DiasSemana> obtemDias(long fpParc, long fpGrp, long fpIpa, long fpGr, long fpLTL)
+        {
+            try
+            {
+                using (var con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    var sb = new StringBuilder();
+
+                    if (fpLTL > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_LTL_DIAS_PGTO ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpIpa);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
+
+                    if (fpGr > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_GR_DIAS_PGTO ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpGr);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
+
+                    if (fpParc > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_PGTO ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpParc);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
+                    if (fpGrp > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_PGTO  ");
+                        sb.AppendLine("  WHERE AUTONUM_FONTE_PAGADORA = " + fpGrp);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
+
+                    if (fpIpa > 0)
+                    {
+                        sb.AppendLine(" SELECT DIA ");
+                        sb.AppendLine(" FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO ");
+                        sb.AppendLine(" WHERE AUTONUM_FONTE_PAGADORA = " + fpIpa);
+                        sb.AppendLine(" ORDER BY DIA ");
+                    }
+
+                    var dias = con.Query<DiasSemana>(sb.ToString()).AsEnumerable();
+
+                    return dias;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// Deixei ainda rotina comentada caso precise mexer na que foi convertida para C#  
+        /// Roger 04/10/2022 as 14:12
+
+
+        //            Try
+        //               {
+
+        //                diaori = "";
+        //                datavenc = "";
+        //                qtddias = obtemDiasCond(fontePagadora.condPag);
+        //                datavenc = DateTime.Now.Date.AddDays(qtddias);
+        //                diaori = datavenc.ToString("dd/mm/yyyy");
+        //                dataserv = datavenc;
+
+        //                If dadosFP.RsDiasSemana.Rows.Count > 0 Then
+
+        //                    With dadosFP.RsDiasSemana
+        //                        For ln = 0 To.Rows.Count - 1
+
+        //                              diasSemana = diasSemana & "[" & Integer.Parse(.Rows(ln)("DIA").ToString) + 1 & "]"
+
+        //                          Next
+        //                      End With
+        //                      dataFat = dataServ
+
+
+        //validaSemana:
+
+        //                Do While InStr(" " & diasSemana, "[" & Weekday(dataFat) & "]") = 0
+        //                            dataFat = CDate(dataFat).AddDays(1)
+        //                        Loop
+
+        //                        If dadosFP.UltimoDiaSemana = 1 Then
+        //                            DataCalculada = dataFat
+        //                            dataFat = DIAVALIDO(dataFat)
+        //                            If DataCalculada<> dataFat Then GoTo validaSemana
+
+
+        //                        End If
+        //                        dataFat = DIAVALIDO(dataFat)
+        //                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
+        //                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
+
+        //                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+        //                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+        //                        Else
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+        //                        End If
+        //                        sSql = sSql & " Order By PRZMED "
+
+        //                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like ' % BOLETO % '"
+        //                        'sSql = sSql & " Order By PRZMED "
+        //                        rsAux = DAO.Consultar(sSql)
+        //                        If rsAux.Rows.Count > 0 Then
+        //                            Cod_Pag = rsAux.Rows(0)(0).ToString
+        //                            dcCond.SelectedValue = Cod_Pag
+        //                            selecAuto = False
+        //                        Else
+        //                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+        //                            Cod_Pag = ""
+        //                            dcCond.SelectedIndex = -1
+        //                        End If
+
+        //                    End If
+
+        //                    'VENCIMENTO POR DIA ESPECIFICO
+        //                    If dadosFP.RsDias.Rows.Count > 0 Then
+        //                        With dadosFP.RsDias
+        //                            For ln = 0 To.Rows.Count - 1
+        //                                diasSemana = diasSemana & "[" & Integer.Parse(.Rows(ln)("DIA").ToString) & "]"
+        //                            Next
+        //                        End With
+
+        //                        dataFat = dataServ
+        //                        If dadosFP.UltimoDiaMes = 1 Then  'Or (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+        //                            Do While InStr(" " & diasSemana, "[" & CDate(dataFat).Day & "]") = 0 Or Not diaUtil(dataFat)
+        //                                dataFat = CDate(dataFat).AddDays(1)
+        //                            Loop
+        //                        Else
+        //                            Do While InStr(" " & diasSemana, "[" & CDate(dataFat).Day & "]") = 0
+        //                                dataFat = CDate(dataFat).AddDays(1)
+        //                            Loop
+        //                            'If (dadosFP.condPagto <> "" And dadosFP.condPagto <> "0") Then
+        //                            '    DataCalculada = dataFat
+        //                            '    dataFat = DIAVALIDO(dataFat)
+        //                            'End If
+        //                        End If
+
+        //                        dataFat = DIAVALIDO(dataFat)
+        //                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
+        //                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
+
+        //                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+        //                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+        //                        Else
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+        //                        End If
+        //                        sSql = sSql & " Order By PRZMED "
+
+        //                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like ' % BOLETO % '"
+        //                        'sSql = sSql & " Order By PRZMED "
+        //                        rsAux = DAO.Consultar(sSql)
+
+        //                        If rsAux.Rows.Count > 0 Then
+        //                            Cod_Pag = rsAux.Rows(0)(0).ToString
+        //                            dcCond.SelectedValue = Cod_Pag
+        //                            selecAuto = False
+        //                        Else
+        //                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+        //                            Cod_Pag = ""
+        //                            dcCond.SelectedIndex = -1
+        //                        End If
+
+        //                    End If
+
+        //                    'VENCIMENTO NO ULTIMO DIA DO MES
+        //                    If NNull(dadosFP.UltimoDiaMesVcto, 0) > 0 Then
+        //                        dataFat = dataServ
+
+        //                        Do While dataFat.Month = dataServ.Month
+        //                            dataFat = CDate(dataFat).AddDays(1)
+        //                        Loop
+        //                        dataFat = CDate(dataFat).AddDays(-1)
+
+        //                        dataFat = DIAVALIDO(dataFat)
+        //                        txtQtdDias.Text = DateDiff(DateInterval.Day, CDate(mskDtEmi.Text), CDate(dataFat))
+        //                        mskVencimento.Text = Format(CDate(dataFat), "dd/MM/yyyy")
+
+        //                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+        //                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+        //                        Else
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+        //                        End If
+        //                        sSql = sSql & " Order By PRZMED "
+
+        //                        'sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                        'sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like ' % BOLETO % '"
+        //                        'sSql = sSql & " Order By PRZMED "
+        //                        rsAux = DAO.Consultar(sSql)
+        //                        If rsAux.Rows.Count > 0 Then
+        //                            Cod_Pag = rsAux.Rows(0)(0).ToString
+        //                            dcCond.SelectedValue = Cod_Pag
+        //                            selecAuto = False
+        //                        Else
+        //                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+        //                            Cod_Pag = ""
+        //                            dcCond.SelectedIndex = -1
+        //                        End If
+
+
+        //                    End If
+
+
+        //                    If dadosFP.RsDiasSemana.Rows.Count <= 0 And dadosFP.RsDias.Rows.Count <= 0 And NNull(dadosFP.UltimoDiaMesVcto, 0) <= 0 Then
+        //                        If dataVenc = "" Then dataVenc = dataServ
+        //                        'diaOri = dataVenc
+        //                        dataVenc = DIAVALIDO(dataVenc)
+        //                        mskVencimento.Text = Format(CDate(dataVenc), "dd/MM/yyyy")
+
+        //                        If diaOri<> dataVenc Then
+        //                            txtQtdDias.Text = NNull(txtQtdDias.Text, 0) + DateDiff(DateInterval.Day, CDate(diaOri), CDate(dataVenc))
+        //                        End If
+        //                        If InStr(dcCond.Text, "DEPÓSITO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%DEPÓSITO%'"
+        //                        ElseIf InStr(dcCond.Text, "BOLETO") > 0 Then
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text & " And DESCPG Like '%BOLETO%'"
+        //                        Else
+        //                            sSql = "Select CODCPG From " & DAO.BancoFatura & "TB_COND_PGTO "
+        //                            sSql = sSql & " Where PRZMED = " & txtQtdDias.Text
+        //                        End If
+        //                        sSql = sSql & " Order By PRZMED "
+        //                        rsAux = DAO.Consultar(sSql)
+        //                        If rsAux.Rows.Count > 0 Then
+        //                            Cod_Pag = rsAux.Rows(0)(0).ToString
+        //                            dcCond.SelectedValue = Cod_Pag
+        //                            selecAuto = False
+        //                        Else
+        //                            MsgBox("A condição de pagamento calculada [" & txtQtdDias.Text & "] não possui cadastro!", vbCritical, Me.Text)
+        //                            Cod_Pag = ""
+        //                            dcCond.SelectedIndex = -1
+        //                        End If
+
+
+        //                    End If
+        //                End If
+        //            End If
+
+
+
+
+        //        Catch ex As Exception
+        //            Err.Clear()
+        //        End Try
+
+        //    End Sub
+
+
+
+        //
+        //                Public Function obtemDias(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
+        //    Dim sSql As String = ""
+        //    Try
+
+        //        'TB_DADOS_FAT_PAR_DIAS_PGTO
+        //        If fpLTL > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_DIAS_PGTO "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+        //            sSql = sSql & " ORDER BY DIA "
+
+        //        ElseIf fpGR > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_DIAS_PGTO "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
+        //            sSql = sSql & " ORDER BY DIA "
+        //        ElseIf fpParc > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_PGTO "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
+        //            sSql = sSql & " ORDER BY DIA "
+        //        ElseIf fpGrp > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_PGTO "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
+        //            sSql = sSql & " ORDER BY DIA "
+        //        ElseIf fpIpa > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+        //            sSql = sSql & " ORDER BY DIA "
+        //        End If
+        //        If sSql<> "" Then
+        //           RsDias = DAO.Consultar(sSql)
+        //        End If
+        //    Catch ex As Exception
+        //        Err.Clear()
+        //    End Try
+        //End Function
+
+        //                  Public Function obtemDiasSemana(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
+        //    Dim sSql As String = ""
+        //    Try
+        //        'TB_DADOS_FAT_PAR_COND_PG_DIAS
+        //        If fpLTL > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_COND_PG_DIAS "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpLTL
+        //            sSql = sSql & " ORDER BY DIA "
+
+        //        ElseIf fpGR > 0 Then
+        //            sSql = "SELECT DIA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_COND_PG_DIAS "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
+        //            sSql = sSql & " ORDER BY DIA "
+        //        ElseIf fpParc > 0 Then
+        //            sSql = "SELECT DIA "
+        //            'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_SEMANA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_COND_PG_DIAS "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
+        //            sSql = sSql & " ORDER BY DIA "
+        //        ElseIf fpGrp > 0 Then
+        //            sSql = "SELECT DIA "
+        //            'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
+        //            sSql = sSql & " ORDER BY DIA "
+        //        ElseIf fpIpa > 0 Then
+        //            sSql = "SELECT DIA "
+        //            'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
+        //            sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS "
+        //            sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
+        //            sSql = sSql & " ORDER BY DIA "
+        //        End If
+        //        If sSql<> "" Then
+        //           RsDiasSemana = DAO.Consultar(sSql)
+        //        End If
+        //    Catch ex As Exception
+        //        Err.Clear()
+        //    End Try
+        //End Function
+
+
+
 
         public string Monta_Insert_Faturanota(
                 string tipo, string gr, string Embarque,
-                string dtEmissao, string dtVencimento,  
-               string natOper, string codOper, 
-                string numDoc, string tipoDoc, 
-                int patio,   SapCliente sapCli,
-               int autonumCli, int Lote, int Parceiro, 
-                string ClienteSAPEntrega, int CodCli, string valor, 
+                string dtEmissao, string dtVencimento,
+               string natOper, string codOper,
+                string numDoc, string tipoDoc,
+                int patio, SapCliente sapCli,
+               int autonumCli, string BLote, int Parceiro,
+                string ClienteSAPEntrega, int CodCli, string valor,
                 int numero, int codEmpresa, int usuario, string serieNF, string servico,
-                 string clienteSapEntrega , int fonteOP , int fonteIpa, int fonteGrp, int fonteParc, int fonteGR, int fonteRedex,  int Fonteltl,
+                 string clienteSapEntrega, int fonteOP, int fonteIpa, int fonteGrp, int fonteParc, int fonteGR, int fonteRedex, int Fonteltl,
                  long numeropix)
         {
-            
+
             try
             {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
@@ -2279,10 +2679,13 @@ validaSemana:
                     string CGCRep = "";
                     int posicao = 0;
                     string corpo_nota = "";
+                    string Cond_Pag = "";
+                    string Condicao = "";
+                    DateTime dataVenc = DateTime.Now;
 
-                   decimal valor_Nota = Valor_Nota(gr.ToString());
+                    decimal valor_Nota = Valor_Nota(gr.ToString());
 
-                    if(sapCli.CIDCOB.ToUpper() == "SANTOS" || sapCli.CIDCOB.ToUpper() == "" && sapCli.CIDCLI.ToUpper() =="SANTOS" )
+                    if (sapCli.CIDCOB.ToUpper() == "SANTOS" || sapCli.CIDCOB.ToUpper() == "" && sapCli.CIDCLI.ToUpper() == "SANTOS")
                     {
                         Desconto = Valor_Desconto(gr.ToString());
                     }
@@ -2298,17 +2701,25 @@ validaSemana:
                     TipCli = dataCli.TIPCLI;
 
 
-                            dadosFP= obtemDadosFP(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
-                            dadosFP.RsDias=obtemDias(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
-                            dadosFP.RsDiasSemana=obtemDiasSemana(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
+                    if (numeropix == 0)
+                    {
+                        var dadosFP = new FontePagadora();
 
-                           
-
-                         Cond_Pag = FP.AUTONUM_FORMA_PAGAMENTO
-                                datavenc = obtemvencimento;
-                            clienteSapEntrega = CODCLI_SAP
+                        dadosFP = obtemDadosfp(fonteParc, fonteGrp, fonteIpa, fonteGR, Fonteltl);
+                        dadosFP.rsDias = obtemDias(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
+                        dadosFP.rsDiasSemana = ObtemDiasSemana(fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl);
 
 
+                        Cond_Pag = dadosFP.AUTONUM_FORMA_PAGAMENTO;
+                        dadosFP.condPag = dadosFP.AUTONUM_FORMA_PAGAMENTO;
+                        dataVenc = Convert.ToDateTime(obtemvencimento(dadosFP, fonteIpa, fonteGrp, fonteParc, fonteGR, Fonteltl));
+                        clienteSapEntrega = dadosFP.CODCLI_SAP.ToString();
+                        Condicao = obtemcondicao(dataVenc);
+                        if ((Condicao != "") && (Condicao.Length==4))
+                        {
+                            Cond_Pag = Cond_Pag.Substring(0,1) + Condicao.Substring(1,3);
+                        }
+                    }
 
 
 
@@ -2380,16 +2791,24 @@ validaSemana:
                     sb.AppendLine("     ID_FATURA_SB, ");
                     sb.AppendLine("     COND_MANUAL, ");
                     sb.AppendLine("     FPLTL, ");
-                    sb.AppendLine("     CLIENTE_SAP_ENTREGA, FPOP, FPIPA, FPGRP, FPPARC, FPGR, FPRED, ");
+                    sb.AppendLine("     CLIENTE_SAP_ENTREGA, FPOP, FPIPA, FPGRP, FPPARC, FPGR, FPRED  ");
 
 
 
-                   sb.AppendLine(" ) VALUES ( ");
+                    sb.AppendLine(" ) VALUES ( ");
 
                     sb.AppendLine(" " + idFat + ",");
                     sb.AppendLine(" '" + CodCli + "',   ");
                     sb.AppendLine("  TO_DATE('" + dtEmissao + "', 'DD/MM/YYYY'), ");
-                    sb.AppendLine("  TO_DATE('" + dtVencimento + "', 'DD/MM/YYYY'), ");
+                    if (numeropix == 0)
+                    {
+                        sb.AppendLine("  TO_DATE('" + dataVenc.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY'), ");
+                    }
+                    else
+                    {
+                        sb.AppendLine("  TO_DATE('" + dtEmissao + "', 'DD/MM/YYYY'), ");
+
+                    }
                     sb.AppendLine(" " + idFat.ToString("00000000") + ", ");
                     //valor nota
                     sb.AppendLine(" '" + valor_Nota + "', ");
@@ -2423,7 +2842,7 @@ validaSemana:
                     sb.AppendLine(" 1,  ");
                     sb.AppendLine(" 0,  ");
                     sb.AppendLine(" " + usuario + ",  ");
-                    sb.AppendLine(" TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY') , ");
+                    sb.AppendLine(" sysdate , ");
                     sb.AppendLine(" NULL, ");
                     sb.AppendLine(" " + codEmpresa + ", ");
 
@@ -2463,18 +2882,18 @@ validaSemana:
                     {
                         cidade = sapCli.CIDCOB;
                     }
-                    sb.AppendLine(" '" + cidade.Replace("'","") + "', ");
+                    sb.AppendLine(" '" + cidade.Replace("'", "") + "', ");
 
                     if (sapCli.TIPCLI.ToUpper() == "J")
                     {
                         tipoPessoa = 1;
-                        cgccli = Formata_CGCCPF(  sapCli.CGCCPF,1);
+                        cgccli = Formata_CGCCPF(sapCli.CGCCPF, 1);
                     }
                     else
                     {
                         tipoPessoa = 2;
 
-                        cgccli = Formata_CGCCPF(  sapCli.CGCCPF,2);
+                        cgccli = Formata_CGCCPF(sapCli.CGCCPF, 2);
                     }
 
 
@@ -2497,22 +2916,22 @@ validaSemana:
                     {
                         sb.AppendLine(" '" + sapCli.SIGUFS + "', ");
                     }
-                    else 
+                    else
                     {
                         sb.AppendLine("  '" + sapCli.ESTCOB + "', ");
                     }
-                    
-                    
+
+
                     if (sapCli.CEPCOB == "")
                     {
                         CepCli = sapCli.CEPCLI;
                     }
-                    else 
+                    else
                     {
                         CepCli = sapCli.CEPCOB;
                     }
                     sb.AppendLine(" '" + CepCli + "', ");
-                    sb.AppendLine(" '" +  sapCli.INSEST + "', ");
+                    sb.AppendLine(" '" + sapCli.INSEST + "', ");
                     sb.AppendLine(" 0, ");
 
                     //Razao_Representante 
@@ -2522,21 +2941,21 @@ validaSemana:
                         CGCRep = Formata_CGCCPF(cgccpf, 1);
                         CGCRep = razao_representante + "  - C.G.C.: " + CGCRep;
                     }
-                    else 
+                    else
                     {
                         CGCRep = Formata_CGCCPF(cgccpf, 2);
                         CGCRep = razao_representante + "  - C.P.F.: " + CGCRep;
                     }
-                    
 
-                    sb.AppendLine(" '"+ CGCRep +"',  "); ;
+
+                    sb.AppendLine(" '" + CGCRep + "',  "); ;
 
                     //CODIBGE, SERIE, CODCPG
-                    sb.AppendLine(" " + sapCli.IBGE  + ", ");
-                    sb.AppendLine(" '"+ serieNF +"' ,");
+                    sb.AppendLine(" " + sapCli.IBGE + ", ");
+                    sb.AppendLine(" '" + serieNF + "' ,");
                     if (numeropix == 0)
-                        {
-                        sb.AppendLine(" '', ");
+                    {
+                        sb.AppendLine(" '" + Cond_Pag + "', ");
                     }
                     else
                     {
@@ -2544,7 +2963,7 @@ validaSemana:
 
                     }
                     //Lote e parceiro
-                    sb.AppendLine(" " + Lote + ", ");
+                    sb.AppendLine(" " + BLote + ", ");
                     sb.AppendLine(" " + Parceiro + ", ");
                     //Embarque
                     sb.AppendLine(" '" + Embarque + "',  ");
@@ -2555,7 +2974,7 @@ validaSemana:
 
                     sb.AppendLine(" 0 ");
 
-                    sb.AppendLine(" , '" & clienteSapEntrega & "'," & fonteOP & "," & fonteIpa & "," & fonteGrp & "," & fonteParc & "," & fonteGR & " , " & fonteRedex & " , ");
+                    sb.AppendLine(" , '" + clienteSapEntrega + "'," + fonteOP + "," + fonteIpa + "," + fonteGrp + "," + fonteParc + "," + fonteGR + " , " + fonteRedex);
 
                     sb.AppendLine(" ) ");
 
@@ -2571,15 +2990,15 @@ validaSemana:
                     var monta_Itens = Monta_Itens_Nota(gr, servico);
 
                     int i = 0;
-                    int j = 2; 
+                    int j = 2;
 
                     foreach (var monta_item in monta_Itens)
                     {
-                        i = i + 1; 
+                        i = i + 1;
 
                         corpo_nota = corpo_nota + MontaCorpoNota(i, monta_item.DESCR_SERVICO, monta_item.TOTAL);
 
-                        Monta_Insert_Fatura_Item(posicao, i, monta_item.DESCR_SERVICO, monta_item.TOTAL, monta_item.SERVICO,  gr.ToString(), 0, 0, 0, "");
+                        Monta_Insert_Fatura_Item(posicao, i, monta_item.DESCR_SERVICO, monta_item.TOTAL, monta_item.SERVICO, gr.ToString(), 0, 0, 0, "");
                     }
 
                     var monta_Itens_IMP = Monta_Itens_Nota_Imp(gr);
@@ -2593,13 +3012,16 @@ validaSemana:
                         corpo_nota = corpo_nota + MontaCorpoNota(i, servico, valor_Nota);
                     }
 
-                    return corpo_nota;                    
+                    return corpo_nota;
 
                 }
             }
             catch (Exception ex)
             {
-                Gravalogpix(numeropix.ToString(), ex.Message);
+                if (numeropix > 0)
+                { Gravalogpix(numeropix.ToString(), ex.Message); }
+                else
+                { Gravalogfat(gr, ex.Message); }
                 return "";
             }
         }
@@ -2687,9 +3109,9 @@ validaSemana:
                 return false;
             }
         }
-        public string geraIntegracao(string servico, string dtEmissao, int patioGR, 
-            string cbMeio, bool check, string tituloSap, string dtMov, string conta, string valor, string condicao, 
-            SapCliente sapcliente, int id_nota,  int cod_empresa, string serie, string corpoNota,string gr, long numeropix)
+        public string geraIntegracao(string servico, string dtEmissao, int patioGR,
+            string cbMeio, bool check, string tituloSap, string dtMov, string conta, string valor, string condicao,
+            SapCliente sapcliente, int id_nota, int cod_empresa, string serie, string corpoNota, string gr, long numeropix)
         {
             try
             {
@@ -2701,10 +3123,10 @@ validaSemana:
                 string Tipo_Emp = sapcliente.TIPMER;
                 string[] CMD_XML = new string[555];
                 string[] CMD_SID = new string[555];
-                
+
                 int I = 0;
                 int QTD_I = 0;
-             
+
                 string GeraRPSFAT = "1";
                 string monta_SID_Fecha_Nota = "";
                 string monta_SID_Itens = "";
@@ -2716,6 +3138,11 @@ validaSemana:
                 {
                     monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", true, tituloSap, dtEmissao, conta, valor.ToString(), condicao);
                 }
+                else
+                {
+                    monta_SID_Fecha_Nota = Monta_Sid_FechaNota(serie, "NFE", false, tituloSap, dtEmissao, conta, valor.ToString(), condicao);
+                }
+
 
                 var itens = Monta_Itens_Nota(gr, servico);
 
@@ -2799,6 +3226,12 @@ validaSemana:
                     }
                 }
 
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    con.Query<string>("Update Fatura.faturanota set codtns = '" + codOper + "' where id = " + id_nota).FirstOrDefault();
+
+                }
+
                 string strInstruction = "";
                 string strInstructionSAP = "";
 
@@ -2806,7 +3239,7 @@ validaSemana:
                 string taux = cod_empresa == 1 ? "2" : "3";
 
                 strInstruction = strInstruction + "<param nome='CodEmp' valor='" + taux + "'/>";
-                                                                                 
+
 
                 strInstruction = strInstruction + "<param nome='CodFil' valor='1'/></sid>";
 
@@ -2821,7 +3254,7 @@ validaSemana:
                 strInstruction = strInstruction + "<param nome='TNSSER' valor='" + codOper + "'/>";
 
                 strInstruction = strInstruction + "<param nome='CODREP' valor='1'/>";
-                strInstruction = strInstruction + "<param nome='USU_GR' valor='90'/>";
+                strInstruction = strInstruction + "<param nome='USU_GR' valor='GR-" + gr + "'/>";
 
                 if (dtEmissao == "")
                 {
@@ -2837,7 +3270,7 @@ validaSemana:
                 }
                 else
                 {
-                    strInstruction = strInstruction + "<param nome='CodCpg' valor=''/>";
+                    strInstruction = strInstruction + "<param nome='CodCpg' valor='" + condicao + "'/>";
                 }
 
                 strInstruction = strInstruction + "<param nome='SETATV' valor='RA'/>";
@@ -2857,7 +3290,7 @@ validaSemana:
 
 
                 strInstruction = strInstruction + "</sid>";
-                CMD_XML[0] = strInstruction;
+                CMD_XML[1] = strInstruction;
 
                 strInstruction = "";
                 strInstruction = CMD_XML[550];
@@ -2895,32 +3328,32 @@ validaSemana:
                 }
                 else
                 {
-                        if (GeraRPSFAT == "1")
+                    if (GeraRPSFAT == "1")
+                    {
+                        if (insereRPSFATProc(id_nota, corpoNota, strInstruction, strInstructionSAP) == false)
                         {
-                            if (insereRPSFATProc(id_nota, corpoNota, strInstruction, strInstructionSAP)==false)
-                            {
-                                return "Erro ao inserir o registro do RPS";
-                            }
+                            return "Erro ao inserir o registro do RPS";
+                        }
+                    }
+                    else
+                    {
+                        var par = GetDadosParametro(cod_empresa);
+                        var corpoRequest = new WSUnico.GeraNotaFiscalDeVendaSAPRequestBody(id_nota, strInstruction, corpoNota, strInstructionSAP);
+                        var requisicao = new WSUnico.GeraNotaFiscalDeVendaSAPRequest(corpoRequest);
+                        WSUnico.ServiceSoap meuServico;
+
+                        if (par.WS_NFE != "")
+                        {
+                            meuServico = new WSUnico.ServiceSoapClient("ServiceSoap3", par.WS_NFE);
                         }
                         else
                         {
-                            var par = GetDadosParametro(cod_empresa);
-                            var corpoRequest = new WSUnico.GeraNotaFiscalDeVendaSAPRequestBody(id_nota, strInstruction, corpoNota, strInstructionSAP);
-                            var requisicao = new WSUnico.GeraNotaFiscalDeVendaSAPRequest(corpoRequest);
-                            WSUnico.ServiceSoap meuServico;
-
-                            if (par.WS_NFE != "")
-                            {
-                                meuServico = new WSUnico.ServiceSoapClient("ServiceSoap3", par.WS_NFE);
-                            }
-                            else
-                            {
-                                meuServico = new WSUnico.ServiceSoapClient();
-                            }
-
-                            Retorno = meuServico.GeraNotaFiscalDeVendaSAP(requisicao).Body.GeraNotaFiscalDeVendaSAPResult.ToString();
+                            meuServico = new WSUnico.ServiceSoapClient();
                         }
+
+                        Retorno = meuServico.GeraNotaFiscalDeVendaSAP(requisicao).Body.GeraNotaFiscalDeVendaSAPResult.ToString();
                     }
+                }
 
                 for (I = 0; I < 550; I++)
                 {
@@ -2928,7 +3361,7 @@ validaSemana:
                     CMD_SID[I] = "";
                 }
 
-                
+
 
                 return "";
 
@@ -2963,7 +3396,7 @@ validaSemana:
             int servico = 0;
 
             try
-            {                
+            {
                 using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                 {
                     StringBuilder sb = new StringBuilder();
@@ -2980,7 +3413,7 @@ validaSemana:
                 return servico;
             }
         }
-       
+
         public IntegracaoBaixa GetList_CriaNota(string tipo, string documentos)
         {
             try
@@ -3047,7 +3480,95 @@ validaSemana:
                 return false;
             }
         }
-        public IntegracaoBaixa GetDadosFaturaGr(string seq_Gr)
+
+        public string obtemEmbarque(string seq_Gr, int Parceiro)
+        {
+            //rsEmbarque As New DataTable;
+            //rsParceiro As New DataTable;
+            string strs = "";
+            try
+            {
+                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                {
+                    strs = "Select NVL(max(DIA_FAT),0) As DIA_FAT FROM sgipa.TB_CAD_PARCEIROS WHERE AUTONUM = " + Parceiro;
+                    string dfat = con.Query<string>(strs.ToString()).FirstOrDefault();
+                    if (dfat.ToString() != "0")
+                    {
+                        strs = "Select nvl(max(EMBARQUE),'')  FROM sgipa.TB_BOSCH WHERE AUTONUM_BL In (Select DISTINCT BL FROM sgipa.TB_GR_BL WHERE SEQ_GR In(" + seq_Gr.ToString() + "))";
+                        string emb = con.Query<string>(strs.ToString()).FirstOrDefault();
+                        if (emb.ToString() != "")
+                        {
+                            return emb;
+                        }
+                        else
+                        {
+                            return "";
+                        }
+                    }
+                    else
+                    {
+                        return "z";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        
+    }
+            public IntegracaoBaixa GetDadosFaturaGr(string seq_Gr)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" NVL(FPPARC,0) as FPPARC,   ");
+                        sb.AppendLine(" NVL(FPGRP, 0) as FPGRP,   ");
+                        sb.AppendLine(" NVL(FPIPA, 0) as FPIPA,   ");
+                        sb.AppendLine(" NVL(FPLTL, 0) as FPLTL,   ");
+                        sb.AppendLine(" PARCEIRO,   ");
+                        sb.AppendLine(" SEQ_GR,   ");
+                        sb.AppendLine(" LOTE,   ");
+                        sb.AppendLine(" NVL(fpgr,0) as fpgr  , ");
+                        sb.AppendLine(" flag_hubport,   ");
+                        sb.AppendLine(" Codcli,  ");
+                        sb.AppendLine(" Razao,   ");
+                        sb.AppendLine(" CGC,   ");
+                        sb.AppendLine(" Cidade_cli,   ");
+                        sb.AppendLine(" autonum_cli,   ");
+                        sb.AppendLine(" Ind_Codcli,  ");
+                        sb.AppendLine(" Ind_Razao,  ");
+                        sb.AppendLine(" Ind_CGC,  ");
+                        sb.AppendLine(" Ind_Cidade_cli,  ");
+                        sb.AppendLine(" num_documento as NUM_DOC,   ");
+                        sb.AppendLine(" TIPO_DOCUMENTO TIPODOC_DESCRICAO, ");
+                        sb.AppendLine(" PATIO ,");
+                        sb.AppendLine(" Ind_autonum  ");
+                        sb.AppendLine(" FROM  ");
+                        sb.AppendLine("  FATURA.FATURA_GR ");
+                                           
+                        
+                    sb.AppendLine(" WHERE  ");
+                        sb.AppendLine(" SEQ_GR in( " + seq_Gr + ")");
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+
+
+        public IEnumerable<IntegracaoBaixa> GetVenc( )
+ 
         {
             try
             {
@@ -3055,34 +3576,17 @@ validaSemana:
                 {
                     StringBuilder sb = new StringBuilder();
 
+
                     sb.AppendLine(" SELECT  ");
                     sb.AppendLine(" NVL(FPPARC,0) as FPPARC,   ");
                     sb.AppendLine(" NVL(FPGRP, 0) as FPGRP,   ");
                     sb.AppendLine(" NVL(FPIPA, 0) as FPIPA,   ");
-                    sb.AppendLine(" PARCEIRO,   ");
-                    sb.AppendLine(" SEQ_GR,   ");
-                    sb.AppendLine(" LOTE,   ");
+                    sb.AppendLine(" NVL(FPLTL, 0) as FPLTL,   ");
                     sb.AppendLine(" NVL(fpgr,0) as fpgr  , ");
-                    sb.AppendLine(" flag_hubport,   ");
-                    sb.AppendLine(" Codcli,  ");
-                    sb.AppendLine(" Razao,   ");
-                    sb.AppendLine(" CGC,   ");
-                    sb.AppendLine(" Cidade_cli,   ");
-                    sb.AppendLine(" autonum_cli,   ");
-                    sb.AppendLine(" Ind_Codcli,  ");
-                    sb.AppendLine(" Ind_Razao,  ");
-                    sb.AppendLine(" Ind_CGC,  ");
-                    sb.AppendLine(" Ind_Cidade_cli,  ");
-                    sb.AppendLine(" num_documento as NUM_DOC,   ");
-                    sb.AppendLine(" TIPO_DOCUMENTO TIPODOC_DESCRICAO, ");
-                    sb.AppendLine(" PATIO ,");
-                    sb.AppendLine(" Ind_autonum  ");
-                    sb.AppendLine(" FROM  ");
-                    sb.AppendLine(" FATURA.FATURA_GR ");
-                    sb.AppendLine(" WHERE  ");
-                    sb.AppendLine(" SEQ_GR in( " + seq_Gr +")");
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+                    sb.AppendLine(" Id AUTONUM   ");
+                    sb.AppendLine(" FROM FATURA.FATURANOTA   where dt_vencimento='01/01/0001'  ");
+             
+                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
 
                     return query;
                 }
@@ -3093,421 +3597,421 @@ validaSemana:
             }
         }
         public bool primeiraHub(string seq_gr)
-        {
-            try
             {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" select nvl(max(tabela_gr),0)   from  SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + ") ");
-
-
-                    int txtIDContrato = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    sb.Clear();
-
-                    sb.AppendLine(" select max(FLAG_HUBPORT)  from Sgipa.tb_listas_precos where autonum=  " + txtIDContrato);
-
-                    int maxHubPort = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    sb.Clear();
-
-                    if (maxHubPort == 1)
-                    {
-                        sb.AppendLine(" SELECT NVL(MAX(G.SEQ_GR),0)  FROM SGIPA.TB_GR_BL G INNER JOIN SGIPA.TB_SERVICOS_FATURADOS A ON G.BL=A.BL AND G.SEQ_GR=A.SEQ_GR INNER JOIN  ");
-                        sb.AppendLine(" SGIPA.TB_LISTA_PRECO_SERVICOS_FIXOS B ON A.SERVICO=B.SERVICO WHERE G.STATUS_GR IN('GE'  ,'IM') AND B.LISTA= " + txtIDContrato);
-                        sb.AppendLine(" And G.SEQ_GR In(" + seq_gr + ") And NVL(B.FLAG_COBRAR_NVOCC,0)=1 ");
-
-                        int maxSeqGr = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                        if (maxSeqGr > 0)
-                        {
-                            return true;
-                        }
-                    }
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public bool insereRPSFATProc(int id, string str, string corpo, string strSAP)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    {
-                        using (OracleCommand cmd = new OracleCommand("FATURA.PROC_CHRONOS_RPS", con))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-
-                            cmd.Parameters.Add(new OracleParameter
-                            {
-                                OracleDbType = OracleDbType.Long,
-                                Direction = ParameterDirection.Input,
-                                Value = id
-                            });
-                            cmd.Parameters.Add(new OracleParameter
-                            {
-                                OracleDbType = OracleDbType.Clob,
-                                Direction = ParameterDirection.Input,
-                                Value = corpo
-                            });
-                            cmd.Parameters.Add(new OracleParameter
-                            {
-                                OracleDbType = OracleDbType.Clob,
-                                Direction = ParameterDirection.Input,
-                                Value = strSAP
-                            });
-                            cmd.Parameters.Add(new OracleParameter
-                            {
-                                OracleDbType = OracleDbType.Varchar2,
-                                Direction = ParameterDirection.Input,
-                                Value =str
-                            });
-                            cmd.Parameters.Add(new OracleParameter
-                            {
-                                OracleDbType = OracleDbType.Int32,
-                                Direction = ParameterDirection.Input,
-                                Value = 0
-                            });
-
-                            cmd.Parameters.Add(new OracleParameter
-                            {
-                                OracleDbType = OracleDbType.Varchar2,
-                                Direction = ParameterDirection.Output
-                            });
-
-                            con.Open();
-                                
-           
-                            OracleDataReader retorno = cmd.ExecuteReader();
-
-
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public bool UpdateFatura(int id)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" UPDATE FATURA.FATURANOTA SET STATUSNFE = 1 WHERE ID = " + id);
-
-                    bool update_Fat = con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public Empresa GetDadosParametro(int cod_empresa)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.Append(" SELECT ID, NOME_EMPRESA, COD_EMPRESA, JUROS, QTD_DIAS_ALERTA, DIA_FAT, BASE_SAPIENS, DIR_LOG, LETRA_NOTA_GR, LETRA_NOTA_MINUTA, LETRA_NOTA_REDEX, SERIE_IPA, SERIE_OPE, SERIE_REDEX, SERVIDOR_SID, LOGIN_SID, SENHA_SID, WS_NFE, WS_BOLETO_SAP, MSG_EMAIL_NFE, EMAIL_COPIA, EMAIL_RECUSA_IMG, END_EMAIL_ENVIO FROM  SGIPA.PARAMETRO WHERE COD_EMPRESA= " + cod_empresa);
-
-                    var query = con.Query<Empresa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-        }
-        public string obtemCodeTipoDoc(string tipoDoc)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine("  SELECT CODE FROM SGIPA.TB_TIPOS_DOCUMENTOS WHERE DESCR = '" + tipoDoc + "' ");
-
-                    string code = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-                    return code;                   
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public IEnumerable<IntegracaoBaixa> GetServicoIDs(string seq_gr)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine("  SELECT DISTINCT SERVICO FROM SGIPA.TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" + seq_gr + ")  ");
-                    sb.AppendLine("  AND (NVL(VALOR,0) + NVL(ADICIONAL,0) + NVL(DESCONTO,0) ) > 0 ");
-
-                    var servico = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
-
-                    return servico; 
-                }
-            }
-            catch (Exception Ex)
-            {
-                return null;
-            }
-        }
-        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota_Imp(string gr )
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine(" SELECT SUM(A.VALOR_IMPOSTO) AS VALOR_IMPOSTO, A.AUTONUM_IMPOSTO , C.DESCRICAO AS DESCR_SERVICO  ");
-                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS A INNER JOIN ");
-                    sb.AppendLine(" (SELECT AUTONUM, SERVICO, SEQ_GR FROM SGIPA.TB_SERVICOS_FATURADOS) B  ON A.AUTONUM_SERVICO_FATURADO = B.AUTONUM ");
-                    sb.AppendLine(" JOIN SGIPA.TB_CAD_IMPOSTOS C ON A.AUTONUM_IMPOSTO = C.AUTONUM ");
-                    sb.AppendLine(" WHERE A.VALOR_IMPOSTO >0 AND B.SEQ_GR IN(" + gr + ") ");
-                    sb.AppendLine(" GROUP BY A.AUTONUM_IMPOSTO, C.DESCRICAO ");
-                    sb.AppendLine(" ORDER BY C.DESCRICAO, A.AUTONUM_IMPOSTO ");
-
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
-
-                    return query;                     
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota(string gr, string servicos)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT SUM(A.VALOR + A.ADICIONAL + A.DESCONTO) AS TOTAL, SUM(C.IMPOSTO) AS IMPOSTOS, ");
-                    sb.AppendLine("  A.SERVICO, replace(B.DESCR,'''','') AS DESCR_SERVICO, B.CODSER_SAP CODSER ");
-                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A JOIN  ");
-                    sb.AppendLine(" SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM LEFT JOIN ");
-                    sb.AppendLine(" (SELECT AUTONUM_SERVICO_FATURADO, SUM(VALOR_IMPOSTO) AS IMPOSTO " );
-                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS ");
-                    sb.AppendLine(" GROUP BY AUTONUM_SERVICO_FATURADO) C   ");
-                    sb.AppendLine(" ON A.AUTONUM = C.AUTONUM_SERVICO_FATURADO ");
-                    sb.AppendLine(" WHERE  a.valor>0 and A.SEQ_GR IN(" + gr + ") ");
-
-                    if (servicos != "")
-                    {
-                        sb.AppendLine(" AND A.SERVICO IN(" + servicos + ") ");
-                    }
-
-                    sb.AppendLine(" GROUP BY A.SERVICO, B.DESCR, B.CODSER_SAP ");
-                
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            { 
-                return null;
-            }
-        }
-        public IEnumerable<IntegracaoBaixa> getAutonumServicosFaturados(string gr )
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT AUTONUM FROM SGIPA.TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" + gr + ") ");
-                  
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public string obtemTituloSapiens(int codEmpresa)
-        {
-            try
-            {
+                try
                 {
                     using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                     {
                         StringBuilder sb = new StringBuilder();
 
-                        sb.AppendLine(" SELECT TIT_SAPIENS FROM SGIPA.TB_SERIE WHERE Cod_Empresa =  " + codEmpresa);
-                        sb.AppendLine("  AND TIPO_GR = 1 AND DATA_INI <= TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY') ");
-                        sb.AppendLine("  AND  DATA_FIM >= TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "','DD/MM/YYYY')  ");
+                        sb.AppendLine(" select nvl(max(tabela_gr),0)   from  SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + ") ");
 
-                        string titSapiens = con.Query<string>(sb.ToString()).FirstOrDefault();
 
-                        return titSapiens;
-                    }   
+                        int txtIDContrato = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        sb.Clear();
+
+                        sb.AppendLine(" select max(FLAG_HUBPORT)  from Sgipa.tb_listas_precos where autonum=  " + txtIDContrato);
+
+                        int maxHubPort = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        sb.Clear();
+
+                        if (maxHubPort == 1)
+                        {
+                            sb.AppendLine(" SELECT NVL(MAX(G.SEQ_GR),0)  FROM SGIPA.TB_GR_BL G INNER JOIN SGIPA.TB_SERVICOS_FATURADOS A ON G.BL=A.BL AND G.SEQ_GR=A.SEQ_GR INNER JOIN  ");
+                            sb.AppendLine(" SGIPA.TB_LISTA_PRECO_SERVICOS_FIXOS B ON A.SERVICO=B.SERVICO WHERE G.STATUS_GR IN('GE'  ,'IM') AND B.LISTA= " + txtIDContrato);
+                            sb.AppendLine(" And G.SEQ_GR In(" + seq_gr + ") And NVL(B.FLAG_COBRAR_NVOCC,0)=1 ");
+
+                            int maxSeqGr = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                            if (maxSeqGr > 0)
+                            {
+                                return true;
+                            }
+                        }
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
                 }
             }
-            catch (Exception ex)
+            public bool insereRPSFATProc(int id, string str, string corpo, string strSAP)
             {
-                return "";            
-            }
-        }
-        public int GetParceiroGR(int seq_Gr)
-        {
-            int query = 0;
-
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                try
                 {
-                    StringBuilder sb = new StringBuilder();
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        {
+                            using (OracleCommand cmd = new OracleCommand("FATURA.PROC_CHRONOS_RPS", con))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
 
-                    sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" PARCEIRO,   ");                    
-                    sb.AppendLine(" WHERE  ");
-                    sb.AppendLine(" SEQ_GR = " + seq_Gr);
+                                cmd.Parameters.Add(new OracleParameter
+                                {
+                                    OracleDbType = OracleDbType.Long,
+                                    Direction = ParameterDirection.Input,
+                                    Value = id
+                                });
+                                cmd.Parameters.Add(new OracleParameter
+                                {
+                                    OracleDbType = OracleDbType.Clob,
+                                    Direction = ParameterDirection.Input,
+                                    Value = corpo
+                                });
+                                cmd.Parameters.Add(new OracleParameter
+                                {
+                                    OracleDbType = OracleDbType.Clob,
+                                    Direction = ParameterDirection.Input,
+                                    Value = strSAP
+                                });
+                                cmd.Parameters.Add(new OracleParameter
+                                {
+                                    OracleDbType = OracleDbType.Varchar2,
+                                    Direction = ParameterDirection.Input,
+                                    Value = str
+                                });
+                                cmd.Parameters.Add(new OracleParameter
+                                {
+                                    OracleDbType = OracleDbType.Int32,
+                                    Direction = ParameterDirection.Input,
+                                    Value = 0
+                                });
 
-                    query = con.Query<int>(sb.ToString()).FirstOrDefault();
+                                cmd.Parameters.Add(new OracleParameter
+                                {
+                                    OracleDbType = OracleDbType.Varchar2,
+                                    Direction = ParameterDirection.Output
+                                });
 
+                                con.Open();
+
+
+                                OracleDataReader retorno = cmd.ExecuteReader();
+
+
+                                return true;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public bool UpdateFatura(int id)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" UPDATE FATURA.FATURANOTA SET STATUSNFE = 1 WHERE ID = " + id);
+
+                        bool update_Fat = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public Empresa GetDadosParametro(int cod_empresa)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.Append(" SELECT ID, NOME_EMPRESA, COD_EMPRESA, JUROS, QTD_DIAS_ALERTA, DIA_FAT, BASE_SAPIENS, DIR_LOG, LETRA_NOTA_GR, LETRA_NOTA_MINUTA, LETRA_NOTA_REDEX, SERIE_IPA, SERIE_OPE, SERIE_REDEX, SERVIDOR_SID, LOGIN_SID, SENHA_SID, WS_NFE, WS_BOLETO_SAP, MSG_EMAIL_NFE, EMAIL_COPIA, EMAIL_RECUSA_IMG, END_EMAIL_ENVIO FROM  SGIPA.PARAMETRO WHERE COD_EMPRESA= " + cod_empresa);
+
+                        var query = con.Query<Empresa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public string obtemCodeTipoDoc(string tipoDoc)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine("  SELECT CODE FROM SGIPA.TB_TIPOS_DOCUMENTOS WHERE DESCR = '" + tipoDoc + "' ");
+
+                        string code = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return code;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IEnumerable<IntegracaoBaixa> GetServicoIDs(string seq_gr)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine("  SELECT DISTINCT SERVICO FROM SGIPA.TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" + seq_gr + ")  ");
+                        sb.AppendLine("  AND (NVL(VALOR,0) + NVL(ADICIONAL,0) + NVL(DESCONTO,0) ) > 0 ");
+
+                        var servico = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                        return servico;
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    return null;
+                }
+            }
+            public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota_Imp(string gr)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine(" SELECT SUM(A.VALOR_IMPOSTO) AS VALOR_IMPOSTO, A.AUTONUM_IMPOSTO , C.DESCRICAO AS DESCR_SERVICO  ");
+                        sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS A INNER JOIN ");
+                        sb.AppendLine(" (SELECT AUTONUM, SERVICO, SEQ_GR FROM SGIPA.TB_SERVICOS_FATURADOS) B  ON A.AUTONUM_SERVICO_FATURADO = B.AUTONUM ");
+                        sb.AppendLine(" JOIN SGIPA.TB_CAD_IMPOSTOS C ON A.AUTONUM_IMPOSTO = C.AUTONUM ");
+                        sb.AppendLine(" WHERE A.VALOR_IMPOSTO >0 AND B.SEQ_GR IN(" + gr + ") ");
+                        sb.AppendLine(" GROUP BY A.AUTONUM_IMPOSTO, C.DESCRICAO ");
+                        sb.AppendLine(" ORDER BY C.DESCRICAO, A.AUTONUM_IMPOSTO ");
+
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IEnumerable<IntegracaoBaixa> Monta_Itens_Nota(string gr, string servicos)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT SUM(A.VALOR + A.ADICIONAL + A.DESCONTO) AS TOTAL, SUM(C.IMPOSTO) AS IMPOSTOS, ");
+                        sb.AppendLine("  A.SERVICO, replace(B.DESCR,'''','') AS DESCR_SERVICO, B.CODSER_SAP CODSER ");
+                        sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A JOIN  ");
+                        sb.AppendLine(" SGIPA.TB_SERVICOS_IPA B ON A.SERVICO = B.AUTONUM LEFT JOIN ");
+                        sb.AppendLine(" (SELECT AUTONUM_SERVICO_FATURADO, SUM(VALOR_IMPOSTO) AS IMPOSTO ");
+                        sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS ");
+                        sb.AppendLine(" GROUP BY AUTONUM_SERVICO_FATURADO) C   ");
+                        sb.AppendLine(" ON A.AUTONUM = C.AUTONUM_SERVICO_FATURADO ");
+                        sb.AppendLine(" WHERE  a.valor>0 and A.SEQ_GR IN(" + gr + ") ");
+
+                        if (servicos != "")
+                        {
+                            sb.AppendLine(" AND A.SERVICO IN(" + servicos + ") ");
+                        }
+
+                        sb.AppendLine(" GROUP BY A.SERVICO, B.DESCR, B.CODSER_SAP ");
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IEnumerable<IntegracaoBaixa> getAutonumServicosFaturados(string gr)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT AUTONUM FROM SGIPA.TB_SERVICOS_FATURADOS WHERE SEQ_GR IN(" + gr + ") ");
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public string obtemTituloSapiens(int codEmpresa)
+            {
+                try
+                {
+                    {
+                        using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                        {
+                            StringBuilder sb = new StringBuilder();
+
+                            sb.AppendLine(" SELECT TIT_SAPIENS FROM SGIPA.TB_SERIE WHERE Cod_Empresa =  " + codEmpresa);
+                            sb.AppendLine("  AND TIPO_GR = 1 AND DATA_INI <= TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "', 'DD/MM/YYYY') ");
+                            sb.AppendLine("  AND  DATA_FIM >= TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "','DD/MM/YYYY')  ");
+
+                            string titSapiens = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                            return titSapiens;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+            }
+            public int GetParceiroGR(int seq_Gr)
+            {
+                int query = 0;
+
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" PARCEIRO,   ");
+                        sb.AppendLine(" WHERE  ");
+                        sb.AppendLine(" SEQ_GR = " + seq_Gr);
+
+                        query = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
                     return query;
                 }
             }
-            catch (Exception ex)
+            public string MontaCorpoNota(int item, string servico, decimal valor)
             {
-                return query;
+                try
+                {
+                    string strS = "";
+
+                    strS = "| Item:" + item + " - ";
+                    strS = strS + servico.ToUpper() + " - ";
+                    strS = strS + "R$ " + valor.ToString().Replace(",", ".");
+
+
+                    return strS;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
             }
-        }
-        public string MontaCorpoNota(int item, string servico, decimal valor)
-        {
-            try
+            public IntegracaoBaixa ObtemStatusNota(int id)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT A.NFE, A.STATUSNFE, C.CRITICA, C.RPSNUM ");
+                        sb.AppendLine(" FROM FATURA.FATURANOTA A LEFT JOIN ");
+                        sb.AppendLine(" (SELECT MAX(RPSNUM) AS RPSNUM, FATSEQ ");
+                        sb.AppendLine(" FROM FATURA.RPSFAT GROUP BY FATSEQ) B ON A.ID = B.FATSEQ LEFT JOIN ");
+                        sb.AppendLine(" FATURA.RPSFAT C ON C.RPSNUM = B.RPSNUM AND C.FATSEQ = B.FATSEQ ");
+                        sb.AppendLine(" WHERE  A.ID =" + id);
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            #endregion
+            #region monta_Sid
+            public string Monta_Sid_FechaNota(string Serie, string Tipo, bool baixaTitulo, string tituloSap, string dtNow,
+                string conta, string valor, string condicao)
             {
                 string strS = "";
 
-                strS = "| Item:" + item + " - ";
-                strS = strS + servico.ToUpper() + " - ";
-                strS = strS + "R$ " + valor.ToString().Replace(",", ".");
-
-
-                return strS;
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-        }
-        public IntegracaoBaixa ObtemStatusNota(int id)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                try
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT A.NFE, A.STATUSNFE, C.CRITICA, C.RPSNUM ");
-                    sb.AppendLine(" FROM FATURA.FATURANOTA A LEFT JOIN ");
-                    sb.AppendLine(" (SELECT MAX(RPSNUM) AS RPSNUM, FATSEQ ");
-                    sb.AppendLine(" FROM FATURA.RPSFAT GROUP BY FATSEQ) B ON A.ID = B.FATSEQ LEFT JOIN ");
-                    sb.AppendLine(" FATURA.RPSFAT C ON C.RPSNUM = B.RPSNUM AND C.FATSEQ = B.FATSEQ ");
-                    sb.AppendLine(" WHERE  A.ID =" + id);
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-        }
-        #endregion
-        #region monta_Sid
-        public string Monta_Sid_FechaNota(string Serie, string Tipo,  bool baixaTitulo, string tituloSap, string dtNow,
-            string conta, string valor, string condicao)
-        {
-            string strS = "";
-
-            try
-            {
-                strS = "<sid acao='SID.Nfv.Fechar'>";
-                strS = strS + "<param nome='CodSnf' valor='" + Serie + "'/>";
-                strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
-
-                if (baixaTitulo)
-                {
-                    strS = strS + "<sid acao='SID.Tcr.Baixar'>";
-                    strS = strS + "<param nome='NumTit' valor='@NUMNFE" + tituloSap + "'/>";
-                    strS = strS + "<param nome='CodTpt' valor='DUP'/>";
-                    strS = strS + "<param nome='CodTns' valor='90356'/>";
-                    strS = strS + "<param nome='DatMov' valor='" + dtNow + "'/>";
-                    strS = strS + "<param nome='DatPgt' valor='" + dtNow + "'/>";
-                    strS = strS + "<param nome='NumCco' valor='" + conta + "'/>";
-                    strS = strS + "<param nome='VlrMov' valor='" + valor.Replace(".", "").Replace("R$", "").ToUpper() + "'/>";
-                    strS = strS + "<param nome='NumDoc' valor='@NUMNFE'/>";
-                    strS = strS + "<param nome='CodFpg' valor='GRDP'/>";
-                    strS = strS + "<param nome='TnsBxa' valor='90624'/>";
-                    strS = strS + "</sid>";
-                }
-
-                
-                strS = strS + "</sidxml>";
-
-                return strS;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public string Monta_Sid_Itens(string Tipo, int Empresa, int Item, string Serie, string codServico, string Servico, double preco, string CodigoSer)
-        {
-            string strS = "";
-            string SisFin = "SAP";
-            string Monta_Sid_Itens = "";
-
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    strS = "<sid acao='SID.Nfv.GravarServico'>";
+                    strS = "<sid acao='SID.Nfv.Fechar'>";
                     strS = strS + "<param nome='CodSnf' valor='" + Serie + "'/>";
-                    strS = strS + "<param nome='SeqIsv' valor='" + Item + "'/>";
+                    strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
 
-                    
+                    if (baixaTitulo)
+                    {
+                        strS = strS + "<sid acao='SID.Tcr.Baixar'>";
+                        strS = strS + "<param nome='NumTit' valor='@NUMNFE" + tituloSap + "'/>";
+                        strS = strS + "<param nome='CodTpt' valor='DUP'/>";
+                        strS = strS + "<param nome='CodTns' valor='90356'/>";
+                        strS = strS + "<param nome='DatMov' valor='" + dtNow + "'/>";
+                        strS = strS + "<param nome='DatPgt' valor='" + dtNow + "'/>";
+                        strS = strS + "<param nome='NumCco' valor='" + conta + "'/>";
+                        strS = strS + "<param nome='VlrMov' valor='" + valor.Replace(".", "").Replace("R$", "").ToUpper() + "'/>";
+                        strS = strS + "<param nome='NumDoc' valor='@NUMNFE'/>";
+                        strS = strS + "<param nome='CodFpg' valor='GRDP'/>";
+                        strS = strS + "<param nome='TnsBxa' valor='90624'/>";
+                        strS = strS + "</sid>";
+                    }
+
+
+                    strS = strS + "</sidxml>";
+
+                    return strS;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public string Monta_Sid_Itens(string Tipo, int Empresa, int Item, string Serie, string codServico, string Servico, double preco, string CodigoSer)
+            {
+                string strS = "";
+                string SisFin = "SAP";
+                string Monta_Sid_Itens = "";
+
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        strS = "<sid acao='SID.Nfv.GravarServico'>";
+                        strS = strS + "<param nome='CodSnf' valor='" + Serie + "'/>";
+                        strS = strS + "<param nome='SeqIsv' valor='" + Item + "'/>";
+
+
                         if (CodigoSer != "")
                         {
 
@@ -3516,1244 +4020,847 @@ validaSemana:
                         else
                         {
                             Monta_Sid_Itens = "ERRO: O Serviço " + Servico.ToUpper() + " - [" + codServico + "] não possui codigo de Serviço relacionado ao SAP - Operação Cancelada";
-                            return Monta_Sid_Itens;    
+                            return Monta_Sid_Itens;
                         }
-                   
-                    strS = strS + "<param nome='PreUni' valor='" + preco + "'/>";
-                    strS = strS + "<param nome='QtdFat' valor='1'/>";
-                    strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
 
-                    return strS;
-                }
+                        strS = strS + "<param nome='PreUni' valor='" + preco + "'/>";
+                        strS = strS + "<param nome='QtdFat' valor='1'/>";
+                        strS = strS + "<param nome='NumNfv' valor='@numnfe'/></sid>";
 
-                
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        #endregion
-
-        #region consistencias GR
-
-        public string consistenciaGR(string seq_gr, int parceiro)
-        {
-            int grRPS = 0;
-            int grDoc = 0;
-            int grZerada = 0;
-            int grEmBranco = 0;            
-            string embarque = "";
-            int docs = 0;
-            string mensagem = "";
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-
-                    sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN (" + seq_gr + ") AND NVL(RPS, 0) = 1 ");
-
-                    grRPS = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    if (grRPS > 0)
-                    {
-                        mensagem = "GR já possui RPS/Faturamento gerado";
-                    }
-
-                    sb.Clear();
-
-                    sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL WHERE AUTONUM IN (");
-                    sb.AppendLine(" select BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + ")");
-                    sb.AppendLine("  AND NVL(RPS, 0) = 1) ");
-                    sb.AppendLine(" And (NVL(NUM_DOCUMENTO,' ') = ' ' OR NUM_DOCUMENTO = '') ");
-
-                    grDoc = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    if(grDoc > 0)
-                    {
-                        mensagem = "O Documento da GR [" + seq_gr + "] está em branco"; 
-                    }
-
-                    sb.Clear();
-
-                    sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN (" + seq_gr + ") AND NVL(VALOR_GR,0) = 0 ");
-
-                    grZerada = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-
-                    if (grZerada > 0)
-                    {
-                        mensagem = "Uma ou mais GRs com o valor zerado";
+                        return strS;
                     }
 
 
-                    sb.Clear();
-
-                    sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL BL ");
-                    sb.AppendLine(" INNER JOIN SGIPA.TB_TIPOS_DOCUMENTOS TP ON BL.TIPO_DOCUMENTO = TP.CODE ");
-                    sb.AppendLine(" WHERE BL.AUTONUM IN(SELECT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + "))  ");
-                    sb.AppendLine(" And (NVL(TP.DESCR,' ') = ' ' OR TP.DESCR = '') ");
-
-                    grEmBranco = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    if (grEmBranco > 0)
-                    {
-                        mensagem = "O Tipo Do Documento da Gr[" + seq_gr + "] esta em branco";
-                    }
-
-                    sb.Clear();
-
-                    sb.AppendLine(" SELECT  NVL(DIA_FAT,0) As DIA_FAT FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM =  " + parceiro);
-
-                    int dia_fat = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    sb.Clear();
-
-                    if (dia_fat > 0)
-                    {
-                        IntegracaoBaixa.validaEmbarque = true;
-                        sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") )");
-
-                        embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
-                    }
-                    else
-                    {
-                        IntegracaoBaixa.validaEmbarque = false;
-                    }
-
-                    if (IntegracaoBaixa.validaEmbarque == true && embarque == "")
-                    {
-                        mensagem = "Não é possível gerar a nota fiscal, BL sem referência Do cliente cadastrado.";
-                    }
-
-                    sb.Clear();
-
-                    sb.AppendLine(" Select COUNT(DISTINCT NUM_DOCUMENTO) FROM SGIPA.TB_BL ");
-                    sb.AppendLine(" WHERE AUTONUM IN (Select BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ")) ");
-
-
-                    docs = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                    if (docs > 1)
-                    {
-                        mensagem = "Para agrupar GRs é necessário ser o mesmo documento de origem";
-                    }
-
-
-                    return mensagem;
                 }
-            }
-            catch (Exception ex)
-            {
-                return "Erro ao verificar consistenciasGR";
-            }
-        }
-        #endregion
-        public string GetEmbarque(string seq_gr)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                catch (Exception ex)
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT nvl(max(Embarque),' ') as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ")) ");
-
-                    string embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-                    return embarque;
-                }
-            }
-            catch (Exception ex)
-            {
-                return "";
-            }
-        }
-
-        public bool atualizaCODCLI(int codCli, int autonum)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" UPDATE SGIPA.tb_cad_parceiros SET codcli = " + codCli + " WHERE autonum =  " + autonum);
-
-                    con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    sb.Clear();
-
-                    sb.AppendLine(" UPDATE SGIPA.tb_cad_parceiros SET CODCLI_FATURA = " + codCli + " WHERE autonum =  " + autonum);
-
-                    con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        #region envio email 
-        public IntegracaoBaixa GetDadosUsuarioImagem(int lote)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" select id_user, AUTONUM from SGIPA.TB_IMAGEM_PAG_GR where lote =" + lote);
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public bool GetUpdateTbImagem(int NumeroDocumento, int idImagem)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" UPDATE SGIPA.TB_IMAGEM_PAG_GR SET SEQ_GR = " + NumeroDocumento + " WHERE AUTONUM = " + idImagem);
-
-                    bool query = con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public IntegracaoBaixa GetDadosUserInternet(int id)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT  iusnome , iusemail from INTERNET.TB_INT_USER  WHERE iusid = " + id);
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public IntegracaoBaixa GetEmailRecusa(int lote)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder Sb = new StringBuilder();
-
-                    Sb.AppendLine(" Select DISTINCT EMAIL_RECUSA_IMAGEM, PATIO from SGIPA.TB_BL WHERE AUTONUM IN (" + lote + " ) ");
-
-                    var query = con.Query<IntegracaoBaixa>(Sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public IntegracaoBaixa obtemDirEmail()
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine(" SELECT dir_email FROM SGIPA.TB_parametros_sistema  ");
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public IntegracaoBaixa GetTipoDocumento(int lote)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" Select a.num_documento , t.descr ");
-                    sb.AppendLine(" from SGIPA.TB_BL a  ");
-                    sb.AppendLine(" left join SGIPA.TB_Tipos_Documentos b on ");
-                    sb.AppendLine(" a.tipo_documento = t.code  ");
-                    sb.AppendLine(" where ");
-                    sb.AppendLine(" a.autonum =  " + lote);
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public IEnumerable<IntegracaoBaixa> GetDadosFAT_GR(int seqGr)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT F.ID as IDNum, RPS.RPSNUM FROM  ");
-                    sb.AppendLine(" FATURA.FAT_GR AMR ");
-                    sb.AppendLine(" INNER JOIN FATURA.FATURANOTA F On AMR.FATID = F.ID  ");
-                    sb.AppendLine(" INNER JOIN FATURA.RPSFAT RPS ON F.ID = RPS.FATSEQ  ");
-                    sb.AppendLine(" WHERE AMR.SEQ_GR =  " + seqGr);
-                    sb.AppendLine(" AND  ");
-                    sb.AppendLine(" NVL(F.CANCELADA) = 0 ");
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        #endregion
-        #region emiteNotaGRRPS
-        public IntegracaoBaixa GetDadosFaturaNota(int idFat)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" NFE, cliente_sap");
-                    sb.AppendLine(" FROM ");
-                    sb.AppendLine(" FATURA.FATURANOTA ");
-                    sb.AppendLine(" WHERE ID IN(" + idFat + ") ");
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public bool DeleteTempNota(string maquina)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" DELETE FROM FATURA.TEMP_FATURANOTA WHERE MAQUINA_REDE =  '" + maquina + "' ");
-
-                    bool query = con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public IntegracaoBaixa GetDadosCodCliSAP(int cod_sap)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT RAZAO AS NOMCLI,  LOGR_COB AS ENDCOB, TIPO_LOGRADOURO AS USU_TIPLOGR, LOGRADOURO AS ENDCLI, NUM_END AS NENCLI, COMPLEMENTO_END AS CPLEND, NUM_COB AS NENCOB, COMPL_COB AS CPLCOB, ");
-                    sb.AppendLine(" CIDADE AS CIDCLI, CIDADE_COB AS CIDCOB, CGC AS CGCCPF, BAIRRO AS BAICLI, BAIRRO_COB AS BAICOB, ESTADO AS SIGUFS, ESTADO_COB AS ESTCOB, CEP_COB AS CEPCOB, CEP AS CEPCLI, IM AS INSEST ");
-                    sb.AppendLine(" FROM SGIPA.TB_CAD_PARCEIROS WHERE CODCLI_SAP = " + cod_sap);
-
-                    var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
-
-                    return query;                    
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public bool GetInsertTEMP_FaturaNota(string maquina)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" INSERT INTO FATURA.TEMP_FATURANOTA ");
-                    sb.AppendLine(" maquina_rede, ");
-                    sb.AppendLine(" ID, ");
-                    sb.AppendLine(" CLIENTE, ");
-                    sb.AppendLine(" DT_EMISSAO, ");
-                    sb.AppendLine(" DT_VENCIMENTO, ");
-                    sb.AppendLine(" NUMERO, ");
-                    sb.AppendLine(" EXTENSO, ");
-                    sb.AppendLine(" OBS, ");
-                    sb.AppendLine(" NAT_OPER, ");
-                    sb.AppendLine(" COD_OPER, ");
-                    sb.AppendLine(" VALOR, ");
-                    sb.AppendLine(" IMPRESSA, ");
-                    sb.AppendLine(" TIPO, ");
-                    sb.AppendLine(" CANCELADA, ");
-                    sb.AppendLine(" DT_CANCELADA, ");
-                    sb.AppendLine(" GR, ");
-                    sb.AppendLine(" DOCUMENTO_ORIGEM, ");
-                    sb.AppendLine(" TIPO_DOCUMENTO, ");
-                    sb.AppendLine(" BOLETO, ");
-                    sb.AppendLine(" BOLETO_IMPRESSO, ");
-                    sb.AppendLine(" TIPO_FEITO, ");
-                    sb.AppendLine(" ENTRADA, ");
-                    sb.AppendLine(" MINUTA, ");
-                    sb.AppendLine(" VIAGEM, ");
-                    sb.AppendLine(" DOLAR, ");
-                    sb.AppendLine(" OBS2, ");
-                    sb.AppendLine(" DESCONTO, ");
-                    sb.AppendLine(" DEPTO, ");
-                    sb.AppendLine(" FILLAL, ");
-                    sb.AppendLine(" CENTROCUSTO, ");
-                    sb.AppendLine(" CONTA, ");
-                    sb.AppendLine(" INTEGRADA, ");
-                    sb.AppendLine(" VIA, ");
-                    sb.AppendLine(" versao, ");
-                    sb.AppendLine(" codcli, ");
-                    sb.AppendLine(" baicob, ");
-                    sb.AppendLine(" cepcob, ");
-                    sb.AppendLine(" cidcob, ");
-                    sb.AppendLine(" endcob, ");
-                    sb.AppendLine(" estcob, ");
-                    sb.AppendLine(" nomcli, ");
-                    sb.AppendLine(" cgccpf, ");
-                    sb.AppendLine(" insest, ");
-                    sb.AppendLine(" RAZAO_REPRESENTANTE ");
-                    sb.AppendLine(" ) ");
-                    sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" " + maquina + " AS maquinarede  ");
-                    sb.AppendLine(" ID, ");
-                    sb.AppendLine(" CLIENTE, ");
-                    sb.AppendLine(" DT_EMISSAO, ");
-                    sb.AppendLine(" DT_VENCIMENTO, ");
-                    sb.AppendLine(" NUMERO, ");
-                    sb.AppendLine(" EXTENSO, ");
-                    sb.AppendLine(" OBS, ");
-                    sb.AppendLine(" NAT_OPER, ");
-                    sb.AppendLine(" COD_OPER, ");
-                    sb.AppendLine(" VALOR, ");
-                    sb.AppendLine(" IMPRESSA, ");
-                    sb.AppendLine(" TIPO, ");
-                    sb.AppendLine(" CANCELADA, ");
-                    sb.AppendLine(" DT_CANCELADA, ");
-                    sb.AppendLine(" GR, ");
-                    sb.AppendLine(" DOCUMENTO_ORIGEM, ");
-                    sb.AppendLine(" TIPO_DOCUMENTO, ");
-                    sb.AppendLine(" BOLETO, ");
-                    sb.AppendLine(" BOLETO_IMPRESSO, ");
-                    sb.AppendLine(" TIPO_FEITO, ");
-                    sb.AppendLine(" ENTRADA, ");
-                    sb.AppendLine(" MINUTA, ");
-                    sb.AppendLine(" VIAGEM, ");
-                    sb.AppendLine(" DOLAR, ");
-                    sb.AppendLine(" OBS2, ");
-                    sb.AppendLine(" DESCONTO, ");
-                    sb.AppendLine(" DEPTO, ");
-                    sb.AppendLine(" FILLAL, ");
-                    sb.AppendLine(" CENTROCUSTO, ");
-                    sb.AppendLine(" CONTA, ");
-                    sb.AppendLine(" INTEGRADA, ");
-
-                    bool query = con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public string GetDespachanteID(int id)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT DESP.AUTONUM DESPACHANTE FROM FATURA.FATURANOTA FAT ");
-                    sb.AppendLine(" JOIN SGIPA.tb_gr_bl gr ");
-                    sb.AppendLine(" On CASE WHEN INSTR(FAT.GR,',') > 0 THEN SUBSTR(FAT.GR,1, INSTR(FAT.GR,',') - 1) ELSE FAT.GR END = GR.SEQ_GR ");
-                    sb.AppendLine(" JOIN SGIPA.tb_bl bl ON gr.bl = bl.autonum ");
-                    sb.AppendLine(" LEFT JOIN SGIPA.tb_cad_parceiros desp ");
-                    sb.AppendLine(" ON bl.despachante = desp.autonum ");
-                    sb.AppendLine(" WHERE ID " + id);
-
-                    string despachante = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-                    return despachante;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        public string obtemEnderecoEntregaDespImp(int id, string despachante)
-        {
-            int param = 1;
-            bool validaEntrega = true;
-
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" ID As AUTONUM_END ");
-                    sb.AppendLine(" CLIENTE_SAP as cliente_sap ");
-                    sb.AppendLine(" TIPO ");
-                    sb.AppendLine(" ENDERECO ");
-                    sb.AppendLine(" OPTENTREGA ");
-                    sb.AppendLine(" FROM  ");
-                    sb.AppendLine(" FATURA.VW_ENDERECO_ENTREGA_DESP_IMP  ");
-
-                    if (validaEntrega)
-                    {
-                        sb.AppendLine(" AND OPTENTREGA = " + param);
-                    }
-                    sb.AppendLine(" AND ENDERECO <> '' ");
-
-                    string endereco = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-                    return endereco;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        //Começar a partir daqui a fazer o que faltou da parte dos emails pois os dois 
-        public string obtemEnderecoEntregaDespachante()
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" AUTONUM_REGRA ");
-                    sb.AppendLine(" AUTONUM_SEM_REGRA ");
-                    sb.AppendLine(" CLIENTE_SAP ");
-                    sb.AppendLine(" ENDERECO ");
-                    sb.AppendLine(" ENDERECO_SEM_REGRA ");
-                    sb.AppendLine(" ID as AUTONUM_END ");
-                    sb.AppendLine(" OPTENTREGA_REGRA ");
-                    sb.AppendLine(" OPTENTREGA_SEM_REGRA ");
-                    sb.AppendLine(" TIPO ");
-
-                    string query = con.Query<string>(sb.ToString()).FirstOrDefault();
-
-                    return query;
-
-                }
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-        }
-        public string obtemEnderecoEntrega(int id, int tipo)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine(" SELECT  ");
-                    sb.AppendLine(" ENDERECO, ENDERECO_SEM_REGRA,  ");                
-
-
                     return null;
                 }
             }
-            catch (Exception ex)
+            #endregion
+
+            #region consistencias GR
+
+            public string consistenciaGR(string seq_gr, int parceiro)
             {
-                return null;
-            }
-        }
-        #endregion
-        
-        public decimal Valor_Nota(string seq_gr)
-        {
-            decimal Valor = 0;
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                int grRPS = 0;
+                int grDoc = 0;
+                int grZerada = 0;
+                int grEmBranco = 0;
+                string embarque = "";
+                int docs = 0;
+                string mensagem = "";
+                try
                 {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine("SELECT sum(A.VALOR+A.DESCONTO+A.ADICIONAL) + nvl(sum(B.TOTAL),0) ");
-                    sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A LEFT JOIN ");
-                    sb.AppendLine(" (SELECT SUM(VALOR_IMPOSTO) TOTAL, AUTONUM_SERVICO_FATURADO  ");
-                    sb.AppendLine("       FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS GROUP BY AUTONUM_SERVICO_FATURADO ) B  ");
-                    sb.AppendLine("   ON A.AUTONUM = B.AUTONUM_SERVICO_FATURADO  ");
-                    sb.AppendLine(" WHERE A.SEQ_GR in(" + seq_gr  + ")  ");
-
-                    Valor = con.Query<decimal>(sb.ToString()).FirstOrDefault();
-
-                    return Valor;
-                }
-            }
-            catch (Exception ex)
-            {
-                return Valor;
-            }
-        }
-        public double Valor_Desconto(string seq_gr )
-        {
-            double valor = 0;
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine("  Select A.autonum , A.bl , A.seq_gr , nvl(round(((A.valor + A.desconto + A.adicional) * (NL(b.taxa, 0) / 100)), 2), 0) ISS from sgipa.tb_servicos_faturados  A");
-                    sb.AppendLine(" Inner Join ");
-                    sb.AppendLine(" (select seq_gr, nvl(max(case when NVL(B.FLAG_ISENTO_IMPOSTO,0)=1 then 0 else taxa end),0) taxa ");
-                    sb.AppendLine(" From sgipa.tb_GR_BL A  inner Join sgipa.tb_cad_parceiros b on a.importador_gr=b.autonum ");
-                    sb.AppendLine(" inner  Join  sgipa.tb_cad_impostos c on 1=1  where SEQ_GR IN(" + seq_gr + ") And c.iss=1 GROUP BY SEQ_GR ) B ");
-                    sb.AppendLine(" On A.SEQ_GR=B.SEQ_GR ");
-                    sb.AppendLine(" WHERE A.SEQ_GR IN(" + seq_gr + ") ");
-                   
-
-                    valor = con.Query<double>(sb.ToString()).FirstOrDefault();
-
-                    return valor;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                return valor;  
-            }
-        }
-        public bool Monta_Insert_Fatura_Item(int posicao, int countI, string descricao_servico, decimal total, int servico,  string doc, int imposto, double valor, int quantidade, string SD)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" INSERT INTO FATURA.FATURA_ITEM ");
-                    sb.AppendLine(" ( ");
-                    sb.AppendLine(" ID, IDFATURA,ITEM,DESCRICAO,QTDE,VALOR,SERVICO,GRS, IMPOSTO, RATE, SD ");
-                    sb.AppendLine(" ) VALUES ( ");
-                    sb.AppendLine(" fatura.SEQ_FATURA_ITEM.NEXTVAL, ");
-                    sb.AppendLine(" " + posicao + ", ");
-                    sb.AppendLine(" " + countI + ", ");
-                    sb.AppendLine(" '" + descricao_servico + "', ");
-                    if (quantidade == 0)
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
                     {
-                        sb.AppendLine(" 0, ");
-                    }
-                    else
-                    {
-                        sb.AppendLine(" " + quantidade + ", ");
-                    }
-
-                    sb.AppendLine(" " + total.ToString().Replace(",", ".") + ", ");
-                    sb.AppendLine(" " + servico + ", ");
-                    sb.AppendLine(" '" + doc + "', ");
-                    sb.AppendLine(" " + imposto + ", ");
-                    sb.AppendLine(" " + valor.ToString().Replace(",", ".") + ", ");
-                    sb.AppendLine(" '" + SD + " ' ");
-                    sb.AppendLine(" ) ");
+                        StringBuilder sb = new StringBuilder();
 
 
-                    bool ins = con.Query<bool>(sb.ToString()).FirstOrDefault();
+                        sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN (" + seq_gr + ") AND NVL(RPS, 0) = 1 ");
 
-                    return ins;
+                        grRPS = con.Query<int>(sb.ToString()).FirstOrDefault();
 
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public bool excluiFaturaEItem(int pos)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine(" DELETE FROM FATURA.FATURANOTA WHERE id = " + pos);
-
-                    con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    sb.Clear();
-
-                    sb.AppendLine(" DELETE FROM FATURA.FATURA_ITEM WHERE IDFATURA = " + pos);
-
-                    con.Query<bool>(sb.ToString()).FirstOrDefault();
-
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-        public string Formata_CGCCPF(string doc, int? tipo)
-        {
-            try
-            {
-                string Formata = doc;
-                if (doc == null)
-                {
-                    doc = "1";
-                }
-                if (tipo == null)
-                {
-                    tipo = 0;
-                }
-
-                if (tipo == 1)
-                {
-                    if (doc.Length == 14)
-                    {
-                     //   Formata = Formata.Substring(doc.Length - 1);
-                        Formata = doc;
-                        Formata = Formata.Substring(0, 2) + "." + Formata.Substring(2, 3) + "." + Formata.Substring(5, 3) + "/" + Formata.Substring(8, 4) + "-" + Formata.Substring(12, 2);
-                    }
-
-                    return Formata;
-                }
-                else if (tipo == 2)
-                {
-                    if (doc.Length == 11)
-                    {
-                        Formata = Formata.Substring(doc.Length - 1);
-                        Formata = Formata.Substring(0, 3) + "." + Formata.Substring(3, 3) + "." + Formata.Substring(6, 3) + "-" + Formata.Substring(10, 2);
-                    }
-
-                    return Formata;
-                }
-
-                return Formata;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        //Update na tb_bl quando for feito uma cancelamento
-        public string CancelaTituloPix(long numero_titulo)
-        {
-            try
-            {
-                using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
-                {
-                    StringBuilder sb = new StringBuilder();
-                    {
-                        StringBuilder sbu = new StringBuilder();
-
-                        int count = 0;
-
-                        sb.AppendLine(" SELECT count(1) FROM  SGIPA.TB_GR_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
-
-                        count = con.Query<int>(sb.ToString()).FirstOrDefault();
-
-                        if (count == 0)
+                        if (grRPS > 0)
                         {
+                            mensagem = "GR já possui RPS/Faturamento gerado";
+                        }
 
-                            
-                            int npix = 0;
-                            sb.Clear();
-                            sb.AppendLine(" SELECT num_pagamento_pix FROM  SGIPA.TB_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+                        sb.Clear();
 
-                            npix  = con.Query<int>(sb.ToString()).FirstOrDefault();
-                            sbu.AppendLine(" UPDATE SGIPA.TB_BL SET  NUM_PAGAMENTO_PIX = 0, NUM_TITULO_PIX = 0 WHERE NUM_TITULO_PIX  =   " + numero_titulo);
-                            con.Query<string>(sbu.ToString()).FirstOrDefault();
-                            sbu.Clear();
-                            sbu.AppendLine(" UPDATE SGIPA.TB_GR_BL SET NUM_TITULO_PIX = 0  WHERE NUM_TITULO_PIX  =   " + npix);
-                            con.Query<string>(sbu.ToString()).FirstOrDefault();
-                            if (npix > 0)
-                            {
-                                sbu.Clear();
-                                sbu.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET  CANCELADO=1  , DATA_CANCELADO=SYSDATE  WHERE NUM_PIX  =   " + npix);
-                                con.Query<string>(sbu.ToString()).FirstOrDefault();                       
-                                return "000-Titulo cancelado com sucesso";
-                            }
-                            else
-                            {
-                                return "000-Titulo cancelado com sucesso";
-                            }
+                        sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL WHERE AUTONUM IN (");
+                        sb.AppendLine(" select BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + ")");
+                        sb.AppendLine("  AND NVL(RPS, 0) = 1) ");
+                        sb.AppendLine(" And (NVL(NUM_DOCUMENTO,' ') = ' ' OR NUM_DOCUMENTO = '') ");
+
+                        grDoc = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        if (grDoc > 0)
+                        {
+                            mensagem = "O Documento da GR [" + seq_gr + "] está em branco";
+                        }
+
+                        sb.Clear();
+
+                        sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN (" + seq_gr + ") AND NVL(VALOR_GR,0) = 0 ");
+
+                        grZerada = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+
+                        if (grZerada > 0)
+                        {
+                            mensagem = "Uma ou mais GRs com o valor zerado";
+                        }
+
+
+                        sb.Clear();
+
+                        sb.AppendLine(" SELECT COUNT(1) FROM SGIPA.TB_BL BL ");
+                        sb.AppendLine(" INNER JOIN SGIPA.TB_TIPOS_DOCUMENTOS TP ON BL.TIPO_DOCUMENTO = TP.CODE ");
+                        sb.AppendLine(" WHERE BL.AUTONUM IN(SELECT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR IN(" + seq_gr + "))  ");
+                        sb.AppendLine(" And (NVL(TP.DESCR,' ') = ' ' OR TP.DESCR = '') ");
+
+                        grEmBranco = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        if (grEmBranco > 0)
+                        {
+                            mensagem = "O Tipo Do Documento da Gr[" + seq_gr + "] esta em branco";
+                        }
+
+                        sb.Clear();
+
+                        sb.AppendLine(" SELECT  NVL(DIA_FAT,0) As DIA_FAT FROM SGIPA.TB_CAD_PARCEIROS WHERE AUTONUM =  " + parceiro);
+
+                        int dia_fat = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        sb.Clear();
+
+                        if (dia_fat > 0)
+                        {
+                            IntegracaoBaixa.validaEmbarque = true;
+                            sb.AppendLine(" SELECT Embarque as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ") )");
+
+                            embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
                         }
                         else
                         {
-                            return "001-O título tem GR impressa";
+                            IntegracaoBaixa.validaEmbarque = false;
+                        }
 
+                        if (IntegracaoBaixa.validaEmbarque == true && embarque == "")
+                        {
+                            mensagem = "Não é possível gerar a nota fiscal, BL sem referência Do cliente cadastrado.";
+                        }
+
+                        sb.Clear();
+
+                        sb.AppendLine(" Select COUNT(DISTINCT NUM_DOCUMENTO) FROM SGIPA.TB_BL ");
+                        sb.AppendLine(" WHERE AUTONUM IN (Select BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ")) ");
+
+
+                        docs = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                        if (docs > 1)
+                        {
+                            mensagem = "Para agrupar GRs é necessário ser o mesmo documento de origem";
+                        }
+
+
+                        return mensagem;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return "Erro ao verificar consistenciasGR";
+                }
+            }
+            #endregion
+            public string GetEmbarque(string seq_gr)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT nvl(max(Embarque),' ') as EMBARQUE FROM SGIPA.TB_BOSCH WHERE AUTONUM_BL IN(SELECT DISTINCT BL FROM SGIPA.TB_GR_BL WHERE SEQ_GR In(" + seq_gr + ")) ");
+
+                        string embarque = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return embarque;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+            }
+
+            public bool atualizaCODCLI(int codCli, int autonum)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" UPDATE SGIPA.tb_cad_parceiros SET codcli = " + codCli + " WHERE autonum =  " + autonum);
+
+                        con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        sb.Clear();
+
+                        sb.AppendLine(" UPDATE SGIPA.tb_cad_parceiros SET CODCLI_FATURA = " + codCli + " WHERE autonum =  " + autonum);
+
+                        con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            #region envio email 
+            public IntegracaoBaixa GetDadosUsuarioImagem(int lote)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" select id_user, AUTONUM from SGIPA.TB_IMAGEM_PAG_GR where lote =" + lote);
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public bool GetUpdateTbImagem(int NumeroDocumento, int idImagem)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" UPDATE SGIPA.TB_IMAGEM_PAG_GR SET SEQ_GR = " + NumeroDocumento + " WHERE AUTONUM = " + idImagem);
+
+                        bool query = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public IntegracaoBaixa GetDadosUserInternet(int id)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT  iusnome , iusemail from INTERNET.TB_INT_USER  WHERE iusid = " + id);
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IntegracaoBaixa GetEmailRecusa(int lote)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder Sb = new StringBuilder();
+
+                        Sb.AppendLine(" Select DISTINCT EMAIL_RECUSA_IMAGEM, PATIO from SGIPA.TB_BL WHERE AUTONUM IN (" + lote + " ) ");
+
+                        var query = con.Query<IntegracaoBaixa>(Sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IntegracaoBaixa obtemDirEmail()
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine(" SELECT dir_email FROM SGIPA.TB_parametros_sistema  ");
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IntegracaoBaixa GetTipoDocumento(int lote)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" Select a.num_documento , t.descr ");
+                        sb.AppendLine(" from SGIPA.TB_BL a  ");
+                        sb.AppendLine(" left join SGIPA.TB_Tipos_Documentos b on ");
+                        sb.AppendLine(" a.tipo_documento = t.code  ");
+                        sb.AppendLine(" where ");
+                        sb.AppendLine(" a.autonum =  " + lote);
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public IEnumerable<IntegracaoBaixa> GetDadosFAT_GR(int seqGr)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT F.ID as IDNum, RPS.RPSNUM FROM  ");
+                        sb.AppendLine(" FATURA.FAT_GR AMR ");
+                        sb.AppendLine(" INNER JOIN FATURA.FATURANOTA F On AMR.FATID = F.ID  ");
+                        sb.AppendLine(" INNER JOIN FATURA.RPSFAT RPS ON F.ID = RPS.FATSEQ  ");
+                        sb.AppendLine(" WHERE AMR.SEQ_GR =  " + seqGr);
+                        sb.AppendLine(" AND  ");
+                        sb.AppendLine(" NVL(F.CANCELADA) = 0 ");
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).AsEnumerable();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            #endregion
+            #region emiteNotaGRRPS
+            public IntegracaoBaixa GetDadosFaturaNota(int idFat)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" NFE, cliente_sap");
+                        sb.AppendLine(" FROM ");
+                        sb.AppendLine(" FATURA.FATURANOTA ");
+                        sb.AppendLine(" WHERE ID IN(" + idFat + ") ");
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public bool DeleteTempNota(string maquina)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" DELETE FROM FATURA.TEMP_FATURANOTA WHERE MAQUINA_REDE =  '" + maquina + "' ");
+
+                        bool query = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public IntegracaoBaixa GetDadosCodCliSAP(int cod_sap)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT RAZAO AS NOMCLI,  LOGR_COB AS ENDCOB, TIPO_LOGRADOURO AS USU_TIPLOGR, LOGRADOURO AS ENDCLI, NUM_END AS NENCLI, COMPLEMENTO_END AS CPLEND, NUM_COB AS NENCOB, COMPL_COB AS CPLCOB, ");
+                        sb.AppendLine(" CIDADE AS CIDCLI, CIDADE_COB AS CIDCOB, CGC AS CGCCPF, BAIRRO AS BAICLI, BAIRRO_COB AS BAICOB, ESTADO AS SIGUFS, ESTADO_COB AS ESTCOB, CEP_COB AS CEPCOB, CEP AS CEPCLI, IM AS INSEST ");
+                        sb.AppendLine(" FROM SGIPA.TB_CAD_PARCEIROS WHERE CODCLI_SAP = " + cod_sap);
+
+                        var query = con.Query<IntegracaoBaixa>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public bool GetInsertTEMP_FaturaNota(string maquina)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" INSERT INTO FATURA.TEMP_FATURANOTA ");
+                        sb.AppendLine(" maquina_rede, ");
+                        sb.AppendLine(" ID, ");
+                        sb.AppendLine(" CLIENTE, ");
+                        sb.AppendLine(" DT_EMISSAO, ");
+                        sb.AppendLine(" DT_VENCIMENTO, ");
+                        sb.AppendLine(" NUMERO, ");
+                        sb.AppendLine(" EXTENSO, ");
+                        sb.AppendLine(" OBS, ");
+                        sb.AppendLine(" NAT_OPER, ");
+                        sb.AppendLine(" COD_OPER, ");
+                        sb.AppendLine(" VALOR, ");
+                        sb.AppendLine(" IMPRESSA, ");
+                        sb.AppendLine(" TIPO, ");
+                        sb.AppendLine(" CANCELADA, ");
+                        sb.AppendLine(" DT_CANCELADA, ");
+                        sb.AppendLine(" GR, ");
+                        sb.AppendLine(" DOCUMENTO_ORIGEM, ");
+                        sb.AppendLine(" TIPO_DOCUMENTO, ");
+                        sb.AppendLine(" BOLETO, ");
+                        sb.AppendLine(" BOLETO_IMPRESSO, ");
+                        sb.AppendLine(" TIPO_FEITO, ");
+                        sb.AppendLine(" ENTRADA, ");
+                        sb.AppendLine(" MINUTA, ");
+                        sb.AppendLine(" VIAGEM, ");
+                        sb.AppendLine(" DOLAR, ");
+                        sb.AppendLine(" OBS2, ");
+                        sb.AppendLine(" DESCONTO, ");
+                        sb.AppendLine(" DEPTO, ");
+                        sb.AppendLine(" FILLAL, ");
+                        sb.AppendLine(" CENTROCUSTO, ");
+                        sb.AppendLine(" CONTA, ");
+                        sb.AppendLine(" INTEGRADA, ");
+                        sb.AppendLine(" VIA, ");
+                        sb.AppendLine(" versao, ");
+                        sb.AppendLine(" codcli, ");
+                        sb.AppendLine(" baicob, ");
+                        sb.AppendLine(" cepcob, ");
+                        sb.AppendLine(" cidcob, ");
+                        sb.AppendLine(" endcob, ");
+                        sb.AppendLine(" estcob, ");
+                        sb.AppendLine(" nomcli, ");
+                        sb.AppendLine(" cgccpf, ");
+                        sb.AppendLine(" insest, ");
+                        sb.AppendLine(" RAZAO_REPRESENTANTE ");
+                        sb.AppendLine(" ) ");
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" " + maquina + " AS maquinarede  ");
+                        sb.AppendLine(" ID, ");
+                        sb.AppendLine(" CLIENTE, ");
+                        sb.AppendLine(" DT_EMISSAO, ");
+                        sb.AppendLine(" DT_VENCIMENTO, ");
+                        sb.AppendLine(" NUMERO, ");
+                        sb.AppendLine(" EXTENSO, ");
+                        sb.AppendLine(" OBS, ");
+                        sb.AppendLine(" NAT_OPER, ");
+                        sb.AppendLine(" COD_OPER, ");
+                        sb.AppendLine(" VALOR, ");
+                        sb.AppendLine(" IMPRESSA, ");
+                        sb.AppendLine(" TIPO, ");
+                        sb.AppendLine(" CANCELADA, ");
+                        sb.AppendLine(" DT_CANCELADA, ");
+                        sb.AppendLine(" GR, ");
+                        sb.AppendLine(" DOCUMENTO_ORIGEM, ");
+                        sb.AppendLine(" TIPO_DOCUMENTO, ");
+                        sb.AppendLine(" BOLETO, ");
+                        sb.AppendLine(" BOLETO_IMPRESSO, ");
+                        sb.AppendLine(" TIPO_FEITO, ");
+                        sb.AppendLine(" ENTRADA, ");
+                        sb.AppendLine(" MINUTA, ");
+                        sb.AppendLine(" VIAGEM, ");
+                        sb.AppendLine(" DOLAR, ");
+                        sb.AppendLine(" OBS2, ");
+                        sb.AppendLine(" DESCONTO, ");
+                        sb.AppendLine(" DEPTO, ");
+                        sb.AppendLine(" FILLAL, ");
+                        sb.AppendLine(" CENTROCUSTO, ");
+                        sb.AppendLine(" CONTA, ");
+                        sb.AppendLine(" INTEGRADA, ");
+
+                        bool query = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public string GetDespachanteID(int id)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT DESP.AUTONUM DESPACHANTE FROM FATURA.FATURANOTA FAT ");
+                        sb.AppendLine(" JOIN SGIPA.tb_gr_bl gr ");
+                        sb.AppendLine(" On CASE WHEN INSTR(FAT.GR,',') > 0 THEN SUBSTR(FAT.GR,1, INSTR(FAT.GR,',') - 1) ELSE FAT.GR END = GR.SEQ_GR ");
+                        sb.AppendLine(" JOIN SGIPA.tb_bl bl ON gr.bl = bl.autonum ");
+                        sb.AppendLine(" LEFT JOIN SGIPA.tb_cad_parceiros desp ");
+                        sb.AppendLine(" ON bl.despachante = desp.autonum ");
+                        sb.AppendLine(" WHERE ID " + id);
+
+                        string despachante = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return despachante;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public string obtemEnderecoEntregaDespImp(int id, string despachante)
+            {
+                int param = 1;
+                bool validaEntrega = true;
+
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" ID As AUTONUM_END ");
+                        sb.AppendLine(" CLIENTE_SAP as cliente_sap ");
+                        sb.AppendLine(" TIPO ");
+                        sb.AppendLine(" ENDERECO ");
+                        sb.AppendLine(" OPTENTREGA ");
+                        sb.AppendLine(" FROM  ");
+                        sb.AppendLine(" FATURA.VW_ENDERECO_ENTREGA_DESP_IMP  ");
+
+                        if (validaEntrega)
+                        {
+                            sb.AppendLine(" AND OPTENTREGA = " + param);
+                        }
+                        sb.AppendLine(" AND ENDERECO <> '' ");
+
+                        string endereco = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return endereco;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            //Começar a partir daqui a fazer o que faltou da parte dos emails pois os dois 
+            public string obtemEnderecoEntregaDespachante()
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" AUTONUM_REGRA ");
+                        sb.AppendLine(" AUTONUM_SEM_REGRA ");
+                        sb.AppendLine(" CLIENTE_SAP ");
+                        sb.AppendLine(" ENDERECO ");
+                        sb.AppendLine(" ENDERECO_SEM_REGRA ");
+                        sb.AppendLine(" ID as AUTONUM_END ");
+                        sb.AppendLine(" OPTENTREGA_REGRA ");
+                        sb.AppendLine(" OPTENTREGA_SEM_REGRA ");
+                        sb.AppendLine(" TIPO ");
+
+                        string query = con.Query<string>(sb.ToString()).FirstOrDefault();
+
+                        return query;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            public string obtemEnderecoEntrega(int id, int tipo)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendLine(" SELECT  ");
+                        sb.AppendLine(" ENDERECO, ENDERECO_SEM_REGRA,  ");
+
+
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            #endregion
+
+            public decimal Valor_Nota(string seq_gr)
+            {
+                decimal Valor = 0;
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine("SELECT sum(A.VALOR+A.DESCONTO+A.ADICIONAL) + nvl(sum(B.TOTAL),0) ");
+                        sb.AppendLine(" FROM SGIPA.TB_SERVICOS_FATURADOS A LEFT JOIN ");
+                        sb.AppendLine(" (SELECT SUM(VALOR_IMPOSTO) TOTAL, AUTONUM_SERVICO_FATURADO  ");
+                        sb.AppendLine("       FROM SGIPA.TB_SERVICOS_FATURADOS_IMPOSTOS GROUP BY AUTONUM_SERVICO_FATURADO ) B  ");
+                        sb.AppendLine("   ON A.AUTONUM = B.AUTONUM_SERVICO_FATURADO  ");
+                        sb.AppendLine(" WHERE A.SEQ_GR in(" + seq_gr + ")  ");
+
+                        Valor = con.Query<decimal>(sb.ToString()).FirstOrDefault();
+
+                        return Valor;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Valor;
+                }
+            }
+            public double Valor_Desconto(string seq_gr)
+            {
+                double valor = 0;
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine("  Select A.autonum , A.bl , A.seq_gr , nvl(round(((A.valor + A.desconto + A.adicional) * (NL(b.taxa, 0) / 100)), 2), 0) ISS from sgipa.tb_servicos_faturados  A");
+                        sb.AppendLine(" Inner Join ");
+                        sb.AppendLine(" (select seq_gr, nvl(max(case when NVL(B.FLAG_ISENTO_IMPOSTO,0)=1 then 0 else taxa end),0) taxa ");
+                        sb.AppendLine(" From sgipa.tb_GR_BL A  inner Join sgipa.tb_cad_parceiros b on a.importador_gr=b.autonum ");
+                        sb.AppendLine(" inner  Join  sgipa.tb_cad_impostos c on 1=1  where SEQ_GR IN(" + seq_gr + ") And c.iss=1 GROUP BY SEQ_GR ) B ");
+                        sb.AppendLine(" On A.SEQ_GR=B.SEQ_GR ");
+                        sb.AppendLine(" WHERE A.SEQ_GR IN(" + seq_gr + ") ");
+
+
+                        valor = con.Query<double>(sb.ToString()).FirstOrDefault();
+
+                        return valor;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return valor;
+                }
+            }
+            public bool Monta_Insert_Fatura_Item(int posicao, int countI, string descricao_servico, decimal total, int servico, string doc, int imposto, double valor, int quantidade, string SD)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" INSERT INTO FATURA.FATURA_ITEM ");
+                        sb.AppendLine(" ( ");
+                        sb.AppendLine(" ID, IDFATURA,ITEM,DESCRICAO,QTDE,VALOR,SERVICO,GRS, IMPOSTO, RATE, SD ");
+                        sb.AppendLine(" ) VALUES ( ");
+                        sb.AppendLine(" fatura.SEQ_FATURA_ITEM.NEXTVAL, ");
+                        sb.AppendLine(" " + posicao + ", ");
+                        sb.AppendLine(" " + countI + ", ");
+                        sb.AppendLine(" '" + descricao_servico + "', ");
+                        if (quantidade == 0)
+                        {
+                            sb.AppendLine(" 0, ");
+                        }
+                        else
+                        {
+                            sb.AppendLine(" " + quantidade + ", ");
+                        }
+
+                        sb.AppendLine(" " + total.ToString().Replace(",", ".") + ", ");
+                        sb.AppendLine(" " + servico + ", ");
+                        sb.AppendLine(" '" + doc + "', ");
+                        sb.AppendLine(" " + imposto + ", ");
+                        sb.AppendLine(" " + valor.ToString().Replace(",", ".") + ", ");
+                        sb.AppendLine(" '" + SD + " ' ");
+                        sb.AppendLine(" ) ");
+
+
+                        bool ins = con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        return ins;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public bool excluiFaturaEItem(int pos)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.AppendLine(" DELETE FROM FATURA.FATURANOTA WHERE id = " + pos);
+
+                        con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        sb.Clear();
+
+                        sb.AppendLine(" DELETE FROM FATURA.FATURA_ITEM WHERE IDFATURA = " + pos);
+
+                        con.Query<bool>(sb.ToString()).FirstOrDefault();
+
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            public string Formata_CGCCPF(string doc, int? tipo)
+            {
+                try
+                {
+                    string Formata = doc;
+                    if (doc == null)
+                    {
+                        doc = "1";
+                    }
+                    if (tipo == null)
+                    {
+                        tipo = 0;
+                    }
+
+                    if (tipo == 1)
+                    {
+                        if (doc.Length == 14)
+                        {
+                            //   Formata = Formata.Substring(doc.Length - 1);
+                            Formata = doc;
+                            Formata = Formata.Substring(0, 2) + "." + Formata.Substring(2, 3) + "." + Formata.Substring(5, 3) + "/" + Formata.Substring(8, 4) + "-" + Formata.Substring(12, 2);
+                        }
+
+                        return Formata;
+                    }
+                    else if (tipo == 2)
+                    {
+                        if (doc.Length == 11)
+                        {
+                            Formata = Formata.Substring(doc.Length - 1);
+                            Formata = Formata.Substring(0, 3) + "." + Formata.Substring(3, 3) + "." + Formata.Substring(6, 3) + "-" + Formata.Substring(10, 2);
+                        }
+
+                        return Formata;
+                    }
+
+                    return Formata;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+            //Update na tb_bl quando for feito uma cancelamento
+            public string CancelaTituloPix(long numero_titulo)
+            {
+                try
+                {
+                    using (OracleConnection con = new OracleConnection(Configuracoes.StringConexao()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        {
+                            StringBuilder sbu = new StringBuilder();
+
+                            int count = 0;
+
+                            sb.AppendLine(" SELECT count(1) FROM  SGIPA.TB_GR_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+
+                            count = con.Query<int>(sb.ToString()).FirstOrDefault();
+
+                            if (count == 0)
+                            {
+
+
+                                int npix = 0;
+                                sb.Clear();
+                                sb.AppendLine(" SELECT num_pagamento_pix FROM  SGIPA.TB_BL  WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+
+                                npix = con.Query<int>(sb.ToString()).FirstOrDefault();
+                                sbu.AppendLine(" UPDATE SGIPA.TB_BL SET  NUM_PAGAMENTO_PIX = 0, NUM_TITULO_PIX = 0 WHERE NUM_TITULO_PIX  =   " + numero_titulo);
+                                con.Query<string>(sbu.ToString()).FirstOrDefault();
+                                sbu.Clear();
+                                sbu.AppendLine(" UPDATE SGIPA.TB_GR_BL SET NUM_TITULO_PIX = 0  WHERE NUM_TITULO_PIX  =   " + npix);
+                                con.Query<string>(sbu.ToString()).FirstOrDefault();
+                                if (npix > 0)
+                                {
+                                    sbu.Clear();
+                                    sbu.AppendLine(" UPDATE SGIPA.TB_PIX_BL SET  CANCELADO=1  , DATA_CANCELADO=SYSDATE  WHERE NUM_PIX  =   " + npix);
+                                    con.Query<string>(sbu.ToString()).FirstOrDefault();
+                                    return "000-Titulo cancelado com sucesso";
+                                }
+                                else
+                                {
+                                    return "000-Titulo cancelado com sucesso";
+                                }
+                            }
+                            else
+                            {
+                                return "001-O título tem GR impressa";
+
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                return "002-O título não pode ser cancelado";
+                catch (Exception ex)
+                {
+                    return "002-O título não pode ser cancelado";
+                }
             }
         }
-       
     }
-
-    Public Class FontePagadora
-
-    Private _condPagto As String
-    Private _idClienteNota As Long
-    Private _idCliNFFM0 As Long
-    Private _idCliNFFM1 As Long
-    Private _idClienteEntrega As Long
-    Private _codcliEntrega As String
-    Private _autonum As Long
-    Private _ultimoDiaSemana As Integer
-    Private _ultimoDiaMes As Integer
-    Private _ultimoDiaMesCorte As Integer
-    Private _ultimoDiaMesVcto As Integer
-    Private _rsDiasSemana As New DataTable
-    Private _rsDias As New DataTable
-
-    Public Property codcliEntrega As String
-        Get
-            Return _codcliEntrega
-        End Get
-        Set(value As String)
-            _codcliEntrega = value
-        End Set
-    End Property
-
-    Public Property condPagto As String
-        Get
-            Return _condPagto
-        End Get
-        Set(value As String)
-            _condPagto = value
-        End Set
-    End Property
-
-    Public Property idClienteNota As Long
-        Get
-            Return _idClienteNota
-        End Get
-        Set(value As Long)
-            _idClienteNota = value
-        End Set
-    End Property
-
-    Public Property idClienteEntrega As Long
-        Get
-            Return _idClienteEntrega
-        End Get
-        Set(value As Long)
-            _idClienteEntrega = value
-        End Set
-    End Property
-
-    Public Property Autonum As Long
-        Get
-            Return _autonum
-        End Get
-        Set(value As Long)
-            _autonum = value
-        End Set
-    End Property
-
-    Public Property UltimoDiaSemana As Integer
-        Get
-            Return _ultimoDiaSemana
-        End Get
-        Set(value As Integer)
-            _ultimoDiaSemana = value
-        End Set
-    End Property
-
-    Public Property UltimoDiaMes As Integer
-        Get
-            Return _ultimoDiaMes
-        End Get
-        Set(value As Integer)
-            _ultimoDiaMes = value
-        End Set
-    End Property
-
-    Public Property UltimoDiaMesCorte As Integer
-        Get
-            Return _ultimoDiaMesCorte
-        End Get
-        Set(value As Integer)
-            _ultimoDiaMesCorte = value
-        End Set
-    End Property
-
-    Public Property RsDiasSemana As DataTable
-        Get
-            Return _rsDiasSemana
-        End Get
-        Set(value As DataTable)
-            _rsDiasSemana = value
-        End Set
-    End Property
-
-    Public Property RsDias As DataTable
-        Get
-            Return _rsDias
-        End Get
-        Set(value As DataTable)
-            _rsDias = value
-        End Set
-    End Property
-
-    Public Property UltimoDiaMesVcto As Integer
-        Get
-            Return _ultimoDiaMesVcto
-        End Get
-        Set(value As Integer)
-            _ultimoDiaMesVcto = value
-        End Set
-    End Property
-
-    Public Property IdCliNFFM0 As Long
-        Get
-            Return _idCliNFFM0
-        End Get
-        Set(value As Long)
-            _idCliNFFM0 = value
-        End Set
-    End Property
-
-    Public Property IdCliNFFM1 As Long
-        Get
-            Return _idCliNFFM1
-        End Get
-        Set(value As Long)
-            _idCliNFFM1 = value
-        End Set
-    End Property
-
-    Public Function obtemDiasSemana(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
-        Dim sSql As String = ""
-        Try
-            'TB_DADOS_FAT_PAR_COND_PG_DIAS
-            If fpLTL > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpLTL
-                sSql = sSql & " ORDER BY DIA "
-
-            ElseIf fpGR > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpParc > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_SEMANA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpGrp > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpIpa > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
-                sSql = sSql & " ORDER BY DIA "
-            End If
-            If sSql<> "" Then
-                RsDiasSemana = DAO.Consultar(sSql)
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-    End Function
-
-    Public Function obtemDias(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0) As DataTable
-        Dim sSql As String = ""
-        Try
-
-            'TB_DADOS_FAT_PAR_DIAS_PGTO
-            If fpLTL > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_LTL_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
-                sSql = sSql & " ORDER BY DIA "
-
-            ElseIf fpGR > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GR_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGR
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpParc > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_PAR_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpParc
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpGrp > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpGrp
-                sSql = sSql & " ORDER BY DIA "
-            ElseIf fpIpa > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpIpa
-                sSql = sSql & " ORDER BY DIA "
-            End If
-            If sSql<> "" Then
-                RsDias = DAO.Consultar(sSql)
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-    End Function
-
-    Public Function obtemDiasSemanaRed(Optional fpRed As Long = 0) As DataTable
-        Dim sSql As String = ""
-        Try
-            'TB_DADOS_FAT_PAR_COND_PG_DIAS
-            If fpRed > 0 Then
-                sSql = "SELECT DIA "
-                'sSql = sSql & " FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA "
-                sSql = sSql & " FROM REDEX.TB_DADOS_FAT_RED_COND_PG_DIAS "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpRed
-                sSql = sSql & " ORDER BY DIA "
-            End If
-            If sSql<> "" Then
-                RsDiasSemana = DAO.Consultar(sSql)
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-    End Function
-
-
-    Public Function obtemDiasRed(Optional fpRed As Long = 0) As DataTable
-        Dim sSql As String = ""
-        Try
-
-            'TB_DADOS_FAT_PAR_DIAS_PGTO
-            If fpRed > 0 Then
-                sSql = "SELECT DIA "
-                sSql = sSql & " FROM REDEX.TB_DADOS_FAT_RED_DIAS_PGTO "
-                sSql = sSql & " WHERE AUTONUM_FONTE_PAGADORA = " & fpRed
-                sSql = sSql & " ORDER BY DIA "
-            End If
-            If sSql<> "" Then
-                RsDias = DAO.Consultar(sSql)
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-    End Function
-
-
-    Public Sub obtemDadosFPIpa(Optional fpParc As Long = 0, Optional fpGrp As Long = 0, Optional fpIpa As Long = 0, Optional fpGR As Long = 0, Optional fpLTL As Long = 0)
-        Dim rsDados As New DataTable
-        Dim sSql As String = ""
-        Try
-
-            If fpLTL > 0 Then
-                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLI_NF_FM0, FP.AUTONUM_CLI_NF_FM1, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_LTL FP "
-                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpLTL
-            ElseIf fpGR > 0 Then
-                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_GR FP "
-                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpGR
-            ElseIf fpParc > 0 Then
-                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_PARCEIRO FP "
-                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpParc
-            ElseIf fpGrp > 0 Then
-                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES, FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP FP "
-                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpGrp
-            ElseIf fpIpa > 0 Then
-                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES , FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
-                sSql = sSql & " FROM SGIPA.TB_DADOS_FATURAMENTO_IPA FP "
-                sSql = sSql & " LEFT JOIN SGIPA.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpIpa
-            End If
-            If sSql<> "" Then
-               rsDados = DAO.Consultar(sSql)
-                If Not rsDados.Rows.Count <= 0 Then
-                    Me.Autonum = NNull(rsDados.Rows(0)("AUTONUM").ToString, 1)
-                    Me.condPagto = NNull(rsDados.Rows(0)("AUTONUM_FORMA_PAGAMENTO").ToString, 1)
-                    Me.idClienteNota = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_NOTA").ToString, 0)
-                    Me.idClienteEntrega = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_ENVIO_NOTA").ToString, 0)
-                    'Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DA_SEMANA").ToString, 0)
-                    'Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES").ToString, 0)
-                    Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
-                    Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
-                    Me.UltimoDiaMesVcto = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_VCTO").ToString, 0)
-                    Me.UltimoDiaMesCorte = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_CORTE").ToString, 0)
-                    Me.codcliEntrega = NNull(rsDados.Rows(0)("CODCLI_SAP").ToString, 1)
-                    If fpLTL > 0 Then
-                        IdCliNFFM0 = NNull(rsDados.Rows(0)("AUTONUM_CLI_NF_FM0").ToString, 0)
-                        IdCliNFFM1 = NNull(rsDados.Rows(0)("AUTONUM_CLI_NF_FM1").ToString, 0)
-
-                    Else
-                        IdCliNFFM0 = 0
-                        IdCliNFFM1 = 0
-
-                    End If
-
-                    obtemDias(fpParc, fpGrp, fpIpa, fpGR)
-                    obtemDiasSemana(fpParc, fpGrp, fpIpa, fpGR)
-                End If
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-
-
-
-    End Sub
-
-    Public Sub obtemDadosFPRedex(Optional fpRed As Long = 0)
-        Dim rsDados As New DataTable
-        Dim sSql As String = ""
-        Try
-            If fpRed > 0 Then
-                sSql = "SELECT FP.AUTONUM, FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP, FLAG_ULTIMO_DIA_DA_SEMANA, FLAG_ULTIMO_DIA_DO_MES , FLAG_ULTIMO_DIA_DO_MES_CORTE, FLAG_VENCIMENTO_DIA_UTIL, FLAG_ULTIMO_DIA_DO_MES_VCTO "
-                sSql = sSql & " FROM REDEX.TB_DADOS_FATURAMENTO_RED FP "
-                sSql = sSql & " LEFT JOIN REDEX.TB_CAD_PARCEIROS ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpRed
-            End If
-            If sSql<> "" Then
-               rsDados = DAO.Consultar(sSql)
-                If Not rsDados.Rows.Count <= 0 Then
-                    Me.Autonum = NNull(rsDados.Rows(0)("AUTONUM").ToString, 1)
-                    Me.condPagto = NNull(rsDados.Rows(0)("AUTONUM_FORMA_PAGAMENTO").ToString, 1)
-                    Me.idClienteNota = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_NOTA").ToString, 0)
-                    Me.idClienteEntrega = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_ENVIO_NOTA").ToString, 0)
-                    'Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DA_SEMANA").ToString, 0)
-                    'Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES").ToString, 0)
-                    Me.UltimoDiaSemana = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
-                    Me.UltimoDiaMes = NNull(rsDados.Rows(0)("FLAG_VENCIMENTO_DIA_UTIL").ToString, 0)
-                    Me.UltimoDiaMesVcto = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_VCTO").ToString, 0)
-                    Me.UltimoDiaMesCorte = NNull(rsDados.Rows(0)("FLAG_ULTIMO_DIA_DO_MES_CORTE").ToString, 0)
-                    Me.codcliEntrega = NNull(rsDados.Rows(0)("CODCLI_SAP").ToString, 1)
-                    obtemDiasRed(fpRed)
-                    obtemDiasSemanaRed(fpRed)
-                End If
-            End If
-        Catch ex As Exception
-            Err.Clear()
-        End Try
-
-
-
-    End Sub
-
-
-    Public Sub obtemDadosFPOpe(Optional fpParc As Long = 0, Optional fpOp As Long = 0)
-        Dim rsDados As New DataTable
-        Dim sSql As String = ""
-        Try
-            If fpParc > 0 Then
-                sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP "
-                sSql = sSql & " FROM OPERADOR.TB_DADOS_FATURAMENTO_CLIENTE FP "
-                sSql = sSql & " LEFT JOIN OPERADOR.TB_CAD_CLIENTES ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpParc
-            ElseIf fpOp > 0 Then
-                sSql = "SELECT FP.AUTONUM_FORMA_PAGAMENTO, FP.AUTONUM_CLIENTE_NOTA, FP.AUTONUM_CLIENTE_ENVIO_NOTA, ENT.CODCLI_SAP "
-                sSql = sSql & " FROM OPERADOR.TB_DADOS_FATURAMENTO_OP FP "
-                sSql = sSql & " LEFT JOIN OPERADOR.TB_CAD_CLIENTES ENT ON FP.AUTONUM_CLIENTE_ENVIO_NOTA = ENT.AUTONUM  "
-                sSql = sSql & " WHERE FP.AUTONUM = " & fpOp
-            End If
-            If sSql<> "" Then
-               rsDados = DAO.Consultar(sSql)
-                If Not rsDados.Rows.Count <= 0 Then
-                    Me.condPagto = NNull(rsDados.Rows(0)("AUTONUM_FORMA_PAGAMENTO").ToString, 1)
-                    Me.idClienteNota = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_NOTA").ToString, 0)
-                    Me.idClienteEntrega = NNull(rsDados.Rows(0)("AUTONUM_CLIENTE_ENVIO_NOTA").ToString, 0)
-                    Me.codcliEntrega = NNull(rsDados.Rows(0)("CODCLI_SAP").ToString, 1)
-                End If
-            End If
-
-
-        Catch ex As Exception
-
-        End Try
-
-
-
-    End Sub
-
-End Class
-
-
-}
+ 

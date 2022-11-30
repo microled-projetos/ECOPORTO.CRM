@@ -2573,8 +2573,8 @@ namespace WsSimuladorCalculoTabelas.Services
 
             if (logotipo != null)
             {
-                ExcelPicture excelImage = ws.Drawings.AddPicture("Logotipo", logotipo);
-                excelImage.SetPosition(0, 0, 0, 0);
+            //   ExcelPicture excelImage = ws.Drawings.AddPicture("Logotipo", logotipo);
+            //  excelImage.SetPosition(0, 0, 0, 0);
             }
         }
 

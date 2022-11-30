@@ -631,8 +631,14 @@ function calculoJurosRestituicao(isento) {
             toastr.error(data.statusText, 'CRM');
         });
     } else {
-        $('#ProrrogacaoValorJuros').val('');
-        $('#ProrrogacaoValorTotalComJuros').val('');
+        $.get(urlBase + 'Solicitacoes/CalcularJurosProrrogacao?vencimento=' + vencimento + '&prorrogacao=' + prorrogacao + '&valorNF=' + valorNF, function (resultado) {
+
+            $('#ProrrogacaoValorJuros').val(resultado.juros);
+            $('#ProrrogacaoValorTotalComJuros').empty().val(resultado.valorComJuros);
+
+        }).fail(function (data) {
+            toastr.error(data.statusText, 'CRM');
+        });
     }
 }
 

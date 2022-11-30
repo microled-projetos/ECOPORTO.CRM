@@ -118,5 +118,7 @@ namespace WsSimuladorCalculoTabelas.Models
         public int STATUSNFE { get; set; }
         public int CODSER { get; set; }
         public string CRITICA { get; set; }
+        public int FPLTL { get; set; }
+
     }
 }   

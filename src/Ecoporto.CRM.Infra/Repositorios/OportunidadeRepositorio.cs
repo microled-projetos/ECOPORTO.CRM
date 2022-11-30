@@ -2531,6 +2531,19 @@ SELECT NVL (
         {
             using (OracleConnection con = new OracleConnection(Config.StringConexao()))
             {
+                if (campo.ToUpper() == "DATAFECHAMENTO")
+                {
+                    return con.Query<string>($@"SELECT to_char({campo},'DD/MM/YYYY') FROM CRM.VW_CRM_OPORTUNIDADES WHERE Id = :id", new { id }).FirstOrDefault();
+                }
+                if (campo.ToUpper() == "DATAINICIO")
+                {
+                    return con.Query<string>($@"SELECT to_char({campo},'DD/MM/YYYY') FROM CRM.VW_CRM_OPORTUNIDADES WHERE Id = :id", new { id }).FirstOrDefault();
+                }
+
+                if (campo.ToUpper() == "DATATERMINO")
+                {
+                    return con.Query<string>($@"SELECT to_char({campo},'DD/MM/YYYY') FROM CRM.VW_CRM_OPORTUNIDADES WHERE Id = :id", new { id }).FirstOrDefault();
+                }
                 return con.Query<string>($@"SELECT {campo} FROM CRM.VW_CRM_OPORTUNIDADES WHERE Id = :id", new { id }).FirstOrDefault();
             }
         }

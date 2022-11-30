@@ -925,7 +925,14 @@ namespace Ecoporto.CRM.Infra.Repositorios
                             A.ValorCobrado,
                             A.ValorCredito,
                             A.HabilitaValorDevido,
-                            B.Login As CriadoPor
+                            B.Login As CriadoPor,
+                     CASE 
+                                 
+                                WHEN A.TipoSolicitacao = 3 THEN            
+                                   (SELECT max(isentarjuros) isentarjuros  
+                                        FROM CRM.TB_CRM_SOLICITACAO_PRORROGACAO Prorrogacao  WHERE Prorrogacao.SolicitacaoId = A.Id)
+                                  else 0    
+                            END isentarjuros
                         FROM
                             CRM.TB_CRM_SOLICITACOES A 
                         LEFT JOIN

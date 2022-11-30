@@ -1,4 +1,4 @@
-﻿using  Ecoporto.CRM.Business.Enums;
+﻿using Ecoporto.CRM.Business.Enums;
 using System;
 using System.Linq;
 using System.Web.Services;
@@ -1313,7 +1313,7 @@ namespace WsSimuladorCalculoTabelas
                         string ndoc = nota.NUM_DOC;
                         string tipoDoc = nota.TIPODOC_DESCRICAO;
                         int patioGR = nota.PATIO;
-
+                        string blote = nota.LOTE;
 
                         int flagHupport = nota.flag_hubport;
                         bool primeiraHub = _pagamentoPixDAO.primeiraHub(seq_gr);
@@ -1439,8 +1439,8 @@ namespace WsSimuladorCalculoTabelas
                             "GR", seq_gr, Embarque, dtEmissao, dtVenc, 
                             NatOp, CodNat, ndoc, tipoDoc,  
                             patioGR, sapcliente, cli_autonum,
-                            Lote, parceiroID,  clienteSAPEntrega,
-                            cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,
+                            blote, parceiroID,  clienteSAPEntrega,
+                            cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,"",0,0,0,0,0,0,0,
                             NumeroTitulo);
 
                         int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(seq_gr, nfe);
@@ -1546,7 +1546,6 @@ namespace WsSimuladorCalculoTabelas
         public Response IntregrarGeraFatura(string seq_gr)
         {
             string merro = "";
-            int Lote = 0;
             int BL = 0;
             int Usuario = 90;
             int contar = 0;
@@ -1556,7 +1555,8 @@ namespace WsSimuladorCalculoTabelas
             string servico = "";
             double valor = 0;
             string titSapiens = "";
-
+            int Lote = 0;
+            
             try
             {
                
@@ -1636,7 +1636,8 @@ namespace WsSimuladorCalculoTabelas
                         merro = _pagamentoPixDAO.consistenciaGR(seq_gr, parceiroID);
                         if (merro != "")
                         {
-                            return new Response
+                        _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
+                        return new Response
                             {
                                 Sucesso = false,
                                 Mensagem = merro
@@ -1649,14 +1650,14 @@ namespace WsSimuladorCalculoTabelas
                         int fpGrp = nota.FPGRP;
                     int fpgr = nota.fpgr;
                     int fpIpa = nota.FPIPA;
-                        int fpltl = nota.Fpltl ;
+                        int fpltl = nota.FPLTL;
                     int flag_hubport = nota.flag_hubport;
                          string ndoc = nota.NUM_DOC;
                         string tipoDoc = nota.TIPODOC_DESCRICAO;
                         int patioGR = nota.PATIO;
+                    string blote = nota.LOTE;
 
-
-                        int flagHupport = nota.flag_hubport;
+                    int flagHupport = nota.flag_hubport;
                         bool primeiraHub = _pagamentoPixDAO.primeiraHub(seq_gr);
                         if (primeiraHub == false)
                         {
@@ -1776,23 +1777,65 @@ namespace WsSimuladorCalculoTabelas
                         string corpoNota = "";
 
 
+                    if (nota.NUM_DOC.ToString() == "")
+                    {
+                        merro = "O Documento da Gr esta em branco";
+                        _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                    if (nota.TIPODOC_DESCRICAO.ToString() == "")
+                    {
+                        merro = "O Tipo do Documento da Gr esta em branco";
+                        _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
 
-                        corpoNota = _pagamentoPixDAO.Monta_Insert_Faturanota(
+                            Embarque = _pagamentoPixDAO.obtemEmbarque(seq_gr, parceiroID);
+
+                    if (Embarque == "")
+                    {
+                        merro = "Não é possível gerar a nota fiscal, BL sem referência do cliente cadastrado.";
+                        _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
+                        return new Response
+                        {
+                            Sucesso = false,
+                            Mensagem = merro
+                        };
+                    }
+                    if (Embarque == "z")
+                    {
+                        Embarque = "";
+                    }
+
+
+                          corpoNota = _pagamentoPixDAO.Monta_Insert_Faturanota(
                             "GR", seq_gr, Embarque, dtEmissao, dtVenc,
                             NatOp, CodNat, ndoc, tipoDoc,
                             patioGR, sapcliente, cli_autonum,
-                            Lote, parceiroID, clienteSAPEntrega,
-                            cliente, valor.ToString(), numero, cod_empresa, Usuario, serie, servico,
-                            clienteSAPEntrega, 0, fpIpa, fpGrp , fpParc, fpgr, 0 , fpltl);
+                            blote, parceiroID, clienteSAPEntrega,
+                            cliente, valor.ToString(), numero, empresa, Usuario, serie, servico,
+                            clienteSAPEntrega,   0, fpIpa, fpGrp , fpParc, fpgr, 0 , fpltl,0);
 
                         int id_nota = _pagamentoPixDAO.Obtem_Id_Nota(seq_gr, nfe);
 
                         if (id_nota > 0)
                         {
-                            merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "", false, titSapiens, dtEmissao, conta, valor.ToString(), "", sapcliente, id_nota, cod_empresa, serie, corpoNota, seq_gr,0);
+                        var dadosFP = new FontePagadora();
+                        dadosFP = _pagamentoPixDAO.obtemDadosfp(fpParc, fpGrp, fpIpa, fpgr, fpltl);
+                        merro = _pagamentoPixDAO.geraIntegracao(servico, dtEmissao, patioGR, "", false, titSapiens, dtEmissao, conta, valor.ToString(), dadosFP.AUTONUM_FORMA_PAGAMENTO, sapcliente, id_nota, empresa, serie, corpoNota, seq_gr,0);
                             if (merro != "")
                             {
-                                return new Response
+                     
+                            _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
+                            return new Response
                                 {
                                     Sucesso = false,
                                     Mensagem = merro
@@ -1808,7 +1851,7 @@ namespace WsSimuladorCalculoTabelas
                                     if (statusNota.STATUSNFE != 0 && statusNota.STATUSNFE != 5)
 
                                     {
-                                        if (_pagamentoPixDAO.Atualiza_GR(seq_gr) == false)
+                                        if (_pagamentoPixDAO.Atualiza_GR(seq_gr, dtEmissao) == false)
                                         {
                                             merro = "Falha na atualização da GR/Fatura";
                                         _pagamentoPixDAO.Gravalogfat(seq_gr.ToString(), merro);
@@ -1846,9 +1889,6 @@ namespace WsSimuladorCalculoTabelas
                                 Mensagem = merro
                             };
                         }
-
-
-
                     }
                     else
                     {
@@ -1885,5 +1925,57 @@ namespace WsSimuladorCalculoTabelas
                 };
             }
         }
+
+        [WebMethod(Description = "Acerto Venc ")]
+        public Response AcertoVenc()
+        {
+
+            try
+            {
+
+                var dadosLotes = _pagamentoPixDAO.GetVenc( );
+                string Cond_Pag = "";
+                DateTime dataVenc   ;
+                foreach (var nota in dadosLotes)
+                {
+
+                    int fpParc = nota.FPPARC;
+                    int fpGrp = nota.FPGRP;
+                    int fpgr = nota.fpgr;
+                    int fpIpa = nota.FPIPA;
+                    int fpltl = nota.FPLTL;
+                    int id = nota.AUTONUM; 
+
+                    var dadosFP = new FontePagadora();
+
+                    dadosFP = _pagamentoPixDAO.obtemDadosfp(fpParc, fpGrp, fpIpa, fpgr, fpltl);
+                    dadosFP.rsDias = _pagamentoPixDAO.obtemDias(fpIpa, fpGrp, fpParc, fpgr, fpltl);
+                    dadosFP.rsDiasSemana = _pagamentoPixDAO.ObtemDiasSemana(fpIpa, fpGrp, fpParc, fpgr, fpltl);
+
+
+                    Cond_Pag = dadosFP.AUTONUM_FORMA_PAGAMENTO;
+                    dadosFP.condPag = dadosFP.AUTONUM_FORMA_PAGAMENTO;
+                    dataVenc = Convert.ToDateTime(_pagamentoPixDAO.obtemvencimento(dadosFP, fpIpa, fpGrp, fpParc, fpgr, fpltl));
+
+                    _pagamentoPixDAO.atualizavenc(id, dataVenc);
+
+                }
+                return new Response
+                {
+                    Sucesso = true,
+                    Mensagem = $"sucesso!"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    Sucesso = false,
+                    Mensagem = $"Falha "
+                };
+            }
+        }
+
+
     }
 }

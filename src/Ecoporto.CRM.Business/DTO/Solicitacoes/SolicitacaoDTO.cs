@@ -44,6 +44,7 @@ namespace Ecoporto.CRM.Business.DTO
 
         public string CriadoPor { get; set; }
 
+        public string isentarjuros { get; set; }
         public int TotalLinhas { get; set; }
     }
 }

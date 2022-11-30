@@ -2990,6 +2990,7 @@ namespace Ecoporto.CRM.Site.Controllers
                         QuantidadeNF = registrosProrrogacao.Count(),
                         ValorTotalNF = registrosProrrogacao.Sum(c => c.ValorNF).ToString("n2"),
                         ValorTotalJuros = registrosProrrogacao.Sum(c => c.ValorJuros).ToString("n2"),
+                        isentarjuros = solicitacaoBusca.isentarjuros,
                         User_Externo = User.IsInRole("UsuarioExterno").ToInt()
                     };
 

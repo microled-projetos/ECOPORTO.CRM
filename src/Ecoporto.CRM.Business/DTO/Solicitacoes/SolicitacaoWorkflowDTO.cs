@@ -99,5 +99,7 @@
         public string EmailNotaFiscal { get; set; }
 
         public int User_Externo { get; set; }
+
+        public string isentarjuros { get; set; }
     }
 }

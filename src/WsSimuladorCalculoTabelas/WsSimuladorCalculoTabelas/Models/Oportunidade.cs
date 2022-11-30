@@ -6,6 +6,9 @@ namespace WsSimuladorCalculoTabelas.Models
 {
     public class Oportunidade
     {
+
+     
+    
         public int Id { get; set; }
 
         public string Identificacao { get; set; }

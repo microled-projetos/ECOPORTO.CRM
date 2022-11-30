@@ -736,10 +736,12 @@ where oportunidadeid=:OportunidadeId  and
                     {
                         if (ficha.FichaGeral)
                         {
-                            con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                            con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                            con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                            con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId", parametros, transaction);
+                            //  con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
+                            //  con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
+                            // con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
+                            //  con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId", parametros, transaction);
+                            con.Execute("UPDATE SGIPA.TB_DADOS_FATURAMENTO_IPA SET    FLAG_HISTORICO = 1, USUARIO_CANCEL = 0 , DT_CANCEL=SYSDATE  WHERE OPORTUNIDADE_ID = :OportunidadeId ", parametros, transaction);
+
 
                             con.Execute($@"
                                 INSERT INTO SGIPA.TB_DADOS_FATURAMENTO_IPA 
@@ -869,11 +871,7 @@ where oportunidadeid=:OportunidadeId  and
 
                     try
                     {
-                   //     con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                    //    con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                     //   con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_IPA_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId)", parametros, transaction);
-                      //  con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA WHERE OPORTUNIDADE_ID = :OportunidadeId", parametros, transaction);
-
+         
                         // === Ficha revisada
 
                         var parametrosGrupo = new DynamicParameters();
@@ -919,11 +917,12 @@ where oportunidadeid=:OportunidadeId  and
 
                         parametrosGrupo.Add(name: "SubClienteId", value: fichaRevisada.ContaId, direction: ParameterDirection.Input);
 
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_GRU_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId)", parametrosGrupo, transaction);
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId)", parametrosGrupo, transaction);
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId)", parametrosGrupo, transaction);
-                        con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId", parametrosGrupo, transaction);
-
+                        // con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_GRU_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId)", parametrosGrupo, transaction);
+                        // con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_GRU_DIAS_SEMANA WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId)", parametrosGrupo, transaction);
+                        // con.Execute("DELETE FROM SGIPA.TB_DADOS_FAT_GRU_COND_PG_DIAS WHERE AUTONUM_FONTE_PAGADORA IN (SELECT AUTONUM FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId)", parametrosGrupo, transaction);
+                        // con.Execute("DELETE FROM SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId", parametrosGrupo, transaction);
+                         con.Execute("UPDATE SGIPA.TB_DADOS_FATURAMENTO_IPA_GRP SET    FLAG_HISTORICO = 1, USUARIO_CANCEL = 0 , DT_CANCEL=SYSDATE  WHERE OPORTUNIDADE_ID = :OportunidadeId AND AUTONUM_GRUPO_LISTA = :SubClienteId", parametrosGrupo, transaction);
+                      
                         parametrosGrupo.Add(name: "SequenciaGrupo", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                         con.Execute($@"
