@@ -55,6 +55,7 @@ namespace Ecoporto.CRM.Business.Models
         public string AnexoFaturamento { get; set; }
 
         public int RevisaoId { get; set; }
+        public int AgruparDoctos { get; set; }
 
         public int[] ContasSelecionadas { get; set; }
 

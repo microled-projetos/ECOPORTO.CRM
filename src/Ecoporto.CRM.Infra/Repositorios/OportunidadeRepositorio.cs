@@ -1563,7 +1563,8 @@ SELECT NVL (
                         A.CorreiosSedex As EntregaManualSedex,
                         A.DiaUtil,
                         A.UltimoDiaDoMes,
-                        A.EntregaEletronica
+                        A.EntregaEletronica,
+                        NVL(A.FLAG_AGRUPA_DOCTOS,0) AgruparDoctos
                     FROM
                         CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT A
                     LEFT JOIN
@@ -1606,7 +1607,8 @@ SELECT NVL (
                         A.DiaUtil,
                         A.UltimoDiaDoMes,
                         A.EntregaEletronica,
-                        A.FontePagadoraId
+                        A.FontePagadoraId,
+                        NVL(A.FLAG_AGRUPA_DOCTOS,0) AgruparDoctos
                     FROM
                         CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT A
                     LEFT JOIN
@@ -1649,7 +1651,8 @@ SELECT NVL (
                         A.CorreiosSedex,
                         A.DiaUtil,
                         A.UltimoDiaDoMes,
-                        A.EntregaEletronica
+                        A.EntregaEletronica,
+                        NVL(A.FLAG_AGRUPA_DOCTOS,0) AgruparDoctos
                     FROM
                         CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT A
                     LEFT JOIN
@@ -1692,6 +1695,7 @@ SELECT NVL (
                 parametros.Add(name: "UltimoDiaDoMes", value: ficha.UltimoDiaDoMes.ToInt(), direction: ParameterDirection.Input);
                 parametros.Add(name: "EntregaEletronica", value: ficha.EntregaEletronica.ToInt(), direction: ParameterDirection.Input);
                 parametros.Add(name: "RevisaoId", value: ficha.RevisaoId, direction: ParameterDirection.Input);
+                parametros.Add(name: "AgruparDoctos", value: ficha.AgruparDoctos , direction: ParameterDirection.Input);
                 parametros.Add(name: "Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 con.Execute(@"
@@ -1718,7 +1722,8 @@ SELECT NVL (
                                         DiaUtil,
                                         UltimoDiaDoMes,
                                         EntregaEletronica,
-                                        RevisaoId
+                                        RevisaoId,
+                                        FLAG_AGRUPA_DOCTOS 
                                     ) VALUES (
                                         CRM.SEQ_CRM_OPORTUNIDADE_FICHA_FAT.NEXTVAL, 
                                         :OportunidadeId, 
@@ -1740,7 +1745,8 @@ SELECT NVL (
                                         :DiaUtil,
                                         :UltimoDiaDoMes,
                                         :EntregaEletronica,
-                                        :RevisaoId) RETURNING Id INTO :Id", parametros);
+                                        :RevisaoId
+                                        :AgruparDoctos) RETURNING Id INTO :Id", parametros);
 
                 var id = parametros.Get<int>("Id");
 
@@ -1794,6 +1800,7 @@ SELECT NVL (
                 parametros.Add(name: "DiaUtil", value: ficha.DiaUtil.ToInt(), direction: ParameterDirection.Input);
                 parametros.Add(name: "UltimoDiaDoMes", value: ficha.UltimoDiaDoMes.ToInt(), direction: ParameterDirection.Input);
                 parametros.Add(name: "EntregaEletronica", value: ficha.EntregaEletronica.ToInt(), direction: ParameterDirection.Input);
+                parametros.Add(name: "AgruparDoctos", value: ficha.AgruparDoctos, direction: ParameterDirection.Input);
 
                 parametros.Add(name: "Id", value: ficha.Id, direction: ParameterDirection.Input);
 
@@ -1814,7 +1821,8 @@ SELECT NVL (
                                     CorreiosSedex = :CorreiosSedex,
                                     DiaUtil = :DiaUtil,
                                     UltimoDiaDoMes = :UltimoDiaDoMes,
-                                    EntregaEletronica = :EntregaEletronica
+                                    EntregaEletronica = :EntregaEletronica,
+                                    FLAG_AGRUPA_DOCTOS =:AgruparDoctos
                                 WHERE Id = :Id", parametros);
             }
         }

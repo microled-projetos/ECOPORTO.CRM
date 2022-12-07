@@ -65,7 +65,9 @@ namespace Ecoporto.CRM.Business.DTO
 
         public string RevisaoId { get; set; }
 
-        public bool MesmaContaOportunidade { get; set; }
+        public string AgruparDoctos { get; set; }
+
+    public bool MesmaContaOportunidade { get; set; }
 
         public StatusFichaFaturamento StatusFichaFaturamento { get; set; }
 

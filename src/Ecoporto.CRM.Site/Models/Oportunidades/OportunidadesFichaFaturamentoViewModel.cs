@@ -67,6 +67,9 @@ namespace Ecoporto.CRM.Site.Models
         [Display(Name = "Dia da semana")]
         public string CondicaoPagamentoPorDiaSemana { get; set; }
 
+        [Display(Name = "Agrupar Documentos?")]
+        public int AgruparDoctos { get; set; }
+
         [Display(Name = "Entrega Eletrônica?")]
         public bool EntregaEletronica { get; set; }
 

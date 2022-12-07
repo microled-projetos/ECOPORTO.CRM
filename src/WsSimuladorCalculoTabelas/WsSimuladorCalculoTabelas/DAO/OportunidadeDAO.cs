@@ -368,7 +368,8 @@ where oportunidadeid=:OportunidadeId  and
                         A.CorreiosSedex,
                         A.DiaUtil,
                         A.UltimoDiaDoMes,
-                        CASE WHEN NVL(F.Segmento,0) > 0 THEN F.Segmento ELSE 1 END As  SegmentoSubCliente
+                        CASE WHEN NVL(F.Segmento,0) > 0 THEN F.Segmento ELSE 1 END As  SegmentoSubCliente,
+                        NVL(A.FLAG_AGRUPA_DOCTOS,0) AgruparDoctos
                     FROM
                         CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT A
                     INNER JOIN
@@ -421,7 +422,9 @@ where oportunidadeid=:OportunidadeId  and
                         DECODE(A.CorreiosSedex, 0, 1, 0) As CorrreiosComum,
                         A.CorreiosSedex,
                         A.DiaUtil,
-                        A.UltimoDiaDoMes
+                        A.UltimoDiaDoMes,
+                        NVL(A.FLAG_AGRUPA_DOCTOS,0) AgruparDoctos
+     
                     FROM
                         CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT A
                     INNER JOIN
@@ -731,6 +734,7 @@ where oportunidadeid=:OportunidadeId  and
                     parametros.Add(name: "DiaUtil", value: ficha.DiaUtil.ToInt(), direction: ParameterDirection.Input);
                     parametros.Add(name: "OportunidadeId", value: ficha.OportunidadeId, direction: ParameterDirection.Input);
                     parametros.Add(name: "FichaId", value: ficha.Id, direction: ParameterDirection.Input);
+                    parametros.Add(name: "AgruparDoctos", value: ficha.AgruparDoctos, direction: ParameterDirection.Input);
 
                     try
                     {
@@ -762,6 +766,7 @@ where oportunidadeid=:OportunidadeId  and
                                         FLAG_ULTIMO_DIA_DO_MES_VCTO,
                                         OPORTUNIDADE_ID,
                                         FICHA_ID,
+                                        FLAG_AGRUPA_DOCTOS, 
                                         DATA_INTEGRACAO
                                     )  
                                     SELECT  
@@ -781,6 +786,7 @@ where oportunidadeid=:OportunidadeId  and
                                         A.UltimoDiaDoMes,
                                         :OportunidadeId,
                                         :FichaId,
+                                        :AgruparDoctos,
                                         SYSDATE
                                     FROM  
                                         CRM.TB_CRM_OPORTUNIDADE_FICHA_FAT A
@@ -893,6 +899,7 @@ where oportunidadeid=:OportunidadeId  and
                         parametrosGrupo.Add(name: "DiasFaturamento", value: fichaRevisada.DiasFaturamento, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "OportunidadeId", value: fichaRevisada.OportunidadeId, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "FichaId", value: fichaRevisada.Id, direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "AgruparDoctos", value: fichaRevisada.AgruparDoctos, direction: ParameterDirection.Input);
 
                         if (!string.IsNullOrEmpty(fichaRevisada.ContaDocumento))
                         {
@@ -946,6 +953,7 @@ where oportunidadeid=:OportunidadeId  and
                                         FLAG_VENCIMENTO_DIA_UTIL,
                                         OPORTUNIDADE_ID,
                                         FICHA_ID,
+                                        FLAG_AGRUPA_DOCTOS ,
                                         DATA_INTEGRACAO
                                     ) VALUES (
                                         SGIPA.SEQ_DADOS_FATURAMENTO_IPA_GRP.NEXTVAL,  
@@ -966,7 +974,8 @@ where oportunidadeid=:OportunidadeId  and
                                         :DiaUtil,
                                         :OportunidadeId,
                                         :FichaId,
-                                        SYSDATE
+                                        :AgruparDoctos,
+                                         SYSDATE 
                                     ) RETURNING AUTONUM INTO :SequenciaGrupo", parametrosGrupo, transaction);
 
                         var sequenciaGrupo = parametrosGrupo.Get<int>("SequenciaGrupo");
@@ -1065,6 +1074,7 @@ where oportunidadeid=:OportunidadeId  and
                         parametrosGrupo.Add(name: "DiasFaturamento", value: ficha.DiasFaturamento, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "OportunidadeId", value: ficha.OportunidadeId, direction: ParameterDirection.Input);
                         parametrosGrupo.Add(name: "FichaId", value: ficha.Id, direction: ParameterDirection.Input);
+                        parametrosGrupo.Add(name: "AgruparDoctos", value: ficha.AgruparDoctos, direction: ParameterDirection.Input);
 
                         if (!string.IsNullOrEmpty(ficha.ContaDocumento))
                         {
@@ -1152,6 +1162,7 @@ where oportunidadeid=:OportunidadeId  and
                                         FLAG_VENCIMENTO_DIA_UTIL,
                                         OPORTUNIDADE_ID,
                                         FICHA_ID,
+                                        FLAG_AGRUPA_DOCTOS, 
                                         DATA_INTEGRACAO
                                     ) VALUES (
                                         SGIPA.SEQ_DADOS_FATURAMENTO_IPA_GRP.NEXTVAL,  
@@ -1172,6 +1183,7 @@ where oportunidadeid=:OportunidadeId  and
                                         :DiaUtil,
                                         :OportunidadeId,
                                         :FichaId,
+                                        :AgruparDoctos,
                                         SYSDATE
                                     ) RETURNING AUTONUM INTO :SequenciaGrupo", parametrosGrupo, transaction);
 

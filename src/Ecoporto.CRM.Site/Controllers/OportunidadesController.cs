@@ -2035,7 +2035,7 @@ namespace Ecoporto.CRM.Site.Controllers
 
         [HttpPost]
         [CanActivateUsuarioIntegracaoFicha]
-        public ActionResult CadastrarFichaFaturamento([Bind(Include = "FichaFaturamentoId, OportunidadeId, StatusFichaFaturamento, FaturadoContraId, ClientesPropostaSelecionados, ClientePropostaSelecionadoId, DiasSemana, DiasFaturamento, DataCorte, CondicaoPagamentoFaturamentoId, EmailFaturamento, ObservacoesFaturamento, ContasSelecionadas, FontePagadoraId, CondicaoPagamentoPorDia, CondicaoPagamentoPorDiaSemana, DiaUtil, UltimoDiaDoMes, EntregaManual, EntregaEletronica, EntregaManualSedex, FichaRevisaoId")] OportunidadesFichaFaturamentoViewModel viewModel, HttpPostedFileBase anexoFaturamento)
+        public ActionResult CadastrarFichaFaturamento([Bind(Include = "FichaFaturamentoId, OportunidadeId, StatusFichaFaturamento, FaturadoContraId, ClientesPropostaSelecionados, ClientePropostaSelecionadoId, DiasSemana, DiasFaturamento, DataCorte, CondicaoPagamentoFaturamentoId, EmailFaturamento, ObservacoesFaturamento, ContasSelecionadas, FontePagadoraId, CondicaoPagamentoPorDia, CondicaoPagamentoPorDiaSemana, DiaUtil, UltimoDiaDoMes, EntregaManual, EntregaEletronica, EntregaManualSedex, FichaRevisaoId ,AgruparDoctos")] OportunidadesFichaFaturamentoViewModel viewModel, HttpPostedFileBase anexoFaturamento)
         {
             if (viewModel.OportunidadeId == 0)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -2148,7 +2148,8 @@ namespace Ecoporto.CRM.Site.Controllers
                 DiaUtil = viewModel.DiaUtil,
                 UltimoDiaDoMes = viewModel.UltimoDiaDoMes,
                 RevisaoId = viewModel.FichaRevisaoId,
-                EntregaEletronica = viewModel.EntregaEletronica
+                EntregaEletronica = viewModel.EntregaEletronica,
+                AgruparDoctos = viewModel.AgruparDoctos, 
             };
 
             var existeAnaliseDeCreditoPendente = _oportunidadeRepositorio
@@ -2480,7 +2481,9 @@ namespace Ecoporto.CRM.Site.Controllers
                 detalhesFicha.EntregaManual,
                 detalhesFicha.EntregaManualSedex,
                 detalhesFicha.CorreioComum,
-                detalhesFicha.CorreioSedex
+                detalhesFicha.CorreioSedex, 
+                detalhesFicha.AgruparDoctos 
+
             }, JsonRequestBehavior.AllowGet);
         }
 

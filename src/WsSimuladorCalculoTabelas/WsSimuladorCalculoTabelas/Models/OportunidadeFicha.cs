@@ -73,6 +73,8 @@ namespace WsSimuladorCalculoTabelas.Models
 
         public bool FichaGeral { get; set; }
 
+        public int AgruparDoctos { get; set; }
+
         public SegmentoSubCliente SegmentoSubCliente { get; set; }
 
         public List<ClienteProposta> SubClientes { get; set; } = new List<ClienteProposta>();
